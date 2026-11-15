@@ -1,3 +1,23 @@
+# TMR-2 CURRENT handoff | 2026-11-15 07:08 PST | BATCH116 /046
+
+**GOVERNING:** User-approved Fusion-Lipschitz five-agent refocus, original main SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. TMR-2 identity, title, hourly Pacific schedule, five roles and ownership retained. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED EXACT GENERAL THEOREM, independent mathematical review OPEN:** In a separately qualified *preauthenticated shared-gate record calculus* on the original TMR-2/045 overlapping Feistel CNF scales j=5..m (rank R_j=4^j), globally paid gate set P, pending scale set U, paid nonterminal ACTIVATE_BATCH(S) for S in an explicit covering family E, and separate paid HALT, dynamic per-scale component p_j=(4^j-1)1[j in U] is exactly invariant on authentic free VIEW SCCs. Each batch discharges precisely its still-pending scale ranks. The **complete nonnegative tariff cone** is lambda_GAMMA<=1, lambda_MACHINE<=1 and sum_(j in S)(4^j-1)lambda_j<=1 for every allowed batch S. The exact optimal initial linear-tariff potential is **G+1+tau_fractional(E)** by fractional set-cover LP duality, while exact required record work is **G+1+tau_integer(E)**. These can differ.
+
+**NEW STRICT EXACT GAP:** Seven Fano-plane batches on seven shared nonlinear interface scales have tau_fractional=7/3 via theta_j=1/3 and y_batch=1/3, while true minimum batch count is 3. Thus potential G+10/3 < true record cost G+4; any linear tariff is intrinsically non-exact even for the authenticated model. Three-scale triangle gives 3/2 versus 2; genuine full-batch shortcut forces tau*=1, exactly the original TMR-2/045 authority. General covered q-scale hypergraphs satisfy tau*<=q, so with G_m=O(m^3), q=m-4 this entire candidate cannot provide superpolynomial initial tariff.
+
+**EXECUTED computational evidence:** Exact self-contained V8 source 62,102 assertions, 24,730 genuine legal tariff edges, 12,560 zero-cost edges, four batch families, zero failures. Exact rational integer-numerator primal/dual and exhaustive finite pending/paid/goal state checks. No physical multitape implementation/OS Node/preflight. Report research/agents/tmr-2/2026-11-15_0708_TMR2_FRACTIONAL_BATCH_FUSION_COVER_GAP046.md; executable experiments/tmr/tmr2_fractional_batch_fusion116.js; raw results/raw/tmr/2026-11-15_0708_TMR2_BATCH116_V8_RAW.json; complete seven-column-expanded-per-scale matrix results/raw/tmr/2026-11-15_0708_TMR2_BATCH116_TARIFF_MATRIX.json.
+
+**GUARDS / TRANSFER:** This is a deliberately different restricted record authority, NOT a modification of TMR-2/045 and NOT an all-SAT-machine lower bound. A real full activation, compact shared circuit, affine Gaussian/definition/learning, equality, Horn/2-SAT, treewidth, autarky, rereading, caching, and recomputation remain MAY in physical machines. Fixed correct total SAT decider recognizes the original family and constructs a polynomial witness. Same-system machine transfer and superpoly gap OPEN. /341 full-language logical FAIL, /386 RESTRICTED. All five schedules untouched.
+
+**PEERS:** TMR-3 audit batch charging and global shared-gate ledger; TMR-4 replay primal/dual exact cone and zero-cost quotient, retain any real full-batch MAY; TMR-5 independent Fano/triangle dual and integral-cover gap; TMR-1 prevent model substitution into SAT-machine theorem. **TRACKERS REVIEWED; NO MATERIAL CHANGE** (proof1 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 930c5eeddafce656717f28055a7a9a755f44737c; main 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34). P versus NP OPEN.
+
+**NEXT:** Find a program-independent computational obligation, not a declared batch service, that survives all authentic compact/fused SAT decider operations.
+
+END_OF_HANDOFF::TMR2::2026-11-15_0708_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-15 06:09 PST | MULTISCALE105 /045
 
 **GOVERNING:** Fusion-Lipschitz five-agent directive on main, blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. No task/role/schedule changes. P versus NP OPEN.
