@@ -1,3 +1,19 @@
+# TMR-1 CURRENT handoff | 2026-11-15 00:04 PST | GUARDLIFT071 /039
+
+**GOVERNING DIRECTIVE:** 2026-11-14 fusion-Lipschitz tariff refocus Git blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; MCSP secondary; all five existing schedules/identities untouched. **P versus NP OPEN.**
+
+**NEW PROVED/RESTRICTED, independent peer review OPEN:** For any UNSAT private CNF F, k>=3 shared variables X, let J_k be the EXACT-ONE-k predicate, with q=1+binom(k,2) CNF clauses D; set A=AND_{D,C in F}(D OR C), and B=NOT J_k as explicit k-clause CNF. Both sides independently SAT; A AND B UNSAT; every Craig interpolant over X equals J_k. Native shared-DAG Resolution inference counts obey S_RES(F)<=S_RES(A AND B)<=q*S_RES(F)+k^2, via x=0 restriction and q guarded lifted copies plus k^2 standard resolutions. J_k is semantically non-Horn, non-dual-Horn, non-bijunctive and non-affine (k>=3), depends on all k coordinates, yet has O(k^2) circuit size. For k=H and an odd-charge cubic expander Tseitin F_H, wrapper input encoding L=Theta(H^3 log H) has native Resolution size 2^Omega((L/log L)^(1/3)) while its unique interpolant is easy. This generalizes GUARDINT066 /038 beyond one literal and falsifies any inference from non-Schaefer growing interface plus hard refutation to hard interpolant. It is not proper 3-CNF; no general SAT machine lower bound or source-complete physical transfer is obtained.
+
+**EXECUTED VERIFIER:** Exact ES2020 code in experiments/tmr/tmr1_exactone_guardlift071.js; 256 private CNF clause subsets (161 UNSAT, 95 SAT), 644 individually proof-replayed guarded Resolution refutations for k=3..6, all interpolation truth tables, explicit source authentication, deleted complement B_i SAT witnesses, corrupted pivots and source forgery rejection, non-Schaefer witnesses. **160,244 exact V8 assertions, zero failures**; maximum 186 proof lines. Raw results/raw/tmr/2026-11-15_0004_TMR1_GUARDLIFT071_V8_RAW.json. Finite evidence COMPUTATIONAL.
+
+**FILES:** research/agents/tmr-1/2026-11-15_0004_TMR1_EXACTONE_NON_SCHAEFER_GUARDLIFT039.md ; experiments/tmr/tmr1_exactone_guardlift071.js ; results/raw/tmr/2026-11-15_0004_TMR1_GUARDLIFT071_V8_RAW.json. Primary Ben-Sasson--Wigderson 1999 ECCC Theorem 4.1 / Corollary 4.1 p.10; Krajicek JSL 1997 interpolation context. Earlier TMR-1/038 single-literal guard and TMR-2/038 autarky controls preserved below.
+
+**NEXT:** TMR-2 seek a common-variable separation family with proved hard circuits, not simply non-Schaefer syntactic structure; TMR-3 audit polynomial physical recognition of canonical syntax; TMR-4 attempt exact fusion tariff on the actual compact O(k^2) separator and no forbidden paths; TMR-5 independently check lift, restriction and encoding arithmetic. Same-system general SAT machine transfer, fusion-safe superpolynomial initial potential, and P versus NP OPEN.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE:** proof1 full SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 authentic full blob 930c5eeddafce656717f28055a7a9a755f44737c (1,051,196 chars); main.tex authentic full blob 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34 (2,545,859 chars). Issue #3, AGENTS, CODEX, skill, latest TMR handoffs, original project counterexamples and controlling directives reviewed. No root main.tex or schedules modified.
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-14 23:12 PST | GUARDINT066 /038
 
 **GOVERNING PRIORITY:** Fusion-Lipschitz five-agent refocus SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; MCSP/MKTP/FLMV supporting only. All five TMR identities and hourly Pacific schedules unchanged.
