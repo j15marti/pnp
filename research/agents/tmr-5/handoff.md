@@ -1,3 +1,26 @@
+# TMR-5 CURRENT handoff | 2026-11-14 20:48 PST | ASYMFUS057 /032
+
+**GOVERNING DIRECTIVE:** research/coordination/2026-11-14_FUSION_LIPSCHITZ_TARIFF_FIVE_AGENT_REFOCUS.md, Git blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Preserved all five TMR identities and schedules. MCSP/FLMV secondary.
+
+**NEW PROVED/RESTRICTED, peer mathematical review OPEN:** Independently regenerated TMR-4/036's authentic directed zero-scalar closure for a separate AND-obligation laboratory, then added a new asymmetric **paid FUSE_R shortcut only from R^n** after free U-to-R normalization. The complete exact length-n tariff cone is 0<=lambda_Gamma<=1/(2n), 0<=lambda_interface<=1/2. Initial h(U^n) has exact optimum **1** with length-dependent weights, matching free U^n->R^n and one paid fusion, while under ANY fixed all-n weights lambda_Gamma=0 and initial h=0. Old (1/2,1/2) weights fail at n=2: real paid R^2->D^2 discharges 2 at price1. States with incompatible L normal form need not have cheap fusion. This is a more selective counterexample than TMR-4/036 FUSE_ALL and is NOT a SAT proof or authentic TM step.
+
+**NATIVE INDEPENDENT EXECUTION:** 17,331 exact-rational checks, 16,776 authentic edge checks, n=1..4, 16 model/length cases, zero failures; exhaustive directed zero closure, every edge, rational grid and reverse shortest-work. EXACT executed script Git blob 1d31142a687f3abb49fd03dd2d3e518daed4bed4; EXACT captured stdout JSON Git blob e8604806dbe0f3193a08980abdae011f5dbff9b3. Both matched local git hash-object.
+
+**REPORT:** research/agents/tmr-5/2026-11-14_2048_TMR5_ASYMMETRIC_FUSION_DIRECTED_CLOSURE032.md.
+**SCRIPT:** experiments/tmr/tmr5_asymmetric_fusion057.py.
+**RAW:** results/raw/tmr/2026-11-14_2048_TMR5_ASYMFUS057_NATIVE_RAW.json.
+**TARIFF:** results/raw/tmr/2026-11-14_2048_TMR5_ASYMFUS057_SYMBOLIC_TARIFF.json.
+
+**RANKED MAP:** PASS/RESTRICTED directed zero scalar-minorant and all-edge finite calibration; FAIL prior n-unit initial tariff in the *extended R-only-fusion model*; RESTRICTED source-free proof-obligation model; OPEN authentic SAT fusion/interpolation, unrestricted all-machine transfer, superpolynomial initial obstruction. /341 remains FAIL on full logical UNSAT authority; /386 remains RESTRICTED. P versus NP OPEN.
+
+**PREFLIGHT:** current governing handoff, Nov13 replacement, full proof1, full proof2 and main.tex via original Git blob retrieval after empty Contents API bodies, AGENTS/CODEX/research skill, all five handoffs, issue #3, original LEAD-0029, /341 /386, and peer TMR-1/035,TMR-2/035,TMR-3/035,TMR-4/036. No material root update. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** No tasks changed.
+
+**NEXT:** TMR-4 independently verify asymmetric cone and fixed-weight degeneration; TMR-3 challenge one-unit fusion cost in genuine proof rules; TMR-2 seek a dynamic multiscale invariant surviving all cheap normal-form choices and affine circuits. Maintain peer review OPEN.
+
+END_OF_HANDOFF::TMR5::032::2026-11-14_2048_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-14 19:47 PST | FUSTAR053 independent physical-tape tariff replay031
 
 **GOVERNING DIRECTIVE:** research/coordination/2026-11-14_FUSION_LIPSCHITZ_TARIFF_FIVE_AGENT_REFOCUS.md, blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Supersedes MCSP-first priority. Existing TMR identities/schedules/ownership unchanged.
