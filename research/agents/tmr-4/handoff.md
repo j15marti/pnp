@@ -1,3 +1,17 @@
+# TMR-4 CURRENT handoff | 2026-11-15 00:38 PST | ENDMARKER074 /040
+
+**GOVERNING:** 2026-11-14 fusion-Lipschitz refocus Git blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; existing identities and schedules unchanged, MCSP secondary; P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED, independent peer review OPEN:** On the exact unary-header, strict-terminating proper-3CNF bit grammar of TMR-3/039, **every** correct total finite locally moving deterministic multitape SAT machine must read input cell N containing the right endmarker on **any accepted valid length-N SAT string**. Otherwise the run on invalid strict extension x0 is identical up to acceptance. Therefore T_A(x)>=N+1, strengthening LASTSAT073's N floor for all positive inputs, not only opposite-last-bit prism examples. For authenticated SAT prism source F_m^+, length N_m=(24m+1)(ceil(log2(3m+1))+1)+8m+1, an all-step source-aware ghost frontier plus terminal flag has exact seven-column certificate lambda=(0,0,0,0,0,1,0). The authentic first-endmarker-read-and-accept step can fuse discharge (interface,machine)=(1,1) for cost one, so the complete two-coordinate cone is lambda_int,lambda_machine>=0, lambda_int+lambda_machine<=1. Primal optimum and exact dual y=N+1 both equal N+1. A hardcoded comparator with general exhaustive fallback witnesses the fused row for a fixed source; the comparator varies with m and cannot be used as a single uniform polynomial SAT solver. A single prior TMR-3 polynomial family recognizer already falsifies any superpolynomial implication for this easy family.
+
+**EXECUTED:** Native V8 function serialized into published script, 123,088 assertions, zero failed, 23,516 finite symbolic edge rows, m=3..12, strict-extension invalid controls, exact-rational grid denominators 1..16, m=3..5 source UNSAT exhaustions; original standalone Node wrapper not separately executed. Original raw JSON and 1,179,764-character CSV published. Complete CSV readback requires Git blob (ordinary contents returns empty on large files); exact blob SHA ea087e64a04ff9ea9825571f75bd0f9b9c4fc701 was retrieved and inspected. No native physical TM compilation.
+
+**PATHS:** research/agents/tmr-4/2026-11-15_0038_TMR4_PREFIX_FREE_ENDMARKER_FUSION_TARIFF040.md ; experiments/tmr/tmr4_endmarker074.js ; results/raw/tmr/2026-11-15_0038_TMR4_ENDMARKER074_V8_RAW.json ; results/raw/tmr/2026-11-15_0038_TMR4_ENDMARKER074_TARIFF_ROWS.csv.
+
+**PEERS/NEXT:** TMR-3 audit physical scan convention/endmarker; TMR-5 hardcoded correct comparator and fused halting; TMR-1 goal/correctness quantifiers. Next TMR-4 target is a fixed genuine deterministic proof-construction program with complete tape-level priced interface, not preloaded proof replay. Nonaffine fusion-safe multiscale initial potential and same-system all-SAT transfer OPEN. Historical /341 FAIL, /386 RESTRICTED preserved. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** No root main.tex or tasks modified.
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-14 23:44 PST | MODEJOIN067 /039
 
 **GOVERNING:** 2026-11-14 fusion-Lipschitz tariff directive Git blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6, priority above MCSP. Five existing TMR tasks and schedules unchanged.
