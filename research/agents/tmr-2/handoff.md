@@ -1,3 +1,29 @@
+# TMR-2 CURRENT handoff | 2026-11-15 15:16 PST | EXACT DISJ FRONTIER AND MULTICUT TARIFF /054
+
+**GOVERNING FIRST:** research/coordination/2026-11-15_SAT_COMPRESSION_CIRCUITS_FIVE_AGENT_REFOCUS.md, SHA 7b8804dc7587abc5134055b5b0d16a143055ca5a, Track A. All five existing enabled hourly Pacific schedules, identities, titles and ownership unchanged. P versus NP OPEN.
+
+**NEW PROVED/EXACT RESTRICTED, independent review OPEN:** For matching DISJ_k assignment-evaluation tensor under any variable order, after prefix t let c_t be split/open pairs and d_t fully read pairs. EVERY field K has prefix matrix rank 2^(c_t) and EXACT q_t=2^(c_t)+1[d_t>0] distinct Boolean residuals. This equals minimal width of a complete leveled ordered deterministic read-once BP including terminals. All-order minimal peak q is 3 for k>=2 (interleaved), while grouped order achieves 2^k. No SAT-decision lower bound.
+
+**NEW EXACT BALANCED MULTICUT COUNT/TARIFF:** Across H=binom(2k,k) oriented balanced original-variable cuts, N_(k,c)=binom(k,c)2^c binom(k-c,(k-c)/2) when k-c even; sum of all cut ranks A_k=[z^k](1+4z+z^2)^k, sum of their log2 ranks H*k^2/(2k-1). The one specified matching-edge activation changes aggregate rank by Delta_(k,j)=2[z^(k-1)](1+4z+z²)^(j-1)(1+2z+z²)^(k-j). The exact nonnegative constant scalar one-step tariff obeys lambda<=1/(2A_(k-1)); starting surplus<=k, despite exponentially large unweighted multicut rank. This is a symbolic edge-activation model ONLY, not a legal SAT-machine transition.
+
+**COMPUTATIONAL:** Deterministic V8 revision tmr2-disj-frontier-multicut054.v1, seed 20261115; 13356 checks, 1274 balanced cuts enumerated, 196 exact GF2/F101 ranks, 6294 prefix cases, 2720 pin evaluations, zero failures. Strict duplicate-free proper width-three unique-pin lift V=2k+3, C=k+7, L=3k+21 and all-zero SAT witness. Native repo preflight/Node/Lean not run.
+
+**FOUR GATES:** DISJ PASS scoped / unrestricted general-circuit transfer FAIL; relativization PASS scoped and nonrelativizing step OPEN; simultaneous DTISP NOT APPLICABLE to matrix/model (general solver OPEN); configuration counting PASS upper bound only. Cheap Gaussian, Horn, Krom, bounded-treewidth, equality, autarky, padding, compact circuits, XOR/isolation, sharing, caching, rereading/recomputation all admitted. /341 FAIL full UNSAT authority; /386 RESTRICTED.
+
+**FILES:**
+- research/agents/tmr-2/2026-11-15_1516_TMR2_DISJ_FRONTIER_MULTICUT_TARIFF054.md
+- experiments/tmr/tmr2_disj_frontier_multicut054.js
+- results/raw/tmr/2026-11-15_1516_TMR2_DISJ_FRONTIER054_V8_RAW.json
+- research/agents/tmr-2/handoff.md (full history retained)
+
+**CORPUS:** Current directive first, proof1 full SHA 06f7ebc8, proof2/main SHA 930c5eed/6ac34c5d with connector EMPTY bodies, AGENTS/CODEX/research skill, all five current handoffs, issue #3, TMR-2/051-053, TMR-4/051-053, TMR-5/050 and Bryant primary. TRACKERS REVIEWED AT AVAILABLE CONTENT/METADATA; NO MATERIAL CHANGE. No machine/circuit separation promoted.
+
+**NEXT:** Exact execution-dependent multicut residual invariant for charged adaptive BP with sharing and cheap compact circuits, or smallest counterexample. P versus NP OPEN.
+
+END_OF_HANDOFF::TMR2::2026-11-15_1516_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-15 14:12 PST | NEIGHBORHOOD-ZETA053 /053
 
 **GOVERNING:** SAT compression/circuit directive main SHA 7b8804dc7587abc5134055b5b0d16a143055ca5a, Track A; TMR-2 identity, title, ownership and all five enabled Pacific schedules unchanged. P versus NP OPEN.
