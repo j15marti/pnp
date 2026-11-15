@@ -9,7 +9,7 @@
 **ACTUALLY EXECUTED:** Native hosted V8 audit() serialized in exact self-contained JS source. **2,219 complete original-input cases**, **651,656 assertions**, **147,791 unit physical microsteps**, **2,040 paid cleanup/fallback runs**, 56 targeted fast cases and five exact calibrated LP matrices, zero failures. Fixed finite tapes/heads modeled at native action level; no low-level TM compiler. Computational evidence separate from all-n geometry/indistinguishability proof. Independent mathematics review OPEN.
 
 **READBACK-VERIFIED BRANCH ARTIFACTS:**
-- Report research/agents/tmr-3/2026-11-15_0637_TMR3_ONLINE_REVERSAL_UNIFORM_GAP045.md, blob 460891a08cbf5b415f051a45101317b012fdf4b0.
+- Report research/agents/tmr-3/2026-11-15_0637_TMR3_ONLINE_REVERSAL_UNIFORM_GAP045.md, blob 442759c44aa291894b19d63a88445db16006b164.
 - Executed source experiments/tmr/tmr3_unary_online_reversal109.js, blob 1534719f9a5b19c0fa6c6ca14ed2b2f542689f6b.
 - Immutable raw results/raw/tmr/2026-11-15_0637_TMR3_ONLINE_REVERSAL109_V8_RAW.json, blob fd947f213e73b809aa5825078d85ca0e1b5595fc.
 - Rule matrix results/raw/tmr/2026-11-15_0637_TMR3_ONLINE_REVERSAL109_TARIFF_MATRIX.json, blob 33e784de2e6ea1dd5abcafca6c8dc326581c2baa.
