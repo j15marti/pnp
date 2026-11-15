@@ -1,3 +1,25 @@
+# TMR-1 CURRENT handoff | 2026-11-15 11:03 PST | CIRCUITWIRE050 /050
+
+**GOVERNING FIRST:** 2026-11-15 SAT compression/circuits directive blob 7b8804dc7587abc5134055b5b0d16a143055ca5a. Supersedes Allender/fusion as first priority. Same TMR-1 identity, title, ownership and all five original Pacific hourly enabled schedules; NO changes. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED; independent mathematical review OPEN:** Any explicitly given n-input g>=1 gate shared fan-in-two AND/OR/NOT circuit compiles by functional Tseitin into a duplicate-free all-variables-occurring width<=3 CNF with V=n+g counted variables, m<=3g+n+1 clauses, and exact #CNF=#circuit. Unused inputs receive tautological clauses; every gate variable has ONE unique extension for each original input. O(V log V) input bits; all preprocessing/source/parsing/output costs poly(V). Independent finite V8 484 circuits (including DISJ_1..3 and XOR2), 72,528 full auxiliary-inclusive assignments, 3,393 assertions, zero failures; finite COMPUTATIONAL.
+
+**PINNED ORIGINALS:** openai/math main 4eaee87548250b2682affda7d05d947c05554bae, manuscript f7af85e623b58e0ca9f4b9416916d442defa963a, lean/docs/378.md 223bbe187394bffca8a2c7ba1656538bfba26e3b (weaker formal time, polynomial tape visits); anthropics/formal-math main 16a5ce41304fcdaea4e0be7c132e1c361dc26da5, eth/MainResults.lean 1c62a550fa1e4cbec65bb7112f92ad67589afddc (EXACT min(m/√lg m, V lg lg V/√lg V) counting time, ONE machine/C, duplicates forbidden, all variables occur; NO polynomial-space assertion in this target statement). Claimed builds NOT reproduced. Williams/Vyas-Williams general-Circuit SAT all k target NEXP not P/poly; Bathie-Williams DeMorgan FORMULA lower-bound target E^NP, NOT NP.
+
+**QUANTITATIVE TRANSFER/FAILURE:** Conditional on Anthropic pinned Lean theorem, counting circuits with g<=n(log n)^alpha for any fixed alpha<1/2 is uniform 2^{o(n)}, with original input n and functional auxiliary V=n+g accounted. The weaker OpenAI Lean scope yields this too with poly(V) space. At g=n^2, V=n+n^2; either bound provides only 2^{O(n^2/√log n)} (up to loglog), not the required 2^n/n^k advantage. This DISPROVES certification of the all-k Williams premise by the ordinary compiler and those upper-bound expressions, NOT the possibility of other algorithms. New uniform all-polynomial-size count-preserving compression/algorithm remains OPEN. Four gates: DISJ PASS; relativization PASS restricted / OPEN unrestricted; same-execution DTISP NOT APPLICABLE to Williams, OPEN to FLMV/Allender; deterministic configuration counting PASS as upper-bound control. /341 FAIL as full logical authority; /386 RESTRICTED. NO NP-level proof.
+
+**PUBLISHED BRANCH FILES; postmerge readback required:**
+- research/agents/tmr-1/2026-11-15_1103_TMR1_TSEITIN_WIRETAX_ALGORITHM_GATE050.md
+- experiments/tmr/tmr1_tseitin_wiretax050.js
+- results/raw/tmr/2026-11-15_1103_TMR1_TSEITIN_WIRETAX050_V8_RAW.json
+- this preserved-history handoff.md
+
+**NEXT:** Require a uniform poly-size circuit to succinct exact #3CNF compiler with V obeying the exact original-n savings ledger, or a separately verified native Circuit-SAT improvement for every size n^k. TMR-2/4 audit DISJ/Horn, shared wires, tensor compression; TMR-3 audit same-machine time and space; TMR-5 independently replay and challenge formalization scope. TRACKERS REVIEWED; NO MATERIAL CHANGE: proof1 SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 SHA 930c5eeddafce656717f28055a7a9a755f44737c; main.tex SHA 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34.
+
+END_OF_HANDOFF::TMR1::2026-11-15_1103_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-15 09:57 PST | ALLENDERBALANCE049 /049
 
 **GOVERNING:** FIRST the 2026-11-15 Allender MajMajSAT directive (main SHA 1760aefab5944a063f64b62142e358fbd2b94235); prior 2026-11-14 fusion directive and 2026-11-13 TMR replacement subordinated scientifically but retain all safeguards. TMR-1 identity, title, Pacific schedule and all five agent roles unchanged. P versus NP OPEN.
