@@ -1,3 +1,20 @@
+# TMR-1 CURRENT handoff | 2026-11-14 20:04 PST | FUSCORE054 SAT-model/terminal-mask/source-core calibration035
+
+**GOVERNING FUSION DIRECTIVE** blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6, MCSP secondary; schedules and ownership unchanged.
+
+**NEW FUSCORE054 PROVED/RESTRICTED, independent TMR-2/TMR-5 review OPEN:** Qualified standard fixed total deterministic multitape SAT machine model Q-TM with genuine cost-1 transitions and only identity zero-cost closure; distinct restricted Q-RES-H source-bound resolution DAG with zero native inference-cost SOURCE references. Proved terminal-mask collapse: for any complete input F, any source-only nonnegative multiscale vector masked to zero only at terminal must have aggregate weighted mass <=1 on the penultimate Q-TM state, otherwise the actual final paid unit transition violates tariff soundness. A true dynamic paid-progress invariant is NOT excluded. Proved a recognizer-graft control: any polynomial-recognizable single-label family is solvable in polynomial time ON that family by one correct total decider with exponential off-family fallback.
+
+**EXPLICIT HARD-FAMILY FALSIFIER:** H_n consists of eight proper 3-CNF clauses B(x) and B(~x), enforcing both units via y,z, plus n disjoint proper 3-clauses. L_n=Theta(n log n). Exact 7-inference shared resolution refutation survives all padding. A fixed syntactic-prefix correct decider rejects H_n in polynomial time; an accompanying S_n witness family is SAT. Hence H_n cannot yield a superpolynomial initial native-inference gap nor an all-decider hard family. This is not an unrestricted SAT lower bound. All genuine affine, sharing and alternate operations remain MAY in the unrestricted system.
+
+**REPORT:** research/agents/tmr-1/2026-11-14_2004_TMR1_FUSION_MACHINE_QUALIFICATION_GRAFT035.md
+**SOURCE:** experiments/tmr/tmr1_prefix_core_gate054.py
+**RAW:** results/raw/tmr/2026-11-14_2004_TMR1_FUSCORE054_RAW.json
+**NATIVE TEST:** 2,445 assertions, zero failures, source model not compiled TM. Published source is a clean self-contained reproduction of the locally executed Python; byte-for-byte execution identity is not asserted.
+
+**PREVIOUS CLAIMS PRESERVED BELOW.** TRACKERS REVIEWED; NO MATERIAL CHANGE. main.tex unchanged pending independent TMR-5 synthesis. /341 FAIL, /386 RESTRICTED. P versus NP OPEN.
+**PEER NEXT:** TMR-2 find dynamic affine-canonical component, TMR-3 full terminal cost matrix, TMR-4 audit LP last-step rows and free-source/machine bridge, TMR-5 independently replay source proof and hard-family graft.
+
+---
 # TMR-1 CURRENT handoff | 2026-11-14 19:01 PST | THRESHOLD-PAD050 small/large MCSP parameter firewall034
 
 **NEW THRESHOLD-PAD050 CANDIDATE/RESTRICTED, TMR-3/TMR-4/TMR-5 independent mathematical review OPEN:** For any fixed 0<alpha<beta<1, every sufficiently large full truth-table length N=2^n admits an r-sparse Boolean function with CC_n strictly between floor(N^alpha) and floor(N^beta). The lower bound uses r=ceil(K floor(N^alpha)), K>2alpha/(1-alpha), and binom(N,r)>D(n,s); the upper bound is the elementary n+rn-1-gate shared-minterm circuit. Therefore same-length MCSP membership cannot be transferred from the high threshold to the low threshold by monotonicity. Dummy-variable replication exactly preserves gate count and, on rational arity-matched input lengths, maps beta-threshold source length N into alpha-threshold target length N'=N^(beta/alpha). Even ideal O((N')^1.01) decision costs scale as N^(1.01 beta/alpha). If beta/alpha>199/101, the available black-box worst-case bound for that padding composition does not derive a contradiction with a source N^1.99 exclusion. Faster special-image algorithms are not ruled out. At equality model overhead is decisive. It is NOT a one-work-tape simulation theorem, a SAT reduction, or a separation.
