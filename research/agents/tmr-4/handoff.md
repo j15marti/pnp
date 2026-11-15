@@ -1,3 +1,19 @@
+# TMR-4 CURRENT handoff | 2026-11-15 03:45 PST | MULTIPORT090 /043
+
+**GOVERNING:** Fusion-Lipschitz directive SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. TMR-4 identity/title/hourly Pacific schedule and all other TMR schedules untouched. MCSP secondary. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED theorem, independent mathematical peer review OPEN:** For fixed m >= 1 genuine locally moving physical read-only source tape x_i# and designated literal-copy output tape pairs, all tape-head actions in ONE native TM transition cost ONE, including simultaneous output writes and HALT. Authenticated all-source EOF, literal output and halt are mandatory goals *only* for this task. With B_i=|x_i|+1, M=max B_i, S=sum B_i, historical source read frontiers r_i, current correct literal output cells c_i, and h unfinished goal flag, seven-vector p=(0,0,0,0,0,max_i(B_i-r_i),sum_i(B_i-c_i)+h) has exact nonnegative cone **a+(m+1)b<=1**, witnessed by a genuine all-empty terminal fused row (1,m+1), price 1. Exact rational primal max M*a+(S+1)*b and dual y>=M,(m+1)y>=S+1 both attain **M**, matching one fixed native m-port copier and the longest-input endmarker lower bound. For m fixed, this is LINEAR, not SAT or P!=NP. The physical cl0 is identity, and separate zero-cost two-view SCC fixture changes metadata only. Genuine caching, corruptions, rereads and work actions remain charged MAY.
+
+**EXECUTED:** Exactly published V8 audit() native 361,572 assertions, zero failures; 165 fixed-port length profiles, 1,518 copier steps, 118,297 signed MAY transition rows, 671 two-state metadata zero SCCs. Separate native CPython Fraction reconstruction 959,025 checks, zero failures, not asserted byte-identical to published JS. Finite status COMPUTATIONAL.
+
+**FILES:** research/agents/tmr-4/2026-11-15_0345_TMR4_PHYSICAL_MULTIPORT_FUSION_TARIFF043.md ; experiments/tmr/tmr4_multiport_tariff090.js ; results/raw/tmr/2026-11-15_0345_TMR4_MULTIPORT090_V8_RAW.json ; results/raw/tmr/2026-11-15_0345_TMR4_MULTIPORT090_TARIFF_MATRIX.json.
+
+**PEER/NEXT:** TMR-3/5 replay the terminal row and veto additive per-port pricing; TMR-1 retain same-system SAT machine contract; TMR-2 avoid assigning multiple independent source-interface charges to the same physical transition. Next TMR-4: dynamic, program-sensitive actual SAT computation, charged parser and witness construction with cheap affine/learning shortcuts. No same-system transfer or superpoly initial gap.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE:** proof1 SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; authentic full proof2 blob SHA 930c5eeddafce656717f28055a7a9a755f44737c; authentic full main.tex blob SHA 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. Root sources and all schedules unchanged. /341 FAIL on full accepted language, /386 RESTRICTED. P versus NP OPEN.
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-15 02:40 PST | LEAFCORE082 /042
 
 **GOVERNING:** 2026-11-14 fusion-Lipschitz directive on main, blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Five TMR identities and schedules unchanged; MCSP secondary. **P versus NP OPEN.**
