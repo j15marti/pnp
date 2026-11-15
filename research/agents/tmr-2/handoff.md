@@ -1,3 +1,23 @@
+# TMR-2 CURRENT handoff | 2026-11-14 22:12 PST | GENCERT063 /037
+
+**GOVERNING PRIORITY:** Fusion-Lipschitz five-agent refocus blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. MCSP/FLMV supporting, all five TMR identities and schedules preserved.
+
+**NEW PROVED/RESTRICTED, independent mathematical review OPEN:** For every total public Boolean f on n immutable hidden individually readable source coordinates, and every compatible partial transcript, D_x is shortest actual source-consistent certificate completion, B=min_compatible_x D_x, and W is optimal worst-case residual online deterministic query depth. On the fixed-source graph the **pointwise greatest** nonnegative all-paid-step 1-Lipschitz goal-zero potential is D_x; on the source-forgetting MAY graph it is B. The authentic paid Bellman envelopes of seed W coincide with D_x and B respectively for **every f**, extending TMR-4/037 and TMR-5/033 beyond AND-of-ORs. Omniscient shortest certificate path does not imply a uniform online algorithm.
+
+**NEW exact universal three-column cone:** Uniformly across ALL total n-bit Boolean f, fixed x and real paid READ edges, a nonnegative weight triple on vector (B,W,D_x) is valid iff lambda_B+n*lambda_W+lambda_D<=1. Sufficiency: each READ drops B<=1, D_x<=1 and W<=n; necessity: OR_n source with first bit 1, first paid READ discharges (1,n,1). Witness (1/4,1/(2n),1/4). Length-independent coefficients across all n force lambda_W=0. At OR_n maximal initial potential 1 versus W=n; all initial potentials <=n, so source-query-only multiscale obstructions cannot produce superpolynomial initial gaps. True independently readable parity-summary hints are changed-model falsifiers, not CEGAR-spurious paths.
+
+**EXACT V8 EXECUTION:** published source re-fetched from branch and executed byte-identically in native V8 isolate: **179,821 checks, zero failures**, all 256 3-input Boolean functions, nine four-input affine/Horn/Krom/equality/ANDOR/majority controls, 7,641 transcripts, 18,688 compatible fixed-source states, 15,768 authentic paid edges, integer-rational three-column witness; OR_n symbolic rows n=1..25. No Node/compiled TM or SAT-model execution claimed; finite evidence COMPUTATIONAL.
+
+**FILES:** research/agents/tmr-2/2026-11-14_2212_TMR2_GENERAL_CERTIFICATE_ENVELOPE037.md; experiments/tmr/tmr2_general_certificate_envelope063.js; results/raw/tmr/2026-11-14_2212_TMR2_GENCERT063_V8_RAW.json; results/raw/tmr/2026-11-14_2212_TMR2_GENCERT063_TARIFF_SCHEMA.json.
+
+**PREFLIGHT:** latest Nov14 refocus FIRST and rechecked, Nov13 replacement, both complete proof trackers and canonical main.tex recovered via authentic Git blobs (proof1 06f7ebc8c2283304a0f5200b518c6e48fa41e343, proof2 930c5eeddafce656717f28055a7a9a755f44737c, main.tex 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34), AGENTS/CODEX/skill, issue #3 and all five handoffs, original TMR-2/036, TMR-4/037, TMR-5/033, TMR-1/037, TMR-3/036, LEAD-0029, scholarly certificate/abstract-interpretation literature. **TRACKERS REVIEWED; NO MATERIAL CHANGE**; root main.tex unchanged. Historical /341 FAIL and /386 RESTRICTED unchanged; P versus NP OPEN.
+
+**PEER:** TMR-4 audit all-function Bellman and n-dependent cone; TMR-3 price correlated simultaneous outputs on one real step; TMR-5 attempt public parity hint and model-transfer counterexample. **NEXT:** source-authenticated original-CNF residual across separators surviving full paid parsing, Gaussian, Horn/Krom, autarky, learning and compact circuit MAY operations. Unrestricted same-system transfer and superpolynomial initial gap OPEN.
+
+**PREVIOUS HANDOFF HISTORY PRESERVED BELOW.**
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-14 21:13 PST | MMT059 /036
 
 **Controlling fusion directive** `research/coordination/2026-11-14_FUSION_LIPSCHITZ_TARIFF_FIVE_AGENT_REFOCUS.md`; all five TMR schedules/identities retained. MCSP and FLMV remain secondary.
