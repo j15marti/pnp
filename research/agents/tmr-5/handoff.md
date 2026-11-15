@@ -1,3 +1,24 @@
+# TMR-5 CURRENT handoff | 2026-11-15 01:43 PST | NAEGUARD079 /037
+
+**GOVERNING:** fusion-Lipschitz directive blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; MCSP secondary. TMR-5 identity/ownership and all five schedules unchanged. **P versus NP OPEN.**
+
+**NEW PROVED/RESTRICTED symbolic composition, independent peer review OPEN; finite code COMPUTATIONAL:** Independently combined TMR-2/040's exact NAE_k rational cut-rank and 1-rectangle cover 2^k with TMR-1/040's authenticated duplicated AND/NOT circuit guard. NAE_k has k(k+1) proper 3-CNF clauses, n=3k+binom(k,2) inputs, non-Schaefer K_k primal clique, but a concrete g=11(k+binom(k,2))-1=O(k^2)-gate circuit. For arbitrary private UNSAT CNF F, G=A AND B has unique interpolant NAE_k, while native shared-DAG Resolution cost S(F)<=S(G)<=S(F)+8g+2 and source-clause record count |F|+56(k+binom(k,2))-5. For odd-charge cubic-expander F_k, native Resolution hard 2^Omega(k) at guarded 4-CNF encoding L=Theta(k^2 log k), though the interpolant has a polynomial circuit and exponential rational evaluation rank. This is NOT an arbitrary SAT-machine lower bound or a 3-CNF Resolution transfer.
+
+**INDEPENDENT EXECUTION:** Exact V8 function serialized in experiments/tmr/tmr5_nae_rank_guard079.js, **268,310 checks**, 506 authenticated Resolution derived steps, zero failures. Exhaustive NAE/circuit equivalence for k=2,3,4; exact BigInt rational rank + fooling controls (rank 4,8,16); two independent gate-copy Resolution replays (k=2: 171 sources, 169 paid steps; k=3: 339 sources, 337 steps). Real degree-witness SAT control preserved. A source-static terminal-masked rank charge 2^k fails the one-price HALT row: 2^k*lambda_rank+lambda_active<=1, so all-k uniform lambda_rank=0.
+
+**REPORT:** research/agents/tmr-5/2026-11-15_0143_TMR5_NAE_RANK_GUARD_COMPOSITION037.md.
+**EXECUTED SOURCE:** experiments/tmr/tmr5_nae_rank_guard079.js.
+**RAW:** results/raw/tmr/2026-11-15_0143_TMR5_NAEGUARD079_V8_RAW.json.
+**EXACT TARIFF:** results/raw/tmr/2026-11-15_0143_TMR5_NAEGUARD079_TERMINAL_TARIFF.json.
+
+**RANKED:** PASS/RESTRICTED TMR-1/040 explicit gate copies and TMR-2/040 rank; PROVED/RESTRICTED composed interpolant + Resolution hardness, peer review OPEN; FAIL positive uniform terminal-masked source-rank tariff; RESTRICTED source-bound Resolution and gate evaluator, both not physical SAT machine; /341 full authority FAIL, /386 RESTRICTED; arbitrary-SAT transfer, multiscale superpolynomial initial gap and P versus NP OPEN.
+
+**NEXT PEER REPAIRS:** TMR-1 check width-four expander exponent, TMR-2 independently check AND/NOT rank preservation and fooling set, TMR-3 audit finite-tape authenticated polynomial Gaussian recognition, TMR-4 retain actual compact shared circuit and all cheap paths in MAY inventory. Seek a dynamic nonaffine obstruction surviving these paths; none currently proved.
+
+**PREFLIGHT:** Current directive, November 13 replacement, proof1 full, proof2/main full authentic Git blob fallbacks, current issue #3, AGENTS/CODEX/skill, five handoffs, original TMR-1/040/TMR-2/040 code and native raw, TMR-3/040, TMR-4/040, TMR-5/036, LEAD/0029, original BSW 1999 p.10 inspected. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** No root edits, no task changes.
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-15 00:52 PST | SHUFFLED-GAUSS074 /036
 
 **GOVERNING:** 2026-11-14 fusion-Lipschitz directive blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; MCSP supporting, all five existing TMR schedules unchanged.
