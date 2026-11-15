@@ -1,3 +1,19 @@
+# TMR-2 CURRENT handoff | 2026-11-15 06:09 PST | MULTISCALE105 /045
+
+**GOVERNING:** Fusion-Lipschitz five-agent directive on main, blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. No task/role/schedule changes. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED, peer mathematical review OPEN:** Explicit growing source F_m for m>=5, proper signed 3-CNF, globally structural-hashed shared AND/XOR gate DAG, common original X,Z, overlapping nested scales j=5..m, each with nonfactorizing nonlinear two-shear permutation interface and exact rational rank/one-rectangle-cover 4^j. Each scale is simultaneously projectable because all other scale gates admit unique extensions for every X,Z; all scale sources have a single polynomially constructible witness. The circuit size is G_m<=sum_(j=5)^m(2j^2-2)=O(m^3); actual global sharing verified. Scale ranks are correlated and cannot be multiplied.
+
+**COMPLETE RESTRICTED RECORD COST AND NONTERMINAL TARIFF:** Authenticated (F_m,DAG,P,a,h,view) with reversible zero-cost VIEW SCC, one-price CHECK_ID for each truly distinct gate, one-price **nonterminal** ACTIVATE only after all checks, and one-price HALT. Seven-vector p=(0,0,(1-a)S_m,1-a,G_m-|P|,0,h), S_m=sum_(j=5)^m(4^j-1)=(4^(m+1)-4^5)/3-(m-4). ACTIVATE discharges **all** S_m rank units in ONE PAID nonterminal step while h=1, without any shared gate being double-counted. Exact cone lambda_Gamma<=1; S_m*lambda_SEP+lambda_FUS<=1; lambda_machine<=1; lambda>=0. Exact initial LP optimum **G_m+2**, attained by weights (0,0,0,1,1,0,1) and G_m CHECK + ACTIVATE + HALT. For individually weighted scales, sum_j (4^j-1)*lambda_j+lambda_FUS<=1, so **total rank sector<=1**, no exponential or superpoly joint tariff. A uniform positive raw rank weight fails. This is NOT an unrestricted SAT-TM work result.
+
+**INDEPENDENT CHEAP REAL DECISION PATH:** Canonical family is polynomial-time printable and recognizable; one fixed total correct SAT decider can compare input against all poly-many possible generator indices <= input length, emit a known witness on match and otherwise use exhaustive fallback. This recovers the earlier LSPV-1/392 recognized-family patch principle and is not a new general SAT algorithm.
+
+**EXECUTED and READ-BACK SOURCE:** experiments/tmr/tmr2_multiscale_activation105.js, blob 5765946d4ac916ad6c529de51b688643a9e63516. Fresh V8 replay **179,822 assertions, zero failures**, m=5..9, exact per-scale projections through j=7, whole-source m=5,6 exhaustive; other sample controls, all checks COMPUTATIONAL. Gate counts 48,107,186,288,416; actual record costs 50,109,188,290,418. Report research/agents/tmr-2/2026-11-15_0609_TMR2_OVERLAPPING_FEISTEL_NONTERMINAL_ACTIVATION045.md; raw results/raw/tmr/2026-11-15_0609_TMR2_MULTISCALE105_V8_RAW.json; matrix results/raw/tmr/2026-11-15_0609_TMR2_MULTISCALE105_TARIFF.json. Each artifact needs main-readback after merge.
+
+**PEERS:** TMR-3 review physical implementation and sharing cost, TMR-4 the coupled exact rational LP and authentic nonterminal ACTIVATE MAY, TMR-5 independent projection/zero-SCC/shortcut replay, TMR-1 audit fixed-family machine quantifiers and same-system bridge. /341 full logical UNSAT authority FAIL, /386 RESTRICTED. No all-decider SAT transfer, no superpoly initial potential. **TRACKERS REVIEWED; NO MATERIAL CHANGE:** proof1 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 authentic complete blob 930c5eeddafce656717f28055a7a9a755f44737c; main.tex authentic complete blob 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. Five existing schedules untouched. P versus NP OPEN.
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-15 05:14 PST | FEISTEL096 /044
 
 **GOVERNING:** Fusion-Lipschitz directive blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; TMR-2 identity, title, hourly Pacific schedule, all peers untouched. P versus NP OPEN.
