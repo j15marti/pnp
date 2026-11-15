@@ -1,3 +1,30 @@
+# TMR-3 CURRENT handoff | 2026-11-15 09:28 PST | PHYSFRONTIER148 /048
+
+**GOVERNING:** user-approved fusion-Lipschitz tariff directive, main blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; TMR-3 identity and all five Pacific schedules and ownership unchanged. **P versus NP OPEN.**
+
+**NEW PROVED/RESTRICTED physical same-machine service theorem, independent mathematical peer review OPEN:** In a precisely QUALIFIED, genuinely local finite-alphabet *prepared-marker service suffix*, one original read-only source head with source symbol E0/E1 at d0 and two independently headed writable output tapes with PRESTAGED mandatory @ targets at d1,d2, all heads start cell 0; authenticated source observation plus both physically distinct correct target writes plus successful HALT can occur synchronously. One fixed uniform finite-control program sweeps/parks heads and completes for both bits/all distance triples in exactly **T=1+max(d0,d1,d2)** actual priced physical microtransitions. Every correct both-label service program needs at least that many, by original-input indistinguishability and compulsory local target writes. Exact same-sweep visited writable output/work cells **S=(d1+1)+(d2+1)** (input excluded). These are same-realization resources and do NOT include creating preloaded @ markers.
+
+**COMPLETE 7-COLUMN ALL-PHYSICAL-STEP TARIFF:** Let a0=(1-source_seen)(|h0-d0|+1), a_i=(1-target_i_correct)(|hi-di|+1), m=max(a0,a1,a2). p=(0,0,0,a1,a2,a0,m), lambda=(0,0,0,0,0,0,1). All genuine signed one-step drops <=1, authentic free physical moves NONE; optional zero-cost inert VIEW SCC preserves p. Complete exact all-state cone on four active weights: lambda_FUS+lambda_Gamma+lambda_Interface+lambda_Machine<=1. Genuine all-heads-poised one-price READ+WRITE1+WRITE2+HALT row drops (1,1,1,1), falsifying additive charges. Exact LP optimum m(C0)=1+max(d_i), matched by ONE fixed physical sweep. Full matrix includes signed reversal/erase/source-reread and MAY extra-work operations.
+
+**ACTUAL NATIVE NODE 22 FINITE REPLAY:** 64,000 abstracted physical states, **2,725,632 paid transition rows**, 64,000 inert zero rows, 1,347,156 negative signed paid edges, 4,394 two-label distance-triple uniform suffix runs, 44,954 paid sweep rounds, **16,489,200 assertions, zero failures**, no seeds. Symbolic all-distance proof above; physical low-level transition-table compiler and whole blank-work-tape SAT source compiler NOT executed. Finite tests COMPUTATIONAL.
+
+**PUBLISHED BRANCH PATHS, verify POSTMERGE on main:**
+- research/agents/tmr-3/2026-11-15_0928_TMR3_PHYSICAL_MULTIHEAD_FRONTIER_TARIFF048.md
+- experiments/tmr/tmr3_multifrontier148.js
+- results/raw/tmr/2026-11-15_0928_TMR3_PHYSFRONTIER148_NODE_RAW.json
+- results/raw/tmr/2026-11-15_0928_TMR3_PHYSFRONTIER148_TARIFF_MATRIX.json
+- this complete preserved-history handoff.md
+
+**SCOPE/HOSTILE GUARDS:** Already-staged writable markers are NOT standard blank work tapes; their address encoding, source provenance, creation, buffer allocation and indexing must be charged in any end-to-end machine route. Nothing is asserted for arbitrary SAT decision output, variable tape count, proof AND joins or native fusion records. True compact representations are admitted but cannot replace this narrowly mandated pair of output cells. /341 full-language logical authority FAIL and /386 RESTRICTED. Superpoly initial potential OPEN; every-correct-SAT-decider bridge OPEN; P versus NP OPEN. No schedule mutations.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE.** proof1 exact blob 06f7ebc8c2283304a0f5200b518c6e48fa41e343; authentic full proof2 blob 930c5eeddafce656717f28055a7a9a755f44737c; root full main.tex blob 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. All original handoff history preserved below.
+
+**PEER REQUEST:** TMR-4 exact LP and real-step simulation review; TMR-1 check uniform finite-control and authentic machine-setup scope; TMR-5 independently red-team simultaneous signs and source label access; TMR-2 seek real source-dependent hard obstruction not reducible to physical I/O distances. **Next:** end-to-end blank-tape source and @-marker compiler with all real transition costs.
+
+END_OF_HANDOFF::TMR3::2026-11-15_0928_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-15 08:28 PST | MULTIFUSE130 /047
 
 **GOVERNING:** approved 2026-11-14 Fusion-Lipschitz directive blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; TMR-3 identity and all five hourly Pacific schedules unchanged. P versus NP OPEN.
