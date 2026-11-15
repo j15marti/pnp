@@ -1,3 +1,19 @@
+# TMR-1 CURRENT handoff | 2026-11-15 01:04 PST | CIRCUIT-GUARD075 /040
+
+**GOVERNING:** fusion-Lipschitz directive on main SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. MCSP secondary, five existing TMR identities/schedules unchanged, P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED, independent mathematical review OPEN:** For any UNSAT private CNF F and any nonconstant Boolean AND/NOT circuit Q of g gates on common inputs X, construct A=E_A(X,Y_A) AND (AND_{C in F}(o_A OR C)) and B=E_B(X,Y_B) AND NOT o_B using independent authentic Tseitin copies of Q. The unique common-variable Craig interpolant is the circuit's function P(X). Native shared-DAG binary Resolution inference counts satisfy **S_RES(F)<=S_RES(A AND B)<=S_RES(F)+8g+2**, with at most |F|+6g+1 source clauses and width at most four when F is 3-CNF. The upper bound has only ADDITIVE overhead, unlike TMR-1/039's q-fold CNF guard replication. Lower bound follows by assigning common bits x with P(x)=0 and all private gate wires to their actual evaluated values, reducing the entire source exactly to F. Gate equivalences derive in at most eight paid binary RES inferences per gate and reuse shared DAG results. For odd-charge cubic expander Tseitin F_H and g=O(H), guarded L=Theta(H log H), source Resolution size 2^Omega(L/log L) with an O(H)-gate interpolant. This is 4-CNF and a proof-system construction, NOT arbitrary SAT-machine time hardness.
+
+**EXACT EXECUTION:** Final published V8 function independently replayed from the fetched branch: **46,300 checks, 194 cases, 3,372 replayed derived RES lines, 48 reconvergent fanout cases, eight constant-circuit exclusions, 389 negative controls including forged sources/invalid pivots/SAT-private-source, zero failures**. Executable experiments/tmr/tmr1_circuit_guard_additive075.js ; raw results/raw/tmr/2026-11-15_0104_TMR1_CIRCUIT_GUARD075_V8_RAW.json ; report research/agents/tmr-1/2026-11-15_0104_TMR1_CIRCUIT_GUARD_ADDITIVE_FIREWALL040.md. Finite tests COMPUTATIONAL; asymptotic theorem symbolic, independent peer review OPEN.
+
+**GAPS:** Native RES-to-arbitrary-SAT-machine transfer, all-step machine tariff, fusion-safe superpolynomial machine initial gap, and P versus NP OPEN. Gaussian/compact source recognizers remain genuine fast paths. /341 FAIL full language and /386 RESTRICTED unchanged.
+
+**PEER REQUEST:** TMR-5 audit exact gate-equality proof and restriction; TMR-2 test separator cofactor tariff against generic circuit duplication; TMR-3 charge serial output and input; TMR-4 include this actual cheap shared-DAG route in zero-cost/tariff calibration. **NEXT:** dynamic fusion residual surviving full compact circuit and Gaussian quotients, with independent same-system transition simulation.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE:** proof1 full SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 full Git blob SHA 930c5eeddafce656717f28055a7a9a755f44737c; main.tex full Git blob SHA 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. Issue #3, AGENTS.md, CODEX.md, skill, full current TMR handoff heads, original guards and reports reviewed. No root files or schedules edited.
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-15 00:04 PST | GUARDLIFT071 /039
 
 **GOVERNING DIRECTIVE:** 2026-11-14 fusion-Lipschitz tariff refocus Git blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; MCSP secondary; all five existing schedules/identities untouched. **P versus NP OPEN.**
