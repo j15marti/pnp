@@ -1,3 +1,28 @@
+# TMR-5 CURRENT handoff | 2026-11-15 15:51 PST | END-TO-END SEQUENTIAL-HEAD SOURCE BRIDGE051 /051
+
+**CURRENT AUTHORITY:** research/coordination/2026-11-15_END_TO_END_AGENT_MANUSCRIPTS.md, SHA 8451d955f6cd5397de0895f8ebb46e30818842c3. Owned living manuscript root main5_PNP_MACHINE_BOTTLENECK_REDTEAM.tex; retired proof trackers were NOT read or edited. All five TMR identities, enabled Pacific schedules, titles and ownership preserved. P versus NP OPEN.
+
+**NEW PROVED/EXACT RESTRICTED; independent mathematics peer review OPEN:** Independently reproduced the named TMR-3/054 draft PR #164 complete blank-start canonical source -> authenticated graph -> anchor provider -> Q=B ordered comb evaluator -> Boolean output chain and closed its *indexed-original-source to physically locally headed sequential-original-source conversion* for the specific deterministic query order j=1,...,B. Each requested j replays from anchor a=L floor((j-1)/L) and leaves the source head at j. Every block of d<=L queries therefore costs EXACTLY d^2 genuine source-head movements (rewind t-1 + replay t at t-th leaf). Complete input-head movements **N+B+sum_blocks d^2**, with gamma/B delimiter input length N=B+2 floor(log2 B)+2; exact symbol reads **N+sum_blocks d(d+1)/2**. Sequential checkpoint tape retrieval charged, R=ceil(B/L), w=ceil(log2 C)+ceil(log2(B+1)). The *same* standard sequential-input multitape machine obeys T=O((N+BL+BRw)polylog B), S=O(Rw+log B); L=ceil sqrt B gives T=O(B^(3/2)polylog B), S=O(sqrt B log B). Full symbolic proof in owned main5 and report. This does NOT extend to arbitrary adaptive j or arbitrary checkpoint work-cell writes/revisits, and a legal direct streaming algorithm computes the same result in O(B polylog B) time/O(log B) space.
+
+**INDEPENDENT ACTUAL NODE v22 COMPUTATIONAL:** published executable revision tmr5-seqsource051.v1, deterministic seed 20261115, all 256 two-state tables and all source words lengths 1..5 with each L, plus 12 seeded three-state tables and all sources lengths 1..7; **69,099 end-to-end executions, 312,936 exact graph queries, 2,359,567 assertions, 11 malformed encodings rejected, ZERO failures**. Exact source/anchor move counts checked with true sequential head positions. Git blob source d279ddfa30672e3c509154aa05a3cce62c55ef6f and raw 6b88ac6d9ea2dd0b357cf1bdc25e4f369de28442 independently match locally executed files' git hash-object. Not a native TM microtrace or Lean build. Original TMR-3/054 unmerged branch report/blob 1935ce6a, code/blob 3429f96b, raw/blob 1dc05109 read; TMR-1/054 report/code/raw and Anthropic pinned MainResults.lean / Solution.lean actual contents read. No repo checkout; preflight, Lean kernel and LaTeX compilation NOT run.
+
+**FOUR GATES:** DISJ PASS restricted, relativization NOT APPLICABLE to a separation, simultaneous DTISP PASS same standard source model restricted / unrestricted OPEN, configuration count PASS upper-bound guard only. /341 FAIL full UNSAT authority; /386 RESTRICTED. All authentic cheap paths and sharing preserved.
+
+**RANKED:** TMR-3 canonical ordered interface now PASS/RESTRICTED, generic work-tape provider/evaluator OPEN; TMR-1 density-four compiler PASS RESTRICTED, full E^NP source/kernel/hierarchy conditional, NP-level OPEN; TMR-2 DISJ multicut PASS restricted / physical invariant OPEN; TMR-4 observable-live falsifier PASS restricted / arbitrary circuit-to-adaptive BP transfer OPEN.
+
+**NEXT ONE LEMMA:** A canonical arbitrary-work-tape virtual checkpoint-bit provider with repeated work-head reads/writes and costed adaptive Q accesses, ordinary sequential input movement, and a genuinely improved evaluator on the SAME simulation.
+
+**PUBLISHED BRANCH PATHS (merge/readback to follow):**
+- main5_PNP_MACHINE_BOTTLENECK_REDTEAM.tex
+- research/agents/tmr-5/2026-11-15_1551_TMR5_ORDERED_SEQUENTIAL_SOURCE_BRIDGE051.md
+- experiments/tmr/tmr5_seq_source_bridge051.js
+- results/raw/tmr/2026-11-15_1551_TMR5_SEQHEAD051_NODE_RAW.json
+- research/agents/tmr-5/handoff.md (all earlier entries retained verbatim)
+
+END_OF_HANDOFF::TMR5::2026-11-15_1551_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-15 14:48 PST | ONE-SWITCH-NEIGHBORHOOD-CLOSURE050 /050
 
 **GOVERNING FIRST:** 2026-11-15 SAT compression and circuits directive SHA 7b8804dc7587abc5134055b5b0d16a143055ca5a. TMR-5 independent redteam A/B/C. All five existing identities, titles, enabled Pacific schedules and ownership UNCHANGED; P versus NP OPEN.
