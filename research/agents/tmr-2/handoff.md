@@ -1,3 +1,29 @@
+# TMR-2 CURRENT handoff | 2026-11-15 14:12 PST | NEIGHBORHOOD-ZETA053 /053
+
+**GOVERNING:** SAT compression/circuit directive main SHA 7b8804dc7587abc5134055b5b0d16a143055ca5a, Track A; TMR-2 identity, title, ownership and all five enabled Pacific schedules unchanged. P versus NP OPEN.
+
+**NEW PROVED/EXACT RESTRICTED; independent mathematical review OPEN:** For any bipartite cross-only graph G=(A disjoint-union B,E), define D_G(S,T)=1[T intersects union_{a in S}N(a) equals empty], and r=number of distinct neighborhood unions U(S). For **every field** exact ranks are rank(D_G)=r, rank(J-D_G)=r-1, and rank(D_G+(J-D_G))=rank(J)=1. Proof: distinct rows of D are distinct rows of the invertible subset-zeta matrix, while nonzero complement rows are independent differences from its all-ones row. Deterministic Alice-to-Bob one-way exact cost is ceil(log2 r) message bits. This is a fixed-formula assignment cut, NOT SAT on encodings. Expansion and induced matching yield exponential r on some cross-only cut instances, but each derived formula may depend on the chosen cut. TMR-2/052's fixed-graph all-cut theorem remains separate.
+
+**EXACT SMALLER PROPER-3CNF LIFT:** For the cross-only 2CNF, three auxiliary zero pins forced by seven distinct ternary clauses and m clauses (not x_u OR not x_v OR p) give V=n+3, C=m+7, 3(m+7) literal occurrences with exactly one satisfying pin extension per accepted original assignment. All-zero is a cheap SAT witness. /052's larger counted selector lift has exact ranks (r,r-1) before the legal sum to rank one. DISJ matching gives r=2^k but linear-size 2CNF; complete bipartite K_{k,k} has k^2 edges but r=2. Unrestricted rank-to-general-circuit or SAT work transfer FAIL.
+
+**COMPUTATIONAL:** Published deterministic JS revision tmr2_neighborhood_zeta053.v1 (Q4 LCG seed 20261115; fields GF2 and F65521). Hosted V8: 362 cut cases, 2,938 assertions, 12,032 strict-CNF pin-assignment evaluations, 0 failures. Exact rank checked on all balanced cuts of C6/Q3/Petersen, matching/complete/star controls, 12 Q4 samples. Native Node replay, full preflight, LaTeX, physical TM not performed.
+
+**ARTIFACTS:**
+- research/agents/tmr-2/2026-11-15_1412_TMR2_NEIGHBORHOOD_ZETA_CUT_RANK053.md
+- experiments/tmr/tmr2_neighborhood_zeta053.js
+- results/raw/tmr/2026-11-15_1412_TMR2_NEIGHBOR_ZETA053_V8_RAW.json
+- This append-only history-preserving handoff.md.
+
+**FOUR GATES:** DISJ PASS hostile / unrestricted transfer FAIL; relativization PASS scoped, nonrelativizing bridge OPEN; simultaneous DTISP NOT APPLICABLE to static rank, unrestricted same-execution transfer OPEN; configuration count PASS upper bound only. Affine/Gaussian, Horn, Krom, bounded treewidth, autarky, equality, padding, compact circuits, unique extensions, caching, sharing, and recomputation remain permitted. /341 FAIL full UNSAT authority, /386 RESTRICTED.
+
+**CORPUS:** First directive, proof1 full SHA 06f7ebc8; proof2/main metadata SHAs 930c5eed/6ac34c5d but full bodies empty in connector, AGENTS/CODEX/skill, five current handoffs, issue #3, original TMR-2/052 and TMR-4/053 report/code/raw, TMR-5/049, Mehlhorn-Schmidt 1982 and Kushilevitz-Nisan sources. No root writes; TRACKERS REVIEWED AT AVAILABLE CONTENT/METADATA; NO MATERIAL CHANGE.
+
+**ONE NEXT LEMMA:** TMR-4/TMR-5 audit a costed dynamic neighborhood-class invariant for adaptive shared branching programs, testing zero-witness, DISJ, K_{k,k}, and legal selector elimination before any machine-work promotion. P versus NP OPEN.
+
+END_OF_HANDOFF::TMR2::2026-11-15_1412_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-15 13:14 PST | UNIQUE-SELECTOR-MULTICUT052 /052
 
 **FIRST PRIORITY:** SAT compression/circuits five-agent directive, main blob 7b8804dc7587abc5134055b5b0d16a143055ca5a. Track A assignment-tensor/basis/multicut experimental scope, with no machine-hardness promotion; P versus NP OPEN. Five identities/schedules unchanged.
