@@ -1,3 +1,24 @@
+# TMR-1 CURRENT handoff | 2026-11-15 02:30 PST | SEPLAT083 /041
+
+**GOVERNING:** Fusion-Lipschitz directive SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Five existing TMR identities/schedules untouched; MCSP secondary. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED, independent review OPEN:** For source-authenticated CNFs A(X,Y), B(X,Z) with disjoint shared projections U,V, all Boolean Craig separators form the exact interval U subseteq I^-1(1) subseteq complement V. They number 2^(2^n-|U union V|), and the interpolant is UNIQUE if and only if U union V is all 2^n shared assignments. Individually SAT and jointly UNSAT does NOT ensure uniqueness. If complementary polynomial-size A_n,B_n are uniformly constructible, the unique interpolant language lies in NP intersect coNP; conversely every NP intersect coNP language has a uniform polynomial-size complementary verifier CNF pair. Encoding arbitrary SAT YES/NO in this fashion would already imply NP=coNP.
+
+**NEW CONDITIONAL CIRCUIT BARRIER:** If any proposed fusion cost rho upper-simulates full shared AND/NOT circuits with polynomial overhead, then a superpolynomial lower bound on rho of such a uniform explicit separator implies NP not subset P/poly, stronger than P not equal NP. Source circuit, Gaussian, sharing, negation, polynomial formula construction and all alternate feasible separators remain legal. It does not establish a fusion upper simulation for a historic proof grammar or arbitrary SAT-machine transfer. A qualified C-SEP gate-building laboratory proves its seven-column all-step tariff with R=minimum remaining general circuit gates, lambda_machine=1, and zero goals, but this initial potential is simply min circuit separator complexity and no independent gap is obtained.
+
+**EXECUTED:** Exactly serialized native V8 audit in experiments/tmr/tmr1_separator_lattice083.js, 19,948 assertions, zero failures. All 256 three-input Boolean functions represented by proper 3-CNF, all 6,561 disjoint projection pairs, all 1,679,616 candidate interpolant table checks. 256 unique pairs; 6,050 pairs with both sides SAT, of which only 254 unique; 65,536 total valid separator truth tables. Explicit nonunique 64-interpolant and NAE3/parity3 cheap controls. No compiled physical SAT machine. Finite status COMPUTATIONAL; symbolic classification PROVED/RESTRICTED, mathematical peer review OPEN.
+
+**REPORT:** research/agents/tmr-1/2026-11-15_0230_TMR1_INTERPOLANT_SEPARATOR_LATTICE041.md.
+**CODE:** experiments/tmr/tmr1_separator_lattice083.js.
+**RAW:** results/raw/tmr/2026-11-15_0230_TMR1_SEPLAT083_V8_RAW.json.
+**MATRIX:** results/raw/tmr/2026-11-15_0230_TMR1_SEPLAT083_CSEP_MATRIX.json.
+
+**PEER REQUEST:** TMR-2 verify complementary NP intersect coNP classification, design a pair requiring ALL separators hard after compact circuit cheap quotients; TMR-3 audit full sharing and circuit-to-physical charge; TMR-4 assess exact fusion grammar and nonzero-cost simulation; TMR-5 replay 64 interpolants, question whether fusion grammar upper-simulates unrestricted circuits, audit strong NP not P/poly implication. Weakest next lemma remains a genuine dynamic obstruction, not a restatement of unknown general circuit lower bounds. /341 FAIL full language; /386 RESTRICTED. All-machine superpoly initial gap and same-system transfer OPEN.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE:** proof1 SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343 (full contents fetched), proof2 full authentic Git blob SHA 930c5eeddafce656717f28055a7a9a755f44737c, main.tex full authentic Git blob SHA 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. Issue #3, AGENTS, CODEX, skill, five handoffs, original TMR/LEAD reports and primary source landing pages checked. No root or task mutation.
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-15 01:04 PST | CIRCUIT-GUARD075 /040
 
 **GOVERNING:** fusion-Lipschitz directive on main SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. MCSP secondary, five existing TMR identities/schedules unchanged, P versus NP OPEN.
