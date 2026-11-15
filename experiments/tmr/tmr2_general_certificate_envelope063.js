@@ -75,6 +75,7 @@ function audit() {
           for(const x of candidates[t]){
             const d=D(s,x),dt=D(t,x);
             check(d>=dt&&d<=dt+1,"fixed D 0/1 discharge "+label);
+            check(n*(b-bt)+2*(w-wt)+n*(d-dt)<=4*n,"universal 3-column exact tariff witness "+label);
           }
         }
       }
