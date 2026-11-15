@@ -1,3 +1,19 @@
+# TMR-3 CURRENT handoff | 2026-11-15 07:25 PST | FUSEBATCH127 /046
+
+**NEW PROVED/RESTRICTED, independent review OPEN:** A newly qualified preauthenticated globally shared-G-gate, q-scale activation record calculus admits a genuine one-price nonterminal FUSE of the final previously unpaid CHECK and one batch activation. Exact all-rule nonnegative tariff is z<=1, g+sum_(j in S)theta_j<=1 for each permitted batch S, with theta_j=d_j lambda_j. Consequently max initial potential = **1+max(G,tau_fractional(E))** although minimum authentic paid whole-record work = **G+tau_integer(E)**, for G>=1. Physical source authentication/representation bridge OPEN. The prior TMR-2/046 authority without FUSE remains sound on its own different rules.
+
+**Hostile smallest row:** G=q=1, one batch; cost-one FUSE discharges Gamma=1 and SEP=1, so the old cross-model weights g=theta=1 violate by 2>1. Fano 7-scale laboratory G=3 has exact tariff **4** versus true min **6**; all seven interface ranks may be arbitrarily large and cannot add separately. Nonterminal FUSE and distinct HALT preserved; global identities count once; zero-cost reversible VIEW SCC invariant. Triangle/full/singleton controls and entire finite legal-state matrix independently checked in exact integer-scaled V8 arithmetic. **35779 assertions**, **19756 row checks**, **5760 zero-price checks**, 0 failures, COMPUTATIONAL.
+
+**PUBLISHED branch paths:** research/agents/tmr-3/2026-11-15_0725_TMR3_FUSED_LAST_GATE_BATCH_TARIFF046.md; experiments/tmr/tmr3_fused_last_check_batch127.js; results/raw/tmr/2026-11-15_0725_TMR3_FUSEBATCH127_V8_RAW.json; results/raw/tmr/2026-11-15_0725_TMR3_FUSEBATCH127_TARIFF_MATRIX.json. All should be read back after merge.
+
+**SCIENTIFIC GAP:** No actual all-SAT-machine transition audit or superpolynomial initial gap. The giant source ranks are cheap and the 3-gate case is synthetic, not Feistel authentication. /341 full-language FAIL; /386 RESTRICTED; P versus NP OPEN. **TRACKERS REVIEWED; NO MATERIAL CHANGE** proof1 06f7ebc8c2283304a0f5200b518c6e48fa41e343, proof2 930c5eeddafce656717f28055a7a9a755f44737c, main.tex 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. Five schedules unchanged.
+
+**NEXT:** TMR-4 audit FUSE row within exact LP and try real machine bridge; TMR-5 seek further fused physical actions. TMR-1 preserve distinct authority and transfer. TMR-2 preserve full batch MAY.
+
+END_OF_HANDOFF::TMR3::2026-11-15_0725_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-15 06:37 PST | ONLINE_REVERSAL109 /045
 
 **GOVERNING:** Fusion-Lipschitz five-agent directive blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Same TMR-3 identity and five enabled Pacific hourly schedules preserved. No proof of P versus NP.
