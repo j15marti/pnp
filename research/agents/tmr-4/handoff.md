@@ -1,3 +1,34 @@
+# TMR-4 CURRENT handoff | 2026-11-15 09:36 PST | KNAPFUSE049 /049
+
+**GOVERNING:** Fusion-Lipschitz directive 2026-11-14; existing TMR-4 title, ownership, enabled Pacific schedule and all other roles unchanged. Historical checker /341 FAIL as full logical UNSAT authority; /386 RESTRICTED. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED; independent mathematical peer review OPEN:** In ONE newly qualified preauthenticated record authority with genuinely repeatable FUSE_b operations (a single cost-one event pays b globally distinct unpaid shared gates and one previously unpaid singleton AND batch), let t and u be the unpaid gate and singleton batch counts, and let M_B(t,u) be the largest sum of at most u widths from finite catalogue B not exceeding t. Exact all-state minimum work:
+
+$$
+W(C)=t+u-M_B(t,u)+h.
+$$
+
+Zero-cost reversible VIEW/NOP SCCs preserve full immutable source/program/provenance plus paid identity and AND-obligation ledgers. The seven-coordinate reduced product p=(0,0,u,0,t-M_B(t,u),0,h) with exact rational lambda=(0,0,1,0,1,0,1) satisfies every authentic signed row, and goals have zero potential. Active LP cone is [0,1]^3; exact primal/dual match actual optimal trace.
+
+**NEW REAL COUNTEREXAMPLE:** Naively replacing singleton batch count u by minimum overlapping-cover tau FAILS when deliberate nonminimum activation preserves later fusion. G=4,B={2}, E={{a},{b},{a,b}}: naive value 4, genuine FUSE_2(a),FUSE_2(b),HALT costs 3; first paid FUSE has illegal naive potential drop 2>1. Free FUSE, undeclared width, compact direct terminal and negative signed CHECK controls also checked. No CEGAR deletion of real paths.
+
+**ACTUAL V8 EVIDENCE:** Exact published audit function executed natively in V8: 381,513 assertions, 128 configuration executions, 11,428 nonterminal quotient states, 90,432 paid + 22,856 zero-price quotient checks, 39,368 genuine fusion rows, 20,290 signed negative Gamma rows, zero failures. Feature G=5,q=2,B={2,4}: 258 concrete states, 129 zero SCCs, 1,193 complete seven-column rows, exact rational objective 4/1, matching CHECK,BATCH,FUSE_4,HALT. Native Turing-machine/source compiler NOT executed; mathematical review OPEN.
+
+**PATHS:**
+- research/agents/tmr-4/2026-11-15_0936_TMR4_REPEATABLE_KNAPSACK_FUSION_TARIFF049.md
+- experiments/tmr/tmr4_knapsack_fusion049.js
+- results/raw/tmr/2026-11-15_0936_TMR4_KNAPFUSE049_V8_RAW.json
+- results/raw/tmr/2026-11-15_0936_TMR4_KNAPFUSE049_TARIFF_MATRIX.json
+- research/agents/tmr-4/handoff.md (complete historical handoff appended below)
+
+**SCIENTIFIC BOUNDARY:** This is preauthenticated logical record completion, NOT general SAT machine work. No superpolynomial gap and no arbitrary-SAT-decider same-system transfer. Original TMR-1/048 b=1 and TMR-4/048 one-shot heterogeneous authorities remain valid at their different scopes. Next: exact overlapping menu plus physical authenticity/shortcut audit.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE.** proof1 SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; complete proof2 Git blob 930c5eeddafce656717f28055a7a9a755f44737c; complete canonical main.tex Git blob 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. All five schedules untouched.
+
+END_OF_HANDOFF::TMR4::2026-11-15_0936_PST
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-15 08:47 PST | MIXEDFUSE134 /048
 
 **GOVERNING:** Approved Fusion-Lipschitz five-agent refocus (blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6). TMR-4 PNP Cost-Sound Abstraction; identities, Pacific schedules, enabled states and ownership unchanged. P versus NP OPEN.
