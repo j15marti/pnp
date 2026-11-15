@@ -1,3 +1,21 @@
+# TMR-3 CURRENT handoff | 2026-11-14 23:27 PST | MACROINGRESS067 /038
+
+**CURRENT GOVERNING DIRECTIVE:** fusion-Lipschitz refocus SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; all five TMR identities, schedules and ownership preserved; MCSP secondary.
+
+**NEW PROVED/RESTRICTED (peer mathematical/physical model review OPEN):** Raw proper 3-CNF consecutive 4-clause full 3-XOR groups admit an all-input sound **one-byte macro proof token** if every variable participates in an even number of groups and block-charge XOR is one. Polynomial finite-alphabet parsing can verify this using O((L+1)^6) transitions and O((L+1)^2) writable cells, with all byte reads, matching IDs and work charged. On odd-charge cubic prism sources H=2m, source length L=Theta(HlogH), macro token 8 bits vs mandatory Q-XOR3 named record B_H=Theta(HlogH) bits. This is a **different grammar**; TMR-3/037 named record theorem remains valid as stated.
+
+**NEW authentic ingress:** Changing only the final polarity byte makes a proper-3CNF source *fail macro authentication*, retaining the identical preceding prefix. Every correct deterministic locally moving macro-language recognizer must read that final byte on the original. The exact dynamic potential p_ing=max(0,B-1-r), r=max actually read byte index, starts B=Theta(L) and decreases by <=1 per paid step. Seven-vector lambda=(0,0,0,0,0,1,0) gives W>=B on that language. This is a restricted macro grammar **language bound**, not SAT decision hardness: altered source need not be satisfiable.
+
+**EXECUTION:** Self-contained V8 function source exactly serialized to experiments/tmr/tmr3_macro_ingress067.js; 348 checks, no failures; 33 exact last-symbol pairs, 4 exhaustive small SAT tests, large symbolic ID and disconnected controls. Raw: results/raw/tmr/2026-11-14_2327_TMR3_MACROINGRESS067_V8_RAW.json. Matrix: results/raw/tmr/2026-11-14_2327_TMR3_MACROINGRESS067_MATRIX.json. Report: research/agents/tmr-3/2026-11-14_2327_TMR3_PARITY_MACRO_INPUT_TARIFF038.md. V8 is semantic proxy, NOT compiled physical TM. Mathematical symbolic proof given separately. Additional all-CNF proof-system completeness and SAT-machine transfer remain OPEN. /341 FAIL; /386 RESTRICTED.
+
+**PRE-FLIGHT:** latest fusion directive FIRST, Nov13 replacement, full proof1, authentic Git blobs for entire proof2 and main.tex, issue #3 through TMR-2/038, AGENTS/CODEX/skill, five role handoffs, original TMR-1/037, TMR-2/038, TMR-3/037, TMR-4/038 and LEAD-0029 inspected. TRACKERS REVIEWED; NO MATERIAL CHANGE. P versus NP OPEN. No schedules changed.
+
+**NEXT/PEERS:** TMR-1 verify macro source qualification and incomplete all-CNF status; TMR-2 and TMR-5 falsify last-byte and parser soundness; TMR-4 import native input-ingress tariff and avoid grammar changes. Next TMR-3: actual head-positioned TM implementation with physical source authentication and non-affine component under all cheap sharing controls.
+
+**PREVIOUS COMPLETE HANDOFF HISTORY PRESERVED BELOW.**
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-14 22:30 PST | XORSER064 /037
 
 **GOVERNING PRIORITY:** fusion-Lipschitz five-agent refocus SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6, MCSP and FLMV secondary; no schedules modified.
