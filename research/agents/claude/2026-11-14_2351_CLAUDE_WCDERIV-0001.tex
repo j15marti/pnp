@@ -1,0 +1,325 @@
+% CLAUDE REPORT::WCDERIV-0001::2026-11-14T23:51:00-08:00
+% Worst-case minimum-derivation-cost objective: exact classification of the
+% conditional bridge  SAT in P  ==>  \overline W_R(N) <= poly(N).
+\documentclass[11pt]{article}
+\usepackage{fontspec}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{xurl}
+\usepackage[hidelinks]{hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newcommand{\Pclass}{\mathsf P}
+\newcommand{\NP}{\mathsf{NP}}
+\newcommand{\coNP}{\mathsf{coNP}}
+\newcommand{\SAT}{\mathrm{SAT}}
+\newcommand{\UNSAT}{\mathrm{UNSAT}}
+\newcommand{\poly}{\operatorname{poly}}
+\newcommand{\cost}{\operatorname{cost}}
+\newcommand{\Wbar}{\overline W}
+\newcommand{\Snd}{\mathrm{Snd}}
+\title{Worst-Case Minimum Derivation Cost:\\
+Where the Conditional Bridge Holds, and What It Costs}
+\author{P vs NP Research Project --- Claude scheduled run WCDERIV-0001}
+\date{14 November 2026, 23:51 PST}
+\begin{document}
+\maketitle
+
+\section*{Status}
+\textbf{P versus NP remains OPEN.} Nothing below proves a superpolynomial
+lower bound for any machine model. Theorems~\ref{thm:fixedR}--\ref{thm:collapse}
+are \textbf{PROVED/EXACT} as stated (short proofs included); results quoted from
+the literature are \textbf{KNOWN THEOREM}; the unconditional bridge for all
+polynomial-time SAT algorithms and every lower bound on the strong system
+$R_T$ are \textbf{OPEN}. No computation was run this cycle, so nothing here is
+\textbf{COMPUTATIONAL}.
+
+\section*{Shared objective}
+For a fixed sound and complete refutation system $R$ with cost measure $\cost_R$,
+\[
+\Wbar_R(N)=\max_{\substack{F\in\UNSAT\\ |\langle F\rangle|\le N}}
+\ \min_{\pi:\,F\vdash_R\bot}\cost_R(\pi),
+\qquad
+\textsc{Bridge}(R):\quad \SAT\in\Pclass\ \Longrightarrow\ \Wbar_R(N)\le\poly(N).
+\]
+$\textsc{Bridge}(R)$ together with a superpolynomial lower bound on $\Wbar_R$
+gives $\Pclass\ne\NP$. Throughout, $\cost_R(\pi)=|\langle\pi\rangle|$ is
+\emph{encoded proof length}, with shared DAG nodes counted once. If a node-count
+or ``reduction step'' cost is used instead, it must be shown to be polynomially
+related to encoded length on the system in question. That comparison is
+\emph{not} assumed here.
+
+\paragraph{Free choice of the best sequence.}
+The directive is right that taking the minimum over all derivations is a valid
+lower-bound strategy. Its consequence should be stated explicitly: the minimum
+makes $\Wbar_R$ a \emph{nondeterministic} measure. For every Cook--Reckhow
+system, $\Wbar_R(N)\le\poly(N)$ implies $\NP=\coNP$
+(Cook--Reckhow 1979, KNOWN THEOREM). A lower bound on $\Wbar_R$ for one fixed $R$
+therefore says nothing about SAT algorithms until a bridge is supplied. The
+bridge is where the deterministic algorithm comes in, so all the difficulty
+moves there.
+
+\section{Main results of this run}
+
+\begin{definition}[Theory-certified refutation system $R_T$]
+Fix a consistent recursively axiomatized theory $T\supseteq\mathrm{I}\Sigma_1$
+whose proofs can be checked in polynomial time (for example $T=\mathrm{PA}$).
+For a polynomial-time verifier $V$ (given as a clocked machine code) and an
+exponent $c$, let $\Snd(V,c)$ be the $\Pi_1$ sentence
+\[
+\forall G\,\forall w\,\forall x:\
+\bigl[V(G,w)\text{ accepts within }(|G|+|w|+2)^c\text{ steps}\bigr]
+\rightarrow \neg\,G(x).
+\]
+An $R_T$-refutation of a CNF $F$ is either
+(i) a Resolution refutation of $F$, or
+(ii) a tuple $\langle V,c,\sigma,w\rangle$ where $\sigma$ is a $T$-proof of
+$\Snd(V,c)$ and $V(F,w)$ accepts within $(|F|+|w|+2)^c$ steps.
+The verifier checks $\sigma$, then runs $V$ under its clock. Its running time
+is polynomial in the length of the proof string as long as $w$ has length at
+least $(|F|+2)^c$, which can be arranged by padding.
+\end{definition}
+
+\begin{lemma}[$R_T$ is a Cook--Reckhow system]\label{lem:CR}
+$R_T$ is complete, polynomial-time verifiable and sound. For soundness,
+$T$ only needs to be consistent; no stronger soundness assumption is used.
+\end{lemma}
+\begin{proof}
+Completeness follows from mode (i). Verification takes polynomial time by the
+padding convention. For soundness, suppose mode (ii) accepts $F$ but $F(x)=1$
+for some $x$. Then $\Snd(V,c)$ is false. A false $\Pi_1$ sentence has a true
+$\Sigma_1$ negation, here witnessed by the concrete triple $(F,w,x)$ and a
+finite accepting run. Since $T\supseteq\mathrm{I}\Sigma_1$ is $\Sigma_1$-complete,
+$T$ proves that negation. $T$ also proves $\Snd(V,c)$, so $T$ is inconsistent,
+which contradicts the hypothesis.
+\end{proof}
+
+\begin{theorem}[Fixed-system bridge for provably sound algorithms]\label{thm:fixedR}
+Suppose some deterministic machine $A$ and exponent $c$ decide $\SAT$ within
+$(|F|+2)^c$ steps on every input, and $T$ proves the soundness of $A$'s
+``UNSAT'' answers. Formally, $T\vdash\Snd(V_A,c)$, where $V_A(G,w)$ ignores $w$
+and accepts iff $A(G)$ outputs UNSAT. Then
+\[
+\Wbar_{R_T}(N)\ \le\ (N+2)^c+O(1)
+\]
+with the $O(1)$ depending on $|A|$ and $|\sigma|$ only. In particular
+$\textsc{Bridge}(R_T)$ holds for every polynomial-time SAT algorithm whose
+soundness is $T$-provable. Correctness on satisfiable inputs and the time bound
+need \emph{not} be provable in $T$: the clock enforces the time bound, and
+completeness on unsatisfiable $F$ only uses the true fact that $A$ outputs
+UNSAT within the clock.
+\end{theorem}
+\begin{proof}
+For unsatisfiable $F$ with $|F|\le N$, the tuple
+$\langle V_A,c,\sigma,1^{(|F|+2)^c}\rangle$ is a valid mode-(ii) refutation.
+\end{proof}
+
+\begin{corollary}[Contrapositive: status CONDITIONAL]
+If $\Wbar_{R_T}(N)$ is superpolynomial, then no polynomial-time SAT algorithm
+has $T$-provable soundness. This is strictly weaker than $\Pclass\neq\NP$:
+it does not exclude a correct polynomial-time algorithm whose soundness $T$
+cannot prove. Closing that gap is exactly the remaining OPEN part of the bridge.
+\end{corollary}
+
+\begin{theorem}[Price of the bridge: $R_T$ simulates every $T$-verified system]\label{thm:sim}
+Let $Q$ be any Cook--Reckhow system with verifier $V_Q$ and clock exponent $c_Q$
+such that $T\vdash\Snd(V_Q,c_Q)$. Then $R_T$ p-simulates $Q$:
+$\Wbar_{R_T}(N)\le\Wbar_Q(N)^{O(1)}+O_Q(1)$.
+This applies with $T=\mathrm{PA}$ to Resolution, Cutting Planes, Polynomial
+Calculus, bounded-depth Frege, Frege and Extended Frege, since PA, and already
+$S^1_2$/PV, proves the soundness of each.
+\end{theorem}
+\begin{proof}
+Map a $Q$-refutation $\pi$ to $\langle V_Q,c_Q,\sigma_Q,\pi\rangle$, padded
+polynomially. The parameter $\sigma_Q$ has constant length for fixed $Q$.
+\end{proof}
+
+\begin{corollary}[Calibration: OPEN, beyond current techniques]
+An unconditional superpolynomial lower bound on $\Wbar_{R_{\mathrm{PA}}}$
+implies superpolynomial lower bounds for Frege and for Extended Frege. No
+superpolynomial Frege lower bound is known; see the literature check below.
+The fixed system on which the bridge is provable for a natural class of
+algorithms is therefore at least as hard to lower-bound as Extended Frege.
+\end{corollary}
+
+\begin{theorem}[Bridge collapse for weak systems]\label{thm:collapse}
+Suppose $\Wbar_R(N)\ge N^{\omega(1)}$ is already an unconditional theorem.
+Then $\textsc{Bridge}(R)\Longleftrightarrow\Pclass\neq\NP$.
+\end{theorem}
+\begin{proof}
+($\Rightarrow$) The known lower bound together with the bridge gives
+$\SAT\notin\Pclass$, by modus tollens.
+($\Leftarrow$) If $\SAT\notin\Pclass$, the implication is vacuously true.
+\end{proof}
+Resolution satisfies the hypothesis on 3-CNF families: Tseitin formulas on
+bounded-degree expanders (Urquhart 1987), random 3-CNF (Chv\'atal--Szemer\'edi
+1988), and the pigeonhole principle (Haken 1985; not 3-CNF without extension
+variables). For Resolution and for every other system with known exponential
+lower bounds, the bridge is exactly as hard as the whole problem. A weak
+system with known lower bounds therefore gives no reduction in difficulty.
+
+\paragraph{Resulting dichotomy (PROVED/EXACT, as an organizing statement).}
+Every candidate $R$ falls into one of these regimes:
+\begin{enumerate}
+\item $\Wbar_R$ already has a known superpolynomial lower bound. Then the
+  bridge is equivalent to $\Pclass\ne\NP$ (Theorem~\ref{thm:collapse}).
+\item $R$ p-simulates $R_T$ for some $T\supseteq\mathrm{I}\Sigma_1$. Then the
+  bridge is free for $T$-provably sound algorithms (Theorem~\ref{thm:fixedR}),
+  but a lower bound would also give an Extended Frege lower bound
+  (Theorem~\ref{thm:sim}).
+\item $R$ lies strictly between these regimes, for example Frege or
+  $\mathrm{AC}^0[p]$-Frege. Lower bounds are open, and no bridge mechanism is
+  known. A bridge here would have to turn an arbitrary polynomial-time
+  algorithm into short $R$-proofs, which requires $R$ to reason about
+  polynomial-time computation. That is the defining strength of EF/PV
+  (Cook 1975).
+\end{enumerate}
+\textbf{Best remaining target for the bridge (OPEN):} the provability gap
+\[
+\SAT\in\Pclass\ \overset{?}{\Longrightarrow}\ \exists A,c:\ A\text{ decides SAT in time }n^c
+\ \wedge\ T\vdash\Snd(V_A,c)
+\]
+for one fixed theory $T$. This statement concerns provability, not
+combinatorics. A positive answer together with Theorem~\ref{thm:fixedR} proves
+the boxed bridge for $R_T$. The known analogue is Krajíček--Pudlák (1989): a
+p-optimal proof system exists if $\mathrm{E}=\mathrm{NE}$, and $\Pclass=\NP$
+implies $\mathrm{E}=\mathrm{NE}$ by padding. So under $\SAT\in\Pclass$ some
+p-optimal and hence p-bounded system exists. The construction does not, however,
+produce a \emph{fixed explicit} $R$ chosen in advance. Whether one fixed
+explicit $R$ satisfies the full bridge is \textbf{OPEN}.
+
+\section{Role-by-role findings}
+\begin{description}
+\item[General SAT Lower-Bound Lead.] The weakest sufficient transfer that is
+  currently provable is Theorem~\ref{thm:fixedR}, which is restricted to
+  $T$-provably sound algorithms. The unrestricted bridge reduces to the
+  provability gap above. It does not reduce to any combinatorial statement
+  about derivation DAGs.
+\item[SAT-Circuit Reduction Builder.] $R_T$ is an explicit fixed combined
+  inference system: Resolution plus certified-verifier steps. Its shortest
+  derivations are at most polynomially longer than those of any $T$-verified
+  system (Theorem~\ref{thm:sim}). If shortest derivation DAGs are certified for
+  a weaker combined calculus, that calculus falls under
+  Theorem~\ref{thm:collapse} as soon as its lower bounds are known.
+\item[Hypergraph \& Proof Certificates.] Signed parity hypergraphs, that is
+  Tseitin and XOR-SAT families on expanders, are the canonical
+  ``multisign DAG hypergraph'' hard instances. \emph{Hostile control:} they are
+  exponentially hard for Resolution but polynomial for Polynomial Calculus over
+  $\mathbb F_2$ (Gaussian elimination), polynomial for Frege and EF, and
+  quasipolynomial for Cutting Planes (Dadush--Tiwari 2020). They do
+  \textbf{not} survive algebraic reasoning or circuit compression. This is
+  consistent with the project's XOR-ancestry and affine-collapse tariff results
+  (TMR-4/038, TMR-5/034). Random 3-CNF and the pigeonhole principle are the
+  next controls. The pigeonhole principle is easy for Cutting Planes and Frege
+  (Buss 1987). Random 3-CNF is hard for Resolution and Polynomial Calculus, and
+  for Cutting Planes on logarithmic-width random CNF (Fleming et al.\ 2017;
+  Hrubeš--Pudlák 2017). It is open for Frege.
+\item[Time--Space Resource Auditor.] In Theorem~\ref{thm:fixedR} the proof
+  length is $(N+2)^c$ only because of the clock padding. Verifier time is
+  polynomial in proof length, and verifier space is the space of $A$ plus
+  $O(|\sigma|)$. No space bound transfers from $A$ to node-count cost unless
+  that cost is shown to be polynomially related to encoded length. Each mode
+  has its own resource model; the two models are not mixed.
+\item[Independent Proof Red Team.] (a) Theorem~\ref{thm:collapse} shows that
+  any claimed bridge for a weak system, if valid, would already prove
+  $\Pclass\ne\NP$ on its own. Such a claim should be checked for a hidden
+  non-uniform or circular step. (b) Any ``minimal reduced logical state''
+  measure that is invariant under the zero-cost closure of a system able to
+  run Gaussian elimination is at most polynomial on signed-parity families,
+  so those families cannot carry the lower bound. (c) The directive's
+  ``strategy is free'' clause is sound for lower bounds. It is \emph{not}
+  sound for a bridge: in the bridge, the algorithm's deterministic search is
+  the very object that has to be converted into a short proof.
+\end{description}
+
+\section*{CORPUS REVIEWED}
+\texttt{AGENTS.md} (including the 2026-11-09 knot/link handoff and the world-ledger
+note); \texttt{research/coordination/2026-11-14\_FUSION\_LIPSCHITZ\_TARIFF\_FIVE\_AGENT\_REFOCUS.md};
+\texttt{research/agents/codex/2026-11-11\_1203\_SAT\_POLYNOMIAL\_ASSUMPTION\_AUDIT.tex},
+which defines $w_R$, $W_R$ and REFEREE295's pointwise/global bridge distinction;
+the TMR-1..5 commit stream through TMR-4/039; and
+\texttt{research/agents/claude/} (world ledger, T-PORT, one-tape).
+Repository search for $W_R$ and the bridge also turned up LSPV-1 (348, 376,
+391, 430) and LSPV-5 (454, 457--459). Their titles and the search hits were
+surveyed, but those reports were not reread in full this run.
+
+\section*{DUPLICATION / CONTRADICTION AUDIT}
+The Codex audit of 2026-11-11 already defines $W_R$. It notes that the
+Cook--Reckhow equivalence is existential over systems and does not certify a
+chosen $R$. That point is \emph{adopted}. New relative to the corpus: the explicit
+system $R_T$ with consistency-only soundness (Lemma~\ref{lem:CR}),
+Theorem~\ref{thm:fixedR}, the bridge-collapse equivalence
+(Theorem~\ref{thm:collapse}) and the three-regime dichotomy. Theorem~\ref{thm:sim}
+is the standard ``EF plus reflection'' simulation (Krajíček--Pudlák) in
+packaged form, and no originality is claimed for it. No contradiction with root
+\texttt{main.tex} or the trackers was found. Their load-bearing arrows remain
+OPEN.
+
+\section*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Nothing in root \texttt{main.tex} was edited. This Claude lane has no
+ownership region there, and LSPV-5/TMR synthesis remains the arbiter. The
+proposed synthesis input is to record $\textsc{Bridge}(R)$ for weak $R$ as
+equivalent to $\Pclass\ne\NP$, and therefore as no reduction in difficulty.
+
+\section*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+Adopted: Codex 11-11 definitions and model discipline; the fusion-refocus
+guards (raw mass, entropy, and prescribed-DAG arguments stay retired).
+Rejected as a \emph{sole} hardness carrier: signed-parity/Tseitin families,
+because of the algebraic hostile control above.
+Retired by this run: none.
+
+\section*{STALE OR OVERSTATED CLAIMS FOUND}
+None in the inspected material. A caution for future runs: a superpolynomial
+$\Wbar_R$ for a single $R$ must not be reported as progress on $\Pclass$ versus
+$\NP$ unless a bridge for that same $R$ is cited.
+
+\section*{Barrier transfer and post-quantum ledger}
+\emph{Directly transferable theorems:} Cook--Reckhow; Cook 1975
+(PV $\leftrightarrow$ EF); Krajíček--Pudlák 1989 (optimal and p-optimal proof
+systems and their links to NE=coNE and E=NE).
+\emph{Analogy requiring a new theorem:} PQ item 6, the special-soundness
+lesson. A construction-specific extraction (``a short $R$-proof can be
+extracted from any run of $A$'') is exactly what the bridge needs. Without
+$T$-provability of soundness, no extraction theorem is known.
+\emph{Failed transfer:} PQ items 1--3 (Schur square, quadratic relations,
+syzygies) applied to signed-parity instances. That algebraic structure is
+exactly what an $\mathbb F_2$-linear algorithm exploits, so it is a weakness
+rather than a source of hardness.
+Relativization: Theorems~\ref{thm:fixedR}--\ref{thm:collapse} relativize, so
+they cannot by themselves separate classes. They only locate the obstruction.
+
+\section*{Literature check (this run)}
+Searched 2025--2026 primary sources. No unconditional superpolynomial Frege or
+EF lower bound has appeared. Relevant items: Lu--Santhanam--Tzameret,
+$\mathrm{AC}^0[p]$-Frege diagonalization lower bounds (arXiv 2509.16824,
+ITCS 2026); the proof-analysis problem for EF is NP-complete
+(arXiv 2506.16956); Fleming--Grosser--Pitassi--Robere, systems
+$\langle\mathrm{EF},R\rangle$ from EF-provable TFNP reductions (ECCC 2026/109),
+a natural formal home for the $R_T$ construction; Alekseev, Polynomial Calculus
+with extension (ToC 22, 2026); and a CCC 2026 paper on barriers for
+constructive EF lower bounds. All are \textbf{KNOWN THEOREM} on their own
+stated scope and were checked at the abstract and statement level only.
+
+\section*{Next targets}
+\begin{enumerate}
+\item (Lead) Is the provability gap equivalent to a known open statement, for
+  example ``$\Pclass=\NP$ implies PV proves $\Pclass=\NP$ for some
+  algorithm''? Survey Krajíček's \emph{Proof Complexity} (2019), chapters on
+  optimality and reflection.
+\item (Red team) Look for an oracle in which $\Pclass=\NP$ holds but every
+  fixed relativized $R_T$ has superpolynomial $\Wbar$. Such an oracle would show
+  that the bridge cannot be proved by relativizing arguments.
+\item (Hypergraph) Hard 3-CNF candidates must be tested against the
+  $\mathbb F_2$/Gaussian, Cutting Planes and Frege controls before any cost
+  claim is made.
+\end{enumerate}
+
+\textbf{P versus NP remains OPEN.} At least one load-bearing arrow is open:
+either the unrestricted bridge for $R_T$, or a lower bound on $\Wbar_{R_T}$.
+
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::WCDERIV-0001
