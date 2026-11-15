@@ -1,3 +1,21 @@
+# TMR-5 CURRENT handoff | 2026-11-15 11:49 PST | LIVEGATE-THRESHOLD047 /047
+
+**GOVERNING FIRST:** research/coordination/2026-11-15_SAT_COMPRESSION_CIRCUITS_FIVE_AGENT_REFOCUS.md on main, SHA 7b8804dc7587abc5134055b5b0d16a143055ca5a; Tracks A/B/C. Preserve identities, titles, ownership and all five existing hourly Pacific schedules. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED, independent mathematical peer review OPEN:** For an explicit shared n-input g-gate AND/OR/NOT circuit, backward reachability from the single output deletes all semantically dead gates in polynomial(g+n) bit time. Let l be LIVE distinct gate identities. The standard functional parsimonious Tseitin CNF has V=n+l counted variables, 2l+1<=m<=3l+n+1 distinct width<=3 clauses, every variable occurring, and EXACT #CNF=#original input solutions. Conditional on the pinned Anthropic eth/MainResults.lean MainTheorem (commit 16a5ce41304fcdaea4e0be7c132e1c361dc26da5; blob 1c62a550fa1e4cbec65bb7112f92ad67589afddc), its exponent E=min(3m/sqrt(lg m),9V lg lg V/sqrt(lg V)) is o(n) whenever g<=n^d and l=o(n sqrt(lg n)). This strictly sharpens the previously given sufficient fixed alpha<1/2 regime. If l>=c n sqrt(lg n) infinitely often, E=Omega(n) for THIS compiler and stated upper-bound expression, so it no longer certifies 2^{o(n)}; **NOT an algorithm lower bound**. At raw g=n^2, a trivial output OR(x1,x1) with g-1 unused dummy gates prunes to l=1, showing raw gate count cannot be charged as unavoidable SAT work.
+
+**INDEPENDENT A/B/C REPLAY:** Exactly 80 small circuits; 2100 full auxiliary assignments; all 720 DISJ_3 variable orders reproduced TMR-4/051 OBDD graph sizes 6..14, GF2 prefix peaks 2..8, exactly 48 six-node optimum orders; DISJ_k rank 2^k k<=4. TMR-3/050 DRAFT #142's explicitly materialized graph-plus-block model has exact min_b max(b,ceil(T/b))=ceil(sqrt T), independently checked T<=2000; no arbitrary simulator floor. V8 4,421 checks, zero failures. Independent standard-library Python reference 4,432 checks, same primary counts. Finite tests COMPUTATIONAL. Anthropic formalization proofs not rebuilt; pinned definition alone contains no polynomial-space assertion.
+
+**MANDATORY FOUR GATES:** DISJ PASS for scoped counterexample / unrestricted rank transfer FAIL; relativization PASS for syntactic pruning / nonrelativizing unrestricted step OPEN; simultaneous DTISP NOT APPLICABLE to Williams and OPEN to FLMV or Allender; deterministic configuration count PASS as upper-bound-only guard. Williams all-n^k-size Circuit-SAT savings and NP-level bridge OPEN. /341 full UNSAT authority FAIL; /386 RESTRICTED.
+
+**PUBLISHED:** research/agents/tmr-5/2026-11-15_1149_TMR5_LIVEGATE_THRESHOLD_AND_WIRETAX_REDTEAM047.md; experiments/tmr/tmr5_livegate_threshold047.js; results/raw/tmr/2026-11-15_1149_TMR5_LIVEGATE047_V8_RAW.json; preserved-history handoff.md. Source version tmr5_livegate_threshold047.v1; seed none. Verify main postmerge readback and issue #3.
+
+**NEXT PEER REPAIR:** Uniform polynomial-time counting-preserving compression for LIVE g=n^2 shared circuits with all wire, coefficient, arithmetic, source and reconstruction costs. Otherwise produce a live-cone hostile counterexample. Keep TMR-2 dynamic factor ordering, TMR-3 same-realization time+space and TMR-4 restricted class transfer separate. TRACKERS REVIEWED AT AVAILABLE CONTENT/METADATA; NO MATERIAL CHANGE (proof1 full SHA 06f7ebc8; proof2 SHA 930c5eed and main.tex SHA 6ac34c5d returned EMPTY bodies, so no root edits). P versus NP OPEN.
+
+END_OF_HANDOFF::TMR5::2026-11-15_1149_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-15 11:00 PST | EXPANDER-MULTICUT046 /046
 
 **GOVERNING:** First read the previously prompted Allender directive, then located the *newer* user-authorized `2026-11-15_SAT_COMPRESSION_CIRCUITS_FIVE_AGENT_REFOCUS.md` directive on `main`, SHA `7b8804dc7587abc5134055b5b0d16a143055ca5a`, explicitly superseding Allender-first priority. Tracks A/B/C are current; Allender and fusion are supporting calibration. No five-agent task, schedule, title, enabled-state or ownership changes. P versus NP OPEN.
