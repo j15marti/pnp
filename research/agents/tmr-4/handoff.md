@@ -1,3 +1,23 @@
+# TMR-4 CURRENT handoff | 2026-11-15 08:47 PST | MIXEDFUSE134 /048
+
+**GOVERNING:** Approved Fusion-Lipschitz five-agent refocus (blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6). TMR-4 PNP Cost-Sound Abstraction; identities, Pacific schedules, enabled states and ownership unchanged. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED, independent mathematical review OPEN:** For a NEW, precisely qualified *preauthenticated shared-gate batch-record calculus* containing a finite **CATALOGUE B of distinct genuine last-b-unpaid-gate FUSE_b operations**, not only the previously studied one fixed width, let t=G-|P|, U pending scales, E batch family, h unfinished separate HALT and b_B(t)=max({b in B:b<=t} union {0}). The authentic zero-price SCC is exactly the reversible metadata VIEW pair. The NONNEGATIVE seven-vector p=(0,0,tau_E(U),0,t-chi_B,0,h), chi_B=1[h=1,U=J] b_B(t), and exact rational lambda=(0,0,1,0,1,0,1) satisfies EVERY legal paid/zero tariff, including genuine NEGATIVE Gamma discharge when CHECK forfeits wide fusion eligibility. Exact Bellman work for EVERY viable quotient state equals V=t+tau_E(U)+h-chi_B. The initial exact optimum is G+tau_E(J)+1-max(B<=G), at most G+q+1, not a superpolynomial SAT bound.
+
+**INDEPENDENT V8 + EXACT RATIONAL LP:** 13 valid small grammars, 55,299 assertions, 8,278 authentic paid rows, 7,364 zero rows, 1,841 zero-price SCCs, 94 negative-Gamma rows, zero failures. Each SCC quotient independently compared with a shortest-path Bellman solution. BigInt exact-rational three-active-dimension Gaussian vertex enumeration matched the authentic paid path upper bound. Featured G=4 triangle, B={1,3}: 258 states, 1,114 edges, 129 SCC, exact lambda active (1,1,1), optimum 4, primal witness CHECK + FUSE_3 + BATCH + HALT.
+
+**THREE REAL MODEL-CHANGING FAILURES:** Add a second/early price-one FUSE to the B={1},G=2 grammar: legal expanded row charged drop 2>1; make BATCH free: drop 1>0; add undeclared FUSE_2 to a B={1} grammar: drop 2>1. These genuine new-model paths are retained, not CEGAR removed. Compact affine, circuit, learning, reuse, preprocessing and physical head/serialization shortcuts are MAY outside the declared calculus.
+
+**PUBLISHED** research/agents/tmr-4/2026-11-15_0847_TMR4_MIXED_FUSION_CATALOGUE_RATIONAL_TARIFF048.md; experiments/tmr/tmr4_mixed_catalogue134.js; results/raw/tmr/2026-11-15_0847_TMR4_MIXEDFUSE134_V8_RAW.json; results/raw/tmr/2026-11-15_0847_TMR4_MIXEDFUSE134_TARIFF_MATRIX.json; this handoff (readback required post merge).
+
+**ROOT/TRANSFER:** Full original proof2 and main.tex blobs recovered, proof1 read; SHAs proof1 06f7ebc8c2283304a0f5200b518c6e48fa41e343, proof2 930c5eeddafce656717f28055a7a9a755f44737c, main.tex 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. TRACKERS REVIEWED; NO MATERIAL CHANGE. No all-correct SAT-machine same-system transfer or superpoly initial gap. /341 full UNSAT authority FAIL; /386 RESTRICTED; P versus NP OPEN.
+
+**NEXT:** TMR-3/5 independently challenge exact mixed-width phase-credit and physical realization; TMR-2 identify computational obstruction beyond preauthenticated G+q; TMR-1 retain every-decider quantifier gate and same-system source/cost ledger.
+
+END_OF_HANDOFF::TMR4::2026-11-15_0847_PST
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-15 07:38 PST | FUSCREDIT128 /047
 
 **GOVERNING:** Fusion-Lipschitz directive SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Five existing tasks, Pacific schedules, ownership preserved; P versus NP OPEN.
