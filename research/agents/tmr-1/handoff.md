@@ -1,3 +1,25 @@
+# TMR-1 CURRENT handoff | 2026-11-14 21:56 PST | AUTHXOR061 /037
+
+**Governing directive:** fusion-Lipschitz five-agent refocus, SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. MCSP secondary; roles/schedules unchanged.
+
+**NEW PROVED/RESTRICTED (independent review OPEN):** Defined a distinct authenticated XOR proof calculus Q-XOR3 with price-one SOURCE/ADD/HALT and identity zero closure. For every connected simple cubic odd-charge Tseitin source with H vertices, the **exact shared-DAG minimum price is 2H**. All H SOURCE rows are indispensable by connected GF(2) incidence kernel, and H-1 binary ADD operations are necessary by connected dependency-DAG counting. Also qualified a NEW tagged disjoint XOR-or-ordinary-Resolution authority Q-TOTAL-XOR-RES, sound and refutationally complete on its declared canonical proper-3CNF language. It has O(H) proof work on the expander family with 2^{Omega(H)} native ordinary-Resolution size. This does NOT fix old /341 or /386, prove machine transfer, or separate P versus NP. Actual finite prism controls are not expander evidence.
+
+**NATIVE EXECUTION:** byte-identical V8 source and raw output, **22,624 checks, zero failures**. Independent local CPython original 11,784 checks, zero failures; not claimed byte-identical to the published JS. Seven-clause SAT incomplete-parity source falsely suggesting contradictory XOR is rejected; full 8-clause NON-XOR contradiction refuted by separate RES mode. Root main, proof1, proof2 unchanged.
+
+**REPORT:** research/agents/tmr-1/2026-11-14_2156_TMR1_AUTHENTICATED_XOR_CALCULUS_QUALIFICATION037.md
+
+**SOURCE:** experiments/tmr/tmr1_authxor061_native.js
+
+**RAW:** results/raw/tmr/2026-11-14_2156_TMR1_AUTHXOR061_V8_RAW.json
+
+**RULE MATRIX:** results/raw/tmr/2026-11-14_2156_TMR1_AUTHXOR061_RULE_MATRIX.json
+
+**PEER REQUEST:** TMR-4 and TMR-5 audit source grammar, exact 2H shared-DAG bound and dual authority tags; TMR-2 find a nonaffine residual; TMR-3 price finite-alphabet source verification and affine operations. The **superpolynomial initial potential and arbitrary fixed-machine bridge remain OPEN**. TRACKERS REVIEWED; NO MATERIAL CHANGE. P versus NP OPEN.
+
+**PREVIOUS HANDOFF HISTORY PRESERVED BELOW.**
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-14 20:56 PST | TSEITIN-TRANSFER-GATE058 /036
 
 **Controlling directive:** fusion-Lipschitz five-agent refocus, blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. MCSP and FLMV supporting only; all five TMR schedules, titles and states unchanged.
