@@ -1,3 +1,29 @@
+# TMR-1 CURRENT handoff | 2026-11-15 09:57 PST | ALLENDERBALANCE049 /049
+
+**GOVERNING:** FIRST the 2026-11-15 Allender MajMajSAT directive (main SHA 1760aefab5944a063f64b62142e358fbd2b94235); prior 2026-11-14 fusion directive and 2026-11-13 TMR replacement subordinated scientifically but retain all safeguards. TMR-1 identity, title, Pacific schedule and all five agent roles unchanged. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED, independent math peer review OPEN:** Exact inclusive-majority preserving unique-extension gadget from Allender Section 3.2. For every outer word a, inner b in {0,1}^k, k>=1, and z in {0,1}^m, m>=1, if phi(a,b,z) has exactly F(a,b) satisfying z extensions, then Psi=(v AND phi) OR ((NOT v) AND (b_1 OR OR_i z_i)) has precisely H_a=2^(k+m)-2^(k-1)+S_a satisfying (b,z,v) assignments, where S_a=# accepted b. Hence H_a>=2^(k+m) iff S_a>=2^(k-1), even on ties, and **both** inner and outer inclusive majority predicates are preserved. The intended new artifact is an exact representation/interface lemma, **not** MajMajSAT-to-SAT or a physical SAT-machine tariff.
+
+**THREE AUTHENTIC CONTROLS:** k=m=2, S=1 and four erroneous z witnesses produce 18>=16 versus the unique-witness 15<16; omitting balancing background makes all-TRUE F have only 4<16; a tie F(b)=b_1 gives H=16 exactly and must be accepted. A uniform polytime many-one MajMajSAT-to-SAT compiler would already imply **PP=NP**, because MajSAT embeds by a dummy outer majority bit. This compiler and collapse remain **OPEN**; P=NP alone supplies no such time-space bridge.
+
+**PRIMARY-SOURCE LEDGER:** Allender Theorems 2–7 reconstructed including arithmetic Nepomnjascii depth O(alpha/beta), 2^O(n) locally uniform arithmetic/TC0 circuits, Lemma 6 n^(d^(k-1)) collapse, Thm 4 b*epsilon<1 and 1<d<b^(1/(tau-1)), Thm 7 quasilinear local reduction LCH2 -> MajMajSAT with extra gamma slack. No numerical gamma invented. van Melkebeek–Watson Theorem 1 separately credited for bounded-error algebraic-amplitude quantum -> unbounded-error randomized O(t log t), O(s+log t). Same-execution hypothetical SAT oracle compiler exponents and materialized/virtual query space firewall included. Every unrestricted bridge OPEN.
+
+**NATIVE EXECUTED CPYTHON:** 394,800 exhaustive nested truth tables, 1,184,352 exact inner-count checks, 404,592 exact ties, 394,800 outer-majority checks, 3 counterexamples, zero failures; finite COMPUTATIONAL. Separate source and JSON raw published. No exhaustive real SAT/quantum machine, LaTeX build, full repo checkout or preflight invocation.
+
+**NEW FILES:**
+- research/agents/tmr-1/2026-11-15_0957_TMR1_ALLENDER_BALANCED_UNIQUE_EXTENSION049.md
+- experiments/tmr/tmr1_allender_balance049.py
+- results/raw/tmr/2026-11-15_0957_TMR1_ALLENDER_BALANCE049_PY_RAW.json
+- this full-history-preserving handoff.md
+
+**NEXT PEER REPAIR:** TMR-2 preserve unique-extension AND both tie conventions across all CNF transformations; TMR-3 explicitly charge locally generated virtual SAT queries and aggregate workspace, with gamma slack; TMR-4 maintain exact probability/majority semantics in every concrete/abstract edge; TMR-5 redteam conditional PP=NP barrier and weak-oracle composition. Existing preauthenticated FUSE models remain RESTRICTED. Historical /341 full UNSAT authority FAIL; /386 guarded odd-charge RESTRICTED. Same-system superpoly SAT machine theorem OPEN.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE:** proof1 SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 SHA 930c5eeddafce656717f28055a7a9a755f44737c; main.tex SHA 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. No other agent schedules touched. P versus NP OPEN.
+
+END_OF_HANDOFF::TMR1::2026-11-15_0957_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-15 09:03 PST | REPFUSE048 /048
 
 **GOVERNING:** 2026-11-14 Fusion-Lipschitz directive, original main SHA \`54c9177fc211dfca6c94d89d6ebbf3f3908809d6\`; existing five TMR identities/titles/Pacific schedules/enabled states/ownership untouched. P versus NP OPEN.
