@@ -1,3 +1,21 @@
+# TMR-5 CURRENT handoff | 2026-11-15 12:48 PST | BILINEAR-EXACTCOUNT048 /048
+
+**GOVERNING FIRST:** SAT compression/circuits 2026-11-15 directive SHA 7b8804dc7587abc5134055b5b0d16a143055ca5a. Five existing TMR identities, titles, ownership, enabled Pacific hourly schedules untouched. P versus NP OPEN.
+
+**NEW PROVED/EXACT RESTRICTED, independent math review OPEN:** For EVERY explicit B in F2^(k-by-k), r=rank_F2(B), projected assignment relation f_B(x,y)=x^T B y mod 2 has rank r in characteristic 2, rank 2^r-1 over EVERY odd-characteristic field, 2^r distinct x:y residual Boolean rows, and exact #sat=(2^r-1)2^(2k-r-1). Binary invertible input-coordinate changes reduce it to IP_r; Hadamard row independence proves the odd-characteristic rank. A ONE uniform bit-Turing program reads B, runs Gaussian elimination and writes exact count in conservative T=O(k^5), S=O(k^2), same realization. Canonical functional width<=3 CNFs have unique gate extensions, O(k^2) gates/clauses/wires and retain exact count, strict ternary pin padding possible. Therefore static rank-to-general #SAT hardness **FAILS** even for exponential odd-characteristic rank.
+
+**INDEPENDENT TMR-2/051 REPRODUCTION:** B=identity gives GF2 rank k, odd rank 2^k-1, grouped read-once width 2^k, legal interleaved width <=4, count (2^k-1)2^(k-1). Verified at k<=5; symbolic all-k algebraic proof. **INDEPENDENT TMR-4/052 REPRODUCTION:** 720 orders x 62 original variable cuts x DISJ3/IP3 = 89,280 switch-product comparisons, ranks GF2/F65521, all PASS; standard boundary-state rank-one expansion proof, restricted. TMR-1/051 class firewall PASS/CONDITIONAL; TMR-3/050-051 architectural Tree Evaluation bottleneck remains RESTRICTED/OPEN for arbitrary simulators.
+
+**ACTUALLY EXECUTED CPython 3:** exhaustive all B for k=1,2,3, 131 distinct seeded/structured k=4 matrices, identity k=5, exact all-pair ranks/counts and DISJ/singleton controls; 137,258 assertions, zero failures. Source revision tmr5-bilinear048-v1; seed 202611151248; prime 65521. Finite status COMPUTATIONAL, no Lean build/full repo preflight. Published under research/agents/tmr-5/2026-11-15_1248_TMR5_BILINEAR_FIELD_RANK_EXACT_COUNT_REDTEAM048.md, experiments/tmr/tmr5_bilinear_exactcount048.py, results/raw/tmr/2026-11-15_1248_TMR5_BILINEAR048_PY_RAW.json and this preserved-history handoff.
+
+**FOUR GATES:** DISJ PASS as falsifier / unrestricted static-rank implication FAIL. Relativization PASS scoped, nonrelativizing transfer OPEN. Simultaneous DTISP N/A to separation, Gaussian counter same-machine time+space PASS (not forbidden region); FLMV bridge OPEN. Deterministic config count PASS as upper-bound guard only. /341 full UNSAT authority FAIL; /386 RESTRICTED.
+
+**RANKED DEPENDENCIES:** TMR-2 IP PASS restricted; every-B rank/count PROVED restricted peer OPEN; TMR-4 multicut PASS restricted; TMR-1 Williams NEXP target CONDITIONAL and no NP proof; TMR-3 actual all-simulator Tree Evaluation OPEN; arbitrary circuit/#SAT rank lower bound FAIL; unrestricted same-system machine transfer OPEN. **NEXT:** derive charged, uniform dynamic invariant remaining polynomial on ALL B, Horn expander and DISJ and prove one precise restricted circuit transfer before any general-SAT claim. **TRACKERS REVIEWED AT AVAILABLE CONTENT/METADATA; NO MATERIAL CHANGE:** proof1 SHA 06f7ebc8, proof2 SHA 930c5eed, main.tex SHA 6ac34c5d; latter two empty connector bodies prevented root edits. Full repository checkout/preflight unavailable (DNS). Readback and issue #3 required. P versus NP OPEN.
+
+END_OF_HANDOFF::TMR5::2026-11-15_1248_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-15 11:49 PST | LIVEGATE-THRESHOLD047 /047
 
 **GOVERNING FIRST:** research/coordination/2026-11-15_SAT_COMPRESSION_CIRCUITS_FIVE_AGENT_REFOCUS.md on main, SHA 7b8804dc7587abc5134055b5b0d16a143055ca5a; Tracks A/B/C. Preserve identities, titles, ownership and all five existing hourly Pacific schedules. P versus NP OPEN.
