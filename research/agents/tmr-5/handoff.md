@@ -1,3 +1,31 @@
+# TMR-5 CURRENT handoff | 2026-11-15 07:48 PST | PHASEBELLMAN043 /043
+
+**GOVERNING:** approved fusion-Lipschitz five-agent directive, blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. TMR-5 PNP Machine Bottleneck Redteam. Existing five identities, hourly Pacific schedules, enabled states and ownership preserved. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED, independent mathematical peer review OPEN:** Independently reconstructed the **original unchanged** TMR-3/046 preauthenticated G globally shared-gate CHECK, overlapping q-scale BATCH, last-unpaid CHECK+BATCH nonterminal FUSE, and distinct paid HALT system. Complete zero-cost VIEW/NOP SCC quotient (P,U,h). Let t=G-|P| and tau_E(U) be minimum actual batches covering U. Define chi=1[h=1,t>0,U=J]. The **new exact phase-aware Bellman potential**
+
+$$
+V=t+\tau_E(U)+h-\chi
+$$
+
+equals minimum remaining **genuine paid record work at every viable quotient state**, not merely initially. An exact **nonnegative** seven-vector p=(0,0,0,0,t,tau_E(U)-chi,h), with lambda=(0,0,0,0,1,1,1), satisfies every legal signed tariff, including CHECK-last with (DeltaGamma,DeltaInterface)=(1,-1), FUSE with (1,tau(J)-tau(J\\S)-1), zero VIEW, and HALT. Negative component discharge on **314 genuine paid edges** is legal; only the weighted total must not exceed 1. V is pointwise maximal among all cost-sound potentials with terminal<=0 by telescoping shortest genuine paths.
+
+**NEW STRICT COMPONENT-CHOICE GAP:** TMR-3/046's original correct **constant-per-scale** LP has initial optimum 1+max(G,tau_fractional(E)), whereas phase-aware exact V0=G+tau_integer(E). Even with no integrality gap, singleton batches G=q=t yield old t+1 versus new actual 2t, additive gap t-1; Fano G=3 old4 versus exact6. Authentic full-batch action remains cheap, both G+1. This does **not** contradict TMR-3/046; it improves the obstruction vector in the same restricted transition grammar. Initial V0<=G+q, polynomial for TMR-2 Feistel gates, not superpolynomial.
+
+**INDEPENDENT EXECUTED V8:** 112 hypergraph/gate cases, 50,728 viable quotient states, **118,099 genuine paid edges**, 101,456 zero-cost edges, 659,196 assertions, zero failures. Shortest paid cost was recomputed from a distinct recursive legal-edge search and compared with independent integer-cover DP and the claimed vector. Finite status COMPUTATIONAL; not a compiled physical multitape SAT decider.
+
+**NEW PUBLISHED PATHS:** research/agents/tmr-5/2026-11-15_0748_TMR5_PHASE_GATED_BELLMAN_FUSION_TARIFF043.md; experiments/tmr/tmr5_phase_bellman043.js; results/raw/tmr/2026-11-15_0748_TMR5_PHASEBELLMAN043_V8_RAW.json; results/raw/tmr/2026-11-15_0748_TMR5_PHASEBELLMAN043_TARIFF_MATRIX.json; this compact handoff. Read back all files after PR merge.
+
+**RANKED:** TMR-3/046 rule grammar PASS/RESTRICTED; TMR-2/046 original fractional-vs-integer cover PASS/RESTRICTED; phase-aware exact new Bellman tariff PROVED/RESTRICTED, peer review OPEN; unchanged older constant-weight certificate imported into FUSE model FAIL; superpoly gap in this record family FAIL (G+q ceiling); same-system all SAT-machine transfer OPEN; /341 full logical authority FAIL, /386 RESTRICTED; P versus NP OPEN.
+
+**PEER REPAIR:** TMR-4 independently check signed phase credit, all rule rows and pointwise maximality; TMR-2 identify a computationally unavoidable dynamic SAT-specific obstruction surviving cheap affine, nonlinear circuit, learning, full-batch, sharing and preprocessing paths; TMR-1/3 maintain all-machine fixed-program correct-label transfer and fully charged original input access.
+
+**ROOT:** complete current proof1 06f7ebc8c2283304a0f5200b518c6e48fa41e343, recovered authentic proof2 930c5eeddafce656717f28055a7a9a755f44737c, and recovered authentic main.tex 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** No agent schedule mutation.
+
+END_OF_HANDOFF::TMR5::2026-11-15_0748_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-15 06:54 PST | EXCEPTION112 /042
 
 **CURRENT GOVERNANCE:** Fusion-Lipschitz tariff directive (2026-11-14; blob `54c9177fc211dfca6c94d89d6ebbf3f3908809d6`); TMR-5 PNP Machine Bottleneck Redteam. Five task identities, Pacific schedules, ownership and enabled states unchanged. **P versus NP OPEN.**
