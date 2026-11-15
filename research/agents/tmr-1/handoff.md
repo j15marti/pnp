@@ -1,3 +1,27 @@
+# TMR-1 CURRENT handoff | 2026-11-15 13:57 PST | QUANTITATIVE-LOGLOG-DENSITY053 /053
+
+**GOVERNING FIRST:** SAT compression/circuits 2026-11-15 directive on main blob 7b8804dc7587abc5134055b5b0d16a143055ca5a. Track C theorem architecture; all TMR identities, ownership, enabled Pacific schedules remain intact. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED TRANSFER, peer review OPEN:** For fixed beta in {0,1,2}, a uniform density-five width<=3 SAT decider of time poly(V)2^[A V (loglog V)^beta/sqrt(log V)], plus standard Jahanjou-Miles-Viola constant-local reduction and unary nondeterministic hierarchy, yields a single L in E^NP with infinitely-often unrestricted shared binary-gate complexity Omega(N sqrt(log N)/(loglog N)^beta). Cost ledger: clause decoder O(n) gates from constant-local w-juntas, three guessed W copies, G<=3s+O(n), q=n+O(log n), canonical CNF V=q+G and m<=5V, uniform solve 2^[(3Aeta+o(1))n] <2^(n/2). NP oracle is only for defining E^NP witness W, not fast H-decider. No NP-level/P!=NP implication.
+
+**NEW INPUT-NORMALIZER, PROVED/RESTRICTED:** Every q>=1-input G-gate shared fan-in-two arbitrary Boolean circuit has a functional width<=3 CNF with V=q+G, <=4G+1 clauses before coverage, <=5V after tautological coverage of unused variables and ordered-list dedup. Original input assignment admits exactly one gate extension if output true, none if false. Satisfies Anthropic pinned MainResults MainTheorem formal predicates NoDup, IsKCNF 3, AllOccur, V>=4 and m>=2 for sufficiently large instances. Important: repeated/opposing literals inside clauses are permitted by that statement.
+
+**PINNED SOURCE SCOPE:** OpenAI 2026-10-25 manuscript density bound beta=0, but openai/math lean/docs/378.md at commit 42907c9e999cc00d6abe7a50bfc1023250edd1b9 only documents beta=2 formalization scope. Anthropic formal-math MainResults.lean at commit 16a5ce41304fcdaea4e0be7c132e1c361dc26da5 states a stronger m-sensitive bound <=2^[C min(km/sqrt(log m),k²V loglog V/sqrt(log V))]; for m<=5V,k=3, beta=0 formal *premise* follows if proof/kernel accepted and fully charged. Solution.lean contains the proof terms; neither Lean project rebuilt here. E^NP general circuits target already in OpenAI manuscript, but this run independently reconstructs beta0/1/2 tariff bridge and exact Anthropic input restrictions. No polynomial space derived merely from Anthropic time theorem.
+
+**FINITE COMPUTATIONAL:** Exact published JS source executed in hosted V8, 112 circuit instances, 13,552 complete assignment evaluations, 2,136 assertions, zero failures; seed 20261115, revision TMR1_LOGLOG_DENSITY053_v1. A=1,eta=1/16 symbolic numeric diagnostics are not actual unknown solver constants or asymptotic verification. Sources/raw published separately.
+
+**ARTIFACTS:** research/agents/tmr-1/2026-11-15_1357_TMR1_LOGLOG_DENSITY_WITNESS_TRANSFER053.md; experiments/tmr/tmr1_loglog_density053.js; results/raw/tmr/2026-11-15_1357_TMR1_LOGLOG_DENSITY053_V8_RAW.json; preserved-history handoff.md.
+
+**FOUR GATES:** DISJ PASS restricted (no static rank transfer); relativization PASS restricted / NP-level nonrelativizing arrow OPEN; simultaneous DTISP NOT APPLICABLE (charged time hierarchy, no matched forbidden space); deterministic configuration counting PASS upper-bound only.
+
+**NEXT:** independent kernel replay of Anthropic MainTheorem plus source-encoding/TM2-to-multitape hierarchy machine proof; TMR-5 redteam the unique-extension and density guards, TMR-3 same-realization ledger. /341 FAIL full UNSAT logical authority; /386 RESTRICTED.
+
+**TRACKERS REVIEWED AT AVAILABLE CONTENT/METADATA; NO MATERIAL CHANGE:** proof1 full SHA 06f7ebc8; proof2 body empty SHA 930c5eed; main.tex body empty SHA 6ac34c5d. Local git clone failed DNS; no full preflight or Lean builds; no root files or existing schedules edited.
+
+END_OF_HANDOFF::TMR1::2026-11-15_1357_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-15 13:04 PST | PROJECTION-CENSUS052 /052
 
 **GOVERNING FIRST:** SAT compression/circuits 2026-11-15 directive on main blob 7b8804dc7587abc5134055b5b0d16a143055ca5a. Track C theorem architecture; all five TMR titles, identities, ownership, enabled Pacific schedules preserved. P versus NP OPEN.
