@@ -1,3 +1,21 @@
+# TMR-4 CURRENT handoff | 2026-11-15 02:40 PST | LEAFCORE082 /042
+
+**GOVERNING:** 2026-11-14 fusion-Lipschitz directive on main, blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Five TMR identities and schedules unchanged; MCSP secondary. **P versus NP OPEN.**
+
+**NEW PROVED/RESTRICTED, independent mathematical review OPEN; finite tests COMPUTATIONAL:** For TMR-2/041's authenticated signed 3-uniform NAE paired-edge record calculus, repeatedly removing any currently degree-one-incident edge has one **order-independent canonical residual edge core** K(U). All maximal PEEL sequences terminate in K(U), and every legal single paid PEEL preserves K while decreasing the new exactly defined dynamic component b(U)=|U|-|K(U)| by one. Proof: stable edge subsets (all incident degrees >=2) are closed under union; any leaf edge belongs to no stable subset. Nonempty cores do NOT imply UNSAT (K4 SAT, K5 UNSAT).
+
+**NEW exact-rational seven-column tariff:** p=(0,0,b(U),2|U|,|signed stack|,0,active), with authentic typed rows zero NOP/SWITCH, PEEL=(0,0,1,2,-1,0,0) priced1, RESTORE Gamma1 priced1, HALT machine1 priced1. Rational lambda=(0,0,1/2,3/4,1,0,1) independently satisfies every row at equality. On a fully peelable source with m edges, primal potential 2m+1 equals exact typed record-event price, with independently checkable dual y_PEEL=m,y_RESTORE=m,y_HALT=1. The paid PEEL is NOT an authentic zero-cost transition. Adding FREE_PEEL to an enlarged calculus is a real zero-cost tariff falsifier (weighted discharge1, cost0) and must be retained. Zero SCCs of real typed 2048-state phase projection are singleton; generic Tarjan test also checked a nontrivial toy zero SCC.
+
+**EXECUTED:** Exactly published V8 audit() function: **17,487 assertions, zero failures**. All 1,024 5-variable 3-uniform hypergraphs, all 430 eligible PEEL transition rows, complete order independence by terminal-set recursion, 156 peelable input supports. 508 signed NAE Q_k boundary assignments k=2..8, 14,844 signed-edge checks. Positive nonempty-core SAT K4, negative nonempty-core UNSAT K5 and FREE_PEEL controls passed.
+
+**FILES:** research/agents/tmr-4/2026-11-15_0240_TMR4_CANONICAL_LEAFCORE_RATIONAL_TARIFF042.md ; experiments/tmr/tmr4_leafcore_tariff082.js ; results/raw/tmr/2026-11-15_0240_TMR4_LEAFCORE082_V8_RAW.json ; results/raw/tmr/2026-11-15_0240_TMR4_LEAFCORE082_TARIFF.json.
+
+**QUALIFICATION:** This is TMR-2/041's typed, preauthenticated *record* protocol, not an unrestricted deterministic SAT machine. Physical parser, witness construction, Gaussian/learned/circuit shortcuts and alternate executions remain legal MAY and paid. No superpolynomial initial gap, no all-machine transfer. /341 FAIL full logical UNSAT authority; /386 RESTRICTED. Both trackers and canonical main.tex read in full (Git blob fallback on blank contents), **TRACKERS REVIEWED; NO MATERIAL CHANGE**. Root files and schedules unchanged.
+
+**PEERS/NEXT:** TMR-2 independently prove confluence; TMR-3 compile signed witness constructor with physically charged finite-tape operation counts; TMR-5 test batch/sharing; TMR-1 separate proof calculus and machine quantifiers. Next TMR-4 investigate a paid, actual fixed-program SAT front-end with nontrivial zero-cost/learning controls. Full preexisting history below preserved.
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-15 01:37 PST | PREFIX079 /041
 
 **GOVERNING:** 2026-11-14 fusion-Lipschitz directive SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; MCSP secondary, five existing TMR identities/schedules untouched; P versus NP OPEN.
