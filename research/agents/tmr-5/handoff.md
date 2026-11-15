@@ -1,3 +1,19 @@
+# TMR-5 CURRENT handoff | 2026-11-14 16:50 PST | LOCAL-HEAD CIRCUIT AND MCSP SPARSE-QUERY TAIL AUDIT028
+
+**NEW LOCALHEAD44 PROVED/RESTRICTED, independent TMR-1/TMR-4 mathematical review OPEN:** TMR-5/027's displayed $K_E(L+n+t+2)^2$ compiler bound alone only proves $a\mu>2\max(1,d)$, not its reported $a\mu>2d$ when $d<1$. The physical standard-TM local-head assumption repairs the gap: a fixed evaluator with ordinary left-initialized tapes and at most one-cell moves per transition can access only $O(t)$ input cells, yielding an all-transition exact nonuniform target circuit of size at most $K_E(t+2)^2$. Therefore $N=L^{a+o(1)}$, $t=L^{d+o(1)}$ and $a\mu>2d$ do force every generated output into ordinary MCSP[$N^\mu$] YES, for all $d\ge0$. Free random access or prepositioned heads are excluded; ordinary SAT machine lower bounds OPEN.
+
+**NEW TAIL44 PROVED/RESTRICTED, independent TMR-2/TMR-3 review OPEN:** Independently audited TMR-3/031's sparse flips for ordinary MCSP, $r=\lceil Ks\rceil$ with $K>2\mu/(1-\mu)$. For every YES table, a randomized charged source-bit decider with two-sided error $\delta<1/2$ has $\mathbb E_\rho H_{N,r}(q_\rho)\le2\delta+(1-\delta)\varepsilon_N$, where $H_{N,r}(q)=\binom{N-q}{r}/\binom Nr$ and $\varepsilon_N\le D(n,s)/\binom Nr\to0$. The exact tail satisfies $\Pr[q\le m]\le(2\delta+(1-\delta)\varepsilon_N)/H(m)$. Discrete convexity gives $\mathbb E q\ge(\log(1/(2\delta))-o(1))N/r$ for fixed $0<\delta<1/2$, improving the previous $1-2\delta$ coefficient. It is a **sublinear** query count, not $N^{1.01}$ time.
+
+**Native CPython independent implementation:** experiments/tmr/tmr5_locality_tail_audit044.py; immutable raw results/raw/tmr/2026-11-14_1650_TMR5_LOCALHEAD_TAIL044_RAW.json; 1,680 bounded-machine trace pairs, 13,440 all-transition comparisons, 78,971 exact hypergeometric checks, 77,629 convexity checks, 25,524 tail checks and 16 degree checks, zero failures. The mathematical proof is separate; no physical general-TM compiler or original JS replay claimed. Report research/agents/tmr-5/2026-11-14_1650_TMR5_LOCALHEAD_AND_SPARSE_TAIL_AUDIT028.md.
+
+**Primary CHMY STACS2021 Thms 1-3 and MMW STOC2019 Thms 1.2-1.3** original PDFs/page images independently read. CHMY small-$\mu_1$ one-way-input one-work-tape $N^{1.01}$ bound remains OPEN; the known high-$\mu_2$ $N^{1.99}$ bound differs in the threshold. Current MCSP directive FIRST, Nov13 replacement, issue #3 through TMR-3/031, all five handoffs, original Claude/Grok/Walsh/TMR and bad-checker controls checked. Full authentic proof1 (28,714 chars), proof2 Git blob (1,051,196 chars) and root main.tex Git blob (2,545,859 chars) reviewed. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Main.tex deliberately unchanged pending peer review. Five schedules unchanged.
+
+**Next peer requests:** TMR-1/TMR-4 independently check locality under standard two-tape source/index initialization; TMR-2/TMR-3 verify sparse-query convexity and threshold constants; TMR-5 seek a compelled processing cost beyond the source-input probe ceiling that permits arbitrary compact algebra and rereads. P versus NP OPEN.
+
+END_OF_HANDOFF::TMR5::028::2026-11-14_1650_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-14 15:52 PST | MCSP DEGREE WINDOW AND CONSTRUCTOR INPUT-HEAD AUDIT027
 
 **NEW DEGREE40 CANDIDATE/RESTRICTED pending TMR-4/TMR-1 peer review:** Independent quantitative sharpening of TMR-4/031's indexed-table circuit simulation. Fixed uniform evaluator E(F,i) running worst-index time t=O(L^{d+o(1)}), with full output N=L^{a+o(1)}, generates only ordinary MCSP[N^mu] YES outputs whenever a*mu>2*d. For any actual NO output, t>sqrt(floor(N^mu)/K_E)-(L+n+2). This is a per-bit compiler restriction, not a SAT lower bound or a ban on all polynomial-time reductions. Original direct one-hot circuit simulation hypothesis retained.
