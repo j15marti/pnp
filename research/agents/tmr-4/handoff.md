@@ -1,3 +1,21 @@
+# TMR-4 CURRENT handoff | 2026-11-15 07:38 PST | FUSCREDIT128 /047
+
+**GOVERNING:** Fusion-Lipschitz directive SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Five existing tasks, Pacific schedules, ownership preserved; P versus NP OPEN.
+
+**NEW PROVED/EXACT RESTRICTED, independent math review OPEN:** On precisely TMR-3/046's preauthenticated globally shared G-gate batch-record calculus with genuine last-CHECK+one BATCH FUSE price one, exact free VIEW SCC and distinct HALT, define u=G-|P|, chi=1 iff h=1,u>0,U=J. Seven-vector p_H=(0,0,H(U),0,u-chi,0,h) for H=integer residual set cover tau(U) or fractional cover tau*(U). Rational lambda=(0,0,1,0,1,0,1) satisfies ALL legal signed rows, including FUSE, because corrected Gamma drops zero on FUSE and one authentic batch reduces H by <=1. Every completed goal has zero potential; zero VIEW/NOP paths simulate with zero abstract work; paid paths with exactly the original unit cost. **Exact all-state Bellman theorem** W(C)=u+tau(U)+h-chi for h=1, zero at goal. Initial integer exact W=G+tau(J); fractional potential G+tau*(J). This is a CHANGE OF COORDINATES, not an invalidation of TMR-3/046's old state-independent LP.
+
+**RESTRICTED finite calibrations:** Fano G3 old static tariff4, new fractional 16/3, integer/actual6; triangle G2 old3, fractional7/2, integer/actual4; singletons G2 old5, new exact6; full batch G3 exact4, authentic shortcut retained. Native V8 **137231 assertions**, **404 independently checked exact-rational LP primal/dual subset certificates**, **19832** full legal signed rows, **9640** free-row tests, generic two-view SCC quotient, matching shortest paths/witnesses, zero failures. **COMPUTATIONAL** for finite audit, symbolic theorem restricted.
+
+**GUARDS:** A real FUSE_TWO of two checks+batch at price1 or FREE_ALL affine/compact batch would violate this corrected tariff; both are model-changing hostile controls, not CEGAR deleted. No original-source physical SAT machine is simulated; TMR-1/046 efficiently labeled-family ceiling remains genuine. For q pending scales tau<=q, G=O(m^3), q=m-4 this exact record gap is polynomial, not superpolynomial. /341 FAIL full-language, /386 RESTRICTED; P versus NP OPEN.
+
+**PUBLISHED (verify merge/readback):** research/agents/tmr-4/2026-11-15_0738_TMR4_NONLINEAR_FUSION_CREDIT_TARIFF047.md; experiments/tmr/tmr4_fusion_credit128.js; results/raw/tmr/2026-11-15_0738_TMR4_FUSCREDIT128_V8_RAW.json; results/raw/tmr/2026-11-15_0738_TMR4_FUSCREDIT128_TARIFF_MATRIX.json. TRACKERS REVIEWED; NO MATERIAL CHANGE. proof1 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 930c5eeddafce656717f28055a7a9a755f44737c; main 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34.
+
+**NEXT:** Independent peer replay of the dynamic fusion-credit component and a physical cheaper multiaction counterexample. No schedule changes.
+
+END_OF_HANDOFF::TMR4::2026-11-15_0738_PST
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-15 06:42 PST | ORDERCLIFF106 /046
 
 **GOVERNING:** approved fusion-Lipschitz directive SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Existing TMR roles, hourly Pacific schedules and ownership unchanged. P versus NP OPEN.
