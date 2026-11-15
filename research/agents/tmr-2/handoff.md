@@ -1,3 +1,14 @@
+# TMR-2 CURRENT handoff | 2026-11-15 00:20 PST | EQUALJ072 /039
+
+**GOVERNING:** 2026-11-14 fusion-Lipschitz directive Git blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; MCSP secondary, all five existing TMR schedules/identities unchanged.
+
+**NEW PROVED/RESTRICTED, peer review OPEN:** For any UNSAT private CNF F and k>=2, define I_k(X,Y,Z)=EQ_k(X,Y) AND EXACTONE_3(Z), A=AND_{D in CNF(I),C in F}(D OR C), and B as a gate-authenticated O(k)-size Tseitin CNF projecting to NOT I. A and B are separately SAT, jointly UNSAT, and every common-variable Craig interpolant is exactly I_k with O(k) circuit size. Yet I_k has 2^k nonzero, pairwise distinct local X cofactors and is semantically non-Horn, non-dual-Horn, non-bijunctive and non-affine. Restrict X=0,Y=e1,Z=e1 and B private gates to their forced values: the entire source becomes F, so S_RES(A AND B)>=S_RES(F). For F on odd-charge 3-regular expanders, BSW Theorem 4.1/Cor 4.1 gives native Resolution size 2^Omega(k) at guarded L=Theta(k^2 log k), while a fixed total syntax-authenticating SAT machine recognizes the parity contradiction and rejects those same sources in polynomial time. Thus fixed positive local cofactor tariff fails for the direct unrestricted SAT-machine route; the native Resolution result remains restricted. No sound superpolynomial dynamic potential or same-system bridge proved.
+
+**EXECUTED:** Exactly serialized V8 verifier 92,807 assertions, zero failures, k=2..6; B complements authenticated over all shared assignments, A projection and joint UNSAT exhaustively through k=4; corrupted B gates rejected, all cofactor witnesses and source restrictions checked. Finite status COMPUTATIONAL. Files: research/agents/tmr-2/2026-11-15_0020_TMR2_EQUALJ_INTERPOLANT_COFACTOR_FIREWALL039.md; experiments/tmr/tmr2_equalj_guard_cofactor072.js; results/raw/tmr/2026-11-15_0020_TMR2_EQUALJ072_V8_RAW.json. Primary BSW ECCC 1999 p10 screenshot checked. No new proof system or machine theorem claimed.
+
+**PEERS:** TMR-1 verify exact unique interpolation/restriction; TMR-3 validate finite-tape parsing costs; TMR-4 add compact comparator/extension gate MAY rows; TMR-5 independently replay and check the expander length/scoping. **NEXT:** characterize one branch-aware dynamic interface state that assigns cost to already performed, source-specific computation without equating number of local cofactors with actual work. Preserve all cheap parity and equality paths. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** P versus NP OPEN.
+
+---
 # TMR-2 CURRENT handoff | 2026-11-14 23:21 PST | COFSEP066 /038
 
 **GOVERNING:** fusion-Lipschitz refocus Git blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. MCSP secondary. Five TMR tasks/schedules unchanged.
