@@ -1,3 +1,29 @@
+# TMR-5 CURRENT handoff | 2026-11-15 13:48 PST | SCALAR-COUNT-COLLAPSE049 /049
+
+**GOVERNING FIRST:** SAT compression/circuits directive main blob 7b8804dc7587abc5134055b5b0d16a143055ca5a. Track A/C independent redteam; P versus NP OPEN. All five existing TMR identities, titles, enabled hourly PST schedules and ownership preserved; none modified.
+
+**NEW PROVED/EXACT RESTRICTED, mathematical peer review OPEN:** Independently verified TMR-1/052 minterm-trie construction counts >2^(g/32) distinct pointwise functions f_S on n inputs, but EVERY balanced-subset f_S has EXACT same #SAT = |S|=2^(k-1). Single H_(n,k)=AND(x_k,...,x_n) has exactly the same total count for EVERY S, using n-k+1 units. Its proper width-exactly-three pinned functional lift preserving each count with unique auxiliary extensions and all original variables occurring uses V=n+k+2, m=n+k+6. Thus TMR-1/052 pointwise existential-projection census PASS; purported scalar total-count-compression census transfer FAILS.
+
+**SECOND NEW PROVED/EXACT RESTRICTED THEOREM:** For EVERY 0<=K<=2^n, an all-occurring, duplicate-free, strictly proper 3CNF C_(n,K) has <=2n+3 declared variables, <=3n+7 clauses, and exactly K satisfying assignments, via a functional n-bit comparator x<K, uniquely determined copy gates and three uniquely-zero pins. Universal circuit->C_(n,K(C)) compiler exists but computing K(C) by exhaustive truth table takes O(2^n (N+n)^3) time with O(N+n) workspace for fixed multitape source parser, so NO subexponential original-n #Circuit-SAT speedup or general machine lower bound follows. Even with a 2^o(n) #SAT solver downstream, total sequential time is still exponential. No Lean rebuild or physical TM trace.
+
+**ACTUAL V8 COMPUTATIONAL:** 119,967 assertions, 261 generic comparator strict3 CNFs for n=1..7, 3,008 exhaustive full auxiliary assignments, 95,939 auxiliary uniqueness-flip tests, 172 distinct source functions on k=2..4 with common count, zero failures, seed none. Full source executed in hosted V8, not standalone Node. Report/code/raw fully auditable.
+
+**FOUR GATES:** DISJ PASS as control / unrestricted rank-to-hardness FAIL. Relativization PASS restricted, unrestricted nonrelativizing bridge OPEN (algebrization/Natural Proofs outstanding). Simultaneous DTISP PASS charged upper ledger, forbidden-region matched realization OPEN. Configuration-count upper-bound guard PASS, never a lower bound. /341 FAIL full logical UNSAT authority, /386 RESTRICTED.
+
+**RANKED:** TMR-1/052 pointwise projection PASS restricted; same-family total-count collapse PROVED/RESTRICTED and scalar transfer FALSIFIED; generic count normalizer PROVED/RESTRICTED, fast construction OPEN; TMR-2/052 selector rank collapse and TMR-4/052 switch-product PASS scoped; TMR-3 improved Tree Evaluation OPEN; general Circuit-SAT Williams algorithm hypothesis OPEN; NP-level bridge and P versus NP OPEN. **NEXT:** replace exhaustive K(C) with a uniform charged 2^o(n)-time counting or equicount compression for arbitrary n-input g=n^4 LIVE shared circuits. Avoid sources with an enormous same-count fiber as evidence of count hardness.
+
+**ARTIFACTS:**
+- research/agents/tmr-5/2026-11-15_1348_TMR5_SCALAR_COUNT_COLLAPSE_AND_NORMALIZER049.md
+- experiments/tmr/tmr5_scalar_countcollapse049.js
+- results/raw/tmr/2026-11-15_1348_TMR5_COUNT_COLLAPSE049_V8_RAW.json
+- this full-history-preserving handoff.md.
+
+**ROOT:** proof1 complete SHA 06f7ebc8; proof2 SHA 930c5eed and main.tex SHA 6ac34c5d but connector returned EMPTY content for latter two, so no shared root writes. Full repo preflight and Lean builds not executed. TRACKERS REVIEWED AT AVAILABLE CONTENT/METADATA; NO MATERIAL CHANGE. User's SAT compression directive and issue #3 reviewed. P versus NP remains OPEN.
+
+END_OF_HANDOFF::TMR5::2026-11-15_1348_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-15 12:48 PST | BILINEAR-EXACTCOUNT048 /048
 
 **GOVERNING FIRST:** SAT compression/circuits 2026-11-15 directive SHA 7b8804dc7587abc5134055b5b0d16a143055ca5a. Five existing TMR identities, titles, ownership, enabled Pacific hourly schedules untouched. P versus NP OPEN.
