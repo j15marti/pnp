@@ -1,3 +1,21 @@
+# TMR-4 CURRENT handoff | 2026-11-15 04:45 PST | CAPFUS094 /044
+
+**GOVERNING:** Fusion-Lipschitz directive blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Existing TMR-4 identity, ownership, and all five Pacific hourly schedules unchanged. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED symbolic theorem, independent mathematical review OPEN:** For the separately qualified preauthenticated shared fan-in-catalog AND/NOT circuit-builder, input connectivity partition $c(G)$ gives an exact dynamic capacity-cover potential $H_\mathcal K(c)=\min_{(a,w_a)}[w_a+H_\mathcal K(\max(1,c-a+1))]$, $H(1)=0$. Every authentic $a$-input AND costs $w_a$ and merges at most $a$ input-connected components, free SELECT/VIEW and paid NOT merge none. Seven-component vector $p=(0,0,0,H(c),0,0,0)$, $\lambda=(0,0,0,1,0,0,0)$ is all-step cost-sound with true zero SCCs, and exact minimum completed shared DAG cost equals $H(n)$ by constructive AND grouping and a primal/dual exact-rational certificate. For every unit-price $a=2,\dots,f$, $H(c)=\lceil(c-1)/(f-1)\rceil$. Original TMR-1/043 binary case recovered at $f=2$.
+
+**AUTHENTIC RICHER-MODEL FALSIFIER:** One legitimate price-one AND3 discharges TWO raw $c-1$ units, so transposing TMR-1/043's raw $\lambda_{fus}=1$ to ternary gates FAILS; rounded $H_3$ repairs it. An added price-one AND4 from four isolated inputs changes $H_3$ by two and therefore FAILS if added to fan-in-three grammar. A directed zero-cost MERGE drops $H$ and SCC-only normalization is insufficient. These are grammar expansions, not silently authentic R_CONN steps.
+
+**EXECUTED + PUBLISHED:** 303,760 exact V8 assertions, zero failures, including 133,276 paid partition rows, 4,616 zero SCCs, 75 primal/dual checks and 51 constructive gates. Exact executed audit serialized to `experiments/tmr/tmr4_capacity_fusion094.js`; raw `results/raw/tmr/2026-11-15_0445_TMR4_CAPFUS094_NATIVE_V8_RAW.json`; machine-readable matrix `results/raw/tmr/2026-11-15_0445_TMR4_CAPFUS094_MATRIX.json`; report `research/agents/tmr-4/2026-11-15_0445_TMR4_HETEROGENEOUS_FANIN_CAPACITY_TARIFF044.md`. Finite status COMPUTATIONAL; source is preauthenticated, physical SAT machine NOT covered.
+
+**OPEN:** actual finite-tape gate discovery and program transfer, dynamic SAT-specific superpoly gap, all-correct-SAT-machine same-system simulation. Historical /341 full logical FAIL, /386 RESTRICTED. P versus NP OPEN.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE:** proof1.txt SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; authentic proof2.txt Git blob SHA 930c5eeddafce656717f28055a7a9a755f44737c; authentic main.tex Git blob SHA 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. Current issue #3, AGENTS/CODEX/skill, all five current handoffs and relevant peer report/code/matrix recovered. No scheduled task changed.
+
+**NEXT:** exact physical multitape signed-NAE parser/witness construction as mandatory genuine cheap path; TMR-3 account for tape costs, TMR-5 independently attack any source-only overcharge.
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-15 03:45 PST | MULTIPORT090 /043
 
 **GOVERNING:** Fusion-Lipschitz directive SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. TMR-4 identity/title/hourly Pacific schedule and all other TMR schedules untouched. MCSP secondary. P versus NP OPEN.
