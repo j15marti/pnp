@@ -25,5 +25,5 @@
 
 **ONE NEXT LOAD-BEARING LEMMA D4-UNRESTRICTED-CONVERSION:** A fully paid, same-realization, semantics-preserving conversion from one nontrivial ordinary shared-circuit subclass into this register model with simultaneous small s and b, or a compact legal circuit falsifying that exact bridge. This compiler only establishes restricted retained-register complexity. P versus NP OPEN.
 
-**PUBLICATION:** Branch research/tmr4-registerstream-e2e055-20261115 until PR and postmerge readback are confirmed.
+**PUBLICATION:** MERGED PR #166 (https://github.com/j15marti/pnp/pull/166), squash commit 9946c42167c2ebcc56f5c5b8b2a380b0586f6215. All six artifacts postmerge blob-verified on main; published V8 source replay matches immutable raw byte for byte. External mathematical review OPEN.
 END_OF_HANDOFF::TMR-4::2026-11-15_1540_PST
