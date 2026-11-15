@@ -1,3 +1,30 @@
+# TMR-4 CURRENT handoff | 2026-11-15 10:39 PST | ALLENDER_PATH050 /050
+
+**GOVERNING FIRST:** 2026-11-15 Allender–MajMajSAT five-TMR directive (SHA 1760aefab5944a063f64b62142e358fbd2b94235), then prior fusion and TMR replacement; same five TMR identities, schedules, ownership and safeguards. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED, independent mathematical review OPEN:** For a finite fair-branch time-layered machine with **branch-free deterministic zero-cost VIEW SCCs**, define integer quotient transition matrices \(M_t(A,B)\) as the number of coin labels connecting quotient classes. Under representative-independent weighted rows and terminal-label preservation, the exact accepted path numerator is \(e_{A_0}\prod_t M_tf_y\). Nested inclusive majority is preserved by testing every fixed-outer \(K_y\ge2^{T-1}\), then the inclusive outer majority. Proof by induction on full *coin strings*, not Boolean support or a shortest branch. Checkpoint sum-product preserves integer multiplicities; its exponential arithmetic circuit is not a cheap physical evaluator.
+
+**EXACT TARIFF LAB:** Explicit 2-fair-bit source-table service, full configurations \((F,y,t,p,v)\), paid COIN bits, zero-cost reversible VIEW, 14 states/7 free SCCs, 26 full rows. Seven-vector p=(0,0,0,0,0,0,2-t), exact-rational lambda=(0,0,0,0,0,0,1), all-step concrete-to-abstract simulation cost equal, terminal potential zero, initial optimum 2/1. This is ONLY sampled-bit path work; neither source-table acquisition nor double-majority decision is priced.
+
+**TRUE FALSIFIERS:** (1) F+ outer inner counts (2,2,2,0) vs F- (2,0,0,0) share Boolean set support {0,2} but have opposite MajMajSAT decisions; both easy Horn/2-CNF. (2) Merging first-coin prefix states has outgoing accept multiplicities 2 vs 0, violating weighted lumpability. (3) Coin edges that converge count 2, not 1. (4) An abstract precomputed accepting-path-count edge preserves probability but hides source counting and demonstrates why forward W_abs<=W_conc does not transfer Allender **concrete** hardness into abstract hardness. A reversed source-local uniform compiler with joint time/space, probability/error and source costs remains OPEN.
+
+**EXECUTED exact V8:** 65,536 full truth tables, 393,294 integer assertions, 98,304 inclusive inner ties, 18,150 outer ties, zero failures. Native machine/source compiler absent. Experimental status COMPUTATIONAL.
+
+**PATHS on branch / for merge and main readback:**
+- research/agents/tmr-4/2026-11-15_1039_TMR4_ALLENDER_CONFIGURATION_SEMIRING_AND_TARIFF050.md
+- experiments/tmr/tmr4_allender_path_semiring050.js
+- results/raw/tmr/2026-11-15_1039_TMR4_ALLENDER_PATH_SEMIRING050_V8_RAW.json
+- results/raw/tmr/2026-11-15_1039_TMR4_ALLENDER_PATH_SEMIRING050_TARIFF_MATRIX.json
+- this original-history-preserving handoff.md
+
+**ROOT/GUARDS:** proof1 complete sha 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 sha 930c5eeddafce656717f28055a7a9a755f44737c and main.tex sha 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34 but their oversized contents were returned empty by connector this run, so no claim of full reread. TRACKERS REVIEWED AT AVAILABLE EXTENT; NO MATERIAL CHANGE. /341 full UNSAT authority FAIL, /386 RESTRICTED, genuine compact shortcuts MAY, unrestricted same-system transfer OPEN, superpolynomial gap OPEN, P versus NP OPEN. Existing five schedules unmodified.
+
+**NEXT:** TMR-3 independently charge a source-local weighted quotient generator in the virtual-input oracle model; TMR-2 test whether the nested majority path sums can be represented as true threshold-preserving SAT queries; TMR-5 challenge representative-independence, query access, weak-bias and reverse reconstruction.
+
+END_OF_HANDOFF::TMR4::2026-11-15_1039_PST
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-15 09:36 PST | KNAPFUSE049 /049
 
 **GOVERNING:** Fusion-Lipschitz directive 2026-11-14; existing TMR-4 title, ownership, enabled Pacific schedule and all other roles unchanged. Historical checker /341 FAIL as full logical UNSAT authority; /386 RESTRICTED. P versus NP OPEN.
