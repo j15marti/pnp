@@ -1,3 +1,30 @@
+# TMR-3 CURRENT handoff | 2026-11-15 10:25 PST | ALLENDER_ONEQUERY049 /049
+
+**GOVERNING FIRST:** 2026-11-15 Allender MajMajSAT integration directive SHA 1760aefab5944a063f64b62142e358fbd2b94235; prior fusion-Lipschitz and 2026-11-13 replacement retained only as subordinated scientific priorities/safeguards. TMR-3 title, identity, ownership and all five existing Pacific hourly schedules unchanged. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED CONDITIONAL LEMMA, independent mathematics peer review OPEN:** Suppose a ONE-fixed-uniform exact deterministic MajMajSAT-to-SAT oracle reduction uses <=1 query, has nonoracle exponent r, retains writable exponent u, generates its length<=N^a query's bit at any classical address in N^h work using N^u space, and a bounded-error algebraic-amplitude quantum SAT solver has time M^t, space M^s with van Melkebeek-Watson constructibility. Apply their Theorem 1 **BEFORE** virtual query generation: quantum SAT -> classical Pr unbounded-error SAT O(T log T), O(S+log T). Then provide ordinary classical simulator input requests via the exact generator. With only one outer query, deterministic identity/negation/constant output preserves the strict 1/2 Pr sign. All work, source accesses, head/address registers and simulator state counted: exact upper exponents **theta=max(r,a*t+h)** and **eta=max(u,a*s)** plus o(1) polylogs. If theta<1+gamma(sigma) and eta<sigma for a SAME machine, contradiction with Allender et al. Thm 7. This is a valid conditional constraint on the **combined** compiler/solver hypotheses, not a SAT lower bound or a MajMajSAT->SAT compiler construction.
+
+**CHECKED EXACT SYMBOLIC FORBIDDEN LEDGER:** Let sigma=3/4, g=min(gamma(3/4),1/4)>0 (gamma NOT numerically estimated), a=1,r=1+g/8,t=1+g/4,s=u=1/2, h=g/4. One virtual query: time 1+g/2 and space 1/2, strictly inside forbidden region. One materialized length-N query: space 1, outside. N virtual queries charged at same per-call bound: upper time 2+g/2, outside. Slow h=g: upper time 1+5g/4, outside. Multi-query weak Pr semantics counterexample: two YES probabilities 17/32 AND gives 289/1024<1/2. No quantum coherent input-generator theorem was assumed; for multiquery quantum composition a compatible charged coherent interface remains OPEN.
+
+**NEW EXACT RATIONAL SPEEDUP CHAIN from Allender [2001] Lemmas 5–6/Theorem 4:** Under hypothetical PrTime(n) subset PrTiSp(n^alpha,n^1/2), alpha>1, pad by b=3/2, choose k>=max(2,tau(3alpha/2,1/4)), and rational d=1+1/[4(k-1)]. The binomial calculation proves d^(k-1)<4/3<3/2. Hypothetical LCH2 subset PrTime(n^d) would give PrTime(n^(3/2)) subset PrTime(n^(d^(k-1))), violating probabilistic time hierarchy. Source-justified parameter fragment, not a numerical gamma, no assumption promoted.
+
+**EXECUTED EXACT V8:** 1,024 rational synthetic g tests (NOT actual gamma), k=2..160, PP-AND control; **8,672 BigInt exact-rational assertions, zero failures**. Finite status COMPUTATIONAL, symbolic inequalities independently stated in report. Repo-wide preflight/unavailable local checkout and full suite NOT run. Previous TMR-3/048 prepared-marker physical machine remains separate RESTRICTED, not an all-SAT compiler.
+
+**NEW FILES on research branch, merge/readback required:**
+- research/agents/tmr-3/2026-11-15_1025_TMR3_ALLENDER_ONEQUERY_VIRTUAL_EXPONENT049.md
+- experiments/tmr/tmr3_allender_onequery049.js
+- results/raw/tmr/2026-11-15_1025_TMR3_ALLENDER_ONEQUERY049_V8_RAW.json
+- results/raw/tmr/2026-11-15_1025_TMR3_ALLENDER_ONEQUERY049_FORBIDDEN_REGION.json
+- This full-history-preserving handoff.md.
+
+**PEER TARGETS:** TMR-1 audit LCH_k rational d chain, Thm 7 strict quantifiers, and uniform class/encoding. TMR-2 test real <=1-query exact majority-to-SAT reduction (simple SAT(G) and SAT(not G) are provably useless). TMR-4 check virtual generator one-step tariff and prohibit reverse extraction of potential from language noncontainment. TMR-5 challenge one-query sign, source-to-classical-simulator input model, and all work/space guards. **TRANSFER OPEN**; **SUPERPOLYNOMIAL FUSION POTENTIAL OPEN**. /341 full UNSAT authority FAIL; /386 RESTRICTED. No changes to tasks, peer ownership, root manuscript or trackers.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE:** proof1 full SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 complete Git blob 930c5eeddafce656717f28055a7a755f44737c; main.tex complete Git blob 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. Current issue #3 and five peer handoffs consulted. P versus NP OPEN.
+
+END_OF_HANDOFF::TMR3::2026-11-15_1025_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-15 09:28 PST | PHYSFRONTIER148 /048
 
 **GOVERNING:** user-approved fusion-Lipschitz tariff directive, main blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; TMR-3 identity and all five Pacific schedules and ownership unchanged. **P versus NP OPEN.**
