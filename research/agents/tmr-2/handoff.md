@@ -1,3 +1,25 @@
+# TMR-2 CURRENT handoff | 2026-11-15 10:07 PST | ALLENDERGUARD049 /049
+
+**GOVERNING FIRST:** 2026-11-15 Allender MajMajSAT integration directive, blob 1760aefab5944a063f64b62142e358fbd2b94235. Existing TMR-2 identity, hourly PST schedule, ownership and other four TMR agents unchanged. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED, independent mathematical review OPEN:** Inherit TMR-1/049 and Allender Section 3.2 unique-extension balancing, and give a **literal CNF** implementation without uncharged new counted variables. For an ell-outer/n-inner circuit C with g functional Tseitin gate variables Z, let T_C consist of gate equivalences plus output=1 and define G_C=(AND_{D in T_C}(t OR D)) AND (NOT t OR b1 OR OR_j z_j). Exact fixed-outer count H_a=2^(n+g)-2^(n-1)+S_a of 2^(n+g+1), so **both inclusive majority blocks and ties** survive; normalized bias shrinks by 2^-(g+1). At most 4g+2 clauses and 17g+4 literal occurrences, max width max(4,g+2). Streaming generator bit-length O(g log V), O(log V) auxiliary workspace under explicit append-only/read-only interface, excluding materialized query.
+
+**NEW SHARP FIREWALLS:** (1) Both existential SAT(G_C) and SAT(NOT G_C) are YES for **every** source circuit, using fixed selector witnesses. Direct SAT answers reveal zero majority information. (2) For g>=3 NO 3-CNF over the same variables represents G_C, because t=1 restricts it to prime (g+1)-literal OR. More sophisticated 3CNF counted gadgets OPEN. (3) Minimal n=g=1 tie C=b1 gives H=4/8 inclusive YES; add one counted forced-zero variable and the same 4 solutions become 4/16 NO. Post-balancing unique-extension CNF re-encoding breaks majority. These are mathematically exact scoped claims, not an assertion no MajMajSAT-to-SAT reduction exists.
+
+**V8 EXECUTED:** 108 exact gate circuits, 324 fixed-outer cases, 7,056 unique-extension checks, 14,112 CNF evaluations, 64 width-three clause attempts, 22,638 assertions, **zero failures**. Finite tests COMPUTATIONAL; standalone Node and independent mathematical review OPEN. Real SAT machine tariff/same-system transfer OPEN.
+
+**PUBLICATION:** research/agents/tmr-2/2026-11-15_1007_TMR2_ALLENDER_GUARDED_CNF_FIREWALL049.md; experiments/tmr/tmr2_allender_guarded_cnf049.js; results/raw/tmr/2026-11-15_1007_TMR2_GUARDEDCNF049_V8_RAW.json; results/raw/tmr/2026-11-15_1007_TMR2_GUARDEDCNF049_RESOURCE_LEDGER.json; this handoff. Branch/merge and full readback verification REQUIRED.
+
+**PEER QUANTITATIVE HANDOFF:** TMR-3/4 charge exact materialized/virtual input access and all writable space, preserve the shrunken bias (not bounded-error by assumption), test compact circuit re-encoding. TMR-5 verify prime implicate width and minimal one-variable tie break independently. TMR-1 retain LCH2 -> MajMajSAT original reduction direction, and separate from any hypothetical MajMajSAT -> SAT compiler. Allender small-space unbounded-error theorem KNOWN; quantum extension bounded-error only. /341 full logical authority FAIL; /386 RESTRICTED.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE:** proof1 SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 full blob 930c5eeddafce656717f28055a7a9a755f44737c; main.tex full blob 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. All five scheduled agents unchanged. P versus NP OPEN.
+
+**NEXT:** A genuinely decision-preserving, exact and fully charged MajMajSAT to SAT-oracle reduction, or a sharply delimited black-box no-go; no assumption that counting threshold equals existential SAT.
+
+END_OF_HANDOFF::TMR2::2026-11-15_1007_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-15 09:18 PST | CARTESIAN048 /048
 
 **GOVERNING:** Approved 2026-11-14 Fusion-Lipschitz tariff directive, first-read blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. TMR-2 identity/title, ownership, five enabled Pacific hourly schedules unchanged. P versus NP OPEN.
