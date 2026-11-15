@@ -1,3 +1,21 @@
+# TMR-3 CURRENT handoff | 2026-11-14 18:20 PST | TWO-WAY MULTIHEAD EXACT MCSP INGRESS033
+
+**NEW MH-PREFIX047 PROVED/RESTRICTED symbolic, TMR-2/TMR-5 mathematical review OPEN:** For ordinary MCSP complete truth-table length $N=2^n$, size threshold $s=\lfloor N^\mu\rfloor$ for any fixed $0<\mu<1$, let $D(n,s)=(s+1)(n+s+2)[3(n+s+2)^2]^s$, $B=\lceil\log_2D\rceil+1=o(N)$, $a=N-B$. On every MCSP YES table, any bounded-error $\delta<1/2$ machine with **any number of two-way, locally moving source heads initially all left**, arbitrary work/messaging/sharing, has probability **at least exactly $1-2\delta$** to read a cell at index $\ge a$. Thus $\mathbb E[T_{\rm elapsed}],\mathbb E[W_{\rm source}]\ge(1-2\delta)(N-B)$, even for synchronous parallel networks with unlimited processors and instantaneous messages, provided no uncharged sharding/positioned heads or source-aware advice. Proof picks one NO suffix completion sharing YES prefix by circuit counting, then pairs same-randomness early transcripts; early false YES on NO and false NO on YES each cost at most $\delta$. This improves TMR-3/032's one-way model, $1-2\delta-o(1)$ coefficient and extra $\log N$ suffix budget. **Still only exponent 1, not CHMY small-$\mu_1$ $N^{1.01}$ decision premise.**
+
+**TMR-1/033 peer audit:** Independent counter-head emulator checked 66,208 sparse-support sources, 1,069,704 generated bits and 409,982 source-gap counter movements. The core identity $\sum_{d=1}^D\nu_2(d)<D$ and highest-one marker validate the $O(N+(r+1)n)$ countdown mechanism under an **extra separately charged write-only output port**, not a single total output/work tape. Full finite-state transducer compilation not executed. TMR-5/TMR-4 output-port audit still requested.
+
+**EXECUTED EXACT native CPython:** experiments/tmr/tmr3_multihead_suffix_audit047.py; raw results/raw/tmr/2026-11-14_1820_TMR3_MULTIHEAD_SUFFIX047_RAW.json; **488,389 checks, zero failures**, 1,536 independently generated two-way adaptive multihead paired-input traces, 72,233 matching transitions; direct n=2,3,4 0/1-gate circuit catalogue checked. Finite tests COMPUTATIONAL; theorem separate.
+
+**FULL REPORT:** research/agents/tmr-3/2026-11-14_1820_TMR3_MULTIHEAD_SUFFIX_FRONTIER033.md.
+
+**PREFLIGHT:** Nov14 directive read FIRST and rechecked SHA 1e11aa64a0b0d635a65cea58500b09f2b0fe010a; Nov13 replacement, AGENTS, CODEX, skill; current issue #3, all five handoffs and original peer/Claude/Grok/LSPV controls; authentic full proof1 (28,714 chars) and recovered full proof2 (1,051,196 chars) and canonical main.tex (2,545,859 chars). CHMY STACS 2021 Thm1-3 PDF pages 23:3-4 and MMW STOC2019 Thm1.2-1.3 original PDF inspected including screenshots. **TRACKERS REVIEWED; NO MATERIAL CHANGE**; canonical main.tex TMR-5-owned untouched. Existing five schedules unchanged, P vs NP OPEN.
+
+**PEER/NEXT:** TMR-2 audit exact $2\delta$ coupling and YES/NO opposite-label completions; TMR-5 test two-way/network head-start/instant-message assumptions; TMR-1/TMR-4 counter/output-port independent review. Next try to falsify a charged **post-input decision** lower-bound invariant at CHMY's exact small $\mu_1$, allowing algebra, sharing, caching and recomputation. Do not double count input transport and decision work.
+
+END_OF_HANDOFF::TMR3::033::2026-11-14_1820_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-14 17:28 PST | RANDOMIZED ONE-WAY MCSP PREFIX INGRESS032
 
 **NEW ONEWAY-PREFIX46 PROVED/RESTRICTED symbolic, TMR-2/TMR-5 mathematical audit OPEN:** For ordinary MCSP YES full truth tables of length $N=2^n$, circuit threshold $s=\lfloor N^\mu\rfloor$, fixed $0<\mu<1$, let $D(n,s)=(s+1)(n+s+2)[3(n+s+2)^2]^s$ and $m=\lceil\log_2D\rceil+\lceil\log_2N\rceil+2=o(N)$. Every fixed bounded-two-sided-error $\delta<1/2$ randomized machine with a **left-initialized physically one-way locally moving read-only source head**, even arbitrary polynomial or greater writable space, must reach position $N-m$ on **each MCSP YES input** with probability at least $1-2\delta-(1-\delta)/[4N]$. Same-realization expected physical transitions $\ge (1-2\delta-o(1))N$. Coupling a fixed YES input to uniform same-prefix completions proves this without streaming-state capacity arguments. The leading reach-probability coefficient is achievable by an early-randomized-guess/full-scan exact algorithm; it is NOT a total-runtime upper bound.
