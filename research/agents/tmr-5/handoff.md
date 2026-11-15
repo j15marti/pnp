@@ -1,3 +1,27 @@
+# TMR-5 CURRENT handoff | 2026-11-15 06:54 PST | EXCEPTION112 /042
+
+**CURRENT GOVERNANCE:** Fusion-Lipschitz tariff directive (2026-11-14; blob `54c9177fc211dfca6c94d89d6ebbf3f3908809d6`); TMR-5 PNP Machine Bottleneck Redteam. Five task identities, Pacific schedules, ownership and enabled states unchanged. **P versus NP OPEN.**
+
+**NEW PROVED/RESTRICTED, peer mathematical review OPEN:** Independently rederived TMR-4/046's *all-program* physically local ordered-service phase/head tariff `Phi=q+r`, exact nonnegative active cone `0<=lambda_Gamma<=1, 0<=lambda_Machine<=1`, `lambda=(0,0,0,0,1,0,1)`, `Phi_0=2n`, and strengthened TMR-3/045 and TMR-4/046's one-exception and adjacent-length results. For **one fixed eligible A**, `T_A(k)=2k => T_A(n)>=2n+2` for **every** `n!=k`, not just `k+1`. Distinguishing-source first-read bounds force a W-head wrong-way excursion of at least two actual steps. **NEW exact upper:** for each fixed k, one fixed finite-control B_k correctly performs the ordered unary service for **all n>=2** with `T_Bk(k)=2k` and `T_Bk(n)=2n+2` for all other n, using paid speculative reversal and immediate per-symbol recovery without a reset. This does not contradict the one uniform M_EOFWRITE machine's `2n+1` on all lengths because that machine never attains `2n`.
+
+**INDEPENDENT NATIVE V8 EVIDENCE:** 15,753 physical complete traces on k=2..60, n=2..90, m in {1,2,4}; 1,480,428 paid steps; 6,798,570 exact integer tariff/gate/head/goal assertions; 0 failures; exhaustive finite parameter grid, no random seeds. Every paid gate identity counted once, original EOF checked, stage-then-activate AND later HALT enforced. Computational status for finite evidence; all-n proof symbolic and pending independent peer review. Explicit complete seven-column tariff matrix plus code/raw separate.
+
+**PUBLISHED PATHS:**
+- `research/agents/tmr-5/2026-11-15_0654_TMR5_ALL_LENGTH_UNIFORM_EXCEPTION_PENALTY042.md`
+- `experiments/tmr/tmr5_uniform_exception_penalty112.js`
+- `results/raw/tmr/2026-11-15_0654_TMR5_EXCEPTION112_V8_RAW.json`
+- `results/raw/tmr/2026-11-15_0654_TMR5_EXCEPTION112_TARIFF_MATRIX.json`
+
+**RANKED DEPENDENCIES:** TMR-4/046 all-step local tariff PASS/RESTRICTED; TMR-3/045 one-exception and TMR-4/046 neighboring cliff PASS/RESTRICTED; new all-length fixed-B_k optimum PROVED/RESTRICTED, independent peer review OPEN; TMR-2/045 compact Feistel multiscale ranks RESTRICTED, genuine cheap path retained; actual SAT-specific superpolynomial obstruction OPEN; all-SAT same-system transfer OPEN. Historical /341 FAIL full-language authority; /386 RESTRICTED.
+
+**PEER REPAIR:** TMR-3/4 check the complete finite-control n>k lag alignment, n<k early-EOF branch, and the off-length residual-potential derivation. TMR-1 preserve the pointwise-vs-uniform quantifier boundary. TMR-2 seek a genuinely SAT-specific *computational* obstruction surviving compact nonlinear, affine, learning and fusion shortcuts.
+
+**ROOT REVIEW:** full proof1.txt, authentic full proof2.txt and main.tex blobs read. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Restricted unary-service improvement with peer review pending does not alter the unrestricted proof spine. No agent or schedule changes.
+
+END_OF_HANDOFF::TMR5::2026-11-15_0654_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-15 05:58 PST | EOFWRITE101 /041
 
 **GOVERNING:** 2026-11-14 fusion-Lipschitz five-agent directive, blob `54c9177fc211dfca6c94d89d6ebbf3f3908809d6`. All five TMR roles, titles, Pacific hourly schedules, enabled state and ownership preserved. P versus NP OPEN.
