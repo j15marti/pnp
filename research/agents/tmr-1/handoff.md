@@ -1,3 +1,24 @@
+# TMR-1 CURRENT handoff | 2026-11-14 16:05 PST | CHARGED SHORT-HEADER NETWORK-CONSTRUCTOR COMPILER030
+
+**NEW SHORTHEAD41 PROVED/RESTRICTED symbolic, TMR-3/TMR-5 peer review OPEN:** Fix a length-only constructor G with one physical guest work head and an independent, short binary-n read-only head of h=Theta(log(n+2)) symbols, with B-bit output as the first B guest work cells and no separate live output head. A one-physical-work-tape interpreter can replicate this h-symbol header and unary input-head marker at each visited guest work block of O(h) cells, simulating EVERY guest transition with O((h+1)^2) physical transitions. After spooling a header-free one-way MCSP source x of N=2^n bits and discovering n using O(N log N) charged halving sweeps, the real simulator has time
+
+$$
+O(N\log(N+2)+C(h+1)^2+(E+1)M),
+\quad M=O(N+B(h+1)+(E+p+1)\log(N+B+E+p+2)).
+$$
+
+Under the original TMR-3/030 bounded-symbol network event normal form, for high-mu2 ordinary MCSP the CHMY STACS2021 Theorem 2 exponent exclusion c<1.99 and e+max(1,a,b,e)<1.99 survives, rather than the weaker 2c<1.99 yielded by TMR-5/027's conservative generic full-tape constructor simulation. **Only** for one-work-head, length-only, compact-prefix-output constructors and fully charged E events; arbitrary source-dependent constructors, extra output/work heads or generic SAT are not covered. Constructor peak writable cells remain counted. Does not reach CHMY small-mu1 magnification or prove P versus NP.
+
+**ACTUALLY EXECUTED native OS Node.js:** exact source \`experiments/tmr/tmr1_short_header_bridge041.js\`, raw \`results/raw/tmr/2026-11-14_1605_TMR1_SHORT_HEADER041_RAW.json\`. 216 header models, 19,440 guest transitions, 9,978,085 counted single-head moves/reads/writes, 257 length-halving checks, 89,177 exponent-grid cases, 397,331 assertions, zero failures. These are finite indexed-block host proxies, **not** a compiled physical TM; mathematical block-delimiter proof separate. Local Git blob/source a1c10185fc67086825e4522fde0420be4550fcc2 and raw 9bf44a2349def43241204bb2907ba56378e6b232.
+
+**FULL REPORT:** \`research/agents/tmr-1/2026-11-14_1605_TMR1_SHORT_HEADER_CONSTRUCTOR_SIMULATION030.md\`. Current Nov14 MCSP directive read first and rechecked SHA 1e11aa64a0b0d635a65cea58500b09f2b0fe010a, then Nov13 replacement, AGENTS/CODEX/skill, issue #3 through TMR-5/027, five latest handoffs, full proof1 and full authentic proof2/main Git blobs. Prior TMR/Claude ONETAPE/TPORT/DIRECTPRODUCT/Grok and Walsh/compact-algebra controls inspected. **TRACKERS REVIEWED; NO MATERIAL CHANGE**; canonical main.tex TMR-5-owned and unchanged. No task change. P versus NP OPEN.
+
+**NEXT / PEER REQUEST:** TMR-3 independent native one-head simulation, source spooling and network active-record implementation; TMR-5 attack compact prefix, stale scratch and source-dependent constructor violations. Keep the high-mu2 result separate from low-mu1 magnification.
+
+END_OF_HANDOFF::TMR1::030::2026-11-14_1605_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-14 15:04 PST | NEAR-TIGHT MCSP DUMMY-PADDING TRANSITION029
 
 **NEW PADWINDOW35 PROVED/RESTRICTED, independent TMR-5/TMR-4 review OPEN:** For fan-in-two AND/OR and unary NOT DAG circuits with free constants, let $U(n)$ be the maximum minimum gate count over $n$-input functions. Define $R_\mu(n)$ as the first dummy-input count $r$ for which every repeated full table is ordinary $MCSP[\lfloor2^{\mu(n+r)}\rfloor]$ YES. A direct count of at most $D(n,s)=(s+1)(n+s+2)[3(n+s+2)^2]^s$ circuit descriptions proves that for $n\ge8$ some $f$ requires more than $\lfloor2^n/(16n)\rfloor$ gates. The independent DNF upper is $U(n)\le n2^n+n+2$. With exact padding invariance, for EACH fixed $0<\mu<1$,
