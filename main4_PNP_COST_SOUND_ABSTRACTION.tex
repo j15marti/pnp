@@ -1,5 +1,5 @@
 % BEGIN TMR-4 OWNED
-% Updated by TMR-4, 2026-11-15 19:37 PST, /060 restricted depth-heavy shared-DAG schedule discovery
+% Updated by TMR-4, 2026-11-15 20:36 PST, /061 certified bounded-sharing DAG schedules
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,hyperref}
@@ -9,7 +9,7 @@
 \begin{document}
 \maketitle
 \section{Target, status, exact model}
-This is a coherent restricted end-to-end pipeline from an explicitly encoded register-stream Boolean program, an ordinary shared fan-in-two circuit with a supplied live-frontier layout, a no-layout read-once Boolean formula tree with a uniformly discovered logarithmic frontier, and a general no-advice acyclic shared-gate DAG with a discovered long-edge spill budget, through complete read-once branching programs to exact decision/count semantics and declared source-width rank implications. Semantic preservation and the scoped rank bound are PROVED/EXACT, with independent mathematical review OPEN. Finite checks are COMPUTATIONAL. Arbitrary circuit-to-register translation, general SAT-time lower bounds, and P versus NP remain OPEN.
+This is a coherent restricted end-to-end pipeline from an explicitly encoded register-stream Boolean program, an ordinary shared fan-in-two circuit with a supplied live-frontier layout, a no-layout read-once Boolean formula tree with a uniformly discovered logarithmic frontier, a general no-advice acyclic shared-gate DAG with discovered long-edge spill, and a source-certified bounded-sharing DAG with logarithmic cache-plus-stack width, through complete read-once branching programs to exact decision/count semantics and declared source-width rank implications. Semantic preservation and the scoped rank bound are PROVED/EXACT, with independent mathematical review OPEN. Finite checks are COMPUTATIONAL. Arbitrary circuit-to-register translation, general SAT-time lower bounds, and P versus NP remain OPEN.
 
 Fix $n,s\geq1$. The source has original inputs $x\in\{0,1\}^n$, $s$ retained register bits, initial register $r_0$, and precisely $n$ stages. Each stage has a topologically ordered shared fan-in-two Boolean truth-table gate DAG which selects an index $j_t$ \emph{before} inspecting its value and updates $r_{t+1}=U_t(r_t,x_{j_t})$. The selector is independent of the unread bit on all reachable states, and no index is repeated along any path. After stage $n$ a shared Boolean DAG returns the one-bit answer $h(r_n)$. The finite encoding is canonical ASCII JSON with fields for version, dimensions, initial register, stages, and terminal circuit, and binary gate records $(a,b,\tau)$ for any of the 16 binary truth tables. Shared fan-out, repeated operands, constants and adaptive choice are allowed. The compiler rejects malformed encodings and reachable read-once or pre-read-selector violations. Let $L$ count the entire source encoding in bits.
 
@@ -464,6 +464,145 @@ counting solely as an upper-bound guard. Legal DISJ, Horn, 2-SAT,
 Gaussian, bounded treewidth, equality, autarky, product, padding,
 auxiliary, selector and compact paths remain unexcluded.
 
+\section{A certified shared-core source-to-OBDD compiler: /061}
+\paragraph{Named dependency D4-LOW-CONGESTION-CERTIFICATION: closed for bounded original fan-out core.}
+Fix a complete canonical ASCII JSON binary-gate source with keys
+\texttt{version,n,gates,root}, version one, $n\geq1$ original inputs,
+$g\geq1$ distinct original binary truth-table gates, arbitrary gate-record
+order, an acyclic root-reachable dependency DAG, and every original input used.
+The authenticated source has no supplied layout or advice. Reject malformed
+strings, dead gates, cycles, invalid opcodes, ambiguous identifiers and
+unbounded declared $n$ \emph{before} allocating $n$ indexed entries:
+authentic sources necessarily have $n\leq2g$. This source is an explicit
+versioned variant of the earlier canonical DAG grammar, not an uncharged
+substitution for a different physical input model.
+
+Count each original input or gate identity whose output occurs in
+two or more \emph{operand positions} as one shared vertex, including
+two occurrences into a single original gate. Write $k$ for the number
+of such shared vertices, $M=n+g$, and $L$ for the actual source bits.
+A root-output pseudo-consumer determines final liveness, but is not
+an extra gate operand. No hypothesis bounds individual gate fan-out,
+long edges, source input reuse, or the truth-table opcode.
+
+\paragraph{Theorem 7 (uniform source-derived shared-core certificate).}
+There is one fixed compiler, with all graph discovery charged, that
+emits exactly one READ per original input and one evaluation of
+each original gate, caches each shared result once, and schedules
+the remaining disjoint expression-tree components using larger-first
+Sethi--Ullman labels. Its logical Boolean cache-plus-temporary
+stack occupancy on every assignment is at most
+\[
+w=k+2+\lceil\log_2(n+2g+2)\rceil.
+\]
+It uniformly produces a complete labelled OBDD $B(C)$ with
+\[
+ V(B(C))\le n2^w\le8n2^k(n+2g+2),
+ \quad f_{B(C)}(x)=f_C(x),\quad \#B(C)=\#C.
+\]
+Two actual labels are retained even if their successor state is
+the same. For every field $K$ and prefix cut in the source-discovered
+input order $\rho$,
+\[
+ \operatorname{rank}_K M_{\rho_{\le i},\rho_{>i}}(f_C)
+ \le 2^w.
+\]
+Thus $k=O(\log L)$ gives a \emph{uniform polynomial-time,
+polynomial-peak-space} explicit OBDD compiler, without a supplied
+layout. The theorem is about this actual source and constructed
+representation, not about necessary resources of all equivalent
+circuits or SAT algorithms.
+
+\emph{Proof.}
+Compute original operand-use counts and a full dependency topological
+order. With the outgoing edges of the $k$ shared vertices cut, every
+remaining source vertex has at most one consumer, and the components
+are true binary expression trees rooted at shared vertices or the
+designated output. Topologically process the shared roots, treating
+already computed shared predecessors as cached leaves; then process
+the output. Each nonshared original source identity is in exactly
+one component and is evaluated once, and each shared original source
+identity is computed once at its target root. A shared input is READ
+once at its target and otherwise served from a charged cached REF.
+Inducting over every original instruction preserves each gate bit,
+initial empty stack/initialized cache, all real original input reads
+and both terminal labels.
+
+For each tree, put $r(\mathrm{leaf})=1$ and
+$r(v)=\max(r(a),r(b))+[r(a)=r(b)]$. Evaluating the larger-label
+child first uses at most $r(v)$ scratch stack bits. Each label-$r$
+tree has at least $2^{r-1}$ leaves, and across \emph{all}
+components there are at most $n+2g$ fresh-input and shared-reference
+leaf occurrences. Thus the largest scratch stack has size at most
+$1+\lfloor\log_2(n+2g)\rfloor$. The $k$ shared slots are persistent;
+two additional bits of staging slack yield the displayed $w$.
+No original gate is unfolded, shared gate outputs count once, and all
+REF uses and physically live scratch slots are charged.
+
+Between consecutive original READ operations, all instructions are
+deterministic. Breadth-first construction from the real initial
+cache/stack state branches on each original input bit, executes every
+intervening gate and cache access, and merges identical next
+stage states. The public program counter is known from the stage.
+There are at most $2^w$ such configurations per input stage, hence
+$n2^w$ nodes. Induction on stage and source instructions proves
+pointwise equivalence; the original input labels give a bijection
+between length-$n$ labelled paths and original assignments even
+through shared successors, proving the exact count. After a prefix,
+the remaining Boolean suffix function is determined by one of at
+most $2^w$ configurations, giving a rank-one-row-factorization bound
+over every field. \hfill$\square$
+
+\paragraph{Same-execution resource charge.}
+Let $A=n2^w$ and let $D$ be a conservative full writable-bit budget
+\[
+D=1+L+O\bigl(M^2\log(M+2)+
+ A(w+n+\log(A+2))\bigr).
+\]
+Full canonical parse, invalid-input rejection, identifier and graph
+authentication, use counts, topology, component discovery and labels,
+original instruction recording, side/cache changes, exact BFS state
+tables with both arcs, $\le n+1$-bit count registers, source-head
+movement, addresses, output and all arithmetic are included.
+A fixed locally headed deterministic multitape implementation has
+simultaneously
+\[
+T_{\rm total}=O(D^5+n^2),\qquad S_{\rm peak}=O(D)
+\]
+on the \emph{same combined} source-to-output run. These coarse
+bit-machine bounds are not a measured physical trace and can be
+exponential when $k$ is large. Shared physical objects count once;
+original input rereads by the compiler for source authentication
+are paid and are not rereads by its read-once target evaluator.
+
+\paragraph{Controls, validation and proof status.}
+DISJ has a tree source with $k=0$ and a cheap interleaved
+source-discovered order, notwithstanding exponential \emph{grouped}
+cut rank. Horn, affine/Gaussian, equality, two-SAT, treewidth,
+product, autarky, padding, selector, unique-solution and compact
+semantic shortcuts are preserved. The theorem is PROVED/EXACT
+in the stated source class, with independent mathematical review
+OPEN and unrestricted reverse necessity OPEN.
+ACTUALLY EXECUTED CPython 3.13.5 source revision
+\texttt{tmr4-fanout-core061.release1}, deterministic seed 20261115:
+120 encoded sources, 37,760 complete assignment replays,
+765,643 assertions, seven invalid-input rejections, zero failures.
+The executable independently constructed every target stage transition
+from the authentic source program and checked integer path counts
+and field-two prefix ranks. These are COMPUTATIONAL checks, not
+a substitute for the symbolic proof. The Python reference uses
+recursion and is not a physical all-length-TM implementation.
+No checkout preflight, LaTeX build, microstep trace or independent
+mathematical peer review was run. Full report:
+\path{research/agents/tmr-4/2026-11-15_2036_TMR4_BOUNDED_SHARE_CORE_CERTIFICATION061.md}.
+Code: \path{experiments/tmr/tmr4_fanout_core061.py};
+raw: \path{results/raw/tmr/2026-11-15_2036_TMR4_SHARED_CORE061_PY_RAW.json}.
+The original tree schedule is Sethi and Ullman, JACM 17 (1970),
+DOI \url{https://doi.org/10.1145/321607.321620}; unrestricted
+DAG register allocation has different complexity, Sethi,
+SIAM J. Comput. 4(1975),
+DOI \url{https://doi.org/10.1137/0204020}.
+
 \section{Four gates, controls, validation}
 \paragraph{DISJ sanity: PASS restricted, FAIL arbitrary transfer.} The grouped $\mathrm{DISJ}_3$ cut rank is eight over both $\mathbf F_2$ and $\mathbf F_{101}$, yet an interleaved source uses $s=2,V=18,b=5$ while a grouped one uses $s=4,V=41,b=1$; both have seven shared gate records. DISJ retains its linear-size circuit.
 \paragraph{Relativization: PASS restricted, unrestricted OPEN.} A relational compiler and rectangle argument do not provide the necessary nonrelativizing NP step; algebrization and Natural Proofs checks remain open.
@@ -481,17 +620,19 @@ Raw results: \path{results/raw/tmr/2026-11-15_1540_TMR4_REGISTERSTREAM055_NODE_R
 Original TMR-4/053 adaptive rectangles, TMR-2/054 cofactor rank and TMR-1/054 source CNF normalization were inspected. Further sources: Wegener, \emph{Branching Programs and Binary Decision Diagrams}, SIAM 2000, Chapter 2, \url{https://doi.org/10.1137/1.9780898719789.ch2}; Beame, Jayram and Saks, \emph{Time-Space Tradeoffs for Branching Programs}, JCSS 2001, \url{https://doi.org/10.1006/jcss.2001.1778}; Baker, Gill and Solovay, \emph{Relativizations of the P =? NP Question}, SICOMP 1975, \url{https://doi.org/10.1137/0204037}. The scope and peer review status are not promoted by publication alone.
 
 \section{ONE next load-bearing lemma}
-D4-LOW-CONGESTION-CERTIFICATION (OPEN): identify and authenticate an
-efficiently checkable, source-derived structural certificate
-that forces $w=O(\log L)$ under a fully paid uniform no-advice
-schedule on a genuine shared-gate DAG class beyond the explicit
-/060 chain. An accepted certificate must permit long edges and
-sharing, retain both terminal/count semantics, charge layout search
-and every physical access, and admit genuine alternative compact
-computations. Even such a certificate alone would not establish
-a space lower bound for all equivalent circuits or SAT machines;
-a separate nonrelativizing reverse necessity bridge remains OPEN.
-P versus NP remains OPEN.
+D4-SHARED-CORE-EXTENSION (OPEN): authenticate and discover a
+low-cost source-local decomposition for genuine shared-gate
+DAGs with \emph{many} shared vertices but a smaller
+dependency/interface width than their total count $k$.
+The compiler must construct its schedule uniformly from the
+actual encoded source, charge every shared-reference access,
+recomputation and cache eviction, preserve both terminal/count
+semantics and retain legal compact equivalent algorithms.
+This would strictly generalize /061's certified
+$k=O(\log L)$ family, but would not by itself prove that
+all equivalent circuits or SAT machines require the
+constructed width. A separate nonrelativizing reverse
+necessity bridge remains OPEN. P versus NP remains OPEN.
 
 \section{Workflow}
 Follow \path{research/coordination/2026-11-15_END_TO_END_AGENT_MANUSCRIPTS.md}, AGENTS.md and CODEX.md. This entire paper is owned by TMR-4. Historical proof text trackers were not read or edited, and none of the five agent schedules were changed.
