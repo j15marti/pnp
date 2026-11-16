@@ -1,4 +1,4 @@
-# TMR-3/064: one public authentic movement word can have a quadratic live-block frontier
+# TMR-3/064: one public authentic movement word can have a \quadratic live-block frontier
 
 November 16, 2026, 05:04 PST. TMR-3 / PNP Time-Space Tradeoffs, Track B.
 **PROVED/EXACT, restricted explicit machine and arithmetic, external independent mathematical review OPEN.** Finite tests COMPUTATIONAL. P versus NP OPEN.
@@ -20,50 +20,50 @@ Each clock is a finite-control bouncing head on the interval [0,b-1]. An enabled
 The PATH tape is initially blank. During exactly b^3 outbound transitions M reads the actual next payload bit y_k, writes it into PATH cell k and advances PATH right by one cell. At every b-th step PATH crosses to the next physical block, and never crosses earlier. The read-only input head advances one cell per bit; its first post-payload read verifies the endmarker and rejects extra bytes.
 
 During b turnaround transitions clock 1 moves from its right endpoint to the left while clocks 2/3 stay fixed; PATH stays at cell b^3 on the first b-1 transitions and crosses left to cell b^3-1 on the last. During the next b^3 transitions the three clocks resume; PATH reads every genuinely written cell in reverse order, maintains a one-bit XOR accumulator in finite control, moves left after each read except the last, and stops at cell zero on the second cubic pulse. Finally M spends b paid stationary terminal transitions and emits its actual XOR output. The source grammar and physical controller are fixed, uniform and total. For all authentic sources,
-[
- M(x)=igoplus_{k=0}^{b^3-1} y_k.
-]
+\[
+ M(x)=\bigoplus_{k=0}^{b^3-1} y_k.
+\]
 Malformed inputs are rejected, not classified UNSAT by a missing graph.
 
 ## Exact block schedule and frontier theorem
 
 Put m=b^2 and let time blocks j be zero-indexed. Total duration is
-[
- t=b+b^3+b+b^3+b=2b^3+3b,qquad B=t/b=2m+3.
-]
+\[
+ t=b+b^3+b+b^3+b=2b^3+3b,\q\quad B=t/b=2m+3.
+\]
 The PATH active-block index is:
-[
+\[
  z(j)=
- egin{cases}
+ \begin{cases}
  0&j=0,\
- j-1&1le jle m,\
+ j-1&1\le j\le m,\
  m&j=m+1,\
- 2m+1-j&m+2le jle 2m+1,\
+ 2m+1-j&m+2\le j\le 2m+1,\
  0&j=2m+2 .
- end{cases}
-]
+ \end{cases}
+\]
 Each of the three clock-tape heads remains in its physical block zero for every time block. The exact movement word is therefore **one public candidate** g_b, independent of y. The candidate index (tape, stage)->block is calculable with O(log N) writable bits from authenticated b and O(polylog N) binary arithmetic. With a locally moving read-only input head, rescan/restore makes per-query time at most O(N polylog N), fully charged. No full B-entry table is stored.
 
 For a candidate c define the TMR-3/063 cut frontier F_j(c) to contain each distinct (work-tape ID, block ID) active by j and active again after j. At the cut just after outbound stage j=m, the PATH has visited m distinct blocks 0,...,m-1, and reverse traversal will revisit every one. The three distinct CLOCK tape/block identities remain live too. Therefore
-[
+\[
  |F_m(g_b)|=m+3.
-]
+\]
 No cut contains more than m PATH blocks that are both past and future active: block m is only a turnaround visit, never revisited. Hence the exact maximum is
-[
- oxed{K=1,quad W=w(g_b)=b^2+3
-       =Theta(B)=Theta(t^{2/3}).}
-]
-At all even b>=12, 2^b>=2b^3+3b (check b=12, then exponential-to-cubic ratio increases), so b>=ceil(log_2 t) and b=Theta(t^{1/3}). This holds in precisely the admissible block-width range of the restricted /063 interface. The proof uses *active physical tape blocks*, not a static cut rank or a forced set of semantic dependencies.
+\[
+ \boxed{K=1,\quad W=w(g_b)=b^2+3
+       =\Theta(B)=\Theta(t^{2/3}).}
+\]
+At all even b>=12, 2^b>=2b^3+3b (check b=12, then exponential-to-cubic ratio increases), so b>=ceil(log_2 t) and b=\Theta(t^{1/3}). This holds in precisely the admissible block-width range of the restricted /063 interface. The proof uses *active physical tape blocks*, not a static cut rank or a forced set of semantic dependencies.
 
-In particular the materialized-block dictionary of /063 would have a worst-case budget (W+p)b=Theta(b^3)=Theta(t) on this family, even though K=1 and the candidate provider is inexpensive. Repeated original-source bits really are written to b^3 visited PATH cells. No claim is made that all correct deciders must retain them.
+In particular the materialized-block dictionary of /063 would have a worst-case budget (W+p)b=\Theta(b^3)=\Theta(t) on this family, even though K=1 and the candidate provider is inexpensive. Repeated original-source bits really are written to b^3 visited PATH cells. No claim is made that all correct deciders must retain them.
 
 ## Full same-execution time/space/query ledger
 
 The original physical machine has p=4 work tapes; its three clocks use 3b visited cells and PATH visits b^3+1, with fixed finite control. Its actual simultaneous time and space are
-[
- T_M=2b^3+3b=Theta(N),quad
- S_M=b^3+1+3b=Theta(N)
-]
+\[
+ T_M=2b^3+3b=\Theta(N),\quad
+ S_M=b^3+1+3b=\Theta(N)
+\]
 where read-only input is not counted as writable work tape. Input source bit acquisition and every cell move are included in T_M. The step partitions (bootstrap, outbound, turnaround, return, terminal) are disjoint. There are m outward, one turnaround, and m-1 return physical cross-block moves, 2m total.
 
 For one candidate G's indices need O(log N) work and at most O(N polylog N) source-head time per query; screening /063 has Q_G=O(pB^3) calls, which is polynomial but its forced cache width bound becomes linear in t. Graph-edge queries may be synthesized from the same stage-index service with charged scans. Arbitrary checkpoint-value requests may require source replay. The original M's physical cells are never erased by describing a virtual sketch. No polynomial-time lower bound is inferred.
@@ -83,7 +83,7 @@ Raw path `results/raw/tmr/2026-11-16_0504_TMR3_BOOMERANG_FRONTIER064_PY_RAW.json
 | DISJ sanity | PASS restricted. Only a physical-width property is asserted; DISJ, affine parity, Horn, 2-SAT, treewidth, equality, autarky, compact programs and shared-cache shortcuts are legal. |
 | Relativization | NOT APPLICABLE WITH REASON to a separation: none is claimed. No nonrelativizing NP premise, algebrization or Natural Proofs result is asserted. |
 | Simultaneous DTISP | PASS for the exact original M and separately declared streaming direct algorithm; generic low-width /063 premise and FLMV forbidden pair remain OPEN. |
-| Deterministic configuration counting | PASS as an upper-bound consistency control only; t=Theta(N), s=Theta(N), no randomized/quantum transfer. |
+| Deterministic configuration counting | PASS as an upper-bound consistency control only; t=\Theta(N), s=\Theta(N), no randomized/quantum transfer. |
 
 Local-basis changes, field characteristic, charged randomized isolation, uniqueness/selector projection, exact counting semantics, circuit-to-CNF wire blowup, majority ties, quantum error models, and product/padding/auxiliary operations do not enter this physical theorem. They remain explicit guards for any downstream SAT/circuit theorem. Historical /341 stays FAIL as full UNSAT authority; /386 RESTRICTED.
 
