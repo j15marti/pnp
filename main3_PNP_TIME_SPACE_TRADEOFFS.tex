@@ -26,6 +26,10 @@ Finite tests are \textbf{COMPUTATIONAL}.
 A universal logarithmic-workspace authentic-graph provider would imply
 $\mathrm L=\mathrm P$; no unconditional space lower bound is inferred.
 The general provider, improved evaluator, and P versus NP remain OPEN.
+TMR-3/063 now supplies a width-prefiltered, blank-start, source-indexed
+candidate-graph verifier for a precise promise class. Wrong candidates
+can have arbitrarily high live width without forcing excessive tape
+storage; the general coverage and small-authentic-width premises stay OPEN.
 TMR-3/062 now proves that the same legal-width P-complete graph marker
 admits exactly TWO source-independent movement-word candidates at each
 valid source length. A chronological virtual checkpoint-bit/FAIL verifier
@@ -521,16 +525,151 @@ microtraces. The proof and provenance are in
 executed code and raw are in \path{experiments/tmr/} and
 \path{results/raw/tmr/}. Independent mathematical review OPEN.
 
+\section{Frontier-filtered candidate verification with only source-indexed block labels (TMR-3/063)}
+\paragraph{Named dependency and exact quantifiers.}
+The next restricted interface \textsf{C3-FRONTIER-FILTERED-CANDIDATE-VERIFIER}
+extends /058 and /062 without assuming that false candidate graphs
+are cheap to retain. Fix a total deterministic finite-alphabet
+$p$-work-tape machine with a $b$-step block-respecting execution
+of $t=bB$ steps on every authenticated source in the declared domain.
+Assume a \emph{physically implemented} original-source candidate-block
+generator $G(x,c,h,j)$ gives each candidate block index for
+$c\in[K]$, $h\in[p]$ and $j\in\{0,\ldots,B-1\}$.
+Each call costs at most $\tau$ bit steps and $a$ writable bits,
+including source-head seek and restoration.
+The finite index family is source-obtainable with charged acquisition;
+it contains the true trajectory, whose future-live frontier has size
+at most $W$. No width condition is imposed on the false candidates.
+
+\begin{lemma}[No-cache frontier-width certification]
+For a candidate $c$ put $z(h,j)=G(x,c,h,j)$ and
+\[
+F_j=\{(h,z(h,i)):i\le j,\ \exists r>j,\ z(h,r)=z(h,i)\},
+\quad w(c)=\max_j|F_j|.
+\]
+There is a uniform deterministic test for $w(c)\le W$
+using only $O(a+\log(K+t+N+W+2))$ writable bits
+and at most $pB^2(B+1)/2$ calls to $G$.
+\end{lemma}
+\begin{proof}
+For every $j,h,i\le j$, compute $z(h,i)$, scan $r<i$
+to discard duplicate occurrences of its tape/block identity,
+and scan $r>j$ to test whether this identity reappears.
+Increment a scalar live counter only for a first occurrence with
+a later occurrence. Its final value at stage $j$ is exactly
+$|F_j|$. The computation retains only loop indices, the
+candidate identity and the counter. There are
+$pB(B+1)/2$ $(j,h,i)$ iterations; each makes at most $B$
+generator calls. The supplied width bound is not needed to
+store a candidate block or graph.
+\end{proof}
+
+\begin{theorem}[Authenticated low-frontier candidate replay]
+On the preceding restricted promise, a single deterministic
+blank-start source-to-output machine checks all $K$ candidates,
+skips those whose certified width exceeds $W$, and outputs the
+authentic terminal accept/reject label with joint bounds
+\[
+Q_G=O(KpB^3),
+\]
+\[
+\begin{split}
+T_{\rm total}=O\bigl(A(N)+K[&
+pB^3(\tau+\log(t+2))+t\log(t+2)\\
+&+pB(W+p)(b+\log(t+2))+N+(W+p)b]\bigr),
+\end{split}
+\]
+\[
+S_{\rm peak}=O\bigl(s_A(N)+a+(W+p)(b+\log(t+2))
+                    +\log(K+t+N+W+2)\bigr).
+\]
+Here $A(N),s_A(N)$ charge original-source authentication.
+For each candidate the implementation reconstructs every needed
+canonical work-block value from blank start, not from a guessed
+checkpoint. These are \emph{simultaneous} bounds for one sequential
+procedure, not a network.
+\end{theorem}
+\begin{proof}
+Run the width test before allocating a block dictionary. On a
+passing candidate, simulate the original finite transition relation
+for $b$ steps at a time, checking the actual active work-block
+indices against $z(h,j)$ before every access and checking boundary
+crossings. At stage $j$, load each of the at most $p$ active
+$b$-cell blocks from an indexed sequential dictionary or, on first
+visit, from blanks. After executing the authentic transitions,
+retain a changed block exactly when $G$ predicts a later revisit,
+found by a charged future scan. At any stage at most $W$ previously
+touched future-live blocks plus $p$ active buffers coexist.
+
+Until the first movement mismatch, this reconstruction agrees
+with the canonical machine. Indeed, if a block is dropped because
+the candidate claims no later access, a genuine revisit before
+the first mismatch would require the same candidate block identity
+at that revisit, a contradiction. A false candidate either fails
+or reproduces the same unique canonical trace and output. The
+covered authentic candidate passes the width filter and all checks.
+The prefilter costs $O(pB^3)$ generator calls per candidate;
+future retention scans use at most $pB(B-1)/2$ additional calls.
+Native local transitions, source movements, buffer copies,
+dictionary scans, parsing, candidate resets and output yield
+the displayed time and peak-storage bounds. All failed attempts
+are sequentially charged. A trit-movement provider needs a paid
+prefix sum per block lookup, absorbed into $\tau$.
+\end{proof}
+
+\paragraph{Consequence and limits.}
+For a \emph{promised} source class with $b=\Theta(t^{1/3})$,
+constant authentic frontier width, $K=\operatorname{poly}(N+t)$,
+and source-computable $\tau=\operatorname{poly}(N+t)$,
+the theorem gives a polynomial-time, restricted
+$O(t^{1/3}\operatorname{polylog}(t+N))$-space simulation.
+This does \emph{not} extend to all machines: the actual
+general HPV/Williams converter has no proved polynomial
+candidate coverage or constant frontier bound here.
+The chronological verifier obtains the output by paid simulation,
+not by an improved nonassociative height-sublinear Tree Evaluation.
+If such an evaluator requests $Q$ graph edges, one edge query may
+add $O(pB\tau)$ work; a canonical work-bit query requires its
+own charged replay or a separate proved provider.
+No square-root-to-cube-root unconditional conclusion follows.
+
+\paragraph{Four gates and finite evidence.}
+DISJ \textbf{PASS restricted}: there is no rank-to-general-work
+implication. Relativization \textbf{NOT APPLICABLE WITH REASON}
+to a separation; none is claimed and a nonrelativizing NP bridge
+is OPEN. Simultaneous DTISP \textbf{PASS under the stated
+K,W,G premises}, general conversion OPEN.
+Configuration counting \textbf{PASS as an upper-bound guard
+only}, not a work lower bound or randomized/quantum result.
+Horn, 2-SAT, affine, treewidth, unique-solution, selector,
+padding, auxiliary variables, direct replay and all other legal
+shortcuts remain available; /341 FAIL full UNSAT, /386 RESTRICTED.
+
+The deterministic V8 audit revision
+\texttt{tmr3-frontier-guard063-v1}, seed none, checked 496
+source-authenticated finite stage-interface cases, 1488
+malformed sources, 9920 candidate attempts, 6208 prefilter skips,
+2224 failing comparisons, 1488 successful replays, and
+154960 assertions without failure. All four public candidate
+words had adjacent stage-to-stage block moves.
+This is a \textbf{COMPUTATIONAL} abstract block-stage test,
+not a native $b$-step TM implementation or measurement of
+the symbolic low-space bound.
+Evidence is \path{research/agents/tmr-3/2026-11-16_0143_TMR3_FRONTIER_FILTERED_CANDIDATES063.md};
+executable \path{experiments/tmr/tmr3_frontier_guard063.js};
+raw \path{results/raw/tmr/2026-11-16_0143_TMR3_FRONTIER_GUARD063_NODE_RAW.json}.
+Independent mathematical review OPEN.
+
 \section{One next load-bearing obligation}
-\textsf{C3-SELECTIVE-CANDIDATES-GENERAL-TRANSFER}:
-for a FIXED general block-respecting compiler, construct and
-source-authenticate a low-cost certificate for a polynomial-size
-candidate family, then prove a polynomial-time sound FAIL verifier
-with explicit total nonassociative Tree Evaluation query count and
-one same-run time/space bound; or give a precise counterexample
-to that named certificate interface. The two-graph support above
-uses the special all-first-block movement pattern and cannot be
-assumed for general adaptive computations. P versus NP remains OPEN.
+\textsf{C3-CANDIDATE-COVERAGE-UNDER-A-PINNED-CONVERTER}:
+for one actually specified general block-respecting compiler,
+prove or falsify a uniform source-obtainable
+$K=\operatorname{poly}(N+t)$ candidate family covering the
+authentic movement word, with small authentic frontier width
+and charged generator access. The /063 theorem supplies only
+the conditional verifier. Its chronological replay is not
+a generic improved nonassociative Tree Evaluation algorithm.
+P versus NP remains OPEN.
 
 \begin{thebibliography}{9}
 \bibitem{Williams2025} R. R. Williams, \emph{Simulating Time With
