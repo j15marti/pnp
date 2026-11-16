@@ -1,0 +1,56 @@
+# TMR-2/060: Authenticated Boolean post-DAG exact counting via bilinear-span compression
+Date: 2026-11-15 21:17 PST. Owner: TMR-2 / PNP Information Necessity. Track A.
+Status: PROVED/EXACT restricted mathematical theorem, independent mathematical review OPEN; finite tests COMPUTATIONAL. P versus NP OPEN.
+
+## Dependency, source audit and falsifiers
+D2-POST-BILINEAR-SPAN extends the TMR-2/059 authenticated shared XOR-of-edge-AND DAG counter and strengthens TMR-5/057's OR-of-q-bilinear-layer result. Target: authentic encoded two-stage shared gate DAG -> full parser/authentication -> layer matrix extraction -> construct GF(2) span and coordinates -> evaluate genuine shared post-DAG -> exact integer Fourier/rank sum -> exact count on ORIGINAL inputs. q may be polynomial while span dimension d=O(log N), in which case runtime is polynomial in encoded N.
+
+Candidate (stated before original-source audit): the above pipeline correctly computes exact counts for all valid sources of its two-stage grammar without supplied decomposition or source-access oracles. Falsifiers: (1) same constructed span coordinates but different post output; (2) repeated child XOR or shared fan-out changes coefficients incorrectly; (3) rank-character averaging wrongly treats unreachable coordinate strings as uniformly distributed; (4) 2^d normalization or unique auxiliary-extension multiplicity is incorrect.
+
+Consulted original TMR-2/059 manuscript/report/executable, published TMR-5/057 OR source and handoff, TMR-4/061 compiler, current TMR-2 manuscript, five handoffs and recent issue #3. Standard Fourier identity: O'Donnell, Analysis of Boolean Functions (Cambridge 2014, corrected arXiv:2105.10386, Ch. 1). The elementary character sum used below is proved, not assumed. This result is a restricted adaptation of standard Fourier algebra, not a novel general circuit lower bound.
+
+## Exact authenticated source
+Canonical ASCII header: p npost n a b g root. Enforce n=a+b, a,b>=1, distinct gate IDs 0..g-1, n<=2g before allocation, all original input bits used in edge leaves, every gate root-reachable and acyclic, and root a post gate. E i u v denotes the bilinear edge x_u AND y_v, 0<=u<a, 0<=v<b. X i j k is early XOR whose children are only E or X. Post O/A/P i j k are OR/AND/XOR, and post N i j is NOT. Post operands may be early or post gates. Record order is unrestricted; repeated operands and arbitrary fan-out are legal. Invalid sources are rejected. Only this declared typed grammar receives the theorem, not arbitrary Circuit-SAT.
+
+q is the number of distinct early gate identities actually used as children of post gates. Each has an exact a-by-b GF(2) coefficient matrix A_i constructed from its actual shared early DAG, because edge E is one monomial and X is matrix XOR even when operands are identical. Every original (x,y) evaluates the interface bit z_i=x^T A_i y. No tree expansion and no free shared-object duplication.
+
+## Theorem and proof
+Compute a basis B_1,...,B_d of the vector span of matrices A_1,...,A_q over GF(2), with exact source-derived coefficients c_ij such that A_i=sum_j c_ij B_j. Write w_j(x,y)=x^T B_j y (mod 2) and define a Boolean function h on GF(2)^d by actually evaluating the post source DAG on layer values z_i=sum_j c_ij w_j (mod 2). This defines h even on unreachable coordinate vectors, with no uniform-distribution assumption.
+
+Let B_lambda=sum_j lambda_j B_j, r_lambda=rank_GF2(B_lambda) and INTEGER H_lambda=sum_{w in GF2^d} h(w)(-1)^(lambda dot w). The exact ORIGINAL-input accepting count is
+
+    #YES = [SUM_{lambda in GF2^d} H_lambda * 2^(n-r_lambda)] / 2^d.
+
+Proof: Fourier inversion over the integers is h(w)=2^(-d) SUM_lambda H_lambda(-1)^(lambda dot w). By source induction the actual root is h(w(x,y)) on every input. After summing over all original x,y, the inner character sum equals 2^(n-r_lambda). Indeed, for fixed x, summing (-1)^(x^T B_lambda y) over all y is 2^b when B_lambda^T x=0 and 0 otherwise. There are 2^(a-r_lambda) such x. The numerator is therefore exactly divisible by 2^d, including d=0. Unreachable w, cancellation, zero forms, repeated operands and shared references cause no exceptions. QED.
+
+For a post OR, this recovers TMR-5/057's subset-rank result after basis reduction. For d=1 and h(w)=w, the earlier one-form count is recovered. The Walsh transform is over Z and cannot be substituted by an allegedly invertible Walsh matrix over GF(2). Invertible local bases still preserve any ordinary cut rank.
+
+## Full construction and SAME-realization ledger
+1. Read N original ASCII source bits, parse all records, validate numbers before n-dependent allocation, typing, shore input coverage, ID uniqueness and rooted DAG acyclicity. A fixed locally headed deterministic machine incurs source seeks, full DFS, indices and all failed checks.
+2. Compute every genuine early-gate coefficient matrix in topological order by XOR of cached ab-bit matrices, collect actual q stage-crossing identities, then perform exact GF(2) row reductions on the q flattened ab-bit vectors. Construct B_j and c_ij, with no preloaded basis.
+3. Evaluate the post DAG for each of 2^d coordinate strings, including reads of retained shared results. Transform the integer truth table with an in-place O(d2^d) signed-add/subtract Walsh-Hadamard transform, then for each lambda compute B_lambda and its GF(2) rank, accumulate the integer formula and divide exactly once. Emit the count and optionally the decision bit #YES>0. The implementation also keeps a finite rank profile for reproducibility.
+4. An optional parsimonious strict proper 3CNF compiler assigns one wire z_i per real gate plus three uniquely forced-zero pins. Edge gates need 3 padded proper ternary clauses; XOR (early or post) at most 4, AND/OR at most 3, NOT at most 2, and repeated-child XOR is the constant zero enforced by one padded clause. Seven ternary pin clauses and one padded root clause give V=n+g+3 and C<=4g+8, with exactly ONE auxiliary extension per original input and acceptance iff root=1. This compiler is a symbolic construction, NOT part of executed test evidence.
+
+N bounds a,b,g,q,d; ab<=N^2. Retained gate matrices take O(gab)=O(N^3) bits. Coordinate masks and basis occupy polynomial additional bits. Each Walsh coefficient has at most d+1 bits; each shifted character sum has <=n+d+1 bits; the accumulated signed numerator <=n+2d+1 bits. A single conventional locally headed deterministic multitape realization, including parsing, access cost, sharing, conversion, failed work, all elimination and post processing, transform, temporary rank arrays, optional linear-size CNF output, exact output and buffers, meets conservative T=O(2^d N^10) bit steps and S_peak=O(N^3+2^d N) writable bits. Both bounds are for the SAME execution. Source streaming/alternative cheaper representations remain legal. The V8 implementation caps 2^d at 65,536 for host safety; this does not alter the abstract uniform algorithm. No physical TM microtrace was executed.
+
+## Hostile family and test evidence
+For d disjoint edges x_i*y_i, provide q=2^d-1 distinct early layer identities corresponding to ALL nonzero GF(2) combinations and OR all layers with a genuinely shared post DAG. The output is 1 exactly when some original edge is active. Hence #YES=4^d-3^d. At d=6, the actually parsed source has n=12, g=197, q=63, discovered d=6 and count 3367 using only 64 rank-character terms. TMR-5/057's unsubstituted layer-subset expression has 2^63 terms on this encoding. This is a compression/algorithm upper-bound example, not a claim about circuit lower bounds.
+
+DISJ is NOT(OR of d edge monomials), has #YES=3^d and linear-size original circuit despite rank 2^d. An AND of two disjoint edge monomials has ONE accepting original input, so its full indicator tensor has rank one. Repeated OR(E,E) counts 1; NOT(E) counts 3; XOR(E,E) outputs zero. These stress exact counting, sharing and scalar normalization. No Valiant-Vazirani randomized isolation or majority/quantum computation occurs.
+
+ACTUALLY EXECUTED: V8 Code Mode source revision TMR2_POST_BILINEAR_SPAN060_v1, deterministic seed 20261115 (no RNG draws), 14 authentic parsed cases, 36 counted checks including independent original-input brute-force comparisons and eight malformed rejections, zero failures. Source: experiments/tmr/tmr2_post_bilinear_span060.js; blob d57dae367427b71927dbcdfb9c3a711c8169d0cf. Immutable raw: results/raw/tmr/2026-11-15_2117_TMR2_POST_BILINEAR_SPAN060_V8_RAW.json; blob beff8fce4d6f9e09237f5ac01adebdddd1253788. Finite evidence is COMPUTATIONAL; the actual published source is V8-tested in the authoring tool, not independently rerun under Node. Native checkout preflight and LaTeX compilation not run at report publication.
+
+## Mandatory gates
+| Gate | Status | Reason |
+|---|---|---|
+| DISJ sanity | PASS restricted | The explicit NOT-OR matching family has exponential cut rank and linear-size Boolean logic, and its exact count 3^d is easy. Any unrestricted rank-to-circuit-work transfer FAILS. |
+| Relativization | PASS local; OPEN unrestricted | Pure exact linear-algebraic algorithm, no NP separation. A nonrelativizing step is absent; algebrization and Natural Proofs remain live audits. |
+| Simultaneous DTISP | PASS restricted | One stated deterministic realization pays source acquisition, computation, temporary storage and output under both T and S. A universal lower-bound inference remains OPEN. |
+| Deterministic configuration counting | PASS upper-bound guard | For deterministic total read-only-input machines T<=2^{O(s+log N)}. This is NOT a work lower bound or randomized/quantum runtime claim. |
+
+Other hostile classes: Horn and 2-SAT, affine/Gaussian, bounded treewidth, equality, autarky, products, padding, auxiliaries and unique-selector projection admit legal shortcuts. The unique-solution rank-one case is tested. The exact counting object is the original shared circuit's acceptance set, not an unrestricted SAT-on-formula-encodings function. /341 remains FAIL as a full UNSAT authority; /386 remains RESTRICTED.
+
+## TMR-4 transition handoff and one next lemma
+Named restricted invariant D2-SPAN-FOURIER-TRACE: authenticated source bytes, real shared-gate identities and typed phase, actual ab-bit coefficient vectors, stage interface, constructed GF(2) basis/masks, live integer truth/Walsh table, real rank-elimination state, signed numerator and exact denominator/output. Paid transitions: READ_SOURCE, GUARD_HEADER, DFS_EDGE, AUTH_STAGE, CACHE_SHARED, XOR_COEFFICIENT, BASIS_REDUCE/INSERT, INDEX_LAYER, EVAL_POST_OR/AND/XOR/NOT, FWHT_ADD/SUB, COMBINE_BASIS, ROW_SWAP/XOR, ACCUMULATE_SIGNED, DIV_EXACT, EMIT_COUNT and optional EMIT_CNF. Charge all addresses, rereads, caches, adaptive choices, recomputation and cheap alternative algorithms. This is a correctness invariant, NOT a compulsory-work potential.
+
+ONE NEXT LEMMA: D2-RAW-INPUT-POST-READ. Allow k authenticated direct x/y input reads at the post interface, derive the exact affine character sum under all 2^k pinned original-input assignments and determine whether T=2^(d+k)poly(N) is achievable with charged precomputation. A simple deletion of matrix rows without accounting for fixed-bit affine/constant terms is a falsifier candidate.
