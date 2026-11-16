@@ -1,5 +1,5 @@
 % BEGIN TMR-4 OWNED
-% Updated by TMR-4, 2026-11-15 15:40 PST
+% Updated by TMR-4, 2026-11-15 16:36 PST
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,hyperref}
@@ -9,7 +9,7 @@
 \begin{document}
 \maketitle
 \section{Target, status, exact model}
-This is a coherent restricted end-to-end pipeline from an explicitly encoded shared Boolean gate program to an adaptive shared read-once branching program (FBDD), its assignment-matrix rank, and a proved source-register implication. Semantic preservation and the scoped rank bound are PROVED/EXACT, with independent mathematical review OPEN. Finite checks are COMPUTATIONAL. Arbitrary circuit-to-register translation, general SAT-time lower bounds, and P versus NP remain OPEN.
+This is a coherent restricted end-to-end pipeline from both an explicitly encoded register-stream Boolean program and an ordinary shared fan-in-two Boolean circuit with a supplied authenticated topological live-frontier layout, through complete read-once branching programs to exact decision/count semantics and declared source-width rank implications. Semantic preservation and the scoped rank bound are PROVED/EXACT, with independent mathematical review OPEN. Finite checks are COMPUTATIONAL. Arbitrary circuit-to-register translation, general SAT-time lower bounds, and P versus NP remain OPEN.
 
 Fix $n,s\geq1$. The source has original inputs $x\in\{0,1\}^n$, $s$ retained register bits, initial register $r_0$, and precisely $n$ stages. Each stage has a topologically ordered shared fan-in-two Boolean truth-table gate DAG which selects an index $j_t$ \emph{before} inspecting its value and updates $r_{t+1}=U_t(r_t,x_{j_t})$. The selector is independent of the unread bit on all reachable states, and no index is repeated along any path. After stage $n$ a shared Boolean DAG returns the one-bit answer $h(r_n)$. The finite encoding is canonical ASCII JSON with fields for version, dimensions, initial register, stages, and terminal circuit, and binary gate records $(a,b,\tau)$ for any of the 16 binary truth tables. Shared fan-out, repeated operands, constants and adaptive choice are allowed. The compiler rejects malformed encodings and reachable read-once or pre-read-selector violations. Let $L$ count the entire source encoding in bits.
 
@@ -65,6 +65,53 @@ T_{\rm total}=O\bigl((H(G_{\max}+n+s+1)+1)D^2+nD+n^2\bigr),
 \]
 Here $D^2$ pays for deliberately naive bit-address and table searches, $nD$ pays for target-node accesses and $n^2$ pays for physical input-head motion. The packed BP output has $O(V(\log n+\log(V+2)))$ bits. The source itself retains $s$ inter-stage bits but may need $G_{\max}$ temporary intra-stage gate bits, plus source-ROM/address storage. No time lower bound or polynomial-time general-circuit compiler is claimed; $H$ is potentially exponential. Network aggregate memory and total work are never replaced by span or per-worker memory.
 
+
+\section{An ordinary shared-circuit source compiler with a supplied live frontier}
+The previous compiler starts with an already restricted read-once register program. We now close the named D4-UNRESTRICTED-CONVERSION arrow for an explicit, nontrivial subclass of \emph{ordinary} shared Boolean circuits equipped with an authenticated topological evaluation layout. This is a restriction on the supplied layout, \emph{not} on the gate functions or fan-out. No optimized layout is presumed or discovered for free.
+
+Let $C$ be a fan-in-two shared DAG with $n\geq1$ original Boolean inputs, $g$ binary truth-table gates, constants, repeated operands, arbitrary fan-out, and a designated output. The finite binary/JSON encoding supplies all records and a topological schedule $\pi$ listing every original input and gate exactly once, beginning with $x_0$. A gate follows both dependencies. Reject a malformed encoding, duplicate identifier, invalid truth-table index, missing input/output, forward reference, or missing schedule vertex. An output is a pseudo-consumer just after the final scheduled vertex. For each nonconstant wire identity $v$, let $\ell(v)$ be the last later gate-use or the pseudo-output-use, or $-1$ if none. Define, after position $t$,
+\[
+L_t=\{v:\operatorname{pos}_{\pi}(v)\le t<\ell(v)\},\qquad
+w(\pi)=\max_t |L_t|.
+\]
+Each shared signal contributes one bit regardless of its number of consumer wires. The order $\rho$ of input introductions along $\pi$ is a fixed public permutation. Its input introductions partition $\pi$ into $n$ segments, each comprising one input introduction followed by zero or more gates before the next introduction. Let $w_i$ be the number of live wires at the end of segment $i$, so $w_i\le w$.
+
+\paragraph{Theorem 4 (end-to-end supplied-frontier transfer).}
+For every valid $(C,\pi)$ as above there is a \emph{uniform}, fully charged compiler to the source class of Lemma 1, with $n$ stages, $s=w$ persistent bits, and a total of exactly $g$ original combinational gate records across all stage DAGs. Each stage retains at most $w$ wire-value slots and shares each original gate once. There is an explicitly materialized complete leveled OBDD with
+\[
+V\le n2^w
+\]
+distinct internal nodes and two arcs per node. It computes $f_C(x)$ for every $x$ and, when parallel arcs and merged paths are counted with multiplicity, its accepting-path count equals $\#\{x:f_C(x)=1\}$. For each prefix of $\rho$,
+\[
+\operatorname{rank}_K M_{\rho_{\le i},\rho_{>i}}(f_C)
+\le 2^{w_i}\le2^w
+\]
+over every field $K$. Thus a rank-$R$ prefix forces $w(\pi)\ge\lceil\log_2R\rceil$ for \emph{that supplied schedule}; it does not force large size or work for arbitrary circuits.
+
+\emph{Proof.} At the start of each segment, assign the previous boundary's live signals to its persistent register slots. The newly read $x_{\rho(i)}$ and the segment's original gates form a shared DAG with the original binary truth tables and predecessor IDs. An earlier predecessor not local to the segment must still be live, since the current gate is a future use; hence it has a register slot. Evaluate the original segment in topological order, retaining precisely its final live signals. Induction on \emph{each original schedule vertex}, rather than only segment boundaries, gives identical source and compiled intermediate gate values and identical retained bits. At termination the output pseudo-use retains the original designated output, giving both accepting and rejecting correspondence. One temporary gate-result bit may be needed \emph{inside} a stage in addition to the $w$ inter-stage bits and is charged separately.
+
+The public stage input sequence $\rho$ is fixed and read-once. For each layer and reachable $w$-bit register, add both genuine binary successors and merge equal next-layer register values. There are at most $2^w$ values at a layer. Every original assignment induces exactly one length-$n$ path, and the reverse path labels uniquely determine its assignment. Merging equal states therefore preserves \emph{path multiplicities} and exact count, not just reachability. After prefix $i$, any remaining computation is determined by the boundary register and public stage number, so there are at most $2^{w_i}$ distinct suffix cofactors, yielding the rank bound. \hfill$\square$
+
+\paragraph{Complete same-execution physical ledger.}
+Let $M=n+g$, $L$ be all encoded original source bits, and
+\[
+B=O\bigl(L+(g+nw+n)\lceil\log_2(M+w+2)\rceil\bigr)
+\]
+be the \emph{output} stage-record bit budget, including selectors, wires, registers and mapping references. The gate records are used once each, not independently cloned for each fan-out. Explicit OBDD node and two-arc tables and exact accepting-prefix counters of at most $n+1$ bits are included in
+\[
+D=1+L+B+O\bigl(n2^w(w+n+\log_2(n2^w+2))\bigr).
+\]
+A conservative fixed deterministic multitape implementation performs full input validation and last-use scanning, constructs the actual stage records and all reachable OBDD states, follows the encoded input $x$, computes exact path counts by integer additions, and emits the answer bit and $(n+1)$-bit-bounded exact count on one execution with
+\[
+T_{\rm total}=O(D^5+n^2),\qquad S_{\rm peak}=O(D).
+\]
+The $n^2$ term permits actual locally headed rereads/seeks of the input bit positions in arbitrary $\rho$ order. The coarse polynomial in $D$ pays for complete source authentication, schedule/last-use discovery, repeated table scans, temporary combinational gate buffers, addresses, integer arithmetic, sharing, retention, both arcs, counting, output and failed validation. The declared schedule is supplied and checked; searching for a better one would be \emph{additional} charged work. There is no same-realization sublinear-space or superpolynomial general-SAT consequence. When $w=O(\log L)$, this particular construction is polynomial time and space in the complete source length $L$. The source's inter-stage $w$ bits alone are not asserted to equal its physical work-tape peak.
+
+\paragraph{Hostile controls and verification.}
+DISJ has a legal small-frontier interleaved schedule and a linear-size circuit even though its grouped $X:Y$ matrix has rank $2^k$. Our rank bound uses the actual $\rho$-prefix, never an arbitrary nonprefix split. Equality and affine parity admit comparable cheap schedules. Horn, 2-SAT, Gaussian, bounded-treewidth, autarky, product, unique-solution and compact/recomputation shortcuts are retained. The supplied-frontier theorem is combinatorial and relativizing; it provides no nonrelativizing step, forbidden DTISP pair, Natural Proofs escape, or configuration-count work lower bound. The same four verification gate verdicts below remain scoped to the actual declared compiler and leave unrestricted transfer OPEN.
+
+Hosted V8 execution of exact source \texttt{tmr4-frontier056.v2}, seed 20261115, verified 112 circuits/layouts, 2594 complete assignment outputs, 15594 authentic stage gate replays, 1812 compiled BP transitions, 972 exact $\mathbf F_2/\mathbf F_{101}$ ranks, 112 accepting-path integer counts and four malformed rejections in 130922 assertions, with zero failures. This is COMPUTATIONAL; the symbolic theorem is PROVED/EXACT in its restricted model, independent mathematics review OPEN. No project preflight, native Node CLI or LaTeX build was executed. The pending TMR-4 draft PR \#158 uses a different fixed-partition minimum-signal-cut invariant and was not overwritten.
+
 \section{Four gates, controls, validation}
 \paragraph{DISJ sanity: PASS restricted, FAIL arbitrary transfer.} The grouped $\mathrm{DISJ}_3$ cut rank is eight over both $\mathbf F_2$ and $\mathbf F_{101}$, yet an interleaved source uses $s=2,V=18,b=5$ while a grouped one uses $s=4,V=41,b=1$; both have seven shared gate records. DISJ retains its linear-size circuit.
 \paragraph{Relativization: PASS restricted, unrestricted OPEN.} A relational compiler and rectangle argument do not provide the necessary nonrelativizing NP step; algebrization and Natural Proofs checks remain open.
@@ -76,13 +123,13 @@ The controls include interleaved DISJ, equality, affine parity with $s=1$, a gen
 Published exact V8 source revision tmr4-registerstream-e2e055.v1 (xorshift seed 20261115) actually checked 178 valid canonical programs, 2440 complete assignment comparisons, 14263 assertions, 254 accepting rectangles and four malformed rejections, with zero unexpected failures. The finite checks are COMPUTATIONAL, and independent mathematics peer review remains OPEN. No native Node execution of this published source, project preflight, Lean kernel or LaTeX build is claimed.
 
 \section{Evidence and references}
-Detailed report: \path{research/agents/tmr-4/2026-11-15_1540_TMR4_REGISTERSTREAM_END_TO_END_TRANSFER055.md}.
+Detailed reports: \path{research/agents/tmr-4/2026-11-15_1540_TMR4_REGISTERSTREAM_END_TO_END_TRANSFER055.md} and \path{research/agents/tmr-4/2026-11-15_1636_TMR4_TOPOLOGICAL_FRONTIER_END_TO_END056.md}.
 Executed source: \path{experiments/tmr/tmr4_registerstream_e2e055.js}.
-Raw results: \path{results/raw/tmr/2026-11-15_1540_TMR4_REGISTERSTREAM055_NODE_RAW.json}.
+Raw results: \path{results/raw/tmr/2026-11-15_1540_TMR4_REGISTERSTREAM055_NODE_RAW.json}. New exact executable: \path{experiments/tmr/tmr4_frontier_circuit_e2e056.js}; new immutable raw: \path{results/raw/tmr/2026-11-15_1636_TMR4_FRONTIER_E2E056_V8_RAW.json}.
 Original TMR-4/053 adaptive rectangles, TMR-2/054 cofactor rank and TMR-1/054 source CNF normalization were inspected. Further sources: Wegener, \emph{Branching Programs and Binary Decision Diagrams}, SIAM 2000, Chapter 2, \url{https://doi.org/10.1137/1.9780898719789.ch2}; Beame, Jayram and Saks, \emph{Time-Space Tradeoffs for Branching Programs}, JCSS 2001, \url{https://doi.org/10.1006/jcss.2001.1778}; Baker, Gill and Solovay, \emph{Relativizations of the P =? NP Question}, SICOMP 1975, \url{https://doi.org/10.1137/0204037}. The scope and peer review status are not promoted by publication alone.
 
 \section{ONE next load-bearing lemma}
-D4-UNRESTRICTED-CONVERSION: give one explicit uniform charged compiler from a nontrivial ordinary shared-circuit subclass to this read-once register source with simultaneously bounded persistent $s$, owner switches $b$, wire/gate growth and preprocessing; or exhibit a compact legal circuit falsifying that interface. No general circuit/SAT hardness follows until this missing arrow is proved. P versus NP remains OPEN.
+D4-CROSS-ORDER: develop and fully charge a uniform method discovering a useful $O(\log L)$-live frontier for a nontrivial circuit family \emph{without supplied layout advice}, or identify an explicit compact shared-circuit family that forces larger live frontier in every authenticated topological order while retaining its legal cheap evaluation. Finding an optimized schedule is not free. Unrestricted circuit/SAT hardness and P versus NP remain OPEN. P versus NP remains OPEN.
 
 \section{Workflow}
 Follow \path{research/coordination/2026-11-15_END_TO_END_AGENT_MANUSCRIPTS.md}, AGENTS.md and CODEX.md. This entire paper is owned by TMR-4. Historical proof text trackers were not read or edited, and none of the five agent schedules were changed.
