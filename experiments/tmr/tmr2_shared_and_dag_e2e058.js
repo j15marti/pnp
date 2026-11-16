@@ -2,7 +2,7 @@
 'use strict';
 // TMR-2/058: Shared-edge-AND DAG source -> exact source count; Tseitin strict proper 3CNF.
 // Syntactic restricted class only; no unrestricted SAT lower bound.
-const REV='TMR2_SHARED_EDGE_AND_DAG_E2E058_v1',SEED=20261115;
+const REV='TMR2_SHARED_EDGE_AND_DAG_E2E058_v2',SEED=20261115;
 function readNat(s){if(!/^(0|[1-9][0-9]*)$/.test(s))throw Error('nat');let x=Number(s);if(!Number.isSafeInteger(x))throw Error('precision');return x;}
 function parse(src){
  if(typeof src!=='string'||/[^\x09\x0a\x0d\x20-\x7e]/.test(src))throw Error('ASCII');
@@ -96,7 +96,7 @@ function audit(){let seed=SEED>>>0,checks=0,recogn=0,brutes=0,cnfChecks=0,contro
     for(let j=P.n;j<P.n+P.g;j++){let e=ext.slice();e[j]=!e[j];ok(!evalCNF(C,e),'flipped gate');}
    }cnfChecks++;
   }
-  if([3,5,8].includes(k)&&[1,3].includes(g))examples.push({k,g,originalVariables:P.n,uniqueEdges:P.E.length,sharedGates:P.g,sourceBits:8*P.sourceBytes,formulaUnrollNodes:(3n*(1n<<BigInt(P.E.length-1))-2n).toString(),count:sol.count.toString(),matrixMultiplications:sol.ops});
+  if([3,5,8].includes(k)&&[1,3].includes(g))examples.push({k,g,originalVariables:P.n,uniqueEdges:P.E.length,sharedGates:P.g,sourceBits:8*P.sourceBytes,formulaUnrollNodes:(4n*(1n<<BigInt(P.E.length-1))-3n).toString(),count:sol.count.toString(),matrixMultiplications:sol.ops});
  }
  for(let [name,n,a,b,edges,ans] of [
  ['DISJ',8,4,4,[[1,5],[2,6],[3,7],[4,8]],81n],
