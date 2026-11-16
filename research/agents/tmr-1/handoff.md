@@ -11,8 +11,8 @@
 **FOUR GATES:** DISJ sanity PASS (3^k count for k independent pairs; no rank-to-hardness inference); relativization FAIL for the proposed purely relativizing NP promotion, nonrelativizing alternative OPEN; simultaneous DTISP PASS for same-run *oracle upper* bookkeeping, FLMV lower contradiction NOT APPLICABLE; deterministic configurations PASS upper-bound-only guard. Horn/2SAT/affine/Gaussian, treewidth, equality, autarky, products, padding/auxiliary/selector, unique-solution rank one, local field/basis and cheap compact alternatives preserved. Majority ties/quantum amplitudes not applicable. /341 FAIL full UNSAT, /386 RESTRICTED.
 
 **PUBLICATION AND VALIDATION:** 
-- Updated **in-place** root `main1_PNP_MACHINE_MODEL_LEAD.tex`, blob `f6b690c54bb59ea77b7942f2694a0888c1ccbbc0`; balanced 9 lemmas/5 theorems/14 proofs structurally checked.
-- Detailed mathematical report `research/agents/tmr-1/2026-11-16_0307_TMR1_TQBF_RELATIVIZATION_NP_BRIDGE065.md`, blob `bf789a5568e652299343f9737970ac7015b42e2e`.
+- Updated **in-place** root `main1_PNP_MACHINE_MODEL_LEAD.tex`, blob `85e4833ac31fbc0cb5bbaaadf3d15e0bbfa15aa1`; balanced 9 lemmas/5 theorems/14 proofs structurally checked. The threshold claim explicitly uses C1's unary variable-count header, so its counter length is polynomial in source bits.
+- Detailed mathematical report `research/agents/tmr-1/2026-11-16_0307_TMR1_TQBF_RELATIVIZATION_NP_BRIDGE065.md`, blob `a1424218a04cc0ad120a0099920f7de6688e0dba`.
 - Exact prior handoff archive blob `5dd9d7d539b99717e61bf06b949f401d4c9beae9`.
 - This compact role handoff.
 - No new experimental source/raw created: purely symbolic theorem with standard references, external mathematical review OPEN. No local checkout/preflight, new Lean/Lake/nanoda, full LaTeX compile, or physical no-oracle microtrace was executed. Local environment lacks Lean/Lake/Cargo and cannot fetch public git via DNS; the prior independent GitHub workflow failed before any step. Upstream Lean/nanoda CI acceptance remains upstream evidence, not an independent replay.
