@@ -24,3 +24,12 @@ Living paper: `LIVING_WORST_CASE_DERIVATION.tex`. P versus NP remains OPEN.
 - COMPUTATIONAL: `reflection_restriction_check.py` checks the D1/D4 restriction core of the clause-selector encoding exhaustively. 79,107 formulas and 700,568 assignments, 0 failures. Raw: `results/raw/2026-11-16_claude_reflection_restriction_check.json`. A harness bug (tautological slots) on the first execution is disclosed in the raw file.
 - Not run: LaTeX build (no pdflatex), external review, repository preflight. Frege variant CONDITIONAL (VNC^1 reflection not checked).
 - Next lemma: decide whether Bridge(Frege) ⇔ Bridge(EF).
+
+## 2026-11-16 run 3 (branch ccr-1695bd63-bveg4t; merges o6urne and o1klgo lineages)
+
+- PROVED/EXACT (elementary, unreviewed): Bridge(Frege) ⇔ Bridge(EF) ∧ Q, where Q = [P=NP ∧ EF p-bounded ⇒ Frege poly-proves Con_EF]. The proof uses Buss 1991.
+- PROVED (sketch): the self-certifying A_Fr is in Alg(Frege) under Bridge(Frege).
+- OPEN: Q. All known evidence that Frege does not simulate EF is cryptographic, and so is void under P=NP.
+- RETIRED: SR(A) for the DPLL-style class (uninformative).
+- Report: `2026-11-16_FREGE_EF_BRIDGE_GAP.md`. No code was executed this run.
+- Next lemma: a non-cryptographic consequence of Q.

@@ -26,9 +26,24 @@ Shared target: W̄_R(N) = max over UNSAT F with |<F>| ≤ N of the minimum R-ref
 | Regress: GST route leaves exactly Sound_{A_0,n} = ¬Φ_n(A_0) at the decisive point | PROVED/EXACT (sketch), unreviewed |
 | Naive self-trust SR (A(Φ_n(A))=0 → Sound_{A,n}) | FALSIFIED (A ≡ 0) |
 | Corrected SR(A) with inconsistency finder h, uniform in A | OPEN; its truth ⟹ polynomial-window refuters (stronger than GST/BTW i.o.) |
-| SR(A) for a DPLL-style restricted class | OPEN, **next lemma** |
+| SR(A) for a DPLL-style restricted class | RETIRED as uninformative (holds vacuously; such A not complete poly-time), run 3 |
+| Bridge(Frege) ⟺ Bridge(EF) ∧ Q, Q = [P=NP ∧ EF p-bounded ⟹ Frege poly-proves Con_EF] | PROVED/EXACT (elementary, via Buss 1991), unreviewed |
+| Self-certifying A_Fr ∈ Alg(Frege) under Bridge(Frege) | PROVED (sketch), one obligation open |
+| Q itself | OPEN; all known separating evidence is cryptographic, void under P=NP |
+| Non-cryptographic consequence of Q (witnessing/circuit collapse) | OPEN, **next lemma** |
 
 ## Entries
+
+### 2026-11-16, run 3 (branch ccr-1695bd63-bveg4t; base main 00f8ada1 + o6urne + o1klgo merged)
+- The two sibling lineages are now on one branch: tex `LIVING_WORST_CASE_DERIVATION.tex` and this log.
+- Report: `2026-11-16_FREGE_EF_BRIDGE_GAP.md`. No code was executed, and none of the results has been reviewed.
+- Result 1 (Theorem 1): Bridge(Frege) ⟺ Bridge(EF) ∧ Q. The proof uses Buss 1991: Frege ≥_p EF ⟺ Frege proves Con_EF in poly size. Moving R between Frege and EF trades lower-bound difficulty for exactly Q on the bridge side.
+- Result 2: the Frege analogue of run 2's premise-U equivalence uses a log-depth checker and Frege self-reflection. One obligation is still open.
+- Result 3: under P=NP, feasible interpolation holds trivially, so all known Frege/EF separation evidence (which is cryptographic) is void. Q is OPEN.
+- The markdown lineage's DPLL-class SR target is retired: SR holds vacuously, and such deciders are never complete poly-time.
+- Literature: Buss APAL 1991 (abstract via secondary sources; PDF returned 503) and arXiv 2405.02232 (abstract).
+- Not run: LaTeX build, preflight, independent review.
+- Next: a non-cryptographic consequence of Q.
 
 ### 2026-11-16, fourth pass (branch ccr-1695bd63-o1klgo, base a29605c5 plus vp7fgl merged)
 - Report: `2026-11-16_SR_REGRESS_SINGLE_FAMILY_COLLAPSE.md`. No code was executed; all results are symbolic and unreviewed.
