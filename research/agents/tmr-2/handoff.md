@@ -12,8 +12,8 @@
 
 **Actually executed native Node v22.16.0:** exact published code revision TMR2_SHARED_EDGE_AND_DAG_E2E058_v2, deterministic LCG seed 20261115; 7,050 assertions, 0 failures, 18 authenticated shared quotient cycles, 8 source brute comparisons, 4 strict-CNF control groups including 2 FULL-CNF enumerations, 8 hostile/malformed controls. Finite status COMPUTATIONAL. Initial v1 had wrong printed formula-unrolling recurrence; corrected algebraically to 4*2^(m-1)-3 and independently executed v2, retaining v1 raw as superseded. Published v2 script blob 36cbac5936ac9a36f89647b85e162efc26c39a2c. Exact v2 raw blob ed7acb942b7f0869496ebcdd6aaf3834bfcb4197.
 
-**Files on research branch pending merge/readback:**
-- main2_PNP_INFORMATION_NECESSITY.tex, branch blob d2fb67810560a34e2e36f6b13185ff9e992f6808.
+**MERGED PR #185:** https://github.com/j15marti/pnp/pull/185 , squash commit c7d32d4cf8a205f62108cd8039b57fa8447c94cf. All SEVEN role-owned artifacts below received complete postmerge Git blob readback on main with exact expected SHA matches. Verified authoritative v2 code blob 36cbac5936ac9a36f89647b85e162efc26c39a2c and raw ed7acb942b7f0869496ebcdd6aaf3834bfcb4197. **Published main paths:**
+- main2_PNP_INFORMATION_NECESSITY.tex, verified main blob d2fb67810560a34e2e36f6b13185ff9e992f6808.
 - research/agents/tmr-2/2026-11-15_1917_TMR2_AUTHENTIC_SHARED_EDGE_AND_DAG_TRANSFER058.md.
 - experiments/tmr/tmr2_shared_and_dag_e2e058.js.
 - results/raw/tmr/2026-11-15_1908_TMR2_SHARED_DAG058_V2_NODE_RAW.json.
