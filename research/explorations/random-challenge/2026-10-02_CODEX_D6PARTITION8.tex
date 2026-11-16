@@ -1,0 +1,163 @@
+% PNP RESEARCH REPORT::D6PARTITION8::2026-10-02
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,hyperref}
+\title{Codex experiment: the complete UNSAT frontier at six variables}
+\author{P vs NP Research Project}
+\date{2026-10-02}
+\begin{document}
+\maketitle
+\section*{Status and corpus reconciliation}
+\textbf{COMPUTATIONAL.} P versus NP remains open. This continues
+FRONTIER\_AUDIT1 at research-branch commit
+\texttt{84f98df7e5dee279b72d19624bdbdaa861b18dd4}.
+The preceding run's root/MAIN, full tree survey, task and governance preflight
+remain the corpus baseline. This run reread the frontier source/instructions,
+reran the relevant-snapshot preflight, and adopts its promise/minimality and
+gate-basis corrections. No source-acquisition or asymptotic claim is advanced.
+No existing root-MAIN ownership region authorizes a Codex edit; this report is
+the LSPV-5 handoff. Independent external red-team review is pending.
+
+\section*{Target, encoding, and quantifiers}
+Let $M_n=8\binom n3$. Inputs are $M_n$ clause-presence bits with exactly eight
+ones, representing simple genuine 3-CNF on the available $n$-variable universe.
+Unused variables are permitted, matching the prior binomial counts. Clause IDs
+enumerate triples lexicographically and then their falsifying patterns $0..7$.
+For each published classifier $C_n$ we establish
+\[
+\forall b\in\{0,1\}^{M_n},\quad |b|=8
+\Longrightarrow C_n(b)=\mathrm{SAT}(F_b).
+\]
+Exported query DAGs instead label terminal one UNSAT and terminal zero SAT.
+Every certificate uses this same realization and input ordering.
+
+\section*{Partition lemma and complete enumeration}
+Each genuine 3-clause excludes $2^{n-3}$ assignments. Eight exclusions have
+total capacity $2^n$, so they cover the cube if and only if they are pairwise
+disjoint. Therefore UNSAT inputs are exactly the partitions into eight
+codimension-three subcubes.
+
+The bitset exact-cover recursion chooses one uncovered assignment and branches
+over every nonintersecting subcube containing it. Any final partition has
+exactly one member covering this chosen point. Induction gives both completeness
+and uniqueness of enumeration. This is the Algorithm X branching principle
+\cite{knuth}, without the dancing-links implementation.
+
+\begin{center}
+\begin{tabular}{rrrrr}
+\toprule
+$n$ & $M_n$ & All formulas & UNSAT & UNSAT using all $n$ variables\\
+\midrule
+4&32&10,518,300&272&268\\
+5&80&28,987,537,150&4,380&3,030\\
+6&160&8,917,061,687,820&30,020&7,800\\
+\bottomrule
+\end{tabular}
+\end{center}
+The $n=6$ UNSAT counts by active-variable number $3,4,5,6$ are
+$20,4020,18180,7800$. First-uncovered and minimum-remaining-choice pivots
+produced identical sets. They visited 98,621 and 86,321 recursion states,
+respectively. A separate Python recurrence counted 30,020 partitions using
+8,466 memo states. These are enumeration resources, not classifier node counts.
+
+\section*{Classifiers and whole-promise verification}
+Six starting orders followed by one adjacent-swap pass give
+\[
+159\le B(6,8)\le50,460,\qquad 79\le B(5,8)\le13,147.
+\]
+The searches evaluated 165 and 85 orders respectively. No adaptive-order or
+global optimum is claimed. The $n=6$ sign-round-robin baseline has 158,846
+nodes, while grouping by variable triple has 51,094; the ordering lesson from
+$n=4$ does not transfer unchanged.
+
+The verifier independently checks all UNSAT rows against literal semantics,
+their distinctness, and equality with the independent complete partition count.
+It checks orderedness and acyclicity of the DAG, evaluates every UNSAT row,
+then counts its accepting weight-eight assignments exactly. Skipped input
+positions contribute binomial coefficients. The acceptance counts are exactly
+30,020 and 4,380, so accepting every actual UNSAT row leaves no room for a
+false positive. This verifies the whole promise without enumerating trillions
+of SAT inputs.
+
+For each pair of clause positions, a stored witness replaces one clause of
+an UNSAT partition by the other, producing SAT. The CSV records the partition
+index and a satisfying assignment of the exchanged formula. All 12,720 pairs
+at $n=6$ and 3,160 at $n=5$ are checked. A classifier omitting any two input
+coordinates entirely cannot distinguish that pair, proving input support at
+least $M_n-1$ and the stated query-node lower bounds. This is a global support
+argument, not a per-execution depth bound.
+
+\section*{Shared arbitrary-Boolean circuits}
+For every assignment $a$, OR the clause bits whose clauses $a$ falsifies;
+AND all coverage bits and negate. Hash-consing identical pure-OR subexpressions
+gives a 720-gate circuit for $n=6$ and a 256-gate circuit for $n=5$.
+The basis is binary AND/OR, unary NOT, free fan-out, and uncharged input wires.
+At $n=6$ there are 656 OR gates, 63 AND gates and one NOT, depth 12.
+
+The circuit verifier reconstructs each vertex's exact OR support and the final
+AND/NOT structure. This is a structural equivalence check for every clause set,
+not random testing. The circuits work at every clause count. Support of at
+least $M_n-1$ requires at least $M_n-2$ binary gates in a connected output cone,
+so
+\[
+158\le G(6,8)\le720,\qquad 78\le G(5,8)\le256.
+\]
+The general unshared construction costs $2^n\binom n3$ gates and remains
+exponential in $n$. No unrestricted SAT lower bound follows from the DAG sizes.
+
+\section*{Sign imbalance, heterogeneity, and 2P2N}
+All equal-volume UNSAT partitions satisfy $I=\sum_i|d_i^+-d_i^-|=0$.
+Indeed, if $a$ clauses fix a coordinate to zero in their falsifying cubes and
+$b$ fix it to one, the fraction of the partition with that coordinate zero is
+\[
+\frac a8+\frac{8-a-b}{16}=\frac12+\frac{a-b}{16}.
+\]
+Uniform coverage forces $a=b$. This is necessary, not sufficient, for UNSAT.
+
+The exhaustive $n=6$ UNSAT histogram has
+\[
+\begin{array}{c|rrrrrrrr}
+V&24&32&40&48&56&64&72&96\\\hline
+\#&4560&7380&8640&3840&4320&540&720&20.
+\end{array}
+\]
+Here $V=\sum_i(d_i-4)^2$, and all counts include unused-variable instances.
+There is no UNSAT row with $V=0$. Thus every 2P2N formula in this particular
+$D(6,8)$ family is SAT. This does not assert tractability or satisfiability of
+larger 2P2N families. Only the UNSAT population's $I,V$ histogram was computed;
+the full SAT histogram, semantic-function count and isomorphism quotient remain
+uncomputed. All labeled UNSAT clause sets are retained.
+
+\section*{Controls, limitations, and handoff}
+The $n=4$ partition count reproduces the earlier 272. The explicit n=5
+intermediate row and active-variable counts distinguish actual six-variable
+instances from padded smaller instances. Distinct pivots, independent literal
+semantics, memoized completeness counts, weighted model counting, support
+witnesses, and structural circuit verification provide separate checks.
+The growing query DAG is contrasted directly with a much smaller circuit.
+
+The lower bounds remain encoding- and model-specific. Arbitrary semantic or
+algebraic oracle access can bypass these query/gate models; no relativization,
+algebrization, Natural Proofs, or arbitrary-algorithm transfer barrier is crossed.
+Cryptographic collision/lossiness terminology supplies no additional theorem.
+Current literature supplies exact-cover algorithms, not a global classifier
+minimum from a heuristic node search.
+
+Sources, portable run instructions and verifiers are in
+\path{experiments/universal-dag/D6_README.md} and its four named programs.
+Raw data, compressed complete UNSAT sets, compressed graphs, pair certificates,
+netlists, profiles and source hashes are in
+\path{results/raw/universal-dag/2026-10-02_D6_8/}.
+The living synthesis should add this finite table and the 2P2N control, keeping
+global minima OPEN. The next minimization target remains a globally sound
+bounded-size synthesis and infeasibility certificate, initially on the smaller
+$D(4,8)$ instance; the large six-variable DAG is not evidence of optimality.
+
+\begin{thebibliography}{1}
+\bibitem{knuth} D. E. Knuth. Dancing Links. 2000.
+\url{https://arxiv.org/abs/cs/0011047}.
+\end{thebibliography}
+% END_OF_VERIFIED_REPORT::CODEX::D6PARTITION8
+\end{document}

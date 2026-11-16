@@ -1,0 +1,218 @@
+% PNP RESEARCH REPORT::FRONTIER_AUDIT1::2026-10-02
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,hyperref}
+\title{Codex experiment: verified finite classifier bounds}
+\author{P vs NP Research Project}
+\date{2026-10-02}
+\begin{document}
+\maketitle
+\section*{Status and target}
+\textbf{COMPUTATIONAL, with explicit finite certificates.} P versus NP remains open.
+The target is a smaller universal clause-query classifier for the promised families
+$D(4,m)$, $8\le m\le11$, and sound lower bounds in exactly the same encoding.
+No minimum shared DAG or minimum arbitrary circuit is claimed. Independent external
+red-team review is pending; the verifier is a separate implementation in this package.
+
+\section*{Corpus reviewed and duplication audit}
+The full 332-entry repository tree at commit
+\texttt{b1e8545093b07ff54a734ad75cf137050fb6375b} was surveyed. Reviewed material includes
+root \texttt{main.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, the complete
+\texttt{pnp-research} skill and experiment/research protocols, the current task
+specifications 001--007, MAIN 1158-R1, UNIVERSALDAG1/2, D3CAL1, the fixed-$n,m$
+research note, both existing universal-DAG source files, and the cited raw results.
+Repository search recovered the prior 720-node claim and its original commits.
+The unrelated source-acquisition and SU/vMS claims are not extended here.
+
+The root snapshot and historical synthesis were fetched intact through the connector.
+Direct authenticated clone was unavailable; local preflight/checks ran on the
+retrieved relevant-file snapshot. No full-clone integrity check is claimed.
+
+Adopted: the clause-to-cube-edge mapping, simple-CNF convention, zero-node D3
+control, and the earlier numerical construction sizes. Reproduced: 720, 2776,
+5342, and 7771 for the sign-round-robin order, and every reported semantic/SAT
+count for $m=8,\ldots,11$. New: smaller constructions, exhaustive independent
+verification, explicit gate netlist, support certificates, and $I,V$ histograms.
+
+\section*{Exact model and quantifiers}
+There are 32 input bits $b_q$, one per distinct genuine 3-clause. The promise is
+$|b|=m$. Variables may be unused; $n$ is the size of the available variable universe.
+Clause ID is $q=8o+s$: omit variable $o\in\{0,1,2,3\}$ and use the three-bit
+falsifying pattern $s$ on the remaining variables in increasing order.
+Let $f_m(b)=1$ mean SAT on the weight-$m$ slice. The construction statement is
+\[
+\exists C_m\ \forall b\in\{0,1\}^{32}:
+\quad |b|=m\Longrightarrow C_m(b)=f_m(b).
+\]
+Outside the slice, either output is allowed. A query DAG has binary input-bit
+tests and two uncharged terminals. Published DAGs are read-once and ordered;
+the lower bound also allows rereading. Gate circuits use binary AND/OR and unary
+NOT, free fan-out, and uncharged input wires. These are different cost models.
+SAME\_REALIZATION means the same clause IDs, promise, output convention and truth
+function are used by constructor, verifier and certificates.
+
+\section*{Construction and independently verified results}
+At $m=8$, UNSAT inputs are exactly the 272 perfect matchings of $Q_4$.
+A first engine constructs classifiers from this sparse positive set, using
+memoization and shared node triples $(q,\mathrm{lo},\mathrm{hi})$.
+It evaluates 2,228 ordered/adaptive trials, including adjacent swaps, insertion
+sifting, three deterministic adaptive heuristics and random adaptive seeds 1--20.
+The final ordered construction has 508 nodes. The best final deterministic
+adaptive heuristic has 727 nodes; none of these adaptive heuristics improves
+the ordered incumbent. No exhaustive adaptive optimization was performed.
+
+A second constructor uses coverage states $(i,r,M)$ to rebuild the selected
+order for every $m$. A separately implemented verifier evaluates clauses by
+their literal truth values, enumerates every promised input, and checks the
+exported DAG and explicit gate netlist.
+\[
+\begin{array}{c|r|r|r|r}
+m&\text{inputs}&\text{UNSAT}&\text{old nodes}&\text{new nodes}\\\hline
+8&10{,}518{,}300&272&720&508\\
+9&28{,}048{,}800&15{,}936&2{,}776&1{,}958\\
+10&64{,}512{,}240&264{,}032&5{,}342&3{,}737\\
+11&129{,}024{,}480&2{,}118{,}080&7{,}771&5{,}363
+\end{array}
+\]
+All 232,103,820 checks agree for both representations. The semantic-function
+counts are respectively 29,417, 24,573, 20,413, and 15,997.
+The $m=8$ order was reused for $m=9,10,11$; their orders were not separately
+optimized. Every size above is an upper bound on the corresponding minimum.
+
+\section*{A 64-gate circuit shared by all four rows}
+For each cube vertex $a$, define its incident-edge coverage bit
+\[
+c_a=\bigvee_{e\ni a} b_e.
+\]
+Every vertex has four incident edges, requiring three binary OR gates. Hence
+\[
+f(b)=\neg\bigwedge_{a\in\{0,1\}^4}c_a
+\]
+uses $16\cdot3+15+1=64$ gates and has depth seven with balanced trees.
+It decides SAT for every subset of the 32 clauses, not only the tested slices.
+The proof is direct: $a$ satisfies the formula exactly when none of its incident
+clause bits is selected. The verifier checks the actual exported 64-gate netlist.
+For general $n$, the analogous construction uses
+$2^n\binom n3$ gates; the small finite count is not a polynomial SAT algorithm.
+
+\section*{Lower-bound certificate and proof}
+For every pair of distinct clause positions $(a,b)$ and each $m=8,\ldots,11$,
+the certificate gives weight-$m$ strings $u,v$ with
+\[
+u\mathbin{\oplus}v=2^a+2^b,\qquad f_m(u)=0,\quad f_m(v)=1.
+\]
+The verifier checks all 496 pairs per row, 1,984 witnesses total, directly
+against literal truth tables. Base witnesses are perfect matchings with one
+edge exchanged. Extensions add the same clauses to both inputs while retaining
+at least one satisfying assignment on the SAT side.
+
+Suppose a correct classifier ignores any two input positions $a,b$ entirely.
+It receives identical values on every position it uses for the corresponding
+witnesses, so its outputs must agree, a contradiction. Thus its global input
+support has size at least 31. Consequently every clause-query DAG has at least
+31 nonterminal nodes. This is a global support statement, not a claim that every
+execution path queries 31 bits.
+
+For a single-output fan-in-two circuit, prune gates outside the output cone.
+If $s$ input vertices, $g_2$ binary gates and $g_1$ unary gates remain, connectedness
+gives at least $s+g_2+g_1-1$ edges, whereas fan-in bounds the count by
+$2g_2+g_1$. Therefore $g_2\ge s-1\ge30$. We obtain
+\[
+\begin{array}{c|c|c}
+m&B(4,m)\text{, query nodes}&G(4,m)\text{, AND/OR/NOT gates}\\\hline
+8&31\le B\le508&30\le G\le64\\
+9&31\le B\le1958&30\le G\le64\\
+10&31\le B\le3737&30\le G\le64\\
+11&31\le B\le5363&30\le G\le64
+\end{array}
+\]
+The finite support bounds are independently machine-checked certificates plus
+the above elementary proof, not optimality certificates.
+
+\section*{Stale or overstated claims found}
+First, the tree recurrence $1+T(R_0)+T(R_1)$ does not optimize a globally shared
+DAG. Hash-consing a chosen solution is not a proof of global optimality.
+As a control, the exact tree recurrence gives seven nodes for three-bit parity,
+while a fixed-order DAG uses five.
+
+Second, reduced OBDD canonicity applies to a specified total Boolean function
+and order \cite{bryant}. A weight-$m$ promise leaves don't-care inputs, so global
+completion optimization is an additional problem \cite{oliveira}.
+The prior ``exact for this fixed order'' language should mean a reproducible
+construction size, not a certified minimum among all promise-compatible BDDs.
+
+Third, $G\le B$ without a gate-basis conversion is unjustified. A query node is a
+multiplexer, not one AND/OR/NOT gate. A direct simulation gives at most $3B+32$
+gates by sharing input negations; this package provides a better direct circuit.
+
+\section*{Tracking and hostile controls}
+The complete $I,V$ population histogram is saved for each row, with
+\[
+I=\sum_i|d_i^+-d_i^-|,\qquad
+4V=4\sum_i d_i^2-9m^2.
+\]
+The histogram and UNSAT totals reconcile with independent exhaustive counts.
+Individual canonical hypergraphs, automorphism groups, and per-formula minimal
+representations are not newly computed or retained here.
+
+All 256 three-variable simple formulas are checked: every fixed-$m$ family for
+$0\le m\le8$ has a constant-output zero-query classifier. $D(3,9..11)$ is empty.
+The exhaustive $n=4$ tests include all sign profiles and any Horn/dual-Horn
+members. The easy-family check is correctness, not a new complexity theorem.
+Changing query order is a representation control; the 64-gate circuit is the
+stronger arbitrary-Boolean-sharing control. Two-SAT and Gaussian elimination
+are outside this exact clause/input model and receive no fabricated tests.
+
+\section*{Literature and transfer audit}
+Bryant's total-function OBDD reduction theorem is a direct model match only
+after choosing an extension. Exact optimization with don't cares is explicitly
+treated in logic synthesis by Oliveira, Kam and Sangiovanni-Vincentelli
+\cite{oliveira}. This is a useful direct formulation for the remaining
+promise-compatible minimization, not a result that the present code implements.
+Free-BDD minimization is a separate established optimization problem
+\cite{gunther}; a next-query Bellman formula does not replace it.
+
+The pair-witness proof is a direct distinguishability argument. Cryptographic
+lossiness/collision terminology adds no theorem here, and no PQ hardness
+assumption is used. No oracle or algebraic-oracle separation is established;
+semantic oracles bypass ordinary query/circuit execution. No Natural Proofs
+barrier is claimed to have been crossed. Restricted finite bounds do not force
+an arbitrary uniform SAT algorithm to materialize the same object.
+
+\section*{Reproducibility, MAIN handoff, and next target}
+Source hashes, commands, compiler/runtime details and base commit are in
+\texttt{manifest.json}. Sources and Mac instructions are under
+\path{experiments/universal-dag/}; immutable outputs are under
+\path{results/raw/universal-dag/2026-10-02_frontier_audit/}.
+The existing code is preserved. The new programs need no third-party libraries.
+They save a search trajectory and best graph but do not implement checkpoint
+resume or exact global synthesis.
+
+Root MAIN still cites the historical 2,107-node object and the corrected
+three-variable bookkeeping result. No Codex-owned edit region exists, so the
+repository's Codex handoff rule applies: LSPV-5 should incorporate this table,
+the 64-gate construction and the promise/minimality corrections without altering
+the OPEN asymptotic status. This run is experiment mode, not an LSPV-5 synthesis.
+
+The single next target is an exact global bounded-size synthesis encoding for
+the partial clause-query function, with sound sharing/completion constraints and
+an independently checkable infeasibility certificate. Validate on tiny partial
+functions first. Neither a larger heuristic search nor this support certificate
+should be relabeled as an exact minimum.
+
+\begin{thebibliography}{3}
+\bibitem{bryant} R. E. Bryant. Graph-Based Algorithms for Boolean Function
+Manipulation. IEEE Transactions on Computers C-35(8), 677--691, 1986.
+\url{https://www.cs.cmu.edu/~bryant/pubs.html}.
+\bibitem{oliveira} A. L. Oliveira, T. Kam, A. Sangiovanni-Vincentelli.
+An Implicit Formulation for Exact BDD Minimization of Incompletely Specified
+Functions. VLSI: Integrated Systems on Silicon, 1997.
+\url{https://sld.cs.columbia.edu/pubs/oliveira_vlsi97.pdf}.
+\bibitem{gunther} W. G\"unther, R. Drechsler. Minimization of free BDDs.
+Integration 32, 41--59, 2002.
+\url{https://doi.org/10.1016/S0167-9260(02)00041-X}.
+\end{thebibliography}
+% END_OF_VERIFIED_REPORT::CODEX::FRONTIER_AUDIT1
+\end{document}
