@@ -12,7 +12,9 @@
 
 **ACTUALLY EXECUTED Node v22.16.0** source revision TMR2_XOR_BILINEAR_E2E059_v3, deterministic seed 20261115. 241 assertions, 0 failures, 74 independent original-input brute counts, 5 complete gate-CNF brute counts, 6 malformed-source rejects. Source blob verified on research branch exactly d5da510006f68d4eee0089a14a54c9aea271cc9f, identical to local git hash-object. Raw immutable JSON is /results/raw/tmr/2026-11-15_2022_TMR2_XOR_BILINEAR059_NODE_RAW.json. Tests COMPUTATIONAL, symbolic proof separate.
 
-**Publication paths (branch status pending PR/main merge at creation):**
+**Publication status:** MERGED [PR #193](https://github.com/j15marti/pnp/pull/193), squash commit 44a9ae9cefcb9cd708a0875ea5ccb73cd5c90770. All six artifacts received full postmerge `main` blob readback matching their premerge SHA. Issue #3 handoff comment 6907323553. Local actually executed source SHA and raw JSON SHA matched the remotely published exact blobs. No peer/agent/schedule changes.
+
+**Published main paths:**
 - main2_PNP_INFORMATION_NECESSITY.tex (reconciled existing owner manuscript in place, old sections preserved)
 - research/agents/tmr-2/2026-11-15_2022_TMR2_XOR_BILINEAR_SHARED_DAG_TRANSFER059.md
 - experiments/tmr/tmr2_xor_bilinear_e2e059.js
