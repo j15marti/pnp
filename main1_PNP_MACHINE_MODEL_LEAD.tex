@@ -1,5 +1,5 @@
 % BEGIN TMR-1 OWNED
-% Updated by TMR-1, 2026-11-15 18:07 PST. Owned living manuscript, not a shared tracker.
+% Updated by TMR-1, 2026-11-15 18:57 PST. Owned living manuscript, not a shared tracker.
 \documentclass[11pt]{article}
 \usepackage[margin=0.9in]{geometry}
 \usepackage{amsmath,amssymb,amsthm,hyperref}
@@ -14,7 +14,7 @@
 \section{Status, exact target, and dependency chain}
 P versus NP remains \textbf{OPEN}. The selected Track C chain starts from the \emph{authentic complete binary source} of an arbitrary shared Boolean gate DAG. It constructs a count-preserving width-at-most-three CNF, normalizes \emph{all} promises of the pinned Anthropic \texttt{MainResults.lean}, emits the exact formal input bits, runs the fixed finite-stack counting machine (conditionally on the independently unrebuilt formal theorem), simulates that machine on an ordinary multitape Turing machine, and reads the exact count. A separate Jahanjou--Miles--Viola local reduction and nondeterministic hierarchy yield only a \emph{conditional} $E^{NP}$ infinitely-often circuit lower bound, not an NP or superpolynomial bound.
 
-The named closed dependencies are \textsc{C1-Promise}, the small-instance/unused-variable/duplicate-clause normalizer, and \textsc{C1f-BINARY}, the paid binary-input hierarchy witness and local decoder-support reconstruction. The universal syntactic compiler theorem is PROVED/EXACT RESTRICTED, with external independent mathematical review OPEN. The pinned counting theorem is a FORMAL SOURCE CLAIM. A public upstream CI run at the exact pinned revision reports a successful Lean build and two independent kernel checks, but no independent TMR-1 kernel build or mathematical review was performed. Its fully charged physical-machine implication remains CONDITIONAL. An unrestricted NP-level implication is OPEN.
+The named closed dependencies are \textsc{C1-Promise}, the small-instance/unused-variable/duplicate-clause normalizer; \textsc{C1e-STACK-PHYSICAL}, a fixed finite-stack to ordinary physical multitape simulation with explicit input/output costs; and \textsc{C1f-BINARY}, the paid binary-input hierarchy witness and local decoder-support reconstruction. The universal syntactic compiler theorem is PROVED/EXACT RESTRICTED, with external independent mathematical review OPEN. The pinned counting theorem is a FORMAL SOURCE CLAIM. A public upstream CI run at the exact pinned revision reports a successful Lean build and two independent kernel checks, but no independent TMR-1 kernel build or mathematical review was performed. Its fully charged physical-machine implication remains CONDITIONAL. An unrestricted NP-level implication is OPEN.
 
 The explicit dependency chain is
 \[
@@ -25,7 +25,7 @@ The explicit dependency chain is
 \to\underbrace{\text{TM2 count}\to\text{standard TM output}}_{\mathrm{C1e}}
 \to\underbrace{\text{local hierarchy witness}}_{\mathrm{C1f}}.
 \]
-C1a--C1d are proved for the exact encoding below. C1e is a model-compatible conditional transfer requiring source proof and future kernel replay. C1f is the conditional binary-input hierarchy transfer proved below; independent review remains OPEN.
+C1a--C1d are proved for the exact encoding below. The \emph{model-theoretic} C1e finite-stack to locally headed multitape translation is proved below for one fixed finite machine. The validity of the source \texttt{MainTheorem} itself still rests on the pinned upstream Lean proof and requires independent local kernel replay. C1f is the conditional binary-input hierarchy transfer proved below; independent review remains OPEN.
 
 \section{Source model, quantifiers, and parsing}
 For every $q\ge1$, $G\ge0$, and explicit topologically ordered shared fan-in-two Boolean truth-table DAG $D$, there are $q$ named original input bits, $G$ distinct named gates, arbitrary predecessor reuse and fan-out, and one named output bit. Each 4-bit gate table is an arbitrary binary function, including constants, XOR, and repeated operands. Gates are authenticated in source order and are \emph{not} unfolded when they share predecessors.
@@ -134,6 +134,80 @@ The first time exponent arm satisfies
 using $m'\le4n'$ and $n'\le3m'$ from \texttt{AllOccur}.
 The polynomial preparation cost is absorbed for sufficiently large $V$.
 \end{proof}
+
+
+\section{Physical semantics of the fixed formal finite-stack machine}
+\begin{lemma}[C1e-STACK-PHYSICAL: uniformly charged fixed-machine simulation]
+Fix any $M:\mathrm{TM2ComputableAux}(\mathrm{Bool},\mathrm{Bool})$
+with $\forall i,\ \mathrm{Finite}(M.\mathrm{tm}.\Gamma_i)$.
+There is one ordinary deterministic finite-alphabet, locally headed
+multitape machine $U_M$ and constants $a_M,b_M$ such that for every
+input word $x$ of length $B$ and every $t$ for which the pinned
+$\mathrm{TM2OutputsInTime}(M.\mathrm{tm},x,\mathrm{some}(y),t)$
+holds, the \emph{same complete physical run} of $U_M$ on the
+read-only source word $x$ outputs exactly $y$ with
+\[
+ T_{U_M}(x)\le a_M(B+t+1),\qquad
+ S_{\mathrm{peak},U_M}(x)\le b_M(B+t+1).
+\]
+These bounds include initialization, input copying/reversal, all
+stack accesses, finite-control lookups, output copying/reversal and
+completion. This is a fixed-machine simulation theorem and does
+not independently verify the source theorem's Lean proof.
+\end{lemma}
+\begin{proof}
+The pinned Mathlib \texttt{FinTM2} structure supplies a finite number
+$K$ of stacks, finite label type $\Lambda$, finite internal state
+type $\sigma$, a fixed main label and a fixed statement tree
+$m(\lambda)$ for each label. The pinned \texttt{MainTheorem} adds
+finite alphabets on \emph{every} stack, not only its input stack.
+Every finite-state function inside a statement is thus a fixed
+finite lookup table. Let $L$ be the maximum number of syntactic nodes
+on a root-to-leaf path across the finitely many $m(\lambda)$.
+Both $K$ and $L$ are constants of $M$, independent of $B,t,x$.
+
+Allocate one writable tape per stack with its head immediately after
+the present top symbol and a bottom marker. A \texttt{push} writes
+one finite-alphabet symbol and moves its head right; a \texttt{pop}
+moves left and erases the top (or reads the bottom marker if empty);
+a \texttt{peek} visits the last symbol and returns to the head.
+Each operation needs bounded local tape steps. The other
+\texttt{load}, \texttt{branch}, \texttt{goto}, \texttt{halt}
+operations change only the fixed finite control. Initialize the
+input stack from the actual read-only word using a linear temporary
+copy and reverse sweep; the other stacks start genuinely empty.
+This costs $O_M(B+1)$ physical steps and $O(B)$ writable cells.
+
+In Mathlib's \texttt{TM2.step}, \texttt{stepAux} evaluates only
+one path down the fixed finite statement tree until the first
+\texttt{goto} or \texttt{halt}. Hence each formal step costs
+$O_M(L)$ physical actions, and at most $Lt$ new stack symbols
+can be pushed over $t$ steps. The total live stack contents are
+bounded by $B+Lt$. The pinned \texttt{haltList} requires exactly
+the designated output list, empty nondesignated stacks, and restored
+internal state. Copying the output stack into the ordinary output
+tape, including order reversal if required, costs
+$O_M(B+Lt+1)$. Counting temporary buffers and all initialized
+cells yields both bounds on the identical execution.
+\end{proof}
+
+The exact source anchors are Anthropic \texttt{MainResults.lean}
+and \texttt{Solution.lean} at commit
+\texttt{16a5ce41304fcdaea4e0be7c132e1c361dc26da5};
+Mathlib \texttt{StackTuringMachine.lean} Git blob
+\texttt{916694942a3bfefa0bd9085e2f48735dbe8e0f5b} and
+\texttt{Computable.lean} blob
+\texttt{7779a00f0c3c3909923a5f1bde6b3120b5c2d28a},
+both at Mathlib revision
+\texttt{0df444a360eaa60ab8c11dca51a86af692955474}.
+In particular, this proof uses the actual finite-stack/fixed-block
+\texttt{stepAux} semantics, not free random access, an arbitrary
+nonfinite alphabet or a variable number of uncharged processors.
+The machine existentially quantified by \texttt{MainTheorem} occurs
+\emph{before} all $k,n,\phi$, so no instance-specific machine advice
+is introduced. A concrete Lean reconstruction of this simulation
+lemma and an independent \texttt{\#print axioms} replay have
+\emph{not} been executed. See detailed TMR-1/058 report.
 
 \section{Independent pinned-source CI evidence and a known-theorem fallback}
 \paragraph{Pinned upstream verification, not a local kernel build.}
@@ -309,7 +383,7 @@ Exact count output/check & $O(n'+B_A)$ & $O(n')$\\
 Arithmetic on indices and counted source addresses is paid in bit operations;
 the result has $n'+1$ bits. This is one actual sequential physical execution,
 not a network span or a splice of separate time- and space-optimal machines.
-The formal time claim alone does not yield polynomial or sublinear workspace.
+C1e-STACK-PHYSICAL proves the precise fixed-machine step/stack translation used here, with $O_M(B_A+T_M)$ time and simultaneous writable space for the simulator, including full source loading and output. The formal time claim alone does not yield polynomial or sublinear workspace.
 
 \noindent\textbf{DISJ sanity: PASS (restricted).} The compact linear-gate
 \texttt{DISJ} circuit stays compact despite full static cut rank. Horn,
@@ -335,6 +409,26 @@ Historical \texttt{/341} remains FAIL as unrestricted UNSAT authority,
 cheap executions remain legal.
 
 \section{Provenance, independent review, and ONE next lemma}
+\paragraph{Physical-stack model audit /058 (new, independent finite replay).}
+Local Node v22 executed \texttt{tmr1-fintm2-stack-bridge058.v1},
+xorshift32 seed 20261115, on 120 synthetic finite-block
+programs and 1,920 source cases. It checked every block transition
+between list-top reference stacks and separately locally headed
+bottom-to-top tape stacks: 82,128 formal steps, 152,176 traversed
+statement nodes, 209,898 charged tape-micro actions, and
+1,007,894 assertions with zero failures.
+This is \textbf{COMPUTATIONAL} evidence for finite examples,
+not the pinned Anthropic machine and not a Lean kernel rebuild.
+Exact published source:
+\path{experiments/tmr/tmr1_fintm2_stack_bridge058.js};
+immutable output:
+\path{results/raw/tmr/2026-11-15_1857_TMR1_STACK_TAPE058_NODE_RAW.json};
+original Mathlib source pins and symbolic proof:
+\path{research/agents/tmr-1/2026-11-15_1857_TMR1_FINTM2_PHYSICAL_TRANSFER058.md}.
+No local pnp checkout/preflight, LaTeX compilation or Lean build was run;
+external mathematical review remains OPEN.
+
+
 \paragraph{Additional /056 binary-input verification.}
 Executed native Node v22 revision \texttt{tmr1-binary-hierarchy056.v1},
 xorshift32 seed 20261115: 495 truth-table juntas, 224,840 complete
