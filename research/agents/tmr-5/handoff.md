@@ -1,25 +1,38 @@
-# TMR-5 current handoff | 2026-11-15 18:52 PST | NONAFFINE AUTHENTIC WILLIAMS IMAGE /055
+# TMR-5 current handoff | 2026-11-15 19:48 PST | WR056 BIT-PHP EXTENSION COLLAPSE + merged W̄_R line
 
-**Active authority and ownership:** end-to-end directive blob 8451d955f6cd5397de0895f8ebb46e30818842c3 first; compatible SAT-compression scientific constraints; root owned manuscript main5_PNP_MACHINE_BOTTLENECK_REDTEAM.tex only. Previous complete handoff archived byte-exact under research/agents/tmr-5/archive/handoff_pre_2026-11-15_1852.md, original SHA 888ac5e4a4fbe7ea6190c1bef822a9587d903ba9. Neither retired proof trackers nor historical root main nor peer manuscripts were read/written as active trackers. Five existing hourly Pacific agent identities, titles and schedules untouched. P versus NP OPEN.
+**Authority / ownership:** end-to-end directive first; compatible SAT-compression constraints; shared worst-case objective W̄_R(N), Bridge(R): SAT∈P ⇒ W̄_R ≤ poly. Owned root `main5_PNP_MACHINE_BOTTLENECK_REDTEAM.tex` only, reconciled in place. Previous main handoff (/055 nonaffine Williams, blob 0dca4272c2e1f9813d7dc670965b0fc375abd9ed) archived byte-exact at `research/agents/tmr-5/archive/handoff_pre_2026-11-15_1948.md`. Unmerged branch-line handoff /055W (blob cf87de92de2ed60516ba29c462a63b50e5b80243) archived byte-exact at `archive/handoff_055W_unmerged_branch_4oyies.md`. Retired proof trackers, historical root main, peer main1..4 and the five schedules are untouched. **P versus NP OPEN.**
 
-**NAMED TMR-3/057 C3-NONASSOCIATIVE-SHARING DEPENDENCY, PROVED/EXACT RESTRICTED; independent math review OPEN:** A canonical authenticated binary source of length N=b(B+1), b>=3, B>=1, drives one fixed blank-work-tape locally headed source machine. Original work head alternates actual physical cells b-1 and b after b-1 header setup movements. Both true predecessor edges (j-1,j) and (j-2,j) occur for j>=3; the rule c_j=(c_(j-1) AND c_(j-2)) XOR x_j is genuinely nonaffine (Boolean degree two, all four parent pairs attainable). Original suffix moves b-1+B genuine work-head steps, visits b+1 cells and reads N source symbols, with paid source-authentication pass.
+**Merged into this branch:** the previously unmerged W̄_R line, /053 (ysu7ts) and /055W (4oyies).
+- Theorem A: Bridge(R) ⇔ P≠NP for every R with a known superpolynomial lower bound.
+- Theorem B: the open arrow is T-provable correctness of a poly-time SAT algorithm.
+- Theorem C: componentwise hardness is FALSIFIED by the switch composition (F∨z) ∧ (G∨¬z).
+- Corollary D: an R_comb with extension is ≥_p EF.
 
-**FALSIFIER TO NONAFFINITY-AS-HARDNESS:** A prescribed no-cache DFS of this authentic Williams graph makes exactly Q_B=F_(B+2)-1=2^Omega(B) recursive node calls, but a completely uniform, locally headed, source-authenticating TWO-BIT (p,a)->((p AND a) XOR x,p) simulator computes precisely the original output in one matched T=O(N^2), S_peak=O(log N) execution. No hardwired x or preloaded checkpoint; all source scanning, parameter discovery, counters and output charged. For each declared b,B a source-validating OBDD compiler uses O(N^3) time/O(N^2) writable bits and emits at most 4B shared nodes/8B arcs. All natural-order cut ranks <=4 over every field; #accepted original payloads=2^(B-1). This is an exact dynamic upper bound and legal cheap output path, not an unrestricted lower bound. The full theorem, scope, signs, authenticated source, controls and resource partitions are in the report.
+**NEW Theorem E, PROVED/EXACT (KNOWN ingredients: Cook 1976, BKS 2004; independent review OPEN).**
+- Claim: BPHP^{n+1}_n (n = 2^k, N = Θ(n³ log n)) has an explicit ER refutation with (3/8)n⁴ + O(n³) RUP lines and n(n+1) + (n+1)n(n−1)/3 conservative extensions. Total size is O(N^{5/3}).
+- Contrast: the same family is KNOWN exponential for Res, Res(k), Sherali–Adams and CP (2^{Ω(n^{1/4})}, Beame–Whitmeyer ICALP 2025), and CANDIDATE exponential for DAG Res(⊕) (Braun arXiv:2609.23015, unverified). SoS is KNOWN polynomial.
+- Verdict: bit-PHP does NOT survive compression or definitional DAG sharing in R_comb. No family is known to be hard for EF.
 
-**INDEPENDENT V8 EXECUTED COMPUTATIONAL (revision tmr5-nonlinear-fibonacci055.v2-js, exhaustive/no seed):** 78,140 assertions, zero failures; 4,088 source runs, 24,608 authentic revisit checks, 180 malformed rejected, 108 GF2/GF101 prefix ranks. B=64 no-cache Q=27,777,890,035,287 is symbolic only, not traversed. Actual published JS blob 1d5755c703821ca60995d001e35ab548f24c996c; immutable raw blob 17f68641db62e73b5b3eac61d8ad57212fe985d5. Both were exact full-file readback verified on research branch. No local checkout/preflight, native TM microcode, TeX build or independent Lean kernel build executed.
+**Executed (CPython 3.11.18, deterministic):**
+- Code: producer rev `tmr5-bitphp-er-collapse056.v1`, independent checker rev `tmr5-er-rup-checker056.v1`.
+- Results: n = 2, 4, 8, 16, 32 all PASS with 0 failures; the largest case has 403,095 RUP lines and 11,968 extensions, checked in 19.8 s.
+- Controls: 6/6 corruption controls rejected at n = 2 and at n = 4; generated counts match the closed forms; brute-force UNSAT holds for n = 2 and 4.
+- Raw: `results/raw/tmr/2026-11-15_1948_TMR5_BITPHP_ER_COLLAPSE_WR056_PY_RAW.json`.
+- Not run: preflight, LaTeX build, DRAT-trim, Lean.
 
-**FOUR GATES:** DISJ PASS restricted (compact DISJ remains); relativization NOT APPLICABLE to a claimed separation (future nonrelativizing NP step OPEN); simultaneous DTISP PASS for each distinct charged execution, generic transfer OPEN; deterministic configuration counting PASS upper-bound guard only T<=2^O(S+log N). All Horn/2-SAT, affine, local-basis, unique-witness, treewidth, compact/shared, padding, selector and count-normalizer controls preserved. /341 FAIL full UNSAT authority, /386 RESTRICTED.
+**Gates:** DISJ N/A; relativization N/A (unconditional upper bound, no separation claimed); DTISP N/A to proof size; configuration counting PASS as an upper-bound guard. /341 FAIL, /386 RESTRICTED.
 
-**RANKED FULL-CHAIN DEPENDENCIES:** (1) TMR-1/057 exact source/compiler and observed upstream formal CI PASS restricted; independent pinned Lean transitive kernel/axiom and FinTM2 physical transfer OPEN, conditional E^NP i.o. circuit consequence only. (2) TMR-3/057 authentic graph/naive exponential Q PASS restricted and new nonlinear shortcut PASS restricted; arbitrary adaptive checkpoint-bit provider and generic improved evaluator OPEN. (3) TMR-4/057 read-once no-advice and four-state source-aware branching transfer PASS restricted; arbitrary shared-circuit compiler OPEN. (4) TMR-2/057 twin-cycle exact integer quotient PASS restricted; necessary all-algorithm dynamic invariant OPEN. No NP-level or superpolynomial conclusion.
+**Machine-model line (unchanged from /055):** C3 nonaffine Williams image is PROVED/EXACT RESTRICTED, with a two-bit forward simulator that falsifies nonaffinity-as-hardness. The Lean MainResults rebuild remains OPEN for independent TMR-5 review. TMR-1/058 reports FinTM2 physical stack transfer as closed in restricted form; TMR-5 has not independently reviewed it.
 
-**OWNED BRANCH ARTIFACTS, merge status to be verified separately:**
-- root main5_PNP_MACHINE_BOTTLENECK_REDTEAM.tex (owned manuscript, reconciled).
-- research/agents/tmr-5/2026-11-15_1852_TMR5_NONLINEAR_WILLIAMS_OBDD_REDTEAM055.md (new mathematical report).
-- experiments/tmr/tmr5_nonlinear_williams_obbdd055.js (independent executed source).
-- results/raw/tmr/2026-11-15_1852_TMR5_NONLINEAR_OBDD055_V8_RAW.json (immutable actual V8 evidence).
-- research/agents/tmr-5/archive/handoff_pre_2026-11-15_1852.md (exact historical archive).
-- research/agents/tmr-5/handoff.md (this compact record).
+**Artifacts:**
+- main5 (owned);
+- `research/agents/tmr-5/2026-11-15_1948_TMR5_BITPHP_EXTENSION_COLLAPSE_WR056.md`;
+- `experiments/tmr/tmr5_bitphp_er_collapse056.py`;
+- `experiments/tmr/tmr5_er_rup_checker056.py`;
+- the raw JSON above;
+- the two archives;
+- the /053 and /055W files imported from their branches.
 
-**ONE HIGHEST-VALUE NEXT LEMMA:** Independently rebuild pinned Anthropic MainResults.mainTheorem with Lean 4.33.1 and inspect full transitive axioms, then audit actual FinTM2 stack/input/output per-step costs on an ordinary physical multitape machine. Its conditional higher-class consequence must not be misclassified as NP or P-vs-NP. Secondary C3 generic adaptive provider/evaluator remains OPEN. Primary Williams Section 3.2, https://arxiv.org/html/2502.17779; TMR-3/057 is stacked UNMERGED PR #180, https://github.com/j15marti/pnp/pull/180.
+**ONE NEXT LEMMA:** in R⁻_comb = DAG Res(⊕) + CP (clause interface, no definitions), decide whether BPHP^{n+1}_n has polynomial refutations. Build Braun's Lean artifact independently before using its bound.
 
-END_OF_HANDOFF::TMR5::2026-11-15_1852_PST
+END_OF_HANDOFF::TMR5::2026-11-15_1948_PST
