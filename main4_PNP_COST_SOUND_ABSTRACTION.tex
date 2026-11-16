@@ -1,5 +1,5 @@
 % BEGIN TMR-4 OWNED
-% Updated by TMR-4, 2026-11-15 17:40 PST
+% Updated by TMR-4, 2026-11-15 18:41 PST
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,hyperref}
@@ -9,7 +9,7 @@
 \begin{document}
 \maketitle
 \section{Target, status, exact model}
-This is a coherent restricted end-to-end pipeline from an explicitly encoded register-stream Boolean program, an ordinary shared fan-in-two circuit with a supplied live-frontier layout, and a no-layout read-once Boolean formula tree with a uniformly discovered logarithmic frontier, through complete read-once branching programs to exact decision/count semantics and declared source-width rank implications. Semantic preservation and the scoped rank bound are PROVED/EXACT, with independent mathematical review OPEN. Finite checks are COMPUTATIONAL. Arbitrary circuit-to-register translation, general SAT-time lower bounds, and P versus NP remain OPEN.
+This is a coherent restricted end-to-end pipeline from an explicitly encoded register-stream Boolean program, an ordinary shared fan-in-two circuit with a supplied live-frontier layout, a no-layout read-once Boolean formula tree with a uniformly discovered logarithmic frontier, and a no-advice wavefront-local shared-gate DAG with a discovered small frontier, through complete read-once branching programs to exact decision/count semantics and declared source-width rank implications. Semantic preservation and the scoped rank bound are PROVED/EXACT, with independent mathematical review OPEN. Finite checks are COMPUTATIONAL. Arbitrary circuit-to-register translation, general SAT-time lower bounds, and P versus NP remain OPEN.
 
 Fix $n,s\geq1$. The source has original inputs $x\in\{0,1\}^n$, $s$ retained register bits, initial register $r_0$, and precisely $n$ stages. Each stage has a topologically ordered shared fan-in-two Boolean truth-table gate DAG which selects an index $j_t$ \emph{before} inspecting its value and updates $r_{t+1}=U_t(r_t,x_{j_t})$. The selector is independent of the unread bit on all reachable states, and no index is repeated along any path. After stage $n$ a shared Boolean DAG returns the one-bit answer $h(r_n)$. The finite encoding is canonical ASCII JSON with fields for version, dimensions, initial register, stages, and terminal circuit, and binary gate records $(a,b,\tau)$ for any of the 16 binary truth tables. Shared fan-out, repeated operands, constants and adaptive choice are allowed. The compiler rejects malformed encodings and reachable read-once or pre-read-selector violations. Let $L$ count the entire source encoding in bits.
 
@@ -164,6 +164,139 @@ DISJ: PASS for the restricted transfer, FAIL for arbitrary grouped-cut-to-genera
 \paragraph{Evidence and provenance.}
 Local CPython 3.13.5 executed revision \texttt{tmr4-ershov057.v1}, seed 20261115: 184 valid source trees, 10,200 exhaustive assignments, 132,818 original/stage replays, 7,904 target arcs, 72 independent all-topological-order ideal-DP optimum checks, 1,760 ranks over $\mathbb F_2/\mathbb F_{101}$, 184 independent exact integer counts and seven malformed rejections; 405,811 assertions, zero failures. These tests are COMPUTATIONAL; symbolic theorem PROVED/EXACT restricted, independent external review OPEN. Code \path{experiments/tmr/tmr4_ershov_schedule_e2e057.py}, raw \path{results/raw/tmr/2026-11-15_1740_TMR4_ERSHOV057_PY_RAW.json}, detailed report \path{research/agents/tmr-4/2026-11-15_1740_TMR4_NOADVICE_ERSHOV_FRONTIER_END_TO_END057.md}. The previous v1 harness accepted already-materialized source mappings. A strengthened v2 harness now actually encodes and authenticates \emph{canonical ASCII JSON source bytes} using a duplicate-key-rejecting, full-shape-checking parser before every source graph traversal. Local CPython 3.13.5 executed exact \texttt{tmr4-ershov057.v2}, seed 20261115: 189 authentic byte parses (427,184 source bits), 13 malformed byte/graph rejections, the same 184 valid formula cases, 72 all-order optimum checks and 405,811 semantic assertions, zero failures. Executable \path{experiments/tmr/tmr4_ershov_schedule_e2e057_v2.py}, immutable raw \path{results/raw/tmr/2026-11-15_1740_TMR4_ERSHOV057_V2_PY_RAW.json}, exact interface addendum \path{research/agents/tmr-4/2026-11-15_1740_TMR4_CANONICAL_BYTE_SOURCE_AUDIT057_V2.md}. Source bytes, duplicate/invalid-member checks and output are charged by the same conservative bit-machine ledger; native Python JSON operations are not declared physical unit-cost Turing steps. The v1 source/raw remain unchanged and independently reproducible. Repository preflight, physical TM microtrace and formal kernel were not executed. Primary tree-ordering sources: Sethi--Ullman (JACM 1970, DOI 10.1145/321607.321620), Appel--Supowit (Software: Practice and Experience 1987, DOI 10.1002/spe.4380170607), and Sethi (SIAM J. Comput. 1975, DOI 10.1137/0204020). The first tree-order result is known prior art; the new scope is its fully charged integration into this declared authenticated formula-to-OBDD pipeline.
 
+
+\section{Uniform no-advice wavefront-local shared-gate DAG transfer}
+\paragraph{D4-DAG-LAYOUT-RECONSTRUCTION: closed only for the qualified wavefront subclass.}
+In contrast with the preceding read-once-tree case, this theorem permits genuine shared
+internal gates and reconvergent fan-out. Fix the complete canonical ASCII JSON source
+with exactly the fields \texttt{n,gates,out}. The $n\ge1$ original input IDs
+$x_0,\ldots,x_{n-1}$ and $g\ge1$ gate IDs $g_0,\ldots,g_{g-1}$ are unique,
+and the gate records (in any source order) encode original operands and one
+of sixteen binary Boolean truth tables. No topological schedule or layer labels
+are supplied. Reject malformed bytes, duplicate identifiers or JSON keys,
+invalid operands/opcodes, cyclic or dead gates, and missing input/output use.
+A well-formed source outside the following promised subclass is
+\emph{OUT-OF-CLASS}, not erroneously called UNSAT.
+
+\paragraph{Definition (wavefront-local source).}
+Compute the gate-only depth $d(g)=1+\max(\{d(h):h$ is a gate operand
+of $g\}\cup\{0\})$ on the actual source DAG. All gate-to-gate edges
+$h\to g$ must satisfy $d(g)=d(h)+1$. Every input $x_j$ must be
+consumed exclusively by gates at one common level $d_j$. For every level
+$d$, let $G_d$ be its distinct original gates and $X_d$ the distinct
+original input identities whose use level is $d$; define
+\[
+k=\max_d\max\{|G_d|,|X_d|\}.
+\]
+Shared gates, repeated operands and genuine reconvergence in adjacent
+levels are legal. The depth/level structure is \emph{discovered} and
+authenticated, not received as a layout hint.
+
+\paragraph{Theorem 6 (uniform shared-DAG source-to-OBDD transfer).}
+For every authenticated wavefront-local source, every original assignment
+$x\in\{0,1\}^n$, and every field $K$, a fixed uniform compiler discovers a
+topological once-only original-vertex schedule, preserves all original gate
+values and terminal decision, and produces a complete $n$-layer OBDD
+whose path multiplicities preserve the exact original count $\#C$. With
+$w$ the maximum number of distinct live original signals needed later,
+\[
+w\le3k,\qquad V\le n2^w\le n2^{3k},\qquad
+\operatorname{rank}_K M_{\rho_{\le i},\rho_{>i}}(f_C)
+\le2^{|L_{\mathrm{boundary},i}|}\le2^{3k}.
+\]
+The actual public input permutation $\rho$ is computed from the source;
+a rank-$R$ prefix thus forces $\lceil\log_2R\rceil$ source values live
+only in \emph{this} discovered once-only schedule, and does not lower-bound
+general Boolean circuit size or arbitrary SAT decision work.
+
+\emph{Proof.}
+For $d=1,\ldots,D$ emit each original input identity in $X_d$ in
+numeric order and then each original gate identity in $G_d$ in numeric
+order. All gate dependencies originate in the immediately preceding
+gate layer or in current-level newly introduced input wires, so the
+schedule is legal. At any intermediate position in level $d$, a live
+wire must belong to the preceding gate layer, current input layer, or
+currently computed gate layer. Each category contains at most $k$
+distinct identities, regardless of the number of fan-out consumers,
+hence $w\le3k$. Assign every original source wire its actual last
+consumer, retaining the designated output through its pseudo-consumer.
+Partition at input introductions. A gate source is either local to its
+stage or an earlier retained signal, since the gate itself is a future
+use. Induction on \emph{every} original schedule step proves equality
+of each original gate valuation and of both terminal labels. A
+complete OBDD is obtained by enumerating reachable stage/live-register
+states with \emph{both} genuine input-labelled outgoing arcs, even if
+they merge at one state. Original assignments and complete labelled paths
+are bijective, so their accepting count is equal, not merely
+equisatisfiable. There are at most $2^w$ states per layer. The suffix
+computation after a prefix is determined by its stage and its actual
+retained register tuple, giving at most
+$2^{|L_{\mathrm{boundary},i}|}$ distinct suffix cofactors and the rank
+bound over every field. \hfill$\square$
+
+\paragraph{Whole same-realization resource ledger.}
+Let $L$ count complete source bits and $M=n+g$. Let
+\[
+B=O\bigl(L+(g+nw+n)\lceil\log_2(M+w+2)\rceil\bigr),\quad
+D_*=1+L+B+O\bigl(n2^{3k}(3k+n+\log_2(n2^{3k}+2))\bigr).
+\]
+One conventional deterministic locally headed multitape machine
+authenticates the complete source, discovers all depths/input levels,
+checks all edge and fan-out conditions, sorts the original vertices,
+constructs genuine last uses and shared stage records, builds the
+entire actual reachable two-arc OBDD, follows the original assignment,
+propagates $(n+1)$-bit exact integer path counts with labelled edge
+multiplicity, and prints both the decision bit and exact count. On this
+\emph{same execution}, conservative upper bounds are
+\[
+T_{\mathrm{total}}=O(D_*^5+n^2),\qquad
+S_{\mathrm{peak}}=O(D_*).
+\]
+The bound includes parsing, failed validation, graph and input rereads,
+all heads/seeks, sorting, slot maps and addresses, transient gate
+buffers, source gate records counted once despite fan-out, OBDD-state
+materialization, exact bit arithmetic, caches, recomputation and output.
+No CNF auxiliaries are produced; any later TMR-1 functional-Tseitin
+translation must charge its own wires, variables and decoding.
+When $k=O(\log L)$, this particular source compiler is polynomial in
+$L$ in both time and space, not a forbidden small-space SAT
+simulation. Direct source circuit evaluation and compact functions
+remain legal alternatives.
+
+\paragraph{Computational audit and four-gate status.}
+The actually executed hosted V8 implementation
+\texttt{tmr4-wavefront-dag058.v1}, xorshift32 seed 20261115, checked
+137 full canonical source circuits, 125 with true shared internal gates,
+4440 assignments, 35534 gate/stage replays, 1526 exact ranks in
+$\mathbf F_2$ and $\mathbf F_{101}$, 2324 actual OBDD nodes, 4648
+labelled arcs, seven rejected controls and 82167 assertions with
+zero failures. Exact canonical source strings are included in raw
+evidence. A separate V8 readback rerun reproduced the JSON structure.
+This is COMPUTATIONAL, not independent mathematics peer review,
+a native physical-TM microtrace, project preflight, native Node CLI
+or a LaTeX build. The report is
+\path{research/agents/tmr-4/2026-11-15_1841_TMR4_WAVEFRONT_DAG_NO_ADVICE_END_TO_END058.md};
+source \path{experiments/tmr/tmr4_wavefront_dag_e2e058.js};
+raw \path{results/raw/tmr/2026-11-15_1841_TMR4_WAVEFRONT_DAG058_V8_RAW.json}.
+DISJ sanity: PASS RESTRICTED; $\operatorname{rank}(\mathrm{DISJ}_3)=8$
+for the grouped input split but it has a compact circuit.
+Relativization: PASS intermediate, nonrelativizing NP bridge OPEN,
+as are algebrization and Natural Proofs audits.
+Simultaneous DTISP: PASS for one charged upper-bound execution,
+no forbidden simultaneous bounds.
+Deterministic configuration counting: PASS upper-bound consistency
+$T\le2^{O(S+\log N)}$ for total read-only-input deterministic
+deciders; neither a work lower bound nor quantum/randomized claim.
+Horn, 2-SAT, affine/Gaussian, equality, bounded treewidth, autarky,
+products, padding, auxiliary variables, selectors, unique-solution
+rank-one tensors, field restrictions and compact execution paths
+are retained; /341 FAIL as full UNSAT authority and /386 RESTRICTED.
+The source-to-layout idea is elementary and scoped; original
+general-DAG complexity sources are Sethi (1975),
+\url{https://doi.org/10.1137/0204020}, and Bryant (1986),
+\url{https://doi.org/10.1109/TC.1986.1676819}.
+P versus NP remains OPEN.
+
 \section{Four gates, controls, validation}
 \paragraph{DISJ sanity: PASS restricted, FAIL arbitrary transfer.} The grouped $\mathrm{DISJ}_3$ cut rank is eight over both $\mathbf F_2$ and $\mathbf F_{101}$, yet an interleaved source uses $s=2,V=18,b=5$ while a grouped one uses $s=4,V=41,b=1$; both have seven shared gate records. DISJ retains its linear-size circuit.
 \paragraph{Relativization: PASS restricted, unrestricted OPEN.} A relational compiler and rectangle argument do not provide the necessary nonrelativizing NP step; algebrization and Natural Proofs checks remain open.
@@ -181,7 +314,14 @@ Raw results: \path{results/raw/tmr/2026-11-15_1540_TMR4_REGISTERSTREAM055_NODE_R
 Original TMR-4/053 adaptive rectangles, TMR-2/054 cofactor rank and TMR-1/054 source CNF normalization were inspected. Further sources: Wegener, \emph{Branching Programs and Binary Decision Diagrams}, SIAM 2000, Chapter 2, \url{https://doi.org/10.1137/1.9780898719789.ch2}; Beame, Jayram and Saks, \emph{Time-Space Tradeoffs for Branching Programs}, JCSS 2001, \url{https://doi.org/10.1006/jcss.2001.1778}; Baker, Gill and Solovay, \emph{Relativizations of the P =? NP Question}, SICOMP 1975, \url{https://doi.org/10.1137/0204037}. The scope and peer review status are not promoted by publication alone.
 
 \section{ONE next load-bearing lemma}
-D4-DAG-LAYOUT-RECONSTRUCTION (OPEN): construct a uniform, fully charged small-live-frontier layout discovery algorithm for a nontrivial \emph{shared-gate DAG} subclass beyond read-once formula trees, or a precise model-matched negative obstruction that still admits genuine semantic shortcuts. Require all-step input/output preservation, fan-out accounting, and full same-realization bit-machine costs. No general-circuit or SAT-machine lower bound follows from the existing structural tree frontier. P versus NP remains OPEN.
+D4-LONG-EDGE-SPILL (OPEN): extend the authentic, uniform no-advice
+wavefront compiler to gate dependencies spanning more than one
+discovered layer and original inputs used across levels, by explicitly
+charging the resulting live intervals and congestion, or give a
+model-matched compact-circuit counterexample. Include construction
+and discovery cost, both terminal labels, exact count, sharing and
+same-realization bit-machine resources. General circuit/SAT-machine
+lower bounds and P versus NP remain OPEN.
 
 \section{Workflow}
 Follow \path{research/coordination/2026-11-15_END_TO_END_AGENT_MANUSCRIPTS.md}, AGENTS.md and CODEX.md. This entire paper is owned by TMR-4. Historical proof text trackers were not read or edited, and none of the five agent schedules were changed.
