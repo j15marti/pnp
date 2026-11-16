@@ -75,5 +75,6 @@ for(let test=0;test<90;test++){const n=1+R(5),gates=[],order=["x0"],ready=["x0"]
  inspect({n,gates,order,output:ready[R(ready.length)]},"seeded"+test)}
 for(const bad of [{n:1,gates:[],order:["x0","x0"],output:"x0"},{n:1,gates:[{id:"g0",a:"g0",b:"x0",op:8}],order:["x0","g0"],output:"g0"},{n:1,gates:[],order:["x0"],output:"g9"},{n:1,gates:[{id:"g0",a:"x0",b:"x0",op:16}],order:["x0","g0"],output:"g0"}]){let fails=false;try{prep(bad)}catch(e){fails=true}ok(fails,"malformed");report.rejected++}
 if(typeof module!=="undefined"&&module.exports)module.exports=report;
+if(typeof require!=="undefined"&&typeof module!=="undefined"&&require.main===module)console.log(JSON.stringify(report));
 else if(typeof print==="function")print(JSON.stringify(report));
 return report;
