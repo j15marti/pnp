@@ -35,7 +35,7 @@ The oracle equality argument is the standard Baker--Gill--Solovay PSPACE-complet
 
 Let $A=\mathrm{TQBF}$, the fixed language of true, well-formed, closed quantified Boolean formulas.
 
-For any width-at-most-three CNF $\phi$ on $n$ explicitly declared variables, let $N$ denote its complete encoded bit length and let
+For any width-at-most-three CNF $\phi$ on $n$ explicitly declared variables **in the C1 unary-$n$ encoding (so $n\le N$)**, let $N$ denote its complete encoded bit length and let
 \[
 L_{\ge}=\{\langle\phi,h\rangle: 0\le h\le2^n,\ \#\phi\ge h\}.
 \]
