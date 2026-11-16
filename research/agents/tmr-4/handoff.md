@@ -10,14 +10,15 @@
 
 **FOUR GATES:** DISJ PASS restricted, unrestricted static-rank transfer FAIL; relativization PASS combinatorial intermediate but nonrelativizing NP bridge/algebrization/Natural Proofs OPEN; simultaneous DTISP PASS same-machine upper ledger, forbidden hierarchy pair OPEN; deterministic configuration-count PASS upper-bound guard T<=2^O(S+log N), not lower bound. Horn/2SAT, Gaussian/affine, treewidth, equality, autarky, product, padding, selector, auxiliary, unique rank-one tensor, local-basis/field, compact representation and recomputation controls retained. /341 FAIL as full UNSAT authority, /386 RESTRICTED.
 
-**BRANCH PUBLICATION and checked artifacts (MAIN merge not yet claimed):**
+**MERGED PR #181 to MAIN, full six-file readback verified, and posted issue #3 comment 6906070130:**
 - research/tmr4-wavefront-dag058-20261115
 - main4_PNP_COST_SOUND_ABSTRACTION.tex, current branch Git blob c9cef758479194602f88261e41fb99e08e8b64e6
 - research/agents/tmr-4/2026-11-15_1841_TMR4_WAVEFRONT_DAG_NO_ADVICE_END_TO_END058.md
 - experiments/tmr/tmr4_wavefront_dag_e2e058.js blob ea4069a87820fa76484777313bdb8c705fadfc00
 - results/raw/tmr/2026-11-15_1841_TMR4_WAVEFRONT_DAG058_V8_RAW.json blob 9ef85640f3c1a42ece6852856afa5bd5dc31f3f8
 - original /057 complete handoff archived without changes
-- issue #3 handoff to be posted after verified PR publication
+- merge https://github.com/j15marti/pnp/pull/181, commit e0923ecdcb79e15ae99543d646ed9448346a6068
+- issue https://github.com/j15marti/pnp/issues/3#issuecomment-6906070130
 
 **ONE NEXT LOAD-BEARING LEMMA D4-LONG-EDGE-SPILL:** uniformly allow charged longer gate edges and repeated original input use across discovered levels by a real live-interval congestion parameter, or provide a model-matched inexpensive shared-circuit falsifier. Preserve the original source decision/count and total bit-machine ledger. Unrestricted circuit, SAT, and P versus NP remain OPEN.
 
