@@ -1,5 +1,5 @@
 % BEGIN TMR-4 OWNED
-% Updated by TMR-4, 2026-11-15 16:36 PST
+% Updated by TMR-4, 2026-11-15 17:40 PST
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,hyperref}
@@ -9,7 +9,7 @@
 \begin{document}
 \maketitle
 \section{Target, status, exact model}
-This is a coherent restricted end-to-end pipeline from both an explicitly encoded register-stream Boolean program and an ordinary shared fan-in-two Boolean circuit with a supplied authenticated topological live-frontier layout, through complete read-once branching programs to exact decision/count semantics and declared source-width rank implications. Semantic preservation and the scoped rank bound are PROVED/EXACT, with independent mathematical review OPEN. Finite checks are COMPUTATIONAL. Arbitrary circuit-to-register translation, general SAT-time lower bounds, and P versus NP remain OPEN.
+This is a coherent restricted end-to-end pipeline from an explicitly encoded register-stream Boolean program, an ordinary shared fan-in-two circuit with a supplied live-frontier layout, and a no-layout read-once Boolean formula tree with a uniformly discovered logarithmic frontier, through complete read-once branching programs to exact decision/count semantics and declared source-width rank implications. Semantic preservation and the scoped rank bound are PROVED/EXACT, with independent mathematical review OPEN. Finite checks are COMPUTATIONAL. Arbitrary circuit-to-register translation, general SAT-time lower bounds, and P versus NP remain OPEN.
 
 Fix $n,s\geq1$. The source has original inputs $x\in\{0,1\}^n$, $s$ retained register bits, initial register $r_0$, and precisely $n$ stages. Each stage has a topologically ordered shared fan-in-two Boolean truth-table gate DAG which selects an index $j_t$ \emph{before} inspecting its value and updates $r_{t+1}=U_t(r_t,x_{j_t})$. The selector is independent of the unread bit on all reachable states, and no index is repeated along any path. After stage $n$ a shared Boolean DAG returns the one-bit answer $h(r_n)$. The finite encoding is canonical ASCII JSON with fields for version, dimensions, initial register, stages, and terminal circuit, and binary gate records $(a,b,\tau)$ for any of the 16 binary truth tables. Shared fan-out, repeated operands, constants and adaptive choice are allowed. The compiler rejects malformed encodings and reachable read-once or pre-read-selector violations. Let $L$ count the entire source encoding in bits.
 
@@ -112,6 +112,58 @@ DISJ has a legal small-frontier interleaved schedule and a linear-size circuit e
 
 Hosted V8 execution of exact source \texttt{tmr4-frontier056.v2}, seed 20261115, verified 112 circuits/layouts, 2594 complete assignment outputs, 15594 authentic stage gate replays, 1812 compiled BP transitions, 972 exact $\mathbf F_2/\mathbf F_{101}$ ranks, 112 accepting-path integer counts and four malformed rejections in 130922 assertions, with zero failures. This is COMPUTATIONAL; the symbolic theorem is PROVED/EXACT in its restricted model, independent mathematics review OPEN. No project preflight, native Node CLI or LaTeX build was executed. The pending TMR-4 draft PR \#158 uses a different fixed-partition minimum-signal-cut invariant and was not overwritten.
 
+
+\section{A uniform schedule finder without supplied layout for read-once formulas}
+\paragraph{D4-CROSS-ORDER: restricted dependency closed.}
+Consider every rooted fan-in-two Boolean \emph{formula tree} with $n\ge1$ distinct original input leaves, one leaf for each $x_0,\ldots,x_{n-1}$, exactly $n-1$ unique internal gates, and any of the sixteen binary truth tables. The explicit finite source supplies gate references, opcodes and a root, but \emph{does not supply a schedule}. Complete validation rejects invalid references, cycles, disconnected vertices, duplicate variable uses, nonroot fan-out, dead gates and malformed records. The scope is strictly narrower than an unrestricted shared-circuit DAG.
+
+\paragraph{Theorem 5 (uniform no-advice tree-to-OBDD transfer, known tree ordering plus restricted new integration).}
+Define the Sethi--Ullman/Ershov label $r(x_i)=1$ and for gate $v=\tau(a,b)$,
+\[
+r(v)=\begin{cases}r(a)+1,&r(a)=r(b),\\
+\max\{r(a),r(b)\},&r(a)\ne r(b).
+\end{cases}
+\]
+A fixed compiler authenticates the complete tree, computes the labels in postorder, and emits the larger-labeled child subtree first (fixed tie rule), then the other child subtree, then the original gate. Let $w$ be maximum live original-wire frontier of this \emph{constructed} topological schedule, counting the root pseudo-output use. Then
+\[
+w=r(\mathrm{root})\le1+\lfloor\log_2n\rfloor,\qquad
+V\le n2^w\le2n^2.
+\]
+Every original input is read exactly once in the \emph{computed} permutation $\rho$, which may begin with an input other than $x_0$. The first-$x_0$ convention in the earlier \emph{test harness} is not a mathematical hypothesis of the all-step simulation proof: actual original input labels are retained as stage selectors, and physical input seeks are charged. Source and target agree after every original gate and at both terminal labels, with exact assignment-count preservation when parallel arcs of merged branching-program states retain multiplicity. For each actual prefix cut,
+\[
+\operatorname{rank}_K M_{\rho_{\le i},\rho_{>i}}(f_C)
+\le2^{w_i}
+\]
+over every field $K$. Thus the source's \emph{particular once-only structural schedule} has $w_i\ge\lceil\log_2\operatorname{rank}_K M_i\rceil$, but this is not a source circuit-size or all-algorithm time lower bound.
+
+\emph{Proof.}
+The label recurrence and larger-child-first optimality for disjoint computation trees are the classical Sethi--Ullman tree theorem. A completed child result must be carried while the other subtree is evaluated; the two candidate peaks are $\max(r(a),1+r(b))$ and $\max(r(b),1+r(a))$. The tree exchange lemma removes any beneficial interleaving. A label-$k$ tree has at least $2^{k-1}$ leaves by induction, proving the logarithmic upper bound. The emitted order is topological by structural induction; at each original gate, authentic predecessors are present locally or in the computed live frontier. The prior all-step proof of Theorem 4 therefore applies with the actual input permutation rather than a prescribed $x_0$ first. Stage state identity includes the complete retained frontier. Both outgoing labelled arcs remain even when their successor is shared, yielding a bijection between original assignments and complete labelled target paths. Row factorization through at most $2^{w_i}$ registers yields the rank claim. \hfill$\square$
+
+\paragraph{An independently cheaper exact-count algorithm and a genuine all-chain shortcut.}
+Every child pair has disjoint original variable sets, so store exact counts $(c_0,c_1)=(1,1)$ for a leaf and for truth table $\tau$ compute
+\[
+c_z(v)=\sum_{\tau(i,j)=z}c_i(a)c_j(b).
+\]
+Each count fits in $n+1$ bits; the root's $c_1$ is $\#C$. This does not materialize an OBDD. In particular a balanced AND formula on $n=2^k$ distinct leaves requires $k+1$ \emph{structural nonrecomputing live values} under any topological evaluation of that tree, but its Boolean function is simply $\bigwedge_ix_i$ and admits a source-authenticated linear sequential input sweep with one Boolean accumulator (plus actual physical head/configuration state). The exact count is one. This \emph{legal} semantic shortcut falsifies any transfer from optimal original-tree frontier to mandatory memory of all equivalent algorithms. DISJ, equality, affine, Horn, treewidth, product, autarky, padding, selector and compact shared-circuit alternatives remain legal.
+
+\paragraph{One physical execution and explicitly charged layout discovery.}
+Let $L$ be complete encoded source bits, $M=2n-1$ and let
+\[
+B=O(L+(n+nw)\lceil\log_2(2n+w+2)\rceil),\qquad
+D=1+L+B+O(n2^w(w+n+\log_2(n2^w+2)))=O(L+n^3).
+\]
+One conventional locally headed deterministic multitape compiler, source evaluator, exact-count path dynamic program and output routine uses on \emph{the same execution}
+\[
+T_{\mathrm{total}}=O(D^5+n^2),\qquad S_{\mathrm{peak}}=O(D).
+\]
+This purposely conservative cost partition includes complete source parsing, invalid-input handling, graph connectivity and fan-out validation, labeling, schedule selection, discovery of each genuine last-use position, input permutation and head seeks, original shared-record storage, stage buffers, allocation and lookup of the two real target arcs, all retained integer counts of at most $n+1$ bits, arithmetic bit costs, caching, failed branches and actual outputs. The \emph{alternative} source-tree counter has one same-run upper bound $T=O(L^3+n^3),S_{\rm peak}=O(L^2+n^2)$ with naive source scans and schoolbook integer multiplication, further emphasizing that the OBDD is not a compulsory execution. The Python verifier models source/target semantics and exact integer arithmetic, not a TM microstep trace. Every counted physical object belongs to this same realization, with no free order advice.
+
+\paragraph{Four verification gates and scope.}
+DISJ: PASS for the restricted transfer, FAIL for arbitrary grouped-cut-to-general-circuit hardness; the legal DISJ read-once formula is linear-size. Relativization: PASS as an intermediate combinatorial compiler; a nonrelativizing unrestricted NP step and algebrization/Natural Proofs checks remain OPEN. Simultaneous DTISP: PASS for one charged upper-bound execution; a forbidden-region lower-bound consequence remains OPEN. Configuration counting: PASS only as deterministic $T\le2^{O(S+\log N)}$ upper-bound guard, not a lower bound on necessary work or a randomized/quantum theorem. Unique-solution full-indicator rank can be one; invertible local bases preserve rank, and Walsh--Hadamard over $\mathbb F_2$ is singular. /341 is FAIL for full logical UNSAT authority, /386 RESTRICTED.
+
+\paragraph{Evidence and provenance.}
+Local CPython 3.13.5 executed revision \texttt{tmr4-ershov057.v1}, seed 20261115: 184 valid source trees, 10,200 exhaustive assignments, 132,818 original/stage replays, 7,904 target arcs, 72 independent all-topological-order ideal-DP optimum checks, 1,760 ranks over $\mathbb F_2/\mathbb F_{101}$, 184 independent exact integer counts and seven malformed rejections; 405,811 assertions, zero failures. These tests are COMPUTATIONAL; symbolic theorem PROVED/EXACT restricted, independent external review OPEN. Code \path{experiments/tmr/tmr4_ershov_schedule_e2e057.py}, raw \path{results/raw/tmr/2026-11-15_1740_TMR4_ERSHOV057_PY_RAW.json}, detailed report \path{research/agents/tmr-4/2026-11-15_1740_TMR4_NOADVICE_ERSHOV_FRONTIER_END_TO_END057.md}. The local script was executed and replayed; repository preflight, physical TM microtrace and formal kernel were not. Primary tree-ordering sources: Sethi--Ullman (JACM 1970, DOI 10.1145/321607.321620), Appel--Supowit (Software: Practice and Experience 1987, DOI 10.1002/spe.4380170607), and Sethi (SIAM J. Comput. 1975, DOI 10.1137/0204020). The first tree-order result is known prior art; the new scope is its fully charged integration into this declared authenticated formula-to-OBDD pipeline.
+
 \section{Four gates, controls, validation}
 \paragraph{DISJ sanity: PASS restricted, FAIL arbitrary transfer.} The grouped $\mathrm{DISJ}_3$ cut rank is eight over both $\mathbf F_2$ and $\mathbf F_{101}$, yet an interleaved source uses $s=2,V=18,b=5$ while a grouped one uses $s=4,V=41,b=1$; both have seven shared gate records. DISJ retains its linear-size circuit.
 \paragraph{Relativization: PASS restricted, unrestricted OPEN.} A relational compiler and rectangle argument do not provide the necessary nonrelativizing NP step; algebrization and Natural Proofs checks remain open.
@@ -129,7 +181,7 @@ Raw results: \path{results/raw/tmr/2026-11-15_1540_TMR4_REGISTERSTREAM055_NODE_R
 Original TMR-4/053 adaptive rectangles, TMR-2/054 cofactor rank and TMR-1/054 source CNF normalization were inspected. Further sources: Wegener, \emph{Branching Programs and Binary Decision Diagrams}, SIAM 2000, Chapter 2, \url{https://doi.org/10.1137/1.9780898719789.ch2}; Beame, Jayram and Saks, \emph{Time-Space Tradeoffs for Branching Programs}, JCSS 2001, \url{https://doi.org/10.1006/jcss.2001.1778}; Baker, Gill and Solovay, \emph{Relativizations of the P =? NP Question}, SICOMP 1975, \url{https://doi.org/10.1137/0204037}. The scope and peer review status are not promoted by publication alone.
 
 \section{ONE next load-bearing lemma}
-D4-CROSS-ORDER: develop and fully charge a uniform method discovering a useful $O(\log L)$-live frontier for a nontrivial circuit family \emph{without supplied layout advice}, or identify an explicit compact shared-circuit family that forces larger live frontier in every authenticated topological order while retaining its legal cheap evaluation. Finding an optimized schedule is not free. Unrestricted circuit/SAT hardness and P versus NP remain OPEN. P versus NP remains OPEN.
+D4-DAG-LAYOUT-RECONSTRUCTION (OPEN): construct a uniform, fully charged small-live-frontier layout discovery algorithm for a nontrivial \emph{shared-gate DAG} subclass beyond read-once formula trees, or a precise model-matched negative obstruction that still admits genuine semantic shortcuts. Require all-step input/output preservation, fan-out accounting, and full same-realization bit-machine costs. No general-circuit or SAT-machine lower bound follows from the existing structural tree frontier. P versus NP remains OPEN.
 
 \section{Workflow}
 Follow \path{research/coordination/2026-11-15_END_TO_END_AGENT_MANUSCRIPTS.md}, AGENTS.md and CODEX.md. This entire paper is owned by TMR-4. Historical proof text trackers were not read or edited, and none of the five agent schedules were changed.
