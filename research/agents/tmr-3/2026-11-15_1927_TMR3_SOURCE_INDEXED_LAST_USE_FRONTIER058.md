@@ -9,11 +9,11 @@ The target is the authentic source -> published/verified source-only schedule ->
 F1: a discarded work block reappears later; test exact future visits. F2: a purported public schedule depends on unobserved intermediate work bits; the theorem explicitly excludes this case. F3: generator calls or input-head restoration are counted for one machine but omitted from the claimed time bound; every call is charged. F4: a supposed lower bound uses the costs of our particular evaluator to exclude legal two-register shortcuts; no such exclusion is asserted.
 
 ## Theorem: genuine source-indexed block-respecting simulator
-For one fixed deterministic finite-alphabet p-work-tape machine starting with blank work tapes, let an authenticated input x (length N) have B genuine time blocks of b transitions. Assume one original-source-only uniform G(x,h,j), using at most g writable bits and tau paid steps including local input-head seeks, returns the true active b-cell block on tape h during block j, for every source x in the declared domain. The input parser costs A(N). This is a constructive hypothesis about the actual execution, not a guessed graph provided for free.
+For one fixed deterministic finite-alphabet p-work-tape machine starting with blank work tapes, let an authenticated input x (length N) have B genuine time blocks of b transitions. Assume one original-source-only uniform G(x,h,j), using at most g writable bits and tau paid steps including local input-head seeks, returns the true active b-cell block on tape h during block j, for every source x in the declared domain. The input parser costs A(N) time and uses s_A(N) peak writable bits. This is a constructive hypothesis about the actual execution, not a guessed graph provided for free.
 
 Let F_j be the set of (tape,block) addresses appearing among both blocks 1..j and blocks j+1..B, and w=max_j |F_j|. One uniform total sequential simulator for that family has simultaneous resources
 \[
-S=O((w+p)(b+\log(B+2))+g+\log(N+B+2)),
+S=O(s_A(N)+(w+p)(b+\log(B+2))+g+\log(N+B+2)),
 \]
 \[
 T=O(A(N)+pB^2(\tau+1)+Bp(w+p)(b+\log(B+2))+Bb).
