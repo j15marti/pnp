@@ -48,7 +48,7 @@ const run = () => {
       }
       recovered.push({supp,tab});
     }
-    stats.baseline_per_bit_bound+=outputs*(2*ell*lowMasks.filter(m=>pop(m)<=w-1).length+Math.pow(2,w));
+    let oldQ=Math.pow(2,w);for(let t=0;t<w;t++){let c=1;for(let k=0;k<t;k++)c=c*(ell-1-k)/(k+1);oldQ+=2*ell*Math.round(c)}stats.baseline_per_bit_bound+=outputs*oldQ;
     for(let m=0;m<(1<<ell);m++){
       const truth=evalVector(m);
       for(let j=0;j<outputs;j++){
