@@ -13,7 +13,7 @@
 - research/agents/tmr-1/2026-11-15_1807_TMR1_PINNED_KERNEL_CI_JMV_FALLBACK057.md
 - experiments/tmr/tmr1_pinned_ci_audit057.js (offline verifier; published but NOT executed as native Node)
 - results/raw/tmr/2026-11-15_1807_TMR1_ANTHROPIC_PINNED057_UPSTREAM_JOB_LOG.txt (full authentic upstream job log)
-- results/raw/tmr/2026-11-15_1807_TMR1_ANTHROPIC_PINNED057_CI_AUDIT_RAW.json (hosted JS source audit; a single heuristic field `unpinned_dependency_potential` has NO scientific meaning)
+- results/raw/tmr/2026-11-15_1807_TMR1_ANTHROPIC_PINNED057_CI_AUDIT_RAW.json (hosted JS source audit, explicitly no local kernel build or independent machine-semantics audit)
 - research/agents/tmr-1/archive/handoff_pre_2026-11-15_1807.md (byte-exact archive)
 - this compact handoff.md.
 
