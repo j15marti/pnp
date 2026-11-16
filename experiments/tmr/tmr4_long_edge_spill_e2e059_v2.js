@@ -151,6 +151,7 @@ if(rep%2)gs.reverse();
 run({n,gates:gs,out:"g"+(g-1)},"chain"+n+"_"+rep);
 }
 run({n:5,gates:[{id:"g6",a:"g1",b:"g5",op:6},{id:"g0",a:"x0",b:"x1",op:8},{id:"g3",a:"g0",b:"x4",op:14},{id:"g5",a:"g4",b:"x0",op:7},{id:"g1",a:"x2",b:"x3",op:6},{id:"g4",a:"g2",b:"g3",op:8},{id:"g2",a:"g0",b:"g1",op:14}],out:"g6"},"reconvergent_long");
+run({n:2,gates:[{id:"g0",a:"x0",b:"x1",op:8},{id:"g1",a:"g0",b:"x0",op:6}],out:"g1"},"adjacent_input_reuse");
 let disj={n:6,gates:[{id:"g0",a:"x0",b:"x3",op:7},{id:"g1",a:"x1",b:"x4",op:7},{id:"g2",a:"x2",b:"x5",op:7},{id:"g3",a:"g0",b:"g1",op:8},{id:"g4",a:"g3",b:"g2",op:8}],out:"g4"};
 run(disj,"DISJ3");
 let rankDisj=[];let Pd=parse(canonical(disj));
@@ -165,7 +166,7 @@ let reject=[
 {n:1,gates:[{id:"g0",a:"x0",b:"g9",op:8}],out:"g0"}
 ];for(let z of reject){let threw=false;try{parse(canonical(z));}catch(e){threw=true;}check(threw,"malformed source rejected");}
 let dup='{"gates":[{"a":"x0","b":"x0","id":"g0","op":8}],"n":1,"n":2,"out":"g0"}';let threw=false;try{parse(dup);}catch(e){threw=true;}check(threw,"duplicate key rejected");
-check(seenSpill>0&&seenGateSpan>0&&seenInputSpan>0&&seenShared>0,"all new long-edge source controls exercised");
+check(correctionCases>=1&&seenSpill>0&&seenGateSpan>0&&seenInputSpan>0&&seenShared>0,"all new long-edge source controls exercised");
 return {revision:REV,seed:SEED,valid:samples.length,rejected:7,assertions,assignments,stepChecks,rankChecks,totalNodes,totalArcs,correctionCases,seenSpill,seenShared,seenInputSpan,seenGateSpan,disjGroupedRank:8,failures:0,cases:samples,canonicalSources:allSources};
 }
 if(typeof module!=="undefined"&&require.main===module)console.log(JSON.stringify(audit059(),null,2));
