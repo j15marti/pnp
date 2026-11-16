@@ -15,3 +15,12 @@ Living paper: `LIVING_WORST_CASE_DERIVATION.tex`. P versus NP remains OPEN.
 - Literature clues checked: ECCC TR26-109 (EF-provable FP reductions), arXiv:2609.23015 (Res(⊕) bit-PHP lower bound, not reviewed), ECCC TR25-096, arXiv:1703.02469.
 - Validation not run: no LaTeX build (pdflatex not installed in this container), no independent review, no repo preflight.
 - Next lemma: decide premise U (a separating model, or a proof).
+
+## 2026-11-16 02:50 PST run (branch ccr-1695bd63-o6urne, merges run-1 branch ccr-1695bd63-7dks8r)
+
+- Literature: Krajíček, "A note on SAT algorithms and proof complexity" (Theorem 2.1, class Alg(P)) — the lower bound on W̄_R reaches exactly the algorithms whose soundness R proves in poly size.
+- PROVED/EXACT (immediate, unreviewed): for decent R, Bridge(R) ⇔ [P=NP ⇒ some complete poly-time decider is in Alg(R)] ⇔ [P=NP ⇒ every one is].
+- PROVED/EXACT (unreviewed): premise U ⇔ Bridge(EF). This closes run 1's next lemma negatively for leverage: U is not a weaker target. Proof: under Bridge(EF) and P=NP, prefix-search for a p(n)-size EF refutation and accept only after the EF checker passes; PV proves its soundness through EF reflection, whatever subroutine is used.
+- COMPUTATIONAL: `reflection_restriction_check.py` checks the D1/D4 restriction core of the clause-selector encoding exhaustively. 79,107 formulas and 700,568 assignments, 0 failures. Raw: `results/raw/2026-11-16_claude_reflection_restriction_check.json`. A harness bug (tautological slots) on the first execution is disclosed in the raw file.
+- Not run: LaTeX build (no pdflatex), external review, repository preflight. Frege variant CONDITIONAL (VNC^1 reflection not checked).
+- Next lemma: decide whether Bridge(Frege) ⇔ Bridge(EF).
