@@ -1,5 +1,5 @@
 % BEGIN TMR-4 OWNED
-% Updated by TMR-4, 2026-11-15 18:41 PST
+% Updated by TMR-4, 2026-11-15 18:41 PST, v2 source arity audit
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,hyperref}
@@ -177,6 +177,11 @@ are supplied. Reject malformed bytes, duplicate identifiers or JSON keys,
 invalid operands/opcodes, cyclic or dead gates, and missing input/output use.
 A well-formed source outside the following promised subclass is
 \emph{OUT-OF-CLASS}, not erroneously called UNSAT.
+Before allocating any $n$-indexed input-use table, reject $n>2g$:
+each of the $g$ binary gates has only two operand references, so
+every valid source using all $n$ distinct original inputs satisfies
+$n\le2g$. This pays for malformed huge declared arities without
+unbounded allocations or a silent all-input parsing assumption.
 
 \paragraph{Definition (wavefront-local source).}
 Compute the gate-only depth $d(g)=1+\max(\{d(h):h$ is a gate operand
@@ -278,6 +283,26 @@ or a LaTeX build. The report is
 \path{research/agents/tmr-4/2026-11-15_1841_TMR4_WAVEFRONT_DAG_NO_ADVICE_END_TO_END058.md};
 source \path{experiments/tmr/tmr4_wavefront_dag_e2e058.js};
 raw \path{results/raw/tmr/2026-11-15_1841_TMR4_WAVEFRONT_DAG058_V8_RAW.json}.
+\paragraph{V2 all-input arity-audit correction.}
+The original v1 parser allocated an array indexed by declared $n$
+before rejecting unused variables. For the canonical small encoded
+source with $n=10^{12}$ but one binary gate, this violates a claimed
+polynomial invalid-word resource bound: a syntactically correct short
+source cannot authorize enormous preprocessing storage. Revision
+\texttt{tmr4-wavefront-dag058.v2} checks the necessary condition
+$n\le2g$ before any $n$-indexed allocation. It retains every
+original valid fixture and adds a separately executed canonical
+huge-$n$ rejection: 137 valid cases, eight rejects, 82168
+assertions, zero failures; independent fetched-source V8 rerun
+reproduced its complete raw JSON. V1 source/raw remain historical and
+unchanged. Updated source
+\path{experiments/tmr/tmr4_wavefront_dag_e2e058_v2.js};
+raw \path{results/raw/tmr/2026-11-15_1841_TMR4_WAVEFRONT_DAG058_V2_V8_RAW.json};
+precise addendum
+\path{research/agents/tmr-4/2026-11-15_1841_TMR4_SOURCE_ARITY_GUARD058_V2.md}.
+The mathematical valid-source transfer is unchanged; native
+microstep traces, TeX and independent mathematical review remain OPEN.
+
 DISJ sanity: PASS RESTRICTED; $\operatorname{rank}(\mathrm{DISJ}_3)=8$
 for the grouped input split but it has a compact circuit.
 Relativization: PASS intermediate, nonrelativizing NP bridge OPEN,

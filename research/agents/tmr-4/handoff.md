@@ -8,9 +8,12 @@
 
 **ACTUAL V8 AUDIT:** revision tmr4-wavefront-dag058.v1; xorshift32 seed 20261115. 137 canonical original shared DAG sources (125 with shared internal gates), 4440 assignments, 35534 real gate/stage replays, 1526 GF(2)/GF(101) ranks, 2324 OBDD nodes, 4648 arcs, seven expected rejects, **82167 assertions, zero failures**; DISJ3 grouped rank 8 over both fields, small circuit legal. Published source/raw were individually branch-readback verified; independent fetched-source V8 rerun reproduced raw JSON structure. Native Node CLI/LaTeX/kernel/preflight not executed, no physical TM microtrace; finite result COMPUTATIONAL.
 
+
+**V2 GUARDED INVALID-SOURCE RECONCILIATION (new additive evidence; original /058 v1 retained):** For every valid g-gate source using all declared n input identities, the EXACT necessary bound n<=2g holds because there are only 2g operand references. The original v1 parser allocated an n-length table before checking all inputs used, and a short canonical word declaring n=10^12 with one gate could incur enormous invalid-input allocation. V2 checks n>2g and rejects BEFORE this allocation, closing the literal full-byte-source resource premise without changing the valid-source mathematical theorem or 137 source fixtures. Actually executed authenticated v2 source revision tmr4-wavefront-dag058.v2, seed 20261115: 137 valid sources, 125 genuine internal shared gates, 8 adversarial rejected sources, 82,168 assertions, zero failures. Fetched-source V8 rerun exactly reproduces v2 raw structured JSON. New branch-only files until merge: experiments/tmr/tmr4_wavefront_dag_e2e058_v2.js (Git blob 94393d83acad96a029632bc366f844d3689beb9e), results/raw/tmr/2026-11-15_1841_TMR4_WAVEFRONT_DAG058_V2_V8_RAW.json (Git blob d76e7248c2635a4e197b8f832afacf33225ff3a6), research/agents/tmr-4/2026-11-15_1841_TMR4_SOURCE_ARITY_GUARD058_V2.md. Owned main4 revised safely; original report, code, raw and old handoffs unchanged. Native Node, physical TM microtrace, preflight, TeX/kernel and independent mathematical peer review not executed.
+
 **FOUR GATES:** DISJ PASS restricted, unrestricted static-rank transfer FAIL; relativization PASS combinatorial intermediate but nonrelativizing NP bridge/algebrization/Natural Proofs OPEN; simultaneous DTISP PASS same-machine upper ledger, forbidden hierarchy pair OPEN; deterministic configuration-count PASS upper-bound guard T<=2^O(S+log N), not lower bound. Horn/2SAT, Gaussian/affine, treewidth, equality, autarky, product, padding, selector, auxiliary, unique rank-one tensor, local-basis/field, compact representation and recomputation controls retained. /341 FAIL as full UNSAT authority, /386 RESTRICTED.
 
-**MERGED PR #181 to MAIN, full six-file readback verified, and posted issue #3 comment 6906070130:**
+**V1 MERGED PR #181; V2 source guard in publication branch research/tmr4-wavefront-dag058-v2-arity-guard, NOT YET MERGED:**
 - research/tmr4-wavefront-dag058-20261115
 - main4_PNP_COST_SOUND_ABSTRACTION.tex, current branch Git blob c9cef758479194602f88261e41fb99e08e8b64e6
 - research/agents/tmr-4/2026-11-15_1841_TMR4_WAVEFRONT_DAG_NO_ADVICE_END_TO_END058.md
@@ -22,4 +25,4 @@
 
 **ONE NEXT LOAD-BEARING LEMMA D4-LONG-EDGE-SPILL:** uniformly allow charged longer gate edges and repeated original input use across discovered levels by a real live-interval congestion parameter, or provide a model-matched inexpensive shared-circuit falsifier. Preserve the original source decision/count and total bit-machine ledger. Unrestricted circuit, SAT, and P versus NP remain OPEN.
 
-END_OF_HANDOFF::TMR4::2026-11-15_1841_PST
+END_OF_HANDOFF::TMR4::2026-11-15_1841_V2_PST
