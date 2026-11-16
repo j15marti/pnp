@@ -20,9 +20,25 @@ Shared target: W̄_R(N) = max over UNSAT F with |<F>| ≤ N of the minimum R-ref
 | Localization: A correct ⟺ Loc_{A,n}; EF ⊢ Loc_{A,n} → Sound_{A,n} in poly size; B(EF) ⟺ [SAT∈P ⟹ ∃A, Loc_{A,n} poly EF-provable] | PROVED/EXACT (sketch), unreviewed, likely folklore |
 | H_sound (witness-free, length-tolerant localized witnessing) ⟹ B(EF) | PROVED/EXACT (sketch), unreviewed |
 | PS uniform witnessing (self-reduction search) ⟹ H_sound | PROVED (sketch), unreviewed; converse unknown |
-| H_sound itself; OPEN lemma SR (self-referential false-UNSAT case) | OPEN, **next lemma** |
+| H_sound itself | OPEN |
+| GST dichotomy: PV ⊢ ¬LocCons_A(g(A,1^n)) ∨ A(Φ_n(A))=0, for every A | PROVED/EXACT (sketch), unreviewed |
+| Single-family collapse: under SAT∈P via A_0, W̄_EF ≤ poly ⟺ s_EF(Φ_n(A_0)) ≤ poly | KNOWN THEOREM in substance (Krajíček–Pudlák reflection) |
+| Regress: GST route leaves exactly Sound_{A_0,n} = ¬Φ_n(A_0) at the decisive point | PROVED/EXACT (sketch), unreviewed |
+| Naive self-trust SR (A(Φ_n(A))=0 → Sound_{A,n}) | FALSIFIED (A ≡ 0) |
+| Corrected SR(A) with inconsistency finder h, uniform in A | OPEN; its truth ⟹ polynomial-window refuters (stronger than GST/BTW i.o.) |
+| SR(A) for a DPLL-style restricted class | OPEN, **next lemma** |
 
 ## Entries
+
+### 2026-11-16, fourth pass (branch ccr-1695bd63-o1klgo, base a29605c5 plus vp7fgl merged)
+- Report: `2026-11-16_SR_REGRESS_SINGLE_FAMILY_COLLAPSE.md`. No code was executed; all results are symbolic and unreviewed.
+- Result 1, the GST dichotomy (Theorem 1). Every decider A is either locally inconsistent at a p-time-computable point, or answers 0 on its own error formula Φ_n(A). This is provable in PV, so it is unconditional.
+- Result 2, single-family collapse (Proposition 2). Under SAT∈P, the worst case W̄_EF is carried, up to a polynomial, by the one diagonal family Φ_n(A_0). A P≠NP proof via EF must show, for every A, that A is wrong or Φ_n(A) is EF-hard. Combinatorial families cannot play this role.
+- Result 3, the regress (Theorem 3). For a correct A_0, the GST route leaves exactly the tautology Sound_{A_0,n}. So lemma SR is the whole of B(EF) at the decisive point, not a weakening.
+- Result 4. Naive self-trust SR is falsified (A ≡ 0). Truth of the corrected uniform SR would give polynomial-window refuters, which are stronger than the infinitely-often GST and BTW results.
+- Literature: BTW ICS 2010 slides read in full (dreambreakers, infinitely often only); Carmosino–Dang–Jackman arXiv 2604.23958 abstract; Li–Li–Ren STOC 2026 snippet; Krajíček–Pudlák 1989 as background.
+- Not merged: TMR-5/060 (branch lh9sf9) and TMR-5/057 (dh8nvl). They are cited, not imported.
+- Next: SR(A) for a DPLL-style restricted class. This is the first white-box entry point.
 
 ### 2026-11-16, third pass (branch ccr-1695bd63-vp7fgl, base f9f4d90c)
 - Report: `2026-11-16_LOCALIZED_WITNESSING_BRIDGE.md`; code `local_consistency_check.py` (v2), raw `local_consistency_check_raw.json`.
