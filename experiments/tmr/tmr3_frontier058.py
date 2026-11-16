@@ -6,7 +6,7 @@ from __future__ import annotations
 import json, hashlib, itertools
 from collections import Counter
 
-REV='tmr3-source-frontier058-py-v1'
+REV='tmr3-source-frontier058-py-v2'
 
 def source(x): return '1'*len(x)+'0'+x
 
@@ -92,6 +92,8 @@ def main():
         words=[''.join(w) for w in itertools.product('01',repeat=B)] if B<=7 else [format(k,'08b') for k in [0,1,2,3,7,15,31,63,85,127,128,170,192,224,240,248,252,254,255]]
         wb=0; cb=0
         for x in words:
+            checks+=1
+            assert parse(source(x)) == x
             out,tr,logs=reference(x)
             vout,peak,calls,vlogs=virtual(x)
             width=max((len(graph_frontier(tr,t)) for t in range(len(tr))),default=0)
