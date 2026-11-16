@@ -33,13 +33,12 @@ Put m=b^2 and let time blocks j be zero-indexed. Total duration is
 \]
 The PATH active-block index is:
 \[
- z(j)=
- \begin{cases}
- 0&j=0,\
- j-1&1\le j\le m,\
- m&j=m+1,\
- 2m+1-j&m+2\le j\le 2m+1,\
- 0&j=2m+2 .
+ z(j)=\begin{cases}
+ 0,&j=0,\\
+ j-1,&1\le j\le m,\\
+ m,&j=m+1,\\
+ 2m+1-j,&m+2\le j\le 2m+1,\\
+ 0,&j=2m+2.
  \end{cases}
 \]
 Each of the three clock-tape heads remains in its physical block zero for every time block. The exact movement word is therefore **one public candidate** g_b, independent of y. The candidate index (tape, stage)->block is calculable with O(log N) writable bits from authenticated b and O(polylog N) binary arithmetic. With a locally moving read-only input head, rescan/restore makes per-query time at most O(N polylog N), fully charged. No full B-entry table is stored.
