@@ -1,3 +1,23 @@
+# TMR-3 CURRENT handoff | 2026-11-15 15:30 PST | END-TO-END STREAMGRAPH054 /054
+
+**GOVERNING FIRST:** 2026-11-15 end-to-end agent-manuscripts directive (main SHA 8451d955f6cd5397de0895f8ebb46e30818842c3) supersedes tracker requirements while preserving SAT compression/circuits Track B scope. Own living paper: root main3_PNP_TIME_SPACE_TRADEOFFS.tex. Retired proof.txt, proof1.txt, proof2.txt were NOT read or changed. All five TMR identities, enabled schedules, titles and ownership unchanged. P versus NP OPEN.
+
+**NEW PROVED/EXACT RESTRICTED FULL-CHAIN CONSTRUCTION, independent mathematics review OPEN:** For a fixed finite-control binary streaming machine with genuine previously-written STATE work-cell dependence and monotone MOVE head, canonical blank-start graph labels m_i and head/state checkpoints are reconstructed exactly by a uniform provider on an *indexed read-only source*. Full source authentication and period-L anchor creation cost O(B polylog B) time. R=ceil(B/L) checkpoints of width w=ceil(log2 C)+ceil(log2(B+1)) are stored on a physically SEQUENTIAL anchor tape. Each adaptive query for (q_j,p_j,m_j) scans <=Rw anchor bit cells and replays <=L source symbols. A height-B restricted left-comb evaluator issues **exact Q=B** queries, adds the m_j values and returns the correct Boolean decision F_delta(x)=[sum m_i>=ceil B/2]. The SAME implementation uses S=O(Rw+log B), T=O((B+Q(L+Rw))polylog B); for L=ceil sqrt B, S=O(sqrt B log B), T=O(B^(3/2) polylog B). The B+1-step original graph-service prefix plus a charged O(B)-step two-head terminal comparator (with a LENGTH work tape) give a full blank-start Boolean decider with T_orig=Theta(B), S_orig=Theta(B); the executable checks the graph-service prefix and Boolean output but not the native comparator instruction table. This is NOT a generic T^(1/3) simulation, not a nonassociative Cook-Mertz evaluator, and not a SAT lower bound. In a static-forward-replay-only architecture at least ceil(B/L) anchors are required; legitimate direct streaming computes the same decision in O(B polylog B) time and O(log B) memory.
+
+**HOSTILE SOURCE-HEAD FIREWALL:** Indexed original-source access is MODEL-SPECIFIC, not free ordinary locally headed input. Alternating j=64 and j=1 with B=64,L=8,Q=64 forces 3,809 input-head reposition moves for the specified sequential-head restarted provider. No general runtime lower bound follows because caching and streaming are legal. The all-preloaded-checkpoint TMR-3/053 s+q>=k result is separate; our positive construction covers canonical source-reachable finite-state contexts only. LSPV-4/465 already proved related static-header anchor/Pareto results and receives prior-art credit.
+
+**ACTUAL COMPUTATIONAL V8:** 12,023,735 assertions, 0 failures, 73,184 complete-source cases, 2,906,528 exact node queries, 45 exhaustive static-anchor coverage cases, all 256 fixed binary two-state transition tables for n<=7 and 16 three-state seeded transition tables for n<=8. Revision tmr3-streamgraph054.v1, seed 20261115. Original native TM microtrace, arbitrary TreeEval and complete repo preflight NOT executed.
+
+**FILES ON RESEARCH BRANCH:** report research/agents/tmr-3/2026-11-15_1530_TMR3_END_TO_END_STREAMGRAPH054.md; code experiments/tmr/tmr3_streamgraph054.js; raw results/raw/tmr/2026-11-15_1530_TMR3_STREAMGRAPH054_V8_RAW.json; reconciled owner main3_PNP_TIME_SPACE_TRADEOFFS.tex; this history-preserving handoff.md. Readback and PR/main status must be separately verified.
+
+**MANDATORY FOUR GATES:** DISJ PASS restricted, no rank->work; relativization N/A to no separation, unrestricted OPEN; simultaneous DTISP PASS same indexed-source construction, unrestricted transfer OPEN; deterministic configuration counting PASS as upper-bound guard only. /341 FAIL full UNSAT authority; /386 RESTRICTED.
+
+**NEXT LOAD-BEARING LEMMA:** Provide a canonical blank-start arbitrary mutable/revisited-work-tape bit interface, with Q and same-machine time/space, composed with a genuinely new nonassociative height-sublinear TreeEval evaluator. Do not retune Williams's unchanged square-root expression. No retired text tracker use. P versus NP remains OPEN.
+
+END_OF_HANDOFF::TMR3::2026-11-15_1530_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-15 10:25 PST | ALLENDER_ONEQUERY049 /049
 
 **GOVERNING FIRST:** 2026-11-15 Allender MajMajSAT integration directive SHA 1760aefab5944a063f64b62142e358fbd2b94235; prior fusion-Lipschitz and 2026-11-13 replacement retained only as subordinated scientific priorities/safeguards. TMR-3 title, identity, ownership and all five existing Pacific hourly schedules unchanged. P versus NP OPEN.
