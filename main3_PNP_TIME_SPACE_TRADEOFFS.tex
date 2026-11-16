@@ -26,6 +26,11 @@ Finite tests are \textbf{COMPUTATIONAL}.
 A universal logarithmic-workspace authentic-graph provider would imply
 $\mathrm L=\mathrm P$; no unconditional space lower bound is inferred.
 The general provider, improved evaluator, and P versus NP remain OPEN.
+TMR-3/061 independently audits the existing Williams guessed-graph/FAIL
+route. Its lexicographic exhaustive variant is a PROVED/EXACT
+\emph{restricted} time/space obstruction even on an easy source;
+independent review OPEN. It does not challenge the published space
+upper bound, and it does not assert a general machine lower bound.
 
 This is an explicit already block-respecting realization, not a claim that
 an unspecified Hopcroft--Paul--Valiant (HPV) folded-copy implementation
@@ -298,14 +303,130 @@ The exact raw evidence is
 \path{results/raw/tmr/2026-11-15_2030_TMR3_ADMISSIBLE_BLOCK060_PY_RAW.json}.
 Compilation, when actually performed, is a syntax check, not proof review.
 
+
+\section{Graph guessing, FAIL checking, and the missing simultaneous time bound (TMR-3/061)}
+\paragraph{Exact correction to the source-indexer discussion.}
+Williams's Section~3.2 already bypasses authentic source-only graph
+indexing: enumerate every candidate movement word
+$g\in\{-1,0,+1\}^{pB}$, store its $O(pB)$-bit encoding, derive the
+corresponding graph in logspace \emph{relative to that guess}, and
+evaluate a source-authenticated implicit tree. Wrong head movements
+return FAIL at the root; the correct guess returns the true decision
+bit \cite{Williams2025}. Thus /059--/060's P-complete authentic
+edge is not a counterexample to that published space simulation.
+The unresolved cost is selecting the authentic graph in sufficiently
+small \emph{simultaneous} time and workspace.
+
+\paragraph{One complete cheap machine and exact enumeration workload.}
+Fix a total deterministic blank-start local two-head machine $M_R$.
+It starts with a binary source $x$ of length $N$ and a blank work tape.
+For each real data bit it moves both heads right and ANDs that bit into
+one finite-control register. At the first endmarker it stays, emits
+$\bigwedge_{i=1}^{N}x_i$, and halts. A legal source-aware alternative
+uses one streaming pass and $O(1)$ writable bits. Its authentic physical
+execution takes $t=N+1$ transitions; the original $M_R$ has
+$\Theta(N)$ visited work cells.
+
+For any $b,B$ with $t=bB$ and $b\ge\lceil\log_2t\rceil$,
+its block-boundary movement labels, in time-major order on two heads,
+are $((+1,+1))^{B-1},(0,0)$. All positive crossings occur
+at honest multiples of $b$, for both YES and NO inputs.
+Take the specific lexicographic enumeration of all
+$\{-1,0,+1\}^{2B}$ guesses in the order $-1<0<+1$, and
+apply the sound FAIL-or-decision contract to every guess.
+The authentic word's zero-based ternary rank is
+$3^{2B}-5$, so the total number of candidate evaluations is exactly
+\[
+\boxed{Q_{\mathrm{guess}}(B)=3^{2B}-4.}
+\]
+Every earlier word has at least one incorrect movement label
+and therefore returns FAIL. This counts distinct \emph{guess attempts}
+even with hypothetical unit-cost evaluation. It is a lower bound
+only for the stipulated dense, exhaustive, lexicographic algorithm,
+not for arbitrary machine-aware orders or compressed representations.
+
+At $t=m^3$, $b=m$ and $B=m^2$, for all sufficiently large $m$,
+the block width is admissible, yet
+\[
+Q_{\mathrm{guess}}=3^{2m^2}-4
+=2^{\Theta(t^{2/3})}.
+\]
+With near-minimum legal $b=\Theta(\log t)$ the same architecture has
+$2^{\Theta(t/\log t)}$ attempts on a suitable cofinal input-length
+subsequence. The trivial direct AND decider demonstrates why neither
+cost is intrinsic decision hardness.
+
+\paragraph{Two independent full-template resource gates.}
+For $p$ constant tapes and $B=\lceil t/b\rceil$, let $Q_E$ be the
+actual number of implicit-tree requests \emph{per candidate} and $A_E$
+the maximum paid time per request, including original-source seeks,
+graph reconstruction, precision and output. Let $I_E$ be remaining
+per-candidate work and $S_E$ the evaluator's peak live workspace
+excluding a retained candidate and necessary block buffers.
+A sequential implementation that literally enumerates the dense words
+has the conservative conditional bounds
+\[
+T_{\rm total}\le T_{\rm parse}
++O\!\left(3^{pB}(I_E+Q_E A_E+pB)\right),
+\]
+\[
+S_{\rm peak}=O(pB+b+S_E+\log(t+N+2)).
+\]
+These bounds describe one implementation with its own charged costs;
+$Q_E$ and $A_E$ are \emph{not} assumed polynomial.
+
+The full movement-word representation by itself consumes
+$\Theta(B)$ retained bits. Consequently, substituting an improved
+height-sensitive evaluator of space $O(b+B^{1/2})$ into the
+\emph{unchanged} full-word search does not yield
+$O(t^{1/3})$ space: with $b=t^{1/3}$, its retained candidate
+uses $\Theta(t^{2/3})$ bits. The unmodified dense-template
+tradeoff is constrained by $b+t/b\ge2\sqrt{t}$.
+These are \emph{representation-specific} costs, not a lower bound for
+every possible compact graph description.
+
+Moreover, for the specified exhaustive lexicographic search the
+$Q_{\rm guess}$ candidate tests alone preclude polynomial simultaneous
+time at a cube-root block width. Requiring at most polynomially many
+such tests forces $B=O(\log t)$ and hence
+$b=\Omega(t/\log t)$ \emph{within this fixed template}.
+A new source-derived candidate selector, compact representation or
+different coupled computation is essential; none is provided here.
+A height-sublinear Tree Evaluation algorithm alone closes neither
+the graph-storage term nor the enumeration-time term.
+
+\paragraph{Evidence, hostile controls, and verification gates.}
+Exact published CPython revision
+\texttt{tmr3-graph-guess-volume061-v1}, seed $202611152119$,
+ran twice with byte-identical raw JSON: $45$ complete two-head
+lexicographic enumerations through $B=5$ and $360$ additional
+random original sources, $8{,}388$ assertions, zero failures.
+Only the physical head boundary schedule, original two-label
+semantics and a sound abstract FAIL contract were executed;
+a native Cook--Mertz evaluator was not.
+Report, script and raw evidence are under
+\path{research/agents/tmr-3/},
+\path{experiments/tmr/tmr3_graph_guess_volume061.py}, and
+\path{results/raw/tmr/2026-11-15_2119_TMR3_GRAPH_GUESS061_PY_RAW.json}.
+DISJ: NOT APPLICABLE WITH REASON (no rank inference).
+Relativization: NOT APPLICABLE WITH REASON (no separation).
+Simultaneous DTISP: PASS for the declared architecture ledger,
+unrestricted transfer OPEN. Configuration counting: PASS as a
+deterministic upper-bound sanity guard only.
+Cheap source-aware AND, alternative candidate orders and compressed
+motion representations remain legal. Independent math review OPEN.
+P versus NP OPEN.
+
 \section{One next load-bearing obligation}
-Fix the actual converter intended by the improved simulation and prove
-a usable authentic-index generation promise, or replace authentic graph
-recovery with a paid guessed-graph verification interface having an
-explicit total evaluator query bound. The new existence theorem does
-not certify that narrower interface. Further marker-clock variations
-alone are not the priority. The generic improved evaluator and
-P versus NP remain OPEN.
+\textsf{C3-SELECTIVE-CANDIDATES-AND-COMPACT-STATE}:
+pin a source-authenticated, block-respecting general compiler and
+construct or falsify a uniformly obtainable small candidate family,
+or a compact implicit motion representation, with sound FAIL checking
+and \emph{total} evaluator queries and same-execution time and peak
+space. A candidate existence certificate, a cheap source-specific
+graph index, or an improved height-only evaluator does not discharge
+this obligation. General nonassociative evaluation and P versus NP
+remain OPEN.
 
 \begin{thebibliography}{9}
 \bibitem{Williams2025} R. R. Williams, \emph{Simulating Time With
