@@ -17,8 +17,8 @@ function candidate(B,id){
     let z;
     if(id===0)z=0;
     else if(id===1)z=(j>=(h===0?2:4)?1:0);
-    else if(id===2)z=j%4;
-    else z=(j===0?0:j%2?1+Math.floor(j/2):0);
+    else if(id===2)z=[0,1,2,3,2,1,0,1][j];
+    else z=[0,1,0,1,2,1,2,3][j];
     out[h].push(z);
   }
   return out;
@@ -92,6 +92,7 @@ for(let B=4;B<=8;B++)for(let bits=0;bits<(1<<B);bits++){
     let outputs=[];
     for(let id=0;id<4;id++){
       const g=candidate(B,id),w=frontierBrute(g);
+      for(let h=0;h<p;h++)for(let j=1;j<B;j++)check(Math.abs(g[h][j]-g[h][j-1])<=1,"nonadjacent block control");
       check(frontierGuard(g,W)===(w<=W),"guard/brute mismatch");
       const r=trial(x,g,W);attempts++;
       if(r==="SKIP")skips++;
