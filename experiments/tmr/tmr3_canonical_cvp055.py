@@ -250,6 +250,5 @@ if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--out',type=Path,default=Path('raw.json'));args=p.parse_args()
     result=run()
     result['source_sha256']=hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
-    args.out.write_text(json.dumps(result,indent=2,sort_keys=True)+'
-')
+    args.out.write_text(json.dumps(result,indent=2,sort_keys=True)+'\n')
     print(json.dumps({k:result[k] for k in ('assertions','failures','source_program_instances','general_circuit_reduction_instances','malformed_rejections')},indent=2))
