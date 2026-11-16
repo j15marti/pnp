@@ -16,7 +16,7 @@ Every original input assignment counts once; formal u's are not auxiliary choice
 
 **Four gates:** DISJ PASS restricted (any static-rank-to-universal-work inference FAIL); relativization PASS for algebraic upper, unrestricted nonrelativizing bridge OPEN; simultaneous DTISP PASS restricted same-run upper, lower transfer OPEN; configuration counting PASS upper-only, never a lower bound or randomized/quantum bound. BGS, algebrization and Natural Proofs safeguards retained. Horn, 2SAT, affine/Gaussian, treewidth, equality, autarkies, products, padding, auxiliaries, selector projection, scalar normalization, unique-solution rank one, invertible local basis/field effects and shared compact shortcuts all legal, not all exhaustively executed. /341 FAIL full UNSAT authority; /386 RESTRICTED.
 
-**Publication on DRAFT PR #216 until main merge verified:** https://github.com/j15marti/pnp/pull/216
+**MERGED PR #216 into main; postmerge readback and exact-source V8 replay VERIFIED:** https://github.com/j15marti/pnp/pull/216 . Squash commit b7db0b4b329774a52b429a1de6ee212153d2243e; all six artifacts retained original Git blob SHAs.
 - main2_PNP_INFORMATION_NECESSITY.tex (updated in place from full SHA 694ba1f62cb04a727fb3cb2541f532000d2a6906 to e481cad4ddb53b2b5bacc7096050bcddd56d6b2a)
 - research/agents/tmr-2/2026-11-16_0520_TMR2_CANCEL_CERT_SPECTRAL_COMPOSITION065.md
 - experiments/tmr/tmr2_cancel_spectral_e2e065.js
