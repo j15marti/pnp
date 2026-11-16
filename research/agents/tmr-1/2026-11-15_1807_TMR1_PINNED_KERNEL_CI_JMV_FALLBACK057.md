@@ -32,7 +32,7 @@ Captured structured source evidence:
 `results/raw/tmr/2026-11-15_1807_TMR1_ANTHROPIC_PINNED057_CI_AUDIT_RAW.json`.
 Offline re-audit script:
 `experiments/tmr/tmr1_pinned_ci_audit057.js`.
-The raw JSON includes one non-scientific heuristic flag named `unpinned_dependency_potential` based solely on absence of an irrelevant phrase. **It has no evidentiary significance and must not be interpreted as a missing source pin.** The other checks, SHA and exact CI provenance are backed by fetched original GitHub records. The hosted JS extraction and comparisons were executed against the authentic 128 KB log; the standalone Node script and local Lean project were **not** executed. No random seeds; deterministic public run ID and commit pins.
+The raw JSON records the checked source/version/run claims and explicitly sets independent source-machine semantics review to false. It does not contain a speculative claim about missing dependency pins. Every observed CI verdict is backed by fetched original GitHub records. The hosted JS extraction and comparisons were executed against the authentic 128 KB log; the standalone Node script and local Lean project were **not** executed. No random seeds; deterministic public run ID and commit pins.
 
 ## Named dependency closure: C1f-COR3-BASELINE (KNOWN THEOREM, conditional source trust)
 
