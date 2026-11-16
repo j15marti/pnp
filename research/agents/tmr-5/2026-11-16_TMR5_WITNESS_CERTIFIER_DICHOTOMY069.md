@@ -10,7 +10,7 @@ Named dependency: C1f-WITNESS-OR-VERIFY, between source-derived indexed clauses,
 Choose one fixed binary language H in NTIME(2^n) \ NTIME(2^(n/2)), guaranteed by the nondeterministic time hierarchy. Fix a uniform deterministic polynomial-time map x in {0,1}^n to a circuit D_x on ell(n)=O(n) address bits, with three signed v(n)-bit variable names per output clause, v(n)=O(n). Every one of the 2^ell addresses is authentic. Its indexed 3CNF Phi_x is satisfiable iff x belongs to H. Jahanjou--Miles--Viola (2014), Theorem 1 with T=2^n and r=2, supplies such a reduction, but **the constant-locality/junta property is not used by this lemma**: polynomial-time source-to-decoder generation, bounded-length names, total address coverage and the iff reduction suffice.
 
 An assignment description A is a genuine shared fan-in-two Boolean circuit on the v name bits, with an authenticated complete gate table and designated output. It defines all 2^v assignment bits coherently. For every authentic address z, construct
-B_{x,A}(z)=1 iff at least one of the three signed literals in D_x(z) is false? **No:** B=1 iff **all three** are false. Thus
+B_{x,A}(z)=1 exactly when **all three** signed literals in D_x(z) are false under the assignment represented by A. Thus
 Z(x,A) iff for all z in {0,1}^ell, B_{x,A}(z)=0
 iff A defines a satisfying assignment of Phi_x.
 The source D_x is shared once, and three physical A copies/references, signs and each gate's actual input name bits are paid. No clauses or truth table of exponential length are silently preloaded.
