@@ -1,0 +1,30 @@
+# SIGMA REDTEAM21 | 2026-11-18 07:41 KST
+**PROVED/EXACT source-free context-mask theorem; COMPUTATIONAL 32,894 passing assertions, zero failures.** Unrestricted Circuit-SAT contraction OPEN; P != NP OPEN.
+
+## PROPOSE / SEARCH
+Independently attack transferring SELMASK-SIGMA3-1's q-bit port-status summary beyond disjoint-private-witness sources. Read latest `sigma-primary/2026-11-18_0703KST_SELMASK_SIGMA3_1.md`, `0600KST_BLOWUP_BUDGET_1.md`, `0501KST_AUTOENC_SIGMA3_1.md` and `sigma-redteam/2026-11-18_0640KST_SIGMA20_EXPANDER_PORT.md`. Literature reviewed: Fortnow-Lipton-van Melkebeek-Viglas, JACM 2005, DOI 10.1145/1101821.1101822; Jenssen-Malekshahian-Park, JLMS, published 2026-07-05, DOI 10.1112/jlms.70624; OEIS A000372. Dedekind/antichain counting is established prior art.
+
+## THEOREM A: shared-witness future-query complexity (source-free port-only model)
+Let q predicates F_i(z) share one witness z and define D_F(S) = [exists z AND_{i in S} F_i(z)] for EVERY future subset S of [q]. D_F is a nonempty downward-closed family of subsets. Every such family D is realized by q-bit z, guard G_D(z)=[support(z) in D], and F_i(z)=G_D(z) AND z_i. Hence precisely M(q)-1 different all-context truth maps occur, where M is the Dedekind number. Any deterministic retained summary, read without subsequent source access and required to answer every S, needs and suffices to use ceil(log2(M(q)-1)) bits. Counts: q=2: 5 maps/3 bits; q=3:19/5; q=4:167/8; q=5:7580/13. This is information about future query answers, NOT SAT runtime hardness.
+
+For q>=4 and r=floor(q/2), choose arbitrary A subset of the r-subsets. Let allowed z have weight <r, or weight r and support(z) in A. Put F_i(z)=G_A(z) AND z_i. ALL singleton masks are 1^q, yet for |S|=r, D_F(S)=1 iff S in A. Therefore 2^binom(q,r) all-one-singleton-mask sources require >= binom(q,r) bits of source-free all-context summary. The explicit arbitrary A description itself carries this much information; input-length lower bounds, online source access, and recomputation are not ruled out.
+
+## THEOREM B: exact independence boundary
+For pairwise disjoint private z_i, exists z_1..z_q AND_i F_i(z_i) iff AND_i exists z_i F_i(z_i). This is EXACTLY the assumption of the project's scoped positive AUTOENC/SELMASK grammar; no contradiction to those theorems is claimed. Arbitrarily shared z breaks the equivalence. Minimal genuine non-affine example: F1(u,v)=u AND v; F2(u,v)=u AND NOT v. Both singleton SAT, conjunction UNSAT; replace F2 by F1 and conjunction becomes SAT with identical mask 11.
+
+## Sigma prefixes and controls
+Sigma1=exists x,t AND_j C_j(x,t) and Sigma2=exists x,t forall j C_j(x,t) coincide for gate constraints. Relaxed Sigma3=exists x forall j exists t_j C_j(x,t_j) permits inconsistent local traces. Independent random non-affine circuit tests: 300 circuits, 203 with AND/OR, 48 UNSAT; all 48 incorrectly accepted by relaxed Sigma3, no Sigma1/Sigma2 disagreements. 300 BUF/NOT-NOT equivalent encodings; 1,500 private-witness positive factorization tests. Exact 256 three-variable R(x,y,z) quantified relations: 32 with exists x forall y exists z TRUE but exists x,z forall y FALSE. The compact per-challenge Skolem response is not a common trace.
+
+Exhaustively checked all q=2,3,4 downsets and all 7,581 q=5 downsets, with 7,580 nonempty sources realized by exact direct witness enumeration. All 64 middle-layer q=4 and 1,024 q=5 fixed-mask sources; q=6: 3,000 random samples, the universal count proved combinatorially. All 256 binary 2x4 linear hash maps have an adaptive colliding pair that a later context query distinguishes. This is not a nonrelativizing theorem.
+
+## Charged time, space, RAM
+The conditional restricted evaluator K'<=max(27/25,29/50+K/2), L'<=max(1/2,L/2) needs explicit source grammar, disjoint-private blocks, actual half-size guest inputs. If an original n-source is padded to N=n^alpha and a literal solver makes N^(29/50) calls of encoded length N^(1/2) to correct delay-padded A_D taking m^D steps, original runtime exponent >=alpha(29/50+D/2). For alpha=101/100, D=3, this is 1313/625=2.1008 > target 21/10=2.1 by 1/1250. Only the literal reached-call implementation is falsified, not source-aware bypasses. A reached parent-size guest call cannot be ignored.
+
+R<=T when R counts distinct accessed locations does not bound maximum addressed work-tape position. Abstract addresses [2,2^40,2] show the arithmetic separation; they are NOT a legal 3-step physical random-access TM trace, since constructing the 41-bit address costs time. FLMV published deterministic random-access TM has to be matched exactly. Strategies, guest source-bit access, source length inflation, recursive closure and work buffers must be charged.
+
+## EXECUTION AND REPRODUCIBILITY
+Stdlib Python with seed 202611180741: **32,894 assertions, zero failures**. Standalone local package `/mnt/data/sigma_redteam21/SIGMA_REDTEAM21_PACKAGE.zip`; includes complete report, audit.py, results.json, SHA256SUMS.txt; ZIP integrity and SHA256 checks passed. SHA256 audit.py=4e69ed60dda4da25a839c7bfcaced43d438a9da9ae7afa5cc66a141f106ce0b7; results.json=c34daaafa5e6564ff926fff8d37207bbc0d75270bf489d0b66dfef3b5e27ab35. Full local report=e84bdea82385c1b0f6963ce30c11dbe595b3743b88a5fbcf01ac91ce3df858f0. Do not infer that files in the local container were uploaded to GitHub.
+
+## HANDOFF
+Require actual source-to-S3C compilers to prove variable-disjoint factorization or exact correlated-context congruence BEFORE reusing singleton SAT masks. Test all-subset satisfiability against the finite middle-layer controls and separate source-free retained-summary lower bounds from ordinary random-access input/recomputation costs. Continue padded A_D, parent-size calls, child-input-index, hereditary closure and FLMV machine-model audits. No unconditional P != NP result.
+FINAL_VERIFICATION_SENTINEL_SIGMA21_20261118_0741KST
