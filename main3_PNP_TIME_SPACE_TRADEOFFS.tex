@@ -1,5 +1,5 @@
 % BEGIN TMR-3 OWNED
-% Updated 2026-11-17 12:28 PST. Current T5 exact algorithms; prior checkpoint work retained historically.
+% Updated 2026-11-17 13:24 PST. Current T5 exact algorithms; prior checkpoint work retained historically.
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,amsthm,hyperref,longtable}
@@ -202,13 +202,163 @@ selector, unique-solution, field/local-basis and compact
 recomputation controls remain admissible. Historical /341
 remains FAIL for full UNSAT and /386 RESTRICTED.
 
-\paragraph{ONE next load-bearing lemma: C3-T5-RATE-TRANSFER.}
-Recover an explicit sparse authenticated $3$-SAT-to-$T_5$
-reduction with exact source size, target vertex/arc blowup
-and physical conversion time and space. Only then attempt a
-strict, correctly directed conditional ETH or deterministic
-time-space exponent transfer. The existing NP-completeness
-classification does not supply quantitative linear blowup.
+
+\section{New exact T5 reduction: degree-two cyclic weighted suppression (/069)}
+
+\noindent\textbf{Status: PROVED/EXACT constructive upper bound;
+independent mathematical review OPEN; finite tests COMPUTATIONAL.}
+The named dependency \textsf{C3-T5-DEG2-SUPPRESSION069}
+strengthens the source-authenticated /068 forest/cycle-rank solver.
+Fix any explicit original directed graph $G$ on $n$ vertices, with
+binary source length $N\ge n+m$. Reject malformed sources; a
+self-loop or opposed arc pair yields exact count zero, while
+duplicate copies of the same directed arc are redundant.
+Define the undirected support 2-core $H_2$ by leaf peeling, and
+let $h$ count its vertices with degree at least three.
+
+\begin{theorem}[Five-coordinate degree-two suppression]
+There is one uniform blank-start locally headed deterministic
+algorithm that outputs the exact original-label count
+$Z(G)=|\operatorname{Hom}(G,T_5)|$ and its zero/nonzero decision
+with same-realization resource guarantees
+\[
+ T(N)=O((N+1)^8(1+5^h)),\qquad
+ S_{\rm peak}(N)=O((N+1)^3)\ {\rm writable\ bits}.
+\]
+After the stated elimination the residual weighted support has
+$k\le h$ vertices and $q$ nonempty components, and at most
+$5^{k-q}$ anchored candidate assignments are tested.
+\end{theorem}
+\begin{proof}
+Represent every real directed edge between $a<b$ by an integer
+vector $W_{ab}(d)$, $d\in\mathbb Z_5$, where the target constraint
+is $W_{ab}(x_b-x_a)$. For edge $a\to b$ it is the indicator of
+$d\in\{1,3\}$ and for $b\to a$ it indicates
+$-d\in\{1,3\}$. Every intermediate state maintains an
+integer scalar $z$ and this \emph{exact} original count identity:
+\[
+ Z(G)=z\sum_{x\in\mathbb Z_5^{V_{\rm active}}}
+               \prod_{\{a,b\}}W_{ab}(x_b-x_a).
+\]
+A degree-zero vertex multiplies $z$ by five.
+For a degree-one vertex $v$ adjacent only to $u$,
+sum over its colour, multiply $z$ by
+$\sum_{d=0}^4W_{uv}(d)$, and remove that factor.
+These sums are independent of $x_u$ by translation symmetry.
+For a degree-two vertex $v$ with two distinct neighbours
+$a<b$, orient its adjacent factors as $F(x_v-x_a)$ and
+$J(x_b-x_v)$ and replace the two by the exact cyclic convolution
+\[
+ H(d)=\sum_{s=0}^{4}F(s)J(d-s\bmod5).
+\]
+If an edge factor already exists between $a,b$, combine it
+with $H$ \emph{pointwise}, not by a second convolution.
+The displayed identity follows by exchanging finite summations,
+at each elimination, including all disconnected components.
+Each remaining factor is translation-invariant.
+The residual assignment sum fixes one colour to zero per
+connected component and multiplies by $5^q$; the other
+$k-q$ colours are exhaustively evaluated, retaining their
+exact integer multiplicities.
+
+Eliminate degree at most one until the ordinary 2-core remains;
+then suppress degree at most two, always processing newly
+created lower-degree vertices first. Deleting degree-two $v$
+and adding an edge between its neighbours never increases either
+neighbour's simple support degree. Hence a final vertex of
+degree at least three had degree at least three in $H_2$:
+$k\le h$. Every factor entry is a nonnegative count of some
+eliminated original-variable completions with boundary colours
+fixed, and is at most $5^n$. Thus all coefficients, scalars,
+addresses and output integers have $O(n+1)$ bits.
+At most $n(n-1)/2$ factors of five such integers, a source
+buffer, an active-degree table, counters and final assignments
+fit in $O((N+1)^3)$ simultaneous writable bits.
+There are at most $n$ eliminations, each doing at most 25
+products and polynomial sequential source/factor tape scans.
+Each of at most $5^{k-q}$ final assignments scans only
+polynomially many bounded-precision factors. Conservative
+$O((N+1)^8)$ bit steps per iteration and for all preprocessing,
+head travel, address arithmetic, multiplication, cache retention,
+malformed-input handling and exact output suffice.
+No implicit Oracle, shared free buffer or preloaded weighted
+graph is assumed. The Python reference is not a native physical
+microcode trace.
+\end{proof}
+
+\paragraph{High-cycle-rank falsifier for compulsory enumeration.}
+For the oriented bipartite $K_{2,k}$ with both left vertices
+pointing toward $k\ge1$ right vertices, $n=k+2$ and the cycle
+rank is $r=k-1$. If left colours agree, five ordered pairs
+each have two admissible common targets; among the twenty
+distinct-colour ordered pairs, ten have one common target
+and ten have none. Thus
+\[
+ \boxed{Z(K_{2,k})=5\cdot 2^k+10.}
+\]
+Eliminating each degree-two right vertex folds the entire
+graph into one five-coordinate weighted edge: the real
+algorithm uses polynomial time even for $r=\Theta(k)$, whereas
+the earlier /068 generic choices iterate up to
+$2^{k+1}$ or $5^{k-1}$ possibilities. This does not contradict
+NP-completeness or furnish any runtime lower bound.
+
+\paragraph{Unified charged solver.}
+Source-derived selection among the previously proved forest,
+streaming exact Fourier, and this suppression method gives
+\[
+ T(N)=(N+1)^{O(1)}
+ \left(1+\min\{2^{n-c},5^r,5^h\}\right),\qquad
+ S_{\rm peak}(N)=(N+1)^{O(1)}
+\]
+for the \emph{same chosen execution}. Each branch includes the
+preprocessing used to select it; all physical objects are counted.
+No SAT-to-$T_5$ blowup or generic lower bound is inferred.
+
+\paragraph{Falsifiers and evidence.}
+Before source examination the candidate faced reversed-arc
+sign errors, convolution-versus-pointwise errors for parallel
+paths, omitted isolated/leaf factors, and unbounded integer
+precision. CPython exact reference
+\texttt{tmr3-t5-degree2-069-v1}, seed 202611171324,
+passed 235 checks, including 198 randomized small graphs
+against independent $5^n$ enumeration, two elimination orders,
+global arc reversal, seven named controls, 21
+$K_{2,k}$ instances through $k=120$, eight malformed sources
+and a valid parser instance. Two actual runs gave byte-identical
+raw JSON; no failures. Code:
+\path{experiments/tmr/tmr3_t5_degree2_069.py};
+raw:
+\path{results/raw/tmr/2026-11-17_1324_TMR3_T5_DEGREE2_069_PY_RAW.json};
+report:
+\path{research/agents/tmr-3/2026-11-17_1324_TMR3_T5_DEGREE2_SUPPRESSION069.md}.
+Unexecuted: local repository preflight, full LaTeX compile,
+native Turing microcode and independent mathematical review.
+
+\paragraph{Mandatory gates.}
+DISJ \textbf{PASS RESTRICTED}, a positive exact upper
+algorithm with no rank/mass-to-work lower inference.
+Relativization \textbf{NOT APPLICABLE WITH REASON} to a
+separation, since none is claimed; algebrization and
+Natural Proofs restrictions stay open for any future bridge.
+Simultaneous DTISP \textbf{PASS} only for the declared
+same-run T/S upper bound; a forbidden SAT lower-bound
+transfer stays OPEN. Configuration counting \textbf{PASS}
+as a deterministic upper-bound consistency check only,
+never a work lower bound or automatic quantum/randomized
+extension. Horn/2-SAT, affine, equality, treewidth,
+autarky/product, selector, padding/auxiliary, unique
+solution, compact cache and field controls remain valid.
+Historical /341 is FAIL as full UNSAT authority and /386
+is RESTRICTED. P versus NP remains OPEN.
+
+\paragraph{ONE next load-bearing lemma: C3-T5-CORE-QUOTIENT.}
+Give a source-authenticated efficiently constructed compact
+difference-factor quotient for a genuinely broad infinite
+family whose \emph{reduced} support has minimum degree at
+least three, with the same complete time, space and output
+ledger. An all-algorithm lower-bound inference does not
+follow from the size of this residual representation.
 
 \clearpage
 
