@@ -1,5 +1,5 @@
 % BEGIN TMR-3 OWNED
-% Updated 2026-11-17 11:24 PST. Complete predecessor retained; /067 affine long-depth provider.
+% Updated 2026-11-17 12:28 PST. Current T5 exact algorithms; prior checkpoint work retained historically.
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,amsthm,hyperref,longtable}
@@ -11,7 +11,208 @@
 \begin{document}
 \maketitle
 
-\section{Current target and scientific status}
+\section{Active November 17 target: the fixed five-symbol beat-relation CSP}
+\noindent\textbf{Current status:} The newly selected object is
+$\Sigma=\mathbb Z_5$, $R(a,b)\Longleftrightarrow
+b-a\in\{1,3\}\pmod 5$. The input is one explicitly encoded finite directed
+graph $G=(V,E)$, and the output is YES iff a homomorphism
+$x:V\to\Sigma$ exists. The stronger exact-output task counts every
+original vertex labelling. No preloaded graph oracle or assignment is
+assumed. The complete user-directed source-to-output program is
+\[
+\text{source authentication}\to
+\text{spanning forest and cycle basis}\to
+\text{chosen exact evaluator}\to
+\text{integer answer}\to\text{YES/NO}.
+\]
+The prior checkpoint material below is historical work, not an
+input-to-output proof for the T5 problem. \textbf{P versus NP remains OPEN.}
+
+\paragraph{Named candidate and falsifiers.}
+\textsf{C3-T5-FOREST-CYCLE-DUAL068} is a pair of uniform exact
+algorithms selected after charged graph preprocessing. For every
+finite digraph with $n$ explicitly named vertices, $m$ distinct
+oriented arcs, $c$ weak components and cycle rank $r=m-n+c$, it
+has two running-time options $2^{n-c}\operatorname{poly}(N)$ and
+$5^r\operatorname{poly}(N)$, each with polynomial simultaneous physical
+space. The tested falsifiers were failure of the five-translation
+symmetry; mistaken signs on reversed tree arcs; incomplete
+fundamental-cycle integrability over $\mathbb Z_5$; and uncharged
+precision or workspace in the Fourier character sum. Loops, two-cycles,
+products, singleton components and easy templates are retained.
+
+\paragraph{Source and baseline.}
+For physical complexity we use a canonical binary source with
+unary declarations of $n,m$ and fixed-width binary arc endpoints,
+so $n,m\le N$. The implementation also accepts an ASCII
+\texttt{n m} header followed by precisely $m$ endpoint pairs.
+Malformed sources have an explicit rejection outcome; duplicate arcs
+are harmless and removed, while loops and opposite arcs force NO.
+A direct exhaustive counter examines $5^n$ assignments.
+The fixed template is a loopless tournament with two directed
+triangles $(0,1,2)$ and $(0,3,4)$. By the semicomplete-digraph
+homomorphism dichotomy of Bang-Jensen, Hell and MacGillivray
+\cite{BangJensenHellMacGillivray1988}, \textsc{CSP}$(T_5)$ is
+\textbf{KNOWN NP-complete}. No exact linear-size SAT reduction or
+ETH-rate lower bound is imported from that classification.
+
+\begin{theorem}[Binary forest and independent component shifts]
+If $G$ has no self-loop and no pair of opposite arcs, then
+\[
+ \#\mathrm{Hom}(G,T_5)
+ =5^c\sum_{\beta\in\{0,1\}^{n-c}}
+ [\,\text{the forest assignment from }\beta
+       \text{ satisfies all non-tree arcs}\,].
+\]
+One uniform blank-start deterministic locally headed implementation
+computes this count and YES/NO in
+$O((N+1)^6(1+2^{n-c}))$ bit time and
+$O((N+1)^3)$ simultaneous writable bits.
+\end{theorem}
+\begin{proof}
+Choose a spanning forest of the undirected support. Anchor each
+component root at colour zero. Each parent-child edge permits
+exactly two child colours, obtained by adding $1$ or $3$ if the
+source edge points toward the child and subtracting these increments
+otherwise. Every choice of the $n-c$ binary decisions produces one
+unique rooted forest labelling. Checking every remaining arc
+establishes a bijection with rooted homomorphisms. Independently
+adding any of five constants to every label of each component
+preserves all constraints and changes each root. This action is
+free, proving the factor $5^c$. The full locally headed machine
+pays for reading and validating its source, an $O(n^2)$-bit
+adjacency representation, forest discovery, each real recursive
+branch and incident-edge check, binary counting, head movements,
+and output. Its search tree has $O(n2^{n-c})$ nodes.
+The conservative sixth-degree polynomial bounds those operations
+on a fixed finite-tape implementation; all live objects fit the
+stated polynomial space.
+\end{proof}
+
+\begin{theorem}[Exact cycle-space and polynomial-space Fourier counter]
+Orient the $m$ arcs as given and let
+$C\in\{-1,0,1\}^{r\times m}$ be the signed fundamental-cycle
+matrix of a source-constructed spanning forest, interpreted modulo
+five. Then
+\[
+ \#\mathrm{Hom}(G,T_5)
+ =5^c\sum_{d\in\{1,3\}^m}[Cd=0\bmod 5].
+\]
+Writing $\zeta=\exp(2\pi i/5)$, the same integer equals
+\[
+ \frac{5^c}{5^r}\!
+ \sum_{\lambda\in\mathbb Z_5^r}
+ \prod_{e=1}^m
+ \bigl(\zeta^{\langle\lambda,C_e\rangle}
+       +\zeta^{3\langle\lambda,C_e\rangle}\bigr).
+\]
+An exact streaming realization has
+$O((N+1)^8(1+5^r))$ time and
+$O((N+1)^3)$ simultaneous writable bits.
+\end{theorem}
+\begin{proof}
+Every actual vertex assignment induces edge differences
+$d_e=x_{v(e)}-x_{u(e)}$ and these telescope to zero on
+fundamental cycles. Conversely, any $d\in\{1,3\}^m$ with
+$Cd=0$ integrates uniquely on the forest after fixing component
+roots to zero; the cycle equations verify every chord.
+There are exactly $5^c$ original labellings per integrated $d$.
+
+Character orthogonality over $\mathbb Z_5^r$ gives
+$[Cd=0]=5^{-r}\sum_\lambda\zeta^{\langle\lambda,Cd\rangle}$.
+Interchanging two finite sums produces the product formula.
+Instead of storing or approximating complex numbers, evaluate it
+using four signed integer coefficients in
+$\mathbb Z[z]/(z^4+z^3+z^2+z+1)$, streaming one
+$\lambda$ at a time. The final sum is a scalar divisible by $5^r$.
+Each intermediate coordinate has $O(m+r)$ bits, because there are
+at most $2^m$ terms per product and $5^r$ accumulated products;
+fixed-degree reduction increases bit lengths by only $O(m)$.
+Retain the source-derived $O(mr)$ cycle entries, one radix-five
+address counter, four-coordinate intermediates, exact accumulator,
+and the source/working heads. This proves the stated joint
+polynomial-space ledger and polynomial-per-term time, with all
+construction and failed arithmetic operations charged.
+\end{proof}
+
+\paragraph{One selected same-run budget and other legitimate algorithms.}
+Compute $n,m,c,r$ and compare the exact binary integers
+$2^{n-c},5^r$ before selecting a method. That comparison itself
+uses polynomial physical time and space. A single deterministic
+machine which actually executes only the cheaper algorithm has
+\[
+ \boxed{T(N)=(N+1)^{O(1)}
+       (1+\min\{2^{n-c},5^r\}),\qquad
+       S_{\rm peak}(N)=(N+1)^{O(1)}.}
+\]
+The cycle-space table alternative stores $5^r$ exact integer counts,
+taking $5^r\operatorname{poly}(N)$ space, and is \emph{not} silently
+substituted for the streaming evaluator. Standard exact elimination
+along a declared induced-width-$w$ order costs
+$5^{w+1}\operatorname{poly}(N)$ time and
+$5^w\operatorname{poly}(N)$ space.
+An underlying forest has exactly $5^c2^{n-c}$ homomorphisms.
+For an oriented simple cycle with $a$ forward and $b$ backward
+edges the rooted cycle count is
+\[
+  \sum_{k=0}^a\sum_{\ell=0}^b
+  {a\choose k}{b\choose\ell}
+  [a-b+2(k-\ell)\equiv0\pmod5],
+\]
+multiplied by $5$ for its root and by $2$ for every attached
+tree vertex. In particular, a directed triangle has 15, a
+transitive triangle has 5, and a directed five-cycle has 10
+solutions. Alternative source-aware algorithms remain legal.
+
+\paragraph{Actually executed audit, status and controls.}
+The readable Python 3 revision \texttt{tmr3-t5-forest068-v4},
+seed 202611171228, was executed locally and yielded 1,867
+checks, including 650 random graphs, 350 cycle-residue-DP
+crosschecks and 350 exact cyclotomic Fourier crosschecks,
+with zero failures. The original brute-force reference was
+independent. Git blobs for code/raw were
+\texttt{4a586c0a45c937e1176e16bbe02fb56ff8b03727}
+and \texttt{75a70ee578bb7f94d9e56f41f51b5d7c7264d29a}.
+The finite checks are \textbf{COMPUTATIONAL}; the algorithms above
+have symbolic correctness proofs but external mathematical review is
+\textbf{OPEN}. A separate larger local baseline also tested
+variable elimination and pseudoforest formulas, without a
+repository-published executable for those extra checks.
+Native locally headed machine microcode, full repository preflight
+and full LaTeX compilation were NOT executed.
+Detailed report:
+\path{research/agents/tmr-3/2026-11-17_1228_TMR3_T5_FOREST_CYCLE_DUAL068.md}.
+Code:
+\path{experiments/tmr/tmr3_t5_forest068.py}.
+Raw:
+\path{results/raw/tmr/2026-11-17_1228_TMR3_T5_FOREST068_PY_RAW.json}.
+
+\paragraph{Four mandatory gates.}
+DISJ sanity: \textbf{PASS, restricted}: positive exact upper
+algorithms only, without any rank-to-work lower-bound inference.
+Relativization: \textbf{NOT APPLICABLE WITH REASON} to an NP
+separation, none claimed; retain BGS/algebrization/Natural Proofs
+guards. Simultaneous DTISP: \textbf{PASS for the same full chosen
+upper-bound execution}; a forbidden-region or unrestricted SAT
+transfer is \textbf{OPEN}. Deterministic configuration counting:
+\textbf{PASS as an upper-bound consistency check only};
+no randomized or quantum extrapolation. All Horn/2-SAT, affine,
+treewidth, equality, product, autarky, padding, auxiliary,
+selector, unique-solution, field/local-basis and compact
+recomputation controls remain admissible. Historical /341
+remains FAIL for full UNSAT and /386 RESTRICTED.
+
+\paragraph{ONE next load-bearing lemma: C3-T5-RATE-TRANSFER.}
+Recover an explicit sparse authenticated $3$-SAT-to-$T_5$
+reduction with exact source size, target vertex/arc blowup
+and physical conversion time and space. Only then attempt a
+strict, correctly directed conditional ETH or deterministic
+time-space exponent transfer. The existing NP-completeness
+classification does not supply quantitative linear blowup.
+
+\clearpage
+
+\section{Historical checkpoint research (prior primary target)}
 The selected end-to-end program is a blank-start, authenticated-source
 simulation through a virtual checkpoint provider, genuine computation-graph
 access, a genuinely improved Tree Evaluation algorithm, and correct output.
@@ -1227,7 +1428,7 @@ The source-grounding warning in \emph{Hostage Negotiator} is honored:
 this small evaluator is constructed explicitly; fresh proofs,
 unique outputs and global consistency alone do not supply it.
 
-\section{One next load-bearing obligation}
+\section{Historical checkpoint obligation (superseded by T5 priority)}
 \textsf{C3-NONAFFINE-LONG-DEPTH-TRANSFER}: give a genuine
 source-authenticated compact checkpoint representation for
 nonlinear polynomial-depth overwrite computations and a
@@ -1238,6 +1439,11 @@ nonassociative Tree Evaluation, exact all-query ledger and
 P versus NP remain OPEN.
 
 \begin{thebibliography}{9}
+\bibitem{BangJensenHellMacGillivray1988}
+J. Bang-Jensen, P. Hell and G. MacGillivray,
+\emph{The Complexity of Colouring by Semicomplete Digraphs},
+SIAM J. Discrete Math. 1(3), 281--298 (1988).
+\url{https://doi.org/10.1137/0401029}.
 \bibitem{AsadiCleve2026}
 V. R. Asadi and R. Cleve,
 \emph{Polynomial-Time Almost Log-Space Tree Evaluation by
