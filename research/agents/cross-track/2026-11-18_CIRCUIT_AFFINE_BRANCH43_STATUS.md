@@ -1,0 +1,9 @@
+# CIRCUIT-AFFINE-BRANCH43 | 2026-11-18
+Status: restricted PROVED/EXACT upper-bound construction. P versus NP OPEN.
+For an XOR/AND/NOT circuit with k AND gates, introduce y_i for AND outputs. Guess each AND's left input sigma_i. For every guess enforce affine equations L_i=sigma_i, y_i=sigma_i R_i, and final output=1. Existential Circuit-SAT is exactly the OR of at most 2^k GF(2) linear systems. Hence T=2^k poly(N), S=poly(N) with charged parsing, matrix construction, row elimination, source access and witness verification. No arbitrary-decider contraction follows.
+Hostile control x AND NOT x: deleting a guard equality produces a spurious satisfying branch. High syntactic AND count alone is not hardness.
+Finite audit: 1864 circuits (1685 SAT, 179 UNSAT), 29332 input assignments, 21101 branches, 19415 inconsistent-branch certificate replays, 1686 verified witnesses, one missing-guard mutation correctly detected, zero failures. Large input: 64 variables, 320 gates, k=9.
+Four legacy specialist assignments: Resource: source-certified hereditary k_eff plus full ledger; Nonrelativizing: post-release correctness-forced operation; UWI: same circuit, common clock, branch witness extractor; Proof Transport: explicit gate-proof translation by calculus and field.
+Proof DAG ESTABLISHED Circuit-SAT NP-complete; PROVED exact 2^k affine branching; CONDITIONAL any universal nonlinear descriptor extraction; OPEN all-input contraction, WRAPPER hinge, UWI, arbitrary decider-to-proof transfer, P vs NP.
+Latest project context: TMR agent research supersedes old four-lane active scheduling. No schedule changes.
+Readback sentinel: END_CIRCUIT_AFFINE_BRANCH43_PNP_OPEN
