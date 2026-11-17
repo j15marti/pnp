@@ -56,7 +56,7 @@ def count(n,edges):
     return (5**c)*dfs(0)
 
 
-def cycle_rank_count(n, edges, max_rank=8):
+def cycle_rank_count(n, edges, max_rank=8, return_matrix=False):
     """Exact Z5 cycle-space residue DP using two updates per input arc.
     Raises OverflowError if the cycle rank exceeds max_rank.
     """
@@ -92,6 +92,7 @@ def cycle_rank_count(n, edges, max_rank=8):
             if (a,b) in by_edge: columns[by_edge[(a,b)]][row]=-1
             else: columns[by_edge[(b,a)]][row]=1
             a=b
+    if return_matrix: return roots, columns
     zero=(0,)*rank; states={zero:1}
     for col in columns:
         updated={}
@@ -102,12 +103,41 @@ def cycle_rank_count(n, edges, max_rank=8):
         states=updated
     return (5**roots)*states.get(zero,0), rank
 
+
+def fourier_poly_count(n, edges, max_rank=8):
+    """Exact character-sum cycle counter: 5**r time, polynomial space.
+    Computes in Z[z]/(z**4+z**3+z**2+z+1), no floating point.
+    """
+    edges=tuple(sorted(set(edges)))
+    if any(u==v or (v,u) in edges for u,v in edges): return 0
+    roots, columns=cycle_rank_count(n,edges,max_rank,True)
+    r=len(columns[0]) if columns else 0
+    mono=((1,0,0,0),(0,1,0,0),(0,0,1,0),(0,0,0,1),(-1,-1,-1,-1))
+    def multiply(a,b):
+        z=[0]*7
+        for i,x in enumerate(a):
+            for j,y in enumerate(b): z[i+j]+=x*y
+        for i in (6,5,4):
+            t=z[i]
+            for j in range(5):z[i-4+j]-=t
+        return z[:4]
+    accum=[0]*4
+    for lam in itertools.product(range(5),repeat=r):
+        p=[1,0,0,0]
+        for column in columns:
+            q=sum(x*y for x,y in zip(lam,column))%5
+            factor=[mono[q][k]+mono[(3*q)%5][k] for k in range(4)]
+            p=multiply(p,factor)
+        for k in range(4):accum[k]+=p[k]
+    assert accum[1:]==[0,0,0] and accum[0]%(5**r)==0
+    return (5**roots)*(accum[0]//(5**r))
+
 def brute(n,edges):
     return sum(all(ok(a[u],a[v]) for u,v in edges)
                for a in itertools.product(range(5),repeat=n))
 
 def audit():
-    rng=random.Random(SEED); checks=0; random_cases=0; cycle_dp_checks=0
+    rng=random.Random(SEED); checks=0; random_cases=0; cycle_dp_checks=0; fourier_checks=0
     def same(n,edges):
         nonlocal checks
         a=count(n,edges); b=brute(n,edges)
@@ -149,6 +179,8 @@ def audit():
                         es.append((u,v) if rng.randrange(2) else (v,u))
             got,rank=cycle_rank_count(n,es)
             assert got==count(n,es),(n,es,got,rank); checks+=1; cycle_dp_checks+=1
+            f=fourier_poly_count(n,es)
+            assert f==got,(n,es,got,f); checks+=1; fourier_checks+=1
     for bad in ('','a b','3 1\n0','3 1\n0 4','3 1\n0 1\n0 2','3 -1','2 1\n1 x'):
         try:parse(bad)
         except ValueError:checks+=1
@@ -157,8 +189,8 @@ def audit():
               'transitive_triangle':(3,[(0,1),(1,2),(0,2)]),
               'directed_five_cycle':(5,[(i,(i+1)%5) for i in range(5)]),
               'T5_template':(5,[(u,v) for u in range(5) for v in range(5) if ok(u,v)])}
-    print(json.dumps({'revision':'tmr3-t5-forest068-v3','seed':SEED,'checks':checks,
-                      'random_graphs':random_cases,'cycle_dp_crosschecks':cycle_dp_checks,'failures':0,
+    print(json.dumps({'revision':'tmr3-t5-forest068-v4','seed':SEED,'checks':checks,
+                      'random_graphs':random_cases,'cycle_dp_crosschecks':cycle_dp_checks,'fourier_crosschecks':fourier_checks,'failures':0,
                       'example_counts':{key:count(*pair) for key,pair in examples.items()}},
                      indent=2,sort_keys=True))
 
