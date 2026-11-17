@@ -1,0 +1,34 @@
+# TMR-5/074 | 2026-11-17 15:42 PST | Independent canonical signed-3SAT to T5 end-to-end reduction
+
+Status: PROVED/EXACT restricted, external mathematics review OPEN. Executed bounded tests COMPUTATIONAL. P versus NP OPEN.
+
+## Target and falsifiers
+For every well-formed finite signed width-three CNF source encoded as 1^n 0 1^m 0 followed by 3m records, each a sign bit plus low-first w(n)-bit variable index, w(n)=max(1,ceil(log2(max(2,n)))), construct a canonical T5 graph D(F) with F satisfiable iff D(F)->T5. Reject malformed inputs, accept repeated/tautological clauses and unused variables. For m=0 output empty YES graph 00. Falsifiers: incorrect NAE splitter; incorrect NAE triangle; anchor/path/gadget accepting incorrect endpoints; hidden length blowup from duplicate clauses or isolates; invalid reverse SAT certificate from a genuine T5 witness.
+
+## Symbolic construction and quantifiers
+Deduplicate identical *ordered signed* triples and renumber used variables, retaining the original index map. Let k<=min(n,3m') be the active variables and m'<=min(m,(2k)^3) the distinct clauses. Introduce palette vertices T,F,B in a triangle. For k original Boolean variables plus m' fresh splitter variables s, introduce positive/negative literal vertices, both adjacent to B and each other. Each clause (a OR b OR c) equals NAE(a,b,c,F) with F=false. The exact existential identity is
+
+NAE(a,b,c,F) iff EXISTS s: NAE(a,b,s) AND NAE(NOT s,c,F).
+
+All 16 Boolean quadruples satisfy this identity. For each of the 2m' ternary NAE predicates add three private vertices in a triangle and join each private vertex to its respective literal vertex (or palette F). Its 3-coloring extends precisely when the three input Boolean colors are not all equal. If all equal, only two colors remain for a triangle; if mixed, one of six 3-color permutations avoids all three input colors. Thus F satisfiable iff G3 3-colorable, with N3=3+2k+8m', M3=3+3k+15m' and no isolated G3 vertices.
+
+Compose TMR-1/073's anchored C5 reduction: a 5-cycle anchor has only ten dihedral homomorphisms, a private 2-edge C5 path from a0 to each G3 variable restricts relative colors to {0,2,3} with counts (2,0,1,1,0), and a private 3-edge path across each G3 edge enforces inequality with counts (0,3,1,1,3). This yields NH=17+10k+46m' and MH=20+13k+61m'. Replace each undirected C5 edge u<v with fresh z,w and four T5 arcs u->z,u->w,w->z,w->v. The first three force z=u+1,w=u+3 modulo five, the last enforces v-u in {1,4}, with a unique auxiliary extension. Final ND=57+36k+168m', AD=80+52k+244m'. Forward SAT assignment lifts through s, triangles, anchor paths and T5 auxiliaries; any full T5 witness restricts and normalizes to one 3color witness, whose variable values give a satisfying assignment of the original F (unused original variables filled false). This is a decision reduction, NOT parsimonious for original #3SAT.
+
+## Exact bit growth and same-realization time/space
+For m'>=1, k<=3m' implies ND<=333m' and AD<=480m'. Because m'<=(2k)^3<=8n^3, w(ND)<=12+3w(n). The complete output bit length LD=ND+AD+2+2AD*w(ND) obeys
+
+LD <= (12335+2880w(n))m' < 3000L,
+
+where authentic signed 3CNF length L=n+m+2+3m(w(n)+1). This includes arbitrary numbers of duplicate clauses, otherwise m>>n can cause artificial log m output-index overhead. For m=0 the output is 00. One conventional, blank-start, locally headed compiler pays parsing/rejections, source scans, deduplication, variable renumbering and map retention, addresses, construction and arc ordering, source and target serialization, witness conversion and output in conservative joint T_comp=O((L+1)^4), peak S=O((L+1)^2). Sequential composition with a real T5 solver with input-length bounds T5(B),S5(B) gives same-machine upper T=O((L+1)^4+T5(3000L)), peak S=O((L+1)^2+S5(3000L)). There is no lower-bound theorem for arbitrary SAT machines in this construction. From ordinary NP completeness of 3SAT and membership of T5 in NP it follows that T5-CSP is NP-complete; hypothetical polynomial T5 solver implies P=NP, no unconditional separation.
+
+## Independent execution
+Complete CPython3.13.5 compiler/witness harness revision tmr5-t5-full-3sat-074.v1, seed 20261117, source SHA256 1783d30fcbdab2706f29673be7ee08d7b11c304589708e9fb53a4233a002e23a: 74 authentic formulas, 72 SAT and two UNSAT by source-side exhaustive scan, 255 full T5 witness lifts and reverse SAT checks, 194 redundant clause removals, 837 max target vertices, 794.84 max observed encoded-bit ratio, eight malformed rejections, 17,134 assertions, zero failures. No exhaustive UNSAT search on the large final T5 target; impossibility follows from the symbolic reverse map. The complete source and raw JSON are retained in the local evidence bundle.
+Independent *executed* Node22 narrower replay at experiments/tmr/tmr5_t5_frontend074.js, original source SHA256 610ee4a80a8a28e7d69b9a6648204562d4e4b9777dc7efdb337354bec1c5d820: all 16 NAE-split cases, eight NAE triangle cases, 50 anchored C5 paths, 25 four-arc gadgets, 9,097 assertions, zero failures. The JS is explicitly a narrower replay, not the Python full parser. Kernel, native TM trace, repository preflight (no checkout), LaTeX build and external review NOT executed.
+
+## Four gates and ranked whole chain
+DISJ PASS scoped, no semantic rank-work inference. Relativization PASS for syntactic reduction; NP-level separation still OPEN under BGS, algebrization/Natural Proofs. Simultaneous DTISP PASS for a matched *upper* compiler+solver ledger only, lower forbidden pair OPEN. Deterministic configuration counting PASS upper safeguard only; no randomized/quantum extrapolation. All Horn, 2SAT, affine/Fourier, treewidth, products, selectors, padding, repeated literals, compact source algorithms, caching, adaptive FBDD and exact counting distinctions preserved. /341 FAIL full UNSAT authority; /386 RESTRICTED.
+(1) TMR-1 3SAT->3COLOR->C5->T5 chain: PROVED/EXACT restricted here, NP-completeness KNOWN THEOREM, arbitrary solver lower bound OPEN. (2) TMR-2 high-rank assignment indicator OBDD PROVED restricted but easy source YES; arbitrary necessity OPEN. (3) TMR-4 positive four-path hard counting / easy decision restricted, decision-work necessity OPEN. (4) TMR-3 forest/twin/Fourier upper algorithms restricted, mixed-family obstruction OPEN. All representation->arbitrary-machine->superpolynomial SAT arrows OPEN.
+
+ONE next load-bearing lemma: a representation-independent necessity theorem for an authenticated mixed YES/NO T5 input family surviving all direct source-aware and algebraic algorithms. The constructive NP-completeness reduction itself does not provide it.
+
+Sources: Cook 1971; Karp 1972; Garey-Johnson-Stockmeyer, Some simplified NP-complete graph problems, TCS 1 (1976) 237-267 DOI 10.1016/0304-3975(76)90059-1; Hell-Nesetril 1990; Bang-Jensen-Hell-MacGillivray 1988.
