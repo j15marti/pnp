@@ -1,0 +1,29 @@
+# TMR-4/071: Adaptive exact T5 FBDD and parsimonious CNF
+Date: November 17, 2026, Pacific. Primary object: T5 fixed homomorphism R(a,b)=[b-a mod5 in {1,3}]. Status: PROVED/EXACT restricted compiler; COMPUTER-VERIFIED finite tests; independent mathematical review OPEN; P versus NP OPEN.
+
+## D4-T5-ADAPTIVE-SOURCE-TO-FBDD
+Source: canonical ASCII `p t5 n m`, then all explicit `v i` declarations, then sorted distinct `a u v` arcs; malformed sources INVALID, source-size guard prevents compressed exponential vertex headers. Exhaustive parser and algorithm implementation executed locally in the accompanying conversation artifact package `TMR4_071_T5_adaptive.zip`, not yet committed as executable to this branch.
+
+Four falsifiers: same residual key but unequal suffix truth function; re-reading a source variable on an adaptive path; loss of rejecting full-assignment multiplicities after early failure; invalid 3-bit codes or auxiliary CNF multiplicity.
+
+For every partial labeling of G, unassigned set U and 5-bit masks M(u) induced by all crossing arcs exactly determine the residual cofactor:
+`C_G(partial,z) = product_{u in U}[z_u in M(u)] * product_{(u,v) in E(G[U])}R(z_u,z_v)`.
+A source-charged policy picks an unassigned v using ONLY (U,M) and authenticated graph, and each of its five arcs intersects future masks with Out(a), In(a). Memoization keys contain U AND masks, never masks alone. Realizable nonempty masks are among 11 patterns, so the number K of valid nodes satisfies K<=12^n. Reject completion reads the entire remaining set W in index order, yielding 5^|W| genuine NO source completions rather than treating failure as one rejected assignment. There are H<=2^n distinct reject-only remaining-set nodes. The resulting complete unweighted 5-way adaptive FBDD has K+H internal nodes, exactly 5^n full original-variable paths and exact YES/NO counts.
+
+Replacing each internal 5-way node with seven 3-bit-tree internal nodes yields a pointwise equivalent binary FBDD with 7(K+H) nodes on valid original codewords. Alternatively encode original T5 with exactly 3n Boolean bits and 3n+15m CNF clauses, no auxiliaries: 3 forbidden-code clauses per original vertex, one 6-literal clause for each of 15 forbidden ordered color pairs of every source arc. This CNF is parsimonious and rejects invalid codes.
+
+## Certified source-specialized cheap family
+The /070 palette+K_{s,s}+k-pendant source family has n=2s+2k+5 and m=s^2+2s+4k+10. An explicit polynomial-time indexed grammar recognizer fully reconstructs and compares its source edge set. The paid variable order is palette, all dense left, all dense right, then each pendant right/left pair. At each stage the future masks are specified by a five-valued palette shift, the Boolean selection of the dense-left anchor and one Boolean scratch flag. Thus at most 20 nonreject states and one reject-only state per stage, yielding the proved bound **V5<=21n**. The symbolic exact count is `5*(2^(s+k-1)+(3*2^(s-1)-1)*3^k)`. This does NOT prove arbitrary CSP(T5) tractable.
+
+Executed local Python 3.13.5, fixed seed 202611171336: 138 source-authenticated graphs including 110 random digraphs, 60,632 source-assignment point checks, 9,377 full 3-bit code checks, 5,000 five-way state transitions, 8 malformed-source rejections, zero assertions failed. Eight certified source-family instances (s=k up to 12 or small off-diagonal) also matched exact counts, plus 640 full-source-label pointwise checks. On s=k=12: (n,m)=(53,226), 661 nonreject nodes and 934 complete FBDD nodes; exact count 16,365,153,355. MRV is NOT universally smaller: K3,3 has 46 fixed-index nodes versus 61 MRV, while a random n=6 graph had 96 fixed-index versus 56 MRV.
+
+Executed script SHA256 `952dcddc8d0e2117f2f7f59a8b2c80becb4ccfa48f8dbfe3a385ff9d47643ffe`; raw JSON SHA256 `4e427f4e04812a0ebafc9670b708d28042da2074fce3bfc910cd7baad922b9fe`. Independent rerun byte-identical. Full exact report and executable are in conversation ZIP `TMR4_071_T5_adaptive.zip`. A local repository checkout, preflight, native TM microsteps, full LaTeX build, external math review and formal proof assistant verification were NOT run.
+
+## SAME_REALIZATION
+For entire authentic source byte length L and actual graph sizes K,H, one ordinary locally headed deterministic multitape machine reads all L bytes, parses graph, discovers/recomputes the order, explores all 5K transitions, updates exact neighbor intersections and caches, builds reject completion nodes, materializes the binary block trees and CNF clauses, counts YES/NO with O(n)-bit integers, and serializes output. Conservative simultaneous upper T=O((L+K+H+1)^6), S_peak=O((L+K+H+1)^3). This is polynomial only if K+H=poly(L), as in the certified family. Fourier and tensor transforms were not used. All source acquisition, cache retention, sharing, source accesses, rejected continuations and big-int costs are included.
+
+Four gates: DISJ PASS restricted, naive static-rank-to-work transfer FAIL; relativization PASS upper, nonrelativizing NP bridge OPEN; same-run DTISP PASS upper, forbidden lower OPEN; deterministic configuration counting PASS only as upper consistency check. Natural Proofs, algebrization and legal cheap-source controls remain. /341 full UNSAT FAIL; /386 RESTRICTED.
+
+ONE next dependency: D4-T5-ADAPTIVE-ORDER-SEPARATION OPEN. Prove an actual-source infinite T5 family requiring superpolynomial size in EVERY fixed variable order but permitting polynomial adaptive FBDD, or find a counterexample. Preserve true original-variable semantics and charge all source recognizers. General-machine reverse transfer and P versus NP OPEN.
+
+Original NP-completeness is Bang-Jensen, Hell and MacGillivray, SIAM J. Discrete Math. 1(3), 1988, 281-298. DOI https://doi.org/10.1137/0401029.
