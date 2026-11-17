@@ -55,12 +55,59 @@ def count(n,edges):
         return ans
     return (5**c)*dfs(0)
 
+
+def cycle_rank_count(n, edges, max_rank=8):
+    """Exact Z5 cycle-space residue DP using two updates per input arc.
+    Raises OverflowError if the cycle rank exceeds max_rank.
+    """
+    edges=tuple(sorted(set(edges)))
+    if any(u==v or (v,u) in edges for u,v in edges): return 0, 0
+    parent=list(range(n))
+    def find(v):
+        while parent[v]!=v: v=parent[v]
+        return v
+    forest=[[] for _ in range(n)]; chords=[]; roots=n
+    by_edge={e:i for i,e in enumerate(edges)}
+    for i,(u,v) in enumerate(edges):
+        ru,rv=find(u),find(v)
+        if ru==rv: chords.append(i)
+        else:
+            parent[ru]=rv; roots-=1
+            forest[u].append(v); forest[v].append(u)
+    rank=len(chords)
+    if rank>max_rank: raise OverflowError('cycle rank exceeds requested limit')
+    columns=[[0]*rank for _ in edges]
+    for row,edge_id in enumerate(chords):
+        u,v=edges[edge_id]
+        columns[edge_id][row]=1
+        previous={v:None}; queue=deque([v])
+        while queue and u not in previous:
+            a=queue.popleft()
+            for b in forest[a]:
+                if b not in previous: previous[b]=a; queue.append(b)
+        assert u in previous
+        a=u
+        while previous[a] is not None:
+            b=previous[a]  # Reverse of required v -> u traversal: a -> b.
+            if (a,b) in by_edge: columns[by_edge[(a,b)]][row]=-1
+            else: columns[by_edge[(b,a)]][row]=1
+            a=b
+    zero=(0,)*rank; states={zero:1}
+    for col in columns:
+        updated={}
+        for state,count in states.items():
+            for d in (1,3):
+                next_state=tuple((state[j]+d*col[j])%5 for j in range(rank))
+                updated[next_state]=updated.get(next_state,0)+count
+        states=updated
+    return (5**roots)*states.get(zero,0), rank
+
 def brute(n,edges):
     return sum(all(ok(a[u],a[v]) for u,v in edges)
                for a in itertools.product(range(5),repeat=n))
 
 def audit():
-    rng=random.Random(SEED); checks=0; random_cases=0
+    rng=random.Random(SEED); checks=0; random_cases=0; cycle_dp_checks=0
     def same(n,edges):
         nonlocal checks
         a=count(n,edges); b=brute(n,edges)
@@ -89,6 +136,19 @@ def audit():
         for mask in range(1<<n):
             edges=[(i,(i+1)%n) if mask>>i&1 else ((i+1)%n,i) for i in range(n)]
             same(n,edges)
+    for n in range(0,10):
+        for rep in range(35):
+            es=[]
+            for v in range(1,n):
+                if rng.randrange(4):
+                    p=rng.randrange(v); es.append((p,v) if rng.randrange(2) else (v,p))
+            for trial in range(3):
+                if n>1 and rng.randrange(3)==0:
+                    u,v=rng.sample(range(n),2)
+                    if (u,v) not in es and (v,u) not in es:
+                        es.append((u,v) if rng.randrange(2) else (v,u))
+            got,rank=cycle_rank_count(n,es)
+            assert got==count(n,es),(n,es,got,rank); checks+=1; cycle_dp_checks+=1
     for bad in ('','a b','3 1\n0','3 1\n0 4','3 1\n0 1\n0 2','3 -1','2 1\n1 x'):
         try:parse(bad)
         except ValueError:checks+=1
@@ -97,8 +157,8 @@ def audit():
               'transitive_triangle':(3,[(0,1),(1,2),(0,2)]),
               'directed_five_cycle':(5,[(i,(i+1)%5) for i in range(5)]),
               'T5_template':(5,[(u,v) for u in range(5) for v in range(5) if ok(u,v)])}
-    print(json.dumps({'revision':'tmr3-t5-forest068-v2','seed':SEED,'checks':checks,
-                      'random_graphs':random_cases,'failures':0,
+    print(json.dumps({'revision':'tmr3-t5-forest068-v3','seed':SEED,'checks':checks,
+                      'random_graphs':random_cases,'cycle_dp_crosschecks':cycle_dp_checks,'failures':0,
                       'example_counts':{key:count(*pair) for key,pair in examples.items()}},
                      indent=2,sort_keys=True))
 
