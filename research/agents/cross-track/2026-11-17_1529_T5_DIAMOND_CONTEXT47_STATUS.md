@@ -1,0 +1,24 @@
+# CROSS-TRACK T5-DIAMOND-CONTEXT47 | 2026-11-17 15:29 PST
+
+Status: PROVED/EXACT restricted algebraic/SAT-preserving theorem; 7,506 computational assertions passed, zero failures. No unrestricted lower bound. P versus NP OPEN.
+
+PRE-SEARCH COMBINATIONS: (1) series/parallel tensor compression on cyclic reconvergent T5 sources; (2) TMR-2/068 functional successor triangle versus recursively SAT-neutral diamonds; (3) full source authentication plus same-final-input witness recovery, without uncharged WRAPPER provenance; (4) proof-system transport only with explicit encoding/field/gadget retraction.
+
+SOURCES READ: Cross-track T5-TRANSFER-RANK46; TMR-2/068 authenticated grid and exact successor; TMR-2/069 high-girth path-consistency source; TMR-4/069-070 restricted MDD and rank falsifier; historical four specialist reports Nonrel TRACEAUDIT23, Universal DIAGONALLIST34/ORACLELEAK35 (newer body not readable), Resource GAFEGUARD40, Proof PC22-ORCLOSURE38/ALLFIELD. KRYLOVGUARD41 retrieved directly from Google Drive; historical project-chat output and Library research; latest Sigma graph-pair handoffs and UTM-CROSS-WRITE1. Literature: Bang-Jensen/Hell/MacGillivray (1988), Valdes/Tarjan/Lawler (1982), Lovasz (2006).
+
+THEOREM: For a FULLY AUTHENTICATED two-terminal series-parallel source over T5 (R(a,b) iff (b-a) mod5 in {1,3}), let W_H(a,b) count internal colorings with terminals a,b. Base matrices A, A^T; series W_S=W_1 W_2 and parallel W_P=W_1 odot W_2. Witnesses are recursively reconstructible. Canonical explicit source graph is parsed and verified exactly against the proposed decomposition. Full parsing, generation, big-integer matrix operations, all recursion and workspace are charged; there is no arbitrary-graph recognizer assumed free. Source-explicit SAT/count/witness processing is polynomial on this restricted class.
+
+DIAMOND RECONVERGENCE: D0=one forward arc and D_{d+1}=parallel(two serial D_d, two serial D_d). Its transfer obeys M_0=A and M_{d+1}=(M_d^2) odot (M_d^2). row0 M1=[0,1,1,0,4]; row0 M2=[64,64,1,324,1]. M2 is entrywise positive, hence so is M_d for every d>=2. Therefore every D_d with d>=2 is SAT-NEUTRAL in ANY context where its interior has no external constraints: every endpoint pair extends; remove all its internal vertices and arcs without changing SAT status. Exact counting NOT preserved by scalar removal: free terminal core 25 to 2270 assignments versus directed-edge terminal core 10 to 1940 assignments. Ratios differ.
+
+SIZE/STRUCTURE: E_d=4^d, V_d=2+2(4^d-1)/3 and cycle rank (4^d-1)/3. Source-recognizable families can have linearly many independent cycles/reconvergences while retaining constant 5x5 exact endpoint summaries. TMR-2/068's triangle P(F,S(F,F)) instead enforces b=a+1 with exactly one interior witness; opposite transfer semantics from a similarly cyclic motif.
+
+INDEPENDENT FINITE AUDIT: 7,506 assertions, zero failures. Brute full colorings on small expressions, independent raw-arc variable elimination through 172 vertices/256 arcs, 180 arbitrary contexts proving SAT neutrality, source-authentication corrupted-input tests, full 25 endpoint witnesses on depth-2/3 diamonds, and exact count/nonuniform-factor tests. Local audited script /mnt/data/pnp_cross_track/t5_diamond47_audit.py, JSON /mnt/data/pnp_cross_track/2026-11-17_T5_DIAMOND47_results.json and full report 2026-11-17_1529_CROSS_TRACK_T5_DIAMOND_CONTEXT47.md. SHA256(full report)=5e21b20cbc991f570f07d306f56ec7912ce074ff450f4df96d86da6d427033c7. Independent mathematical review pending.
+
+DAG: T5 NP-completeness ESTABLISHED. Exact 2-terminal transfer, diamond saturation, witness recovery, cycle formulas PROVED RESTRICTED. Counting-neutral scalar and cycle-rank-to-mandatory-work FALSIFIED. Any more general SP recognizer remains to be instantiated and charged. Arbitrary decider-to-PC/PCR proof transport, nonrelativizing WRAPPER necessity, identical-final-input UWI obstruction, uniform fully charged hereditary contraction, P!=NP all OPEN.
+
+NEXT SPECIALISTS: Resource Contraction: implement charged raw-source SP recognizer and compare high-rank TMR2/4 falsifiers. Nonrelativizing Simulation: delayed diamond edge, reverse arc, matched-oracle replay, no uncharged WRAPPER. Universal Obstruction: one common final SAT input/clock and recursive source-aware boundary witness programs; distinguish sound acceptors from raw candidate witnesses. Proof Transport: derive or break encoding-specific certificate retraction through diamond elimination, with field/degree/size cost.
+
+SINGLE REMAINING ARROW: uniform fully charged bounded-boundary contraction for arbitrary T5/Circuit-SAT children, not just recognizable SP families. P versus NP OPEN.
+
+REFERENCES: doi:10.1137/0401029; doi:10.1137/0211023; doi:10.1016/j.ejc.2005.04.012.
+READBACK_MARKER::T5_DIAMOND_CONTEXT47_P_VS_NP_OPEN
