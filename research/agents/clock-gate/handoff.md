@@ -1,3 +1,23 @@
+# Clock Gate research handoff, 2026-11-18 07:15 Asia/Seoul
+
+Owner: historical CLOCK-INDEPENDENT-GATE1 stream, outside the five active TMR manuscript owners. Governance: current AGENTS.md / CODEX.md / November 15 end-to-end directive. **P versus NP OPEN.** No TMR identities, schedules, manuscripts or retired proof trackers changed.
+
+## New CLOCKSTATEINVERSE21
+
+**PROVED/EXACT CONDITIONAL, independent mathematics review OPEN:** For a uniform, polynomial-time, source-independent address-dependent streaming transition program with polynomially many work bits, consider a quotient whose entire label factors through the final state after one authentic \(N=2^n\)-bit source pass. The *joint* dyadic exact-length interval-reachability predicate is in PSPACE, and a single PSPACE bit algorithm constructs a deterministic canonical preimage \(g\) of every reachable terminal state by recursive lexicographically least midpoint choices. Therefore, under **P=PSPACE** all such image labels have \(n^{O(1)}\)-circuit preimages and cannot separate source MCSP low-circuit YES from high-circuit NO. Under **P=NP**, the same conclusion follows only if interval reachability is itself in a **single jointly uniform fixed PH level**, not merely if the final target-image verifier is PH-low. Both statements are *conditional implications*, not a separation theorem.
+
+**Critical boundary:** For unrestricted polynomial-workspace streaming transitions, the joint interval-reachability predicate can encode PSPACE computation. \(P=NP\) does not imply \(P=PSPACE\); a PH-low label verifier does not imply PH-low reachability. Online emitting transducers, external source-dependent program selection, uncharged nonuniform advice and genuine one-tape lower-bound transfer are outside the theorem. Earlier stationary-DFA sections FINITE_STATE_SECTION14 / THRES_AUTOMATICSECTION15 were explicitly recovered, not misrepresented as new.
+
+**COMPUTATIONAL:** finite exact and random dynamic-table audit seed 202611180713, 4,096 stationary, 25,040 time-inhomogeneous, 5,120 product-machine source cases, 39,711 endpoint checks, 302 exact reachable-endpoint checks, 3,264 witness-bit checks, 256 hostile controls, zero assertion failures. Does not test any class collapse.
+
+**Verified main-branch artifacts:** [report](2026-11-18_0715_CLOCKSTATEINVERSE21.md), [Python audit](../../../experiments/meta_lift/2026-11-18_clock_stateinverse21_audit.py), [raw JSON](../../../results/raw/meta_lift/2026-11-18_CLOCKSTATEINVERSE21_raw.json). Reports/code/raw each fetched/read back from main; blobs 40c34b2fcab0494f2ca99c327552f60f0ced137c / 34829c01abd16535b679332c14e34dd70cd22e19 / 286ec71c78e9fa53335160831e636038887ba144.
+
+**ONE next dependency: INVERSION-VERIFIER-SEPARATION22.** Seek a source-authentic, clock-independent full-sweep nonlinear quotient where **jointly PH-low target verification** does not force PH-low interval reachability, yet both MCSP promises survive every legal easy representative and alternate seed/decoder. Charge input parsing, workspace, per-bit updates, output serialization, polynomial exponent, tape fusion and actual source lower-bound interface. Test easy Horn/2SAT/affine/parity/lookup and source-as-seed controls. No \(P\ne NP\) conclusion.
+
+---
+
+## Preserved previous handoff (2026-11-18 06:12 Asia/Seoul)
+
 # Clock Gate research handoff, 2026-11-18 06:12 Asia/Seoul
 
 Owner: Historical CLOCK-INDEPENDENT-GATE1 stream, not one of the five active TMR agents. Scientific status: **P versus NP OPEN**, no valid promise-pure quotient or MCSP machine-model transfer. Current root AGENTS.md/CODEX.md and 2026-11-15 end-to-end coordination are authoritative; no TMR identity, manuscript, schedule, or historical trackers were modified.
