@@ -1,4 +1,21 @@
-# Clock Gate research handoff, 2026-11-18 07:15 Asia/Seoul
+# Clock Gate research handoff, 2026-11-18 08:33 Asia/Seoul
+
+Owner: CLOCK-INDEPENDENT-GATE1 research stream, outside the five TMR manuscript owners. Governing instructions are November 15 end-to-end directive, AGENTS.md, CODEX.md and pnp-research skill. **P versus NP OPEN.**
+
+## NEW CLOCKMASKEDINVERSE22: verifier/inversion separation counterexample
+
+**PROVED/EXACT (restricted; independent review OPEN):** For m>=3, n=m+3, N=2^n, authentic truth-table source f=D||a||h, m-bit descriptor D, TQBF bit V(D), ordered adjacency Q(h), define H_m(f)=(D,a XOR V(D),Q(h)), of length m+2. The image is **all legal target labels**, hence its existential membership decision is in P. Yet **every** correct preimage of y=(D,b,q) forces f[m]=b XOR V(D), so any jointly uniform preimage-bit selector on every legal target computes the PSPACE-complete TQBF predicate at one fixed address. A separately supplied circuit equality test is PSPACE-complete (reduce D using a point-DNF circuit with header D, a=0, h=0). Nevertheless every fiber has a source representative with CC=O(n^2) and q=1 fibers contain exponentially many source high-CC NO examples alongside YES. This proves **hard uniform inversion neither forces hard nonuniform source sections nor MCSP promise purity**. Under P=NP no PH-low inversion follows without a new premise; P=PSPACE remains unknown. This is a deliberately negative exact construction, not an unrestricted no-go.
+
+**ONE machine:** Declared length-aware one-way input 1^n# followed by actual N source bits; one work tape with full scan and after-stream explicit QBF evaluation in O(N poly(n)) time and poly(n) space, m+2 serialized output bits. This is **not** automatically CHMY's headerless one-way model. Actual promise transfer FAILS due to mixed fibers regardless.
+
+**COMPUTATIONAL:** Deterministic seed 202611171533, 9,128 assertions, 512 target labels, 2,048 constructed source cases, 682 canonical evaluations, 2,730 forced-bit checks, 512 fixed-witness equality checks, zero failures. Finite QBF test codec is two-variable matrix truth table, not PSPACE-hard QBF. Exact executable Git blob 6df50beb1aed9f66a7869c8ccf2ac2e38793599f (local SHA-256 b7802c1f2feceb8f266cd14a876181fec6958057cc324ac967b2a5fc3812ab03).
+
+**GitHub artifacts verified on main:** [full mathematical report](2026-11-18_0833_CLOCKMASKEDINVERSE22.md), [executable audit](../../../experiments/meta_lift/2026-11-18_clock_maskedinverse22_audit.py), [raw results](../../../results/raw/meta_lift/2026-11-18_CLOCKMASKEDINVERSE22_raw.json). Publication commits 7273a8a248f4dec04fac19e0c8e2df060a3d819a, 66b341f7b4ad21e6c8bf800001c0d7404ae8752f, 774e66653acefcf4829c88c779b4de2e4770f709.
+
+**NEXT, PROMISE-PURE-INVERSION23:** Find an actual source-bound, clock-independent quotient with *both* source MCSP promises preserved against all legal decoder/seed/canonical shortcuts, a single jointly PH-low image AND supplied-witness verifier under P=NP, and a fully charged headerless one-way-input one-work-tape compiler. Guard the exact fixed polynomial exponent and avoid any P=PSPACE-to-P=NP inference or c>K(c) circularity. P versus NP OPEN.
+
+---
+
 
 Owner: historical CLOCK-INDEPENDENT-GATE1 stream, outside the five active TMR manuscript owners. Governance: current AGENTS.md / CODEX.md / November 15 end-to-end directive. **P versus NP OPEN.** No TMR identities, schedules, manuscripts or retired proof trackers changed.
 
