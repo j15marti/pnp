@@ -12,6 +12,8 @@ LARGE CONTROL: b=8, v=16, eight equations B_i+parity(V)=X_i, E=(B0 OR B1 OR B2) 
 
 RANK TRAP: A_B=A_V=I_8 has rank(A)=8, rank(A_V)=8, but beta=8, so total affine rank does not control the quotient. X-only arbitrary SAT can remain NP-complete even for beta=0.
 
+EXACT COUNT: If rho=rank(A_V), each compatible boundary B has 2^(v-rho) reservoir completions, giving #G(x)=R(x)*2^(v-rho)*sum_{z in F_2^beta}[E(x,B0+Kz)] for consistent x, and zero otherwise. The extended local verifier checked 18,286 exact counterexample-fiber counts against brute force. The large NAE case has 65,536 counterexamples per losing candidate, precisely 1/256 of its 2^24 universal challenges.
+
 TESTS: 2,016 exhaustive cores, 16,128 candidate/RHS fibers; 420 randomized cores, 1,902 candidate fibers, 225 reconstructed witnesses, 256 large-case fibers. Independent image-enumeration and pinned-X DPLL: 2,392 checks, zero failed. An initial witness-index bug detected in development was fixed and both scripts rerun.
 
 P=NP charge: SAT solver O(L^d) yields O(N^3+S log S+(S log S)^d), S=N^2+N*2^beta; for beta<=alpha log_2 N the exponent is max(3,d*max(2,1+alpha)). No f(d)<d; no all-input or hereditary theorem.
