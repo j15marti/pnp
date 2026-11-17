@@ -23,3 +23,6 @@ Convert every 5-way node (including rejection sinks) into its seven-node complet
 **Independent checks NOT executed:** native repository preflight because local GitHub DNS failed, full LaTeX build, physical TM microtrace, formal kernel verification, independent external mathematical peer review.
 
 **One next dependency:** D4-T5-FBDD-ORDER-AND-REPRESENTATION-BRIDGE (OPEN), a source-authenticated and fully paid *adaptive* five-way FBDD compiler plus a verified family separating all fixed orders from adaptive order, or a falsifier. Its conversion to bit FBDDs must preserve original variable-use and output; unrestricted SAT lower bound remains OPEN.
+
+
+**ADDITIONAL VERIFIED REPRODUCER.** `experiments/tmr/tmr4_t5_mdd069_reproducer.py` is a smaller independent standalone canonical-source/explicit 5-MDD/3-bit-OBDD program. It actually ran locally with `PASS 96 canonical sources, original brute force, explicit 5-MDD/3-bit OBDD counts`; GitHub full-file readback and original local `git hash-object` agree at blob SHA `4a8b3c4d220f21280a966169f0375147241ea0d0`. This 96-case reproducer is not the full 175-case executed audit and must not be substituted for the SHA256-pinned original raw evidence.
