@@ -16,7 +16,6 @@
 
 **ONE next D4-T5-FBDD-ORDER-AND-REPRESENTATION-BRIDGE (OPEN):** end-to-end source-authenticated paid adaptive five-way FBDD compiler with genuine queried-variable identity and exact source-count, and seek an explicit T5 graph family separating all fixed orders from adaptive order, or falsify that target. A reverse necessity theorem for arbitrary SAT machines remains OPEN.
 
-END_OF_HANDOFF::TMR4::2026-11-17_069_PST
-
-
 **ADDITIONAL VERIFIED REPRODUCER.** `experiments/tmr/tmr4_t5_mdd069_reproducer.py` is a smaller independent standalone canonical-source/explicit 5-MDD/3-bit-OBDD program. It actually ran locally with `PASS 96 canonical sources, original brute force, explicit 5-MDD/3-bit OBDD counts`; GitHub full-file readback and original local `git hash-object` agree at blob SHA `4a8b3c4d220f21280a966169f0375147241ea0d0`. This 96-case reproducer is not the full 175-case executed audit and must not be substituted for the SHA256-pinned original raw evidence.
+
+END_OF_HANDOFF::TMR4::2026-11-17_069_PST
