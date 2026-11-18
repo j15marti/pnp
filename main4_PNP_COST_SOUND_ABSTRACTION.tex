@@ -10,6 +10,19 @@
 \date{November 15, 2026, Pacific Time}
 \begin{document}
 \maketitle
+\paragraph{Current T5/085: interleaved-code live-open-symbol reverse simulation.}
+For an explicit validity-sound Boolean read-once diagram $B$ of
+$s$ bit nodes, let $p$ be the maximum, over nodes $v$, of
+$|\mathrm{Past}(v)\cap\mathrm{Future}(v)|$ source symbols.
+A source-derived transducer gives a pointwise exact at-most-once five-way
+FBDD with at most $s6^p$ query nodes. Its exact accepted/rejected
+full-assignment counts use depth-weighted paths. This is a charged
+parameterized reverse simulation, not a general polynomial source compiler.
+Even an edgeless $T_5$ source has $2^n$ distinct residuals under a
+particular bad interleaved Boolean OBDD bit order, while its native
+complete five-way OBDD has $n$ nodes. Arbitrary-machine lower bounds
+and P versus NP remain OPEN. See Section~\ref{sec:t5live085}.
+
 \section{Status, ownership and exact target}
 
 
@@ -2990,6 +3003,137 @@ a real asymptotic advantage for interleaved code-bit FBDDs,
 or establish a quantified simulation with all preprocessing
 and writable state charged. A restricted model equivalence
 does not justify lower bounds for unrestricted algorithms.
+
+
+\section{T5/085: Cost-sound live-open-symbol transfer for arbitrarily interleaved bit FBDDs}
+\label{sec:t5live085}
+
+\paragraph{Exact model.}
+Let $G=(V,E)$ be authenticated original directed source bytes
+with literal vertex identifiers $0,\ldots,n-1$ (so $L\ge n$),
+$|V|=n$, and $f_G:[5]^n\to\{0,1\}$ its exact beat-relation predicate.
+A full three-bit Boolean word is valid only when each three-bit block
+encodes one of the five symbols $0,\ldots,4$; all other code words reject.
+Let $B$ be an explicit, validity-sound, acyclic deterministic read-once
+\emph{bit} FBDD on $3n$ bits, with $s$ reachable nonterminal nodes.
+No ordering or block-respecting assumption is placed on $B$.
+For a bit node $v$, let $\mathrm{Past}(v)$ be the union of source-symbol
+identities with any bit previously queried on some root-to-$v$ path.
+Let $\mathrm{Future}(v)$ be the source-symbol identities with a
+bit tested at $v$ or any descendant node, and set
+\[
+ p(B)=\max_v|\mathrm{Past}(v)\cap\mathrm{Future}(v)|.
+\]
+This is a \emph{potential} live-overlap parameter computable by forward
+and backward bitset propagation on the explicit DAG.
+
+\begin{theorem}[Parameterized exact reverse simulation /085]
+There exists a five-valued deterministic at-most-once FBDD $A$
+with at most $s6^{p(B)}$ nonterminal nodes such that
+\[
+ \forall x\in[5]^n,\quad A(x)=B(\mathrm{code}(x))=f_G(x).
+\]
+In particular, the accepted and rejected original \emph{full assignment}
+multiplicities are exactly $Z(G)$ and $5^n-Z(G)$. An explicit
+transduction from a verified bit FBDD runs in
+$O(s6^{p(B)}\operatorname{poly}(n+\log s))$ bit time and peak writable
+space, beyond the cost of authenticating $G$ and producing/verifying $B$.
+No polynomial-time general source-to-$B$ construction is implied.
+\end{theorem}
+\begin{proof}
+At each bit node $v$, memoize the pair $(v,M)$ where $M$ records
+the exact five-valued colors of previously queried source symbols
+which still belong to $\mathrm{Future}(v)$. If the current bit belongs
+to a symbol in $M$, follow the dictated bit edge without a new source
+query. Otherwise, query that original five-valued variable once,
+branch to all five colors, and cache its color only as long as some
+remaining bit of it can occur in the suffix. The DAG invariant and the
+bit-level read-once condition ensure no source variable is queried
+twice along a transduced path. Induction on the remaining bit DAG
+proves pointwise equality. Each cache domain is a subset of
+$\mathrm{Past}(v)\cap\mathrm{Future}(v)$, with six options (unset or five
+colors) per potential entry, yielding at most $6^{p(B)}$ states per
+bit node. State merging, cache keys, discarded entries, and five-way
+fan-out are explicit, never free.
+\end{proof}
+
+\paragraph{Assignment multiplicities and completeness caveat.}
+The constructed FBDD is \emph{at-most-once}, not necessarily complete.
+If an accepting path queries $d$ distinct original variables, it
+represents $5^{n-d}$ full inputs, and distinct root-to-leaf paths
+represent disjoint cylinders. Hence the exact count is
+\[
+ Z(G)=\sum_{\pi:\,\mathrm{accept}}5^{n-d(\pi)}.
+\]
+A depth-indexed dynamic program on the DAG computes this quantity using
+exact integers; the rejected count is $5^n-Z(G)$. Interpreting the
+number of accepting terminal paths as $Z(G)$ would be incorrect.
+Requiring \emph{complete} query-once paths, as in the earlier /084
+submodel, may require explicitly tracking the set of queried original
+variables and incurs additional potentially exponential state cost.
+The stated bound applies only to at-most-once FBDDs.
+
+\begin{theorem}[Fixed-order binary validity obstruction /085]
+For the legal edgeless source $G_n$ on $n$ vertices, native $f_{G_n}$
+is identically true and a complete five-way OBDD has $n$ query nodes.
+For the validity-sound three-bit Boolean function, use the fixed OBDD
+order that queries all $n$ high bits before any middle or low bit.
+The residual-function quotient at the high-bit cut has exactly $2^n$
+members. Consequently, any Boolean OBDD respecting this prescribed
+order requires at least $2^n-1$ distinct nonterminal suffix states.
+A grouped-bit validity decoder has at most $6n$ nodes.
+\end{theorem}
+\begin{proof}
+Given a high-bit prefix, let $S$ be the indices with high bit one.
+Then the unqueried suffix predicate is
+$\bigwedge_{i\in S}(\neg m_i\land\neg\ell_i)$, since $100$ is the
+only valid code with high bit one. Different subsets yield different
+residual functions: set one low bit from the symmetric difference
+to one, and all other suffix bits to zero. One residual may be
+the accepting sink; all others require distinct nonterminal
+representations. This is a \emph{bad specified order} lower bound
+only, not an arbitrary-order or adaptive FBDD lower bound.
+\end{proof}
+
+\paragraph{Same-realization costs and guarded falsifiers.}
+The finite reference builder authenticates canonical explicit graph
+bytes, enumerates all $8^n$ Boolean words including invalid codes,
+checks every source constraint, and constructs the reduced bit DAG;
+its full $O(8^n(n+m))$ time is charged. Forward/backward live-bitset
+discovery, live color cache and retained IDs, up to five ports per
+new query, DAG hashing and switching, exact depth arithmetic,
+and output are charged in the same execution. No free Fourier,
+oracle, external partition, or Boolean conversion is used.
+The literal auxiliary-free CNF comparison writes $3n+15m$ clauses
+on $3n$ bit variables. Four falsifiers are: loss of invalid-code
+rejection, incorrect bare-terminal-path counting, illegal repeat
+query after prematurely forgetting a symbol, and confusion of a
+bad bit order with minimum FBDD complexity.
+
+\paragraph{Finite verification gates.}
+Authenticated sources/structural legality: 107 cases and six
+malformed rejections. Pointwise semantics: $25{,}495$ original-symbol
+assignments and $153{,}904$ bit words. Exact count and CNF gate:
+$153{,}904$ literal CNF checks, all 2048 oriented domain-mask pairs,
+and edgeless residual counts $2,4,8,16,32,64$ for $n=1,\ldots,6$.
+Independent Node.js checks: 107 independent source hashes,
+$25{,}495$ brute-force original-symbol assignments,
+$153{,}904$ literal CNF checks, and $299{,}592$ suffix witnesses.
+Two deterministic executions agreed byte-for-byte with zero
+unexpected failures. This is COMPUTATIONAL verification, not a
+general-machine lower bound.
+
+\paragraph{Research boundary and next dependency.}
+The /084 block-respecting constant-factor equivalence is unchanged.
+The /085 reverse simulation for arbitrary bit interleaving is
+parameterized by $p(B)$, which may be linear even when a source-aware
+five-way diagram is tiny. Whether optimal interleaved-bit FBDDs are
+superpolynomially more succinct than optimal native five-symbol FBDDs
+on this exact fixed-template CSP remains OPEN.
+The next target is D4-T5-INTERLEAVED-ADVANTAGE-OR-BARRIER-086, with mixed
+SAT/UNSAT legal sources, full source-aware preprocessing, all
+representation costs, and no unauthorized necessity transfer.
+P versus NP remains OPEN.
 
 \end{document}
 % END TMR-4 OWNED
