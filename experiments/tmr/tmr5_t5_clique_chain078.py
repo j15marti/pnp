@@ -78,15 +78,12 @@ def sanity(n):
                 assert (core[modules[pairs.index((a,b))][0]],val) in R
             row=row_bits(n,core,avals)
             assert row.bit_count()==2**n
-
         achoices=list(product((1,3),repeat=n))
         rows=[]
         for ac in achoices:
             rows.append(row_bits(n,core,[(core[mod[0]]+d)%5 for mod,d in zip(modules,ac)]))
         assert len(set(rows))==2**n
-
         assert f2_rank(rows)==2**n
-
     return dict(n=n,vertices=N,arcs=len(arcs),max_degree=degree,expected_count=5*4**n,
                 fixed_core_suffix_rank_F2=2**n,distinct_suffix_rows=2**n)
 
