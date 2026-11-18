@@ -15,7 +15,7 @@ Primary references: Fortnow, Lipton, van Melkebeek and Viglas, *Time-Space Lower
 
 ## Theorem: pointwise indexed-guest ceiling
 
-For every integer k>=8, let b=2^k. There exists a Boolean function F_k:{0,1}^k -> {0,1} requiring more than floor(b/(16k)) gates in any bounded-fan-in finite-basis Boolean circuit, yet representable by an explicit full Shannon-ROM circuit with O(b) AND/OR/NOT gates and a normal gate-list encoding of n_k=Theta(k*b) bits.
+For every integer k>=8, let b=2^k. There exists a Boolean function F_k:{0,1}^k -> {0,1} requiring more than floor(b/(16k)) gates in any fan-in-at-most-two Boolean circuit (even allowing all 16 binary operations), yet representable by an explicit full Shannon-ROM circuit with O(b) AND/OR/NOT gates and a normal gate-list encoding of n_k=Theta(k*b) bits.
 
 For arbitrary q>=1, t>=0 and s>=0, consider the correctly scoped quantified parent (outer x is empty):
 
