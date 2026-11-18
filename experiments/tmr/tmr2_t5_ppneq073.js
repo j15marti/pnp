@@ -28,7 +28,7 @@ ck(JSON.stringify([A,B,D])===JSON.stringify([[0,2,3],[1,4],[1,2,3,4]]),'pp closu
 let endos=0;
 for(let z=0;z<3125;z++) {
  let v=z,f=Array(5);for(let i=0;i<5;i++){f[i]=v%5;v=Math.floor(v/5)}
- if(f.every((a,i)=>f.every((b,j)=>!R(i,j)||R(a,b))) {
+ if(f.every((a,i)=>f.every((b,j)=>!R(i,j)||R(a,b)))) {
    endos++;ck(f.every((x,i)=>x===(i+f[0])%5),'endomorphism rotation');
  }
 }
