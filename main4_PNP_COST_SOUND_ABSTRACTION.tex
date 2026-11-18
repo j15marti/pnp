@@ -12,6 +12,15 @@
 \maketitle
 \section{Status, ownership and exact target}
 
+\paragraph{Current T5/078: local-mask sharpness, source-aware easy controls.}
+Forward checking has exactly twelve possible five-color domain masks,
+whereas full bidirectional arc consistency realizes all thirty-two masks
+even on unassigned trees with a queried five-vertex palette.
+The source-authenticated complete OBDD and parsimonious three-bit CNF
+audit is recorded in Section~\ref{sec:t5mask078}. This is a restricted
+interface result and not an arbitrary-machine lower bound.
+
+
 \paragraph{Current T5/077: source-derived logarithmic-cover counterexample.}
 The CURRENT result is a verified, original-assignment-preserving complete
 five-way OBDD compiler for any authenticated $T_5$ graph with a
@@ -1838,6 +1847,158 @@ legitimate source-aware alternatives. A large diagram generated
 by any one compiler is not a lower bound on all equivalent
 machines. P versus NP remains OPEN.
 
+
+\section{T5/078: exact local-mask frontier, 12 versus 32}
+\label{sec:t5mask078}
+
+\paragraph{Object and scope.}
+We study the original five-symbol tournament constraint
+\(R(x,y)\iff y-x\bmod5\in\{1,3\}\) on authenticated,
+complete source graph encodings. Every input source is a graph;
+neither ternary clauses nor external unary relations are assumed.
+The representation target is a complete, source-assignment-preserving
+five-way OBDD and its parsimonious Boolean analogue.
+This section bounds the information needed by a very particular
+local propagation interface, not arbitrary-machine computation.
+
+\begin{theorem}[Sharp forward-checking domain alphabet]
+Suppose each unassigned vertex starts with domain \(\mathbb Z_5\)
+and is filtered only by binary beat edges to already assigned
+vertices. The reachable domain masks are exactly
+\[
+\mathcal D_{\mathrm{FC}}
+=\{\varnothing,\mathbb Z_5\}
+\cup\{\{a\}:a\in\mathbb Z_5\}
+\cup\{\{a+1,a+3\}:a\in\mathbb Z_5\}.
+\]
+Thus \(|\mathcal D_{\mathrm{FC}}|=12\).
+\end{theorem}
+\begin{proof}
+Every forward or reversed arc to a singleton assigned color
+imposes one of the same five two-element masks
+\(B_a=\{a+1,a+3\}\). Distinct masks \(B_a,B_b\)
+intersect in at most one element. Arbitrary finite intersections
+are therefore full, empty, a singleton, or a mask \(B_a\).
+All cases occur using already queried palette vertices.
+\end{proof}
+
+\paragraph{Palette and unassigned-tree construction.}
+Adjoin the literal five-vertex tournament \(T_5\) as a source
+subgraph, and query its five vertices. Every homomorphism
+of this palette to \(T_5\) is a cyclic shift, so there are
+exactly five gauge branches. In a fixed gauge \(p_a=a\),
+the two source arcs
+\(p_{a-1}\to v\) and \(p_{a-3}\to v\) pin
+an unassigned \(v\) to \(a\), without adding any
+unary constraint to the source language. Define
+\[
+U(S)=\{x:\exists y\in S,\ R(x,y)\},\qquad
+V(S)=\{x:\exists y\in S,\ R(y,x)\}.
+\]
+They are implemented by a single new vertex and edge, and
+intersection is implemented by identifying the roots
+of independent gadgets. After removing the assigned palette,
+all resulting unassigned graphs are trees.
+
+\begin{theorem}[No proper 12-state quotient of full AC]
+In this palette-rooted class, every one of the
+\(2^5=32\) unary support masks occurs as the exact
+root domain left by full bidirectional arc consistency.
+A local support-register abstraction that is exact under every
+subsequent palette-pin test must distinguish all 32 masks.
+\end{theorem}
+\begin{proof}
+Let \(P_a=\{a\}\) be the two-arc pin above, and \(F=\mathbb Z_5\).
+The following eight expressions generate orbit representatives:
+\[
+\begin{array}{rl}
+\varnothing & =P_0\cap P_1,\\
+\mathbb Z_5&=F,\\
+\{0\}&=P_0,\\
+\{0,2\}&=U(P_3),\\
+\{0,1\}&=U(U(P_2))\cap U(U(V(P_0))),\\
+\{0,1,2\}&=V(U(U(P_1)))\cap U(U(V(P_0))),\\
+\{0,1,3\}&=U(U(P_2)),\\
+\{0,1,2,3\}&=V(U(U(P_1))).
+\end{array}
+\]
+Cyclic translations supply the other 24 subsets.
+These eight representatives and translates partition the
+32 possible masks into the empty/full singleton orbits
+and six nontrivial orbits of size five.
+The gadgets are tree structured after the palette query.
+On trees, full arc consistency leaves exactly the labels
+extendable to total solutions, by the classical
+tree-CSP consistency result \cite{freuder1982,dechterpearl1987}.
+Thus the root domains coincide with the displayed expressions.
+For two distinct masks \(S\ne T\), take
+\(a\in S\triangle T\) and apply the two-arc
+pin test to \(a\). This continuation distinguishes the
+two masks. This is a conditional lower bound on the
+local \emph{unary-support message alphabet} only.
+\end{proof}
+
+\paragraph{Small falsifier and general-machine counterexample.}
+After pinning \(x=0\), append \(y\to x\) and
+\(z\to y\). Full AC gives \(D_y=\{2,4\}\)
+and \(D_z=\{1,3,4\}\), so the 12-mask forward
+alphabet is not AC-closed. Conversely, all 32
+root-mask gadgets become trees after a constant-size
+palette is queried. Exact tree DP decides and counts
+them in polynomial time. Hence even attainment of
+all 32 local masks does \emph{not} yield a source
+runtime or unrestricted FBDD lower bound.
+
+\paragraph{Full source, pointwise semantics, and Boolean cost.}
+The executable enumerator generates 32 canonical raw \(T_5\) source
+graphs (maximum 12 vertices, 20 arcs), authenticates them,
+constructs an explicit complete five-way fixed-order OBDD,
+and retains a rejecting continuation for every rejected
+original assignment. The exact integer accepted count agrees
+with five times the gauge-fixed tree-DP count.
+The largest measured diagram has 271 internal nodes
+and width 76; these are \emph{upper-bound observations}.
+The direct parsimonious three-bit-per-symbol CNF has exactly
+\(3n+15m\) clauses: three legal-code clauses per vertex and
+15 forbidden-color clauses per arc, with no auxiliary variables.
+Every five-way decision node admits a seven-node binary
+block translation. Neither coding creates an asymptotic advantage.
+
+\paragraph{Four gates and SAME\_REALIZATION ledger.}
+Algebra: 32 constructive masks, all
+\(\binom{32}{2}=496\) future-context distinctions, and
+five palette rotations. Source: 32 byte-verified
+inputs and six correctly rejected malformed controls.
+Semantics: 32 exact tree-DP/AC comparisons,
+32 OBDD count comparisons, 17 exhaustive small-source
+counts, and an independent JavaScript BigInt audit of
+all 32 full-source counts.
+Boolean: 4,096 full-source pointwise comparisons and
+5,120 explicit CNF checks including 1,024 invalid-code
+cases, with zero unexpected failures.
+The same realization charges source parsing and
+canonicalization, adjacency discovery, mask propagation,
+fixed variable order, frontier state sharing, five-way
+fan-out, full rejection continuations, exact integer bit
+operations, conversion, and output. No Fourier
+transform, cache eviction, storage swap or
+adaptive order switch occurs in this executable;
+none is granted as a hypothetical free resource.
+Two full Python/JavaScript audit executions yielded
+byte-identical evidence.
+
+\paragraph{Status and handoff.}
+This sharpens the TMR-2 32-domain-state program:
+12 masks suffice for \emph{forward checking only};
+full arc consistency can require all 32 already on
+easy tree gadgets. A mask-count hardness argument is
+refuted by these cheap source-aware algorithms.
+The next dependency remains a source-aware, dynamic,
+decision-preserving necessity claim after legal backdoor,
+separator, affine, twin and module decomposition.
+No unrestricted reverse implication is known,
+and P versus NP remains OPEN.
+
 \begin{thebibliography}{9}
 \bibitem{bangjensen1988} J. Bang-Jensen, P. Hell and G. MacGillivray.
 The Complexity of Colouring by Semicomplete Digraphs.
@@ -1874,6 +2035,8 @@ A Dichotomy for Bounded Degree Graph Homomorphisms with Nonnegative Weights.
 Journal of Computer and System Sciences 132, 1--15, March 2023.
 DOI: 10.1016/j.jcss.2022.09.002.
 
+\bibitem{freuder1982} E. C. Freuder. A Sufficient Condition for Backtrack-Free Search. Journal of the ACM 29(1), 24--32, 1982. DOI: 10.1145/322290.322292.
+\bibitem{dechterpearl1987} R. Dechter and J. Pearl. Network-based heuristics for constraint-satisfaction problems. Artificial Intelligence 34(1), 1--38, 1987. DOI: 10.1016/0004-3702(87)90002-6.
 \end{thebibliography}
 \end{document}
 % END TMR-4 OWNED
