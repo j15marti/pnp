@@ -36,7 +36,7 @@ Standard-library Python event-queue AC-3 and a separate synchronous/Jacobi imple
 Event-queue verifier SHA256: `25d0f74afa573d5696d65dcf558e47a7eb71c271735dce07327ac93cf1cb82ec`.
 Independent crosschecker SHA256: `438a14ab6625250fa9bb67ffc07289200a9395cd52c33f315ba21f6241a1cdfd`.
 Raw JSON SHA256: `e0ccba8b1e972430fd75d6a1f7b1fd2e647b463885da66126acabbe167f80f2b`.
-Full executed sources, raw JSON and full mathematical report are bundled in **TMR5_084_AC3_false_positive_evidence.zip** in the run's delivered artifacts. Those locally executed byte-exact programs are not claimed to have been GitHub-published in this report. External review, Lean/nanoda, native TM replay and full repo/LaTeX preflight were not run.
+The full executed sources and full mathematical report are bundled in **TMR5_084_AC3_false_positive_evidence.zip** in the run's delivered artifacts. An independently executed byte-exact compact Python verifier is GitHub-published at `experiments/tmr/tmr5_t5_grotzsch_anchored_ac3_084.py` (blob SHA `cfca23a0051ea9bb0ad9126b9e60bec762d7e012`), and the exact event-queue raw JSON is GitHub-published at `results/raw/tmr/2026-11-18_0046_TMR5_GROTZSCH_AC3_084_RAW.json` (blob SHA `3d12ceaf139e82c6e3a24ca8802528369cffedcf`). The larger local cross-check and full event-queue files are additionally supplied in the ZIP but not separately GitHub-published. External review, Lean/nanoda, native TM replay and full repo/LaTeX preflight were not run.
 
 ## Ranked proof-chain audit
 
