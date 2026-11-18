@@ -12,6 +12,18 @@
 \maketitle
 \section{Status, ownership and exact target}
 
+
+\paragraph{Current T5/084: tight block-respecting code transfer.}
+A complete five-symbol adaptive FBDD with $S$ nodes expands
+to a full-decoder three-bit Boolean FBDD with at most $6S$,
+improving prior conservative factor seven; block-respecting
+Boolean diagrams collapse back with no larger size. Exact
+TMR-2 thirty-two-mask unary support propagation commutes with
+the valid-code embedding. Unrestricted binary interleaving,
+arbitrary-machine reverse transfer and P versus NP remain OPEN.
+See Section~\ref{sec:t5block084}.
+
+
 \paragraph{Current T5/082: source-aware palette gauges defeat coarse
 five-connected necessity criteria.}
 A graph-only canonical-source recognizer finds induced $T_5$ palettes
@@ -2831,5 +2843,153 @@ DOI: 10.1016/j.ejc.2005.04.012.
 \url{https://arxiv.org/abs/math/0408232}.
 
 \end{thebibliography}
+
+\section{T5/084: tight block-respecting Boolean transfer and domain-mask commutation}
+\label{sec:t5block084}
+
+\paragraph{Precise candidate D4-T5-BLOCK-REVERSE-084.}
+Let $G$ be authenticated from its complete canonically enumerated
+source bytes, with $n$ original variables taking values in
+$\mathbb Z_5$, and $R(a,b)$ holding when
+$(b-a)\bmod5\in\{1,3\}$. A complete $5$-way adaptive read-once
+branching program (FBDD) queries each of the $n$ original
+variables exactly once on every root--terminal path; the next
+variable may depend on earlier answers. A $3$-bit Boolean FBDD
+is \emph{full-decoder block respecting} if a queried variable's
+three code bits are read contiguously on every valid-code path,
+each original variable occurs in exactly one such block,
+and any invalid code rejects. The Boolean bit order within a
+block may depend on values already read. These requirements
+are stronger than being an arbitrary Boolean FBDD.
+
+\begin{theorem}[Quantified two-way block transfer /084]
+Let $S_5(G)$ be the minimum number of nonterminal nodes of a
+complete $5$-way FBDD for the original $T_5$ predicate and
+let $S_{\rm blk}(G)$ be the corresponding minimum in the
+full-decoder block-respecting Boolean model for the direct
+three-bit code $000,001,010,011,100$. Then
+\[
+ S_5(G)\le S_{\rm blk}(G)\le 6S_5(G).
+\]
+The Boolean predicate rejects invalid codes $101,110,111$.
+Both directions preserve all $5^n$ original-input terminal
+decisions and their exact accepting and rejecting multiplicities.
+If $Z(G)$ is the native accepted count, the Boolean predicate
+accepts exactly $Z(G)$ of the $8^n$ code words and rejects
+exactly $8^n-Z(G)$.
+\end{theorem}
+\begin{proof}
+Replace each original $5$-way query node with the following
+six-node $3$-bit decision tree. Query the most significant bit,
+then the middle bit. Under prefix $00$ query the final bit to
+choose original ports $0$ or $1$; under $01$ choose ports $2$
+or $3$; under $10$ choose port $4$ or the rejecting terminal;
+under $11$ reject without asking the final bit. The original
+FBDD is complete, so every potentially accepting code path
+validates all $n$ code blocks, even when an original source
+constraint was already decided by an earlier assignment.
+The replacement creates six internal bit nodes per original
+node; along valid-code paths each block reproduces exactly one
+native transition. Invalid codes reject, proving the forward
+size and multiplicity statements.
+
+In the reverse direction, at each recognizable Boolean
+phase-root evaluate the three-bit subdiagram on the five valid
+words and replace the whole block by one five-way query
+on the same source variable with these five continuations.
+All invalid words reject by hypothesis. The block property
+ensures that none of the five continuations leaves its
+source variable's block prematurely. Any adaptive ordering
+of the blocks remains read-once and complete. Charge one
+native node per Boolean phase-root, at most the original number
+of Boolean internal nodes. Original assignments and their
+terminal decisions are pointwise unchanged.
+\end{proof}
+
+\paragraph{Six is tight for an independent decoder interface,
+not for global FBDDs.}
+If five original continuation ports denote five pairwise
+different residual predicates and invalid codewords must
+reject, a source-independent three-bit \emph{decision tree}
+requires at least seven leaves: five distinct valid leaves
+plus at least two invalid leaves, since three invalid codes
+cannot form one Boolean subcube. Thus at least six binary
+internal nodes are necessary; the construction attains six.
+The authentic source consisting of one directed arc $x\to y$
+gives five distinct residual suffix predicates after reading
+$x$, so the distinct-port hypothesis is source-realizable.
+This local bound must not be promoted to a global minimum
+for arbitrary interleaved FBDDs or deterministic machines.
+
+\begin{theorem}[Exact 32-mask commutation /084]
+For every $D,E\subseteq\mathbb Z_5$, support filtering across
+either orientation of $R$ commutes with the injective code map
+$I:\mathbb Z_5\to\{0,1\}^3$, provided invalid codes are excluded.
+Thus the exact unary-domain filtering interface has thirty-two
+states in both encodings; there is no hidden larger mask
+alphabet on validity-restricted binary codewords.
+\end{theorem}
+\begin{proof}
+For every $a\in\mathbb Z_5$,
+\[
+ a\in F_R(D,E)
+ \iff a\in D\ \wedge\ (\exists b\in E)\,R(a,b)
+ \iff I(a)\in F_{R_I}(I(D),I(E)),
+\]
+where $R_I=\{(I(a),I(b)):R(a,b)\}$.
+The same equivalence with $R^{\mathsf T}$ proves the reverse
+orientation. This is exact pointwise equivalence for all
+$2\cdot32^2=2048$ ordered domain-pair/orientation cases;
+it makes no claim about global solution correlations.
+\end{proof}
+
+\paragraph{Falsifiers, same realization and four gates /084.}
+A naive early Boolean accept fails even for the one-vertex
+edgeless graph, accepting eight rather than five codewords.
+Adaptive rejected-tail sharing must retain the set of
+already queried variables, or illegal repeat queries result.
+An unrestricted Boolean FBDD may interleave blocks and is
+outside the reverse theorem. The local six-node decoder
+bound is not an unrestricted global lower bound.
+
+An actually executed Python source-authenticating compiler
+reads canonical UTF-8 graph bytes, checks explicit vertices
+and sorted arcs, constructs both source-derived fixed-order
+OBDDs and adaptive FBDDs, keeps rejecting tails complete,
+performs six-node Boolean expansion and reverse collapse,
+checks literal auxiliary-free $3n$-variable,
+$(3n+15m)$-clause CNF, counts with exact integers and
+records source SHA-256. Its generic exhaustive reference
+source compiler can cost $\Theta(\operatorname{poly}(L)5^n)$
+and is not claimed polynomial. Conditional on an already
+correct explicit diagram with $S$ native nodes, the forward
+\emph{transducer} costs $O(S\operatorname{polylog}(S+n))$
+bit operations plus source authentication, structural
+validation and any literal CNF output; actual discovery,
+cache, precision, output and peak space must also be charged.
+
+Gate 1: 138 canonical graph sources, 10 malformed-source
+rejections. Gate 2: 109330 original-assignment and 1048528
+codeword checks; 45008 actual literal CNF checks; separately
+21 adaptive complete diagrams with 2625 native and 10752
+codeword checks, including 17 branch-dependent order cases.
+Gate 3: all 2048 domain-mask filters in both orientations
+and an exact six-node optimal adaptive-bit decoding audit.
+Gate 4: independently executed Node.js checked 109330 native
+assignments, 1048528 codewords and literal CNFs, 2048 mask
+filters, and repeated byte-identically with Python.
+Unexpected failures: zero. Finite evidence is COMPUTATIONAL.
+No full source-to-unrestricted-machine lower bound, physical
+Turing-machine microstep proof, or peer-reviewed verification
+is claimed. Prior /083 target NP-completeness by Barto--Kozik--Niven
+remains intact; P versus NP remains OPEN.
+
+\paragraph{Next dependency D4-T5-INTERLEAVED-CODE-FBDD-SEPARATION.}
+Seek source-authenticated mixed SAT/UNSAT families exhibiting
+a real asymptotic advantage for interleaved code-bit FBDDs,
+or establish a quantified simulation with all preprocessing
+and writable state charged. A restricted model equivalence
+does not justify lower bounds for unrestricted algorithms.
+
 \end{document}
 % END TMR-4 OWNED
