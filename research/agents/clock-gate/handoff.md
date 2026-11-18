@@ -1,3 +1,19 @@
+# CLOCKSLPOUT39 | 2026-11-18 08:30 PST | SLP-scheduled variable-length unpadded output sections
+
+**PROVED/EXACT restricted semantic theorem; external mathematical review OPEN; P versus NP OPEN.** For an authentic N=2^n source processed by an explicit source-independent G-rule straight-line grammar schedule and a K-state deterministic transducer whose source/state-dependent emissions concatenate without position delimiters to an attained word y of length m, EVERY attained (y,terminal physical state) has a genuine full-source canonical representative g with
+
+    CC(g) <= C G^2 K^2 (m+1)^2 [n + log_2(GK(m+2)+2)].
+
+The grammar-node exact-output reachability DP is keyed by node, start/end state, substring offsets; for X->UV it splits over intermediate state and output offset. Saved lexicographic witnesses yield **one globally consistent** original-source word and a small random-access Boolean circuit for its bits. This extends CLOCKSLP29 beyond terminal-only labels, and CLOCKUNPADDED38 beyond automatic-address schedules, under charged SLP descriptions. If every source emits <=M and YES threshold s dominates bound, H(YES_s)=im(H), so every nonempty source NO image collides with YES. A clock-independent fixed cofinal stage obeys 2(a+b+c)lambda^j<beta under G_j,K_j,M_j+1 respective exponents a,b,c.
+
+**EXECUTED:** full local audit seed 20261118083039; 54 models, 8,592 original sources (N=4,8 exhaustive, N=16 sampled), 829 attained short target fibers, 6,476 reconstructed bit checks, 3,312 independent brute relations, 24,489 final assertions/0 failures. Initial independent brute harness started from state zero instead of queried p; corrected before final run. Independently implemented brute-oracle reproducer: 8 exhaustive N=8 variants, 338 reconstructed targets/0 failures. The full audit script/raw/expanded proof are in local CLOCKSLPOUT39_research_bundle.zip; independently executed compact reproducer and full-audit raw SUMMARY are published on main.
+
+**VERIFIED MAIN:** [mathematical report](2026-11-18_0830_CLOCKSLPOUT39.md) blob 516d15bce5d2e1aea74597d0ef5f0e2e2f85d96e; [compact independent reproducer](../../../experiments/meta_lift/2026-11-18_clock_slp_output39_repro.py) blob fb23943f83bf560164ed265075222c3d7f0dfbca, byte-identical to executed local reproducer; [full-audit summary JSON](../../../results/raw/meta_lift/2026-11-18_CLOCKSLPOUT39_raw.json) blob 578f219cea7f6fcd49c9afd05f4a609111f1c68f, byte-identical to executed local raw. No local checkout preflight, microstep tape simulation, stage-uniform PH verifier or independent math review was performed. TMR-owned manuscripts, agent identities and schedules unchanged.
+
+**ONE NEXT: GENERAL-INDEX-OUTPUT-REACHABILITY40.** For arbitrary indexed transitions, quantify exact output-aware interval-reachability circuit cost plus local leaf witness cost, and test whether attainable source-pure images can survive the resulting conditional lower bound without assuming an unearned NP certificate for exponentially long paths. Four barriers: DISJ N/A; relativization restricted only; simultaneous DTISP FAIL for purity under this subclass; configuration counting sanity only. /341 FAIL full authority; /386 RESTRICTED. P versus NP OPEN.
+
+---
+
 # CLOCKUNPADDED38 | 2026-11-18 07:30 PST | exact unpadded transducer inversion via automatic-address output-offset reachability
 
 **PROVED/EXACT restricted theorem, independent mathematics review OPEN; P versus NP OPEN.** For an authentic N=2^n original source, an A-state source-independent MSB-first address DFAO, K-state deterministic indexed Mealy transducer with **arbitrary state-dependent variable-length per-bit emissions**, output H(f)=the full **unpadded concatenated** binary word y of length m plus a terminal label, EVERY original source output has an authentic source representative g with
