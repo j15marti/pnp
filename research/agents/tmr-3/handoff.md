@@ -1,3 +1,26 @@
+# TMR-3/090 handoff | 2026-11-18 | exact T5 block-cut factorization
+
+**Role and configuration preserved:** TMR-3 / PNP Time-Space Tradeoffs; alphabet Z5, beat offsets {1,3}; existing title, identity, ownership, enabled state, hourly schedule, safeguards and prior manuscripts unchanged. PR is a stacked unmerged draft.
+
+**Closed C3-T5-BICLIQUE-MODULE090:** Proved exact connected-source biconnected block factorization Z(G)=5 product_B(Z(B)/5) from cyclic translation symmetry. This removes the need for a potentially exponential articulation-interface enumeration on ordinary unpinned T5 graphs. For each bipartite source-derived edge-block B, use /089 exact complement-cover counting with local minimum missing-edge cover tau_B. Conservative **same-realization** bounds: T(N)=O((N+1)^16[1+sum_B 5^tau_B]), S_peak(N)=O((N+1)^6) bits. A second weighted per-vertex support lift supports five-entry articulation messages if external unary pins break translation invariance. Nonbipartite blocks admit blockwise 5^|B| exact fallback. No lower bound.
+
+**Falsifier:** Chain of k>=3 genuinely biconnected all-forward K_{p,p}-one-hole modules, with one vertex shared between successive modules. n=k(2p-1)+1, m=k(p²-1), each tau_B=1, global complement tau=k(p-1)+1, tw>=p-1, exact count 5*(2^(p+1))^k. At k=20,p=8: n=301, m=1260, 20 blocks, global tau=141, exact count 7662477704329444291791735135751545918093695610918010880 (55 digits). Hence representation/global-cover lower-bound arguments are unsound absent full algorithm quantification.
+
+**Verification:** Full stand-alone reference 1,052 seeded deterministic assertions, zero failures, twice identically, SHA256 fd307160182a7c861086f73384cebceee1499f889a6b6bf85b1488976769324b. Compact composition 224 further checks against independent local brute-force /089-interface stand-in, zero failures twice; integrated run against actual /089 checkout still pending. Standalone 2-page LaTeX section compiled; combined manuscript compile, native Turing-machine implementation and independent mathematical review pending.
+
+**Four gates:** DISJ PASS restricted constructive, relativization NOT APPLICABLE TO A SEPARATION, SAME_REALIZATION DTISP PASS symbolic upper bound only, configuration counting UPPER-BOUND CONSISTENCY. Preserve all prior easy-family, affine, rank, dual Fourier, treewidth, path saturation, pruning, full graph access, caching and recomputation controls. NP-completeness of unrestricted T5 sourced to Bang-Jensen, Hell, MacGillivray (1988), DOI 10.1137/0401029; no quantitative SAT lower bound transported. P versus NP OPEN.
+
+**Published files on current branch:**
+- research/agents/tmr-3/2026-11-18_1121_TMR3_T5_BLOCK_CUT_FACTOR090.md
+- experiments/tmr/tmr3_t5_block_product090_repo.py
+- results/raw/tmr/2026-11-18_TMR3_T5_BLOCK_FACTOR090_AUDIT.json
+- main3_PNP_TIME_SPACE_TRADEOFFS.tex (new /090 section appended; all historical sections preserved)
+- research/agents/tmr-3/handoff.md (this handoff, previous history below)
+
+**Next dependency:** C3-T5-2CONNECTED-RESIDUAL091. Seek difficult source-authenticated 2-vertex-connected residuals resisting path/affine, signature, missing-edge cover, primal/dual/Fourier and symmetry reductions; charge true same-machine time and space without assuming a representation width gives a lower bound.
+
+---
+
 # TMR-3/089 handoff | 2026-11-18 10:24 PST | complement-cover exact T5 counting
 
 **Owner/state preserved:** TMR-3 / PNP Time-Space Tradeoffs; five-symbol beat relation \(R(x,y)\iff y-x\in\{1,3\}\bmod5\); agent identity/title/enabled state/hourly schedule/ownership/safeguards unchanged.
