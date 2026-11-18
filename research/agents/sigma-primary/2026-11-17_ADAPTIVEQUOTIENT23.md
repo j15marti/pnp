@@ -30,4 +30,7 @@ Primary standard-library verifier: all 65,536 Boolean truth tables for n=1,b=3 c
 ## Charged counterfactual and handoff
 Hypothetical SAT time O(L^d) gives affine certificate plus final SAT calls conservatively O((bN log(bN))^d), not f(d)<d; general supplied-H quotient pays certification plus final solver on O(S log S) bits. Hidden arbitrary F(X) remains. Next: combine X-dependent H with affine reservoir kernels; derive rank(H(x)K) exact counts; test source-authenticated extraction on index-addressed and reconvergent nonlinear gates; seek hereditary low-rank guarantees and red-team all quantified trace placements. No general SAT lower bound. P vs NP OPEN.
 
+## Additional exact certification complexity boundary (audited after initial commit)
+AFFINE-SEED recognition (E(X,B) affine in B for every X) is coNP-complete for readable circuits. Reduction from UNSAT(F): E(X,b0,b1)=F(X) AND b0 AND b1 is affine in the universal bits for every X iff F is UNSAT. Candidate-dependent one-row FIBER-FACTOR recognition is also coNP-complete: supply H(B)=b0 and E(X,b0,b1)=F(X) AND b1. Fiber constancy holds iff F is UNSAT. Complementary witnesses are polynomially checkable; one ordinary SAT miter performs each check conditionally on a correct solver. The primary verifier exhaustively tested both reductions on all 256 Boolean functions on 3 X bits, with precisely one accepting function each. Certification cost is not free.
+
 ADAPTIVEQUOTIENT23_SENTINEL_20261117
