@@ -2,7 +2,7 @@
 
 Keep TMR-4 title PNP Cost-Sound Abstraction, owner, living manuscript, enabled state and existing hourly schedule unchanged. All previous material retained, branch stacked on PR #262.
 
-**D4-T5-BLOCK-REVERSE-084 [restricted exact theorem]:** For complete source-variable FBDDs, the direct 3-bit encoding has 5 valid words (000 through 100) and 3 invalid words, always rejected. A complete 5-ary FBDD of S nodes expands into a *full-decoder block-respecting* Boolean FBDD of <=6S nodes, improving the earlier 7S bound. Conversely, each such Boolean FBDD collapses to a complete 5-ary FBDD without increasing node count. Therefore S5<=S_block<=6S_block? **Correct statement:** S5<=S_block<=6S5. This is a restricted two-way model equivalence, **NOT** a bound on arbitrary interleaved binary FBDDs or arbitrary machines.
+**D4-T5-BLOCK-REVERSE-084 [restricted exact theorem]:** For complete source-variable FBDDs, the direct 3-bit encoding has 5 valid words (000 through 100) and 3 invalid words, always rejected. A complete 5-ary FBDD of S nodes expands into a *full-decoder block-respecting* Boolean FBDD of <=6S nodes, improving the earlier 7S bound. Conversely, each such Boolean FBDD collapses to a complete 5-ary FBDD without increasing node count. Therefore **S5<=S_block<=6S5**. This is a restricted two-way model equivalence, **NOT** a bound on arbitrary interleaved binary FBDDs or arbitrary machines.
 
 Six decoder nodes are *locally tight for five distinct continuation ports plus invalid rejection*: at least seven decision-tree leaves required. Genuine T5 source x->y has five distinct continuation predicates. Do not claim a global minimum FBDD size.
 
