@@ -1,3 +1,21 @@
+# Clock Gate research handoff, 2026-11-18 09:30 Asia/Seoul
+
+Owner: CLOCK-INDEPENDENT-GATE1; outside five TMR manuscript owners. Nov 15 end-to-end directive and current AGENTS.md/CODEX.md/pnp-research skill govern. **P versus NP OPEN.**
+
+## NEW CLOCKWITNESSPH23: fixed-PH supplied-circuit verifier plus bounded circuit sections forces uniform preimage-bit selection
+
+**PROVED/EXACT in restricted conditional model, independent review OPEN:** Let H_n map authentic N=2^n-bit source tables to n^{O(1)}-bit target labels. Let E(n,y,C)=[H_n(TT(C))=y], with C a polynomial-length padded n-input circuit description. If E is jointly in one fixed PH level, and every attainable label has at least one polynomial-length circuit witness with ONE stage-independent exponent, then an FP^PH prefix-search algorithm computes each bit of ONE globally consistent preimage using at most L(n)+1 oracle queries. Under P=NP, the bit selector is in FP with ONE polynomial exponent independent of later clock c. Proof is the standard existential-prefix search over circuit descriptions; does not imply the original-source compiler costs.
+
+**CONDITIONAL COLLAPSE BARRIER:** If a polynomial-time target family forces one source preimage bit to compute PSPACE-complete TQBF, then a fixed-PH E together with polynomial-length circuit sections implies PSPACE=PH (and, with P=NP, P=PSPACE). CLOCKMASKEDINVERSE22 has P image membership, PSPACE-hard forced preimage bit, O(n^2) sparse circuit sections, and PSPACE-complete E, fitting this trilemma. Easy existential image recognition must NOT be silently substituted for jointly PH-low supplied-circuit equality. **SEMANTIC FAIL:** Any quotient with small circuit representatives for every image has H(Y_s)=im(H), so exact MCSP NO promise purity fails regardless of uniform inversion complexity.
+
+**COMPUTATIONAL:** Local and repository-matched executable Python, 5,152 assertions, zero failures, 272 exhaustive source words, 10 prefix-extracted labels, 70 prefix decisions, 64 finite masked targets and 2,048 forced-bit checks. Finite QBF toy is NOT PSPACE-hard. Code SHA256 07aebdf954bcbcfee7956d4a65741b7cb3a17f235c53d83a49f10fd39ef216fa; raw JSON SHA256 9f29406678d350682e5672c99c50e72bd559ff5b9ff2536311e750dea14a6df3.
+
+**MAIN verified artifacts:** [mathematical report](2026-11-18_0930_CLOCKWITNESSPH23.md), [executable Python](../../../experiments/meta_lift/2026-11-17_clock_witnessph23_audit.py), [raw](../../../results/raw/meta_lift/2026-11-17_CLOCKWITNESSPH23_raw.json). Readback blob hashes were verified; full report most recently corrected to commit a6a642758bc1773b0f9de92495ade7d7c3552d38. Existing five TMR agent-owned manuscripts untouched.
+
+**ONE NEXT:** PROMISE-PURE-JOINT-VERIFIER24: seek/falsify a source-bound fixed quotient with genuinely hard image fibers, BOTH exact MCSP promises and every legal alternative seed/decoder controlled, yet a stage-uniform jointly PH-low supplied AND existential image verifier, polynomial output and charged **headerless** one-way-input one-work-tape compiler. Preserve earlier interpolation, affine, parity, Chevalley-Warning, hash, source-as-seed, mixed-fiber and same-realization controls. No unproven P=PSPACE assumption or c>K(c) circularity.
+
+---
+
 # Clock Gate research handoff, 2026-11-18 08:33 Asia/Seoul
 
 Owner: CLOCK-INDEPENDENT-GATE1 research stream, outside the five TMR manuscript owners. Governing instructions are November 15 end-to-end directive, AGENTS.md, CODEX.md and pnp-research skill. **P versus NP OPEN.**
