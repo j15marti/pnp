@@ -4,6 +4,8 @@
 
 **C3-T5-3CONNECTED-RESIDUAL092, PROVED restricted constructive theorem; independent review outstanding.** If k source modules have exactly three common terminals and no other cross edges, the unpinned exact count is 5 times the sum, over 25 relative terminal-color pairs, of the product of exact module count-vectors. For an all-forward K(p,p) module with three left terminals, exactly seven of 25 vector entries are nonzero: F(0,0)=2^p+2^(p-2)-2, and six entries of value 2^(p-3). Consequently k such modules, identified along exactly three terminals, have exact count 5[(2^p+2^(p-2)-2)^k+6(2^(p-3))^k].
 
+**New unbounded-connectivity extension:** for k>=2 and 1<=q<p common left terminals, the family of k all-forward K(p,p) modules has kappa=q, treewidth>=p, min degree p, missing complement cover k(p-q), and exact Z=5[(2^p+2^(p-q+1)-2)^k+(2^q-2)(2^(p-q))^k]. This holds for q increasing with n: with q=floor(p/2), k=p all four structural parameters diverge but source-authenticated counting is polynomial time. The 5^(q-1)-entry generic interface collapses to two exact count-orbits for this family; no exponential table is necessary. Additional standalone Python test script verified 89 checks and zero failures for q=1..5 plus high-connectivity q=50. This supersedes merely seeking 4-connected sources as hardness evidence.
+
 **New authenticated infinite family:** k>=2,p>=4, n=3+k(2p-3), m=kp^2, vertex connectivity exactly 3, minimum degree p, treewidth >=p, global missing-edge cover k(p-3). Source recognition and closed-form counting are polynomial even though all these parameters grow. At (k,p)=(20,8), n=263, m=1280, cover=100, exact 51-digit Z=559129496820275798186261882797788214499516649308160. No one-vertex or two-vertex cut exists. This is a counterexample to using 3-connectivity/high width/global complement cover as a stand-alone necessary-work claim.
 
 **Same realization:** for authenticated members, a single deterministic sequential-tape algorithm charges input scanning, unique terminal discovery, induced block recognition, 5-state algebra, exact big-integer output, addresses, head movements and workspace. Conservative simultaneous T(N)=O((N+1)^12), peak S(N)=O((N+1)^4) bits. Arbitrary unrecognized inputs require exact exponential fallback. No quantitative sparse-SAT exponent was transferred.
@@ -12,9 +14,9 @@
 
 **Four gates:** DISJ restricted constructive PASS; relativization non-separation; SAME_REALIZATION DTISP restricted simultaneous upper only; configuration counting upper-bound consistency, no necessary-work inference. Easy controls remain admitted: loops, opposed arcs, trees, cycles, chromatic UNSAT, path and affine propagation, primal/dual/Fourier/treewidth, signature/near-biclique, block-cut, two-terminal, padding and generic backtracking. General T5 NP-complete via Bang-Jensen, Hell and MacGillivray (1988), DOI 10.1137/0401029, with no exact blowup transferred here. P versus NP OPEN.
 
-**New artifacts:** research/agents/tmr-3/2026-11-18_1327_TMR3_T5_THREE_TERMINAL092.md; experiments/tmr/tmr3_t5_three_terminal092_repo.py; results/raw/tmr/2026-11-18_TMR3_T5_THREE_TERMINAL092_AUDIT.json; appended main3_PNP_TIME_SPACE_TRADEOFFS.tex; this preserved handoff.
+**New artifacts:** experiments/tmr/tmr3_t5_q_terminal092_repo.py (unbounded-connectivity extension);  research/agents/tmr-3/2026-11-18_1327_TMR3_T5_THREE_TERMINAL092.md; experiments/tmr/tmr3_t5_three_terminal092_repo.py; results/raw/tmr/2026-11-18_TMR3_T5_THREE_TERMINAL092_AUDIT.json; appended main3_PNP_TIME_SPACE_TRADEOFFS.tex; this preserved handoff.
 
-**Next load-bearing dependency:** C3-T5-4CONNECTED-RESIDUAL093: test source-authenticated candidates that cannot be 1-,2-,3-vertex separated, and benchmark lawful affine, Fourier, width and branching algorithms before any necessary-resource argument.
+**Next load-bearing dependency:** C3-T5-UNBOUNDED-ADHESION093: test instances not defeated by growing-separator decompositions or small modular color-orbits, benchmark all lawful exact algorithms, and quantify any alleged necessary resource on one source-authenticated machine.
 
 ---
 
