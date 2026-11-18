@@ -222,5 +222,4 @@ def audit():
     output={'revision':REV,'seed':SEED,'checks':checks,'failures':0,'cases':cases}
     print(json.dumps(output,sort_keys=True,separators=(',',':')))
 
-
 if __name__=='__main__':audit()
