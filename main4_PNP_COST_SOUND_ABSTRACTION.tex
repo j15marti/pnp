@@ -10,6 +10,8 @@
 \date{November 15, 2026, Pacific Time}
 \begin{document}
 \maketitle
+\paragraph{Current T5/086: exact cycle-gauge transfer and sparse-cycle source-aware OBDD barrier.}
+The latest restricted theorems and four verification gates are in Section~\ref{sec:t5cycle086}. All previous /084 and /085 reverse-transfer safeguards remain in force. The optimal arbitrary interleaved-bit comparison, physical machine lower bounds, and P versus NP remain OPEN.
 \paragraph{Current T5/085: interleaved-code live-open-symbol reverse simulation.}
 For an explicit validity-sound Boolean read-once diagram $B$ of
 $s$ bit nodes, let $p$ be the maximum, over nodes $v$, of
@@ -3134,6 +3136,141 @@ The next target is D4-T5-INTERLEAVED-ADVANTAGE-OR-BARRIER-086, with mixed
 SAT/UNSAT legal sources, full source-aware preprocessing, all
 representation costs, and no unauthorized necessity transfer.
 P versus NP remains OPEN.
+
+
+
+\section{T5/086: Source-authenticated cycle-gauge transfer and sparse-cycle OBDD barrier}
+\label{sec:t5cycle086}
+\paragraph{Scope.}
+This addendum preserves the /084 block-respecting equivalence and the
+/085 $s6^p$ at-most-once reverse transducer. It adds a
+source-computable positive algorithm and upper-bound counterexample,
+\emph{not} an all-order interleaved-bit FBDD separation or an
+unrestricted deterministic-machine lower bound.
+
+Let $G=(V,E)$ be the authenticated canonical directed input graph with
+$n\ge1$ explicitly enumerated vertices, $m$ original directed arcs,
+$c$ weak components, and $q=m-n+c$. Loops and opposing arcs are permitted,
+not hidden promise exclusions. Work over $\mathbb F_5$ with
+$R(x,y)\iff y-x\in\{1,3\}$.
+
+\begin{theorem}[Exact cycle-gauge transfer /086]
+Choose any spanning forest of the underlying undirected multigraph
+retaining each original directed arc as a distinct edge. Let
+$D\in\mathbb F_5^{n\times m}$ have column $-e_u+e_v$ for arc $u\to v$,
+and let $C\in\mathbb F_5^{q\times m}$ consist of signed fundamental
+cycles, a basis of $\ker D$. Then the exact number of full original
+source assignments is
+\[
+ Z_{T_5}(G)=5^c
+ \left|\left\{b\in\{0,1\}^m:C b=2 C\mathbf 1
+ \pmod 5\right\}\right|.
+\]
+In particular, it is divisible by $5^c$. An authenticated exact counter
+using a syndrome state in $\mathbb F_5^q$ requires at most
+$O(mq5^q)$ field-coordinate operations plus
+$O(m5^q)$ additions of integers of $O(m)$ bits, and polynomial
+source-parsing, cycle-basis-construction, indexing, storage and output
+costs. For $q=O(\log L)$, where $L$ is the original explicit byte
+length, the end-to-end algorithm is polynomial in $L$.
+\end{theorem}
+\begin{proof}
+For every original source assignment define the edge difference
+$d_e=x_v-x_u\in\{1,3\}$, uniquely $d_e=1+2b_e$ for
+$b_e\in\{0,1\}$. An edge-difference vector is obtained from vertex
+potentials iff it is in the image of $D^{\mathsf T}$, equivalently
+$Cd=0$, as the fundamental-cycle rows span $\ker D$.
+Thus $C(\mathbf1+2b)=0$, or $Cb=2C\mathbf1$ in $\mathbb F_5$.
+For each feasible $b$, one arbitrarily chosen root color per weak
+component fixes all other vertex colors along the forest; every
+original arc then satisfies the desired difference, and there are
+exactly $5^c$ root choices. A loop produces an impossible singleton
+cycle equation, and opposing arcs produce inconsistent two-edge
+closure; neither is silently deleted.
+For the algorithm, start a histogram on the zero syndrome. On visiting
+each edge $e$, the binary choices $b_e=0,1$ retain or add column $C_e$
+in $\mathbb F_5^q$, accumulating exact integer multiplicities.
+Extract target $2C\mathbf1$ and multiply by $5^c$.
+At most $5^q$ syndromes are stored, and all parsing, basis searches,
+hashing, integer arithmetic and output are charged.
+\end{proof}
+
+\begin{theorem}[Complete-query source-aware OBDD bound /086]
+The same authenticated source $G$ admits a constructible, complete,
+fixed-order five-way OBDD with width
+\[
+ W\le 5^{2q+\lceil\log_2n\rceil+1}+1,\qquad
+ N\le nW
+\]
+nonterminal nodes. It preserves each original assignment's decision
+and exactly $Z_{T_5}(G)$ accepting and $5^n-Z_{T_5}(G)$ rejecting
+full-assignment multiplicities.
+\end{theorem}
+\begin{proof}
+Let $X$ be the endpoints of all $q$ nontree edges, so $|X|\le2q$.
+After removing $X$, the underlying graph is a forest.
+Query $X$ first and query the remaining tree vertices in
+recursively centroid-first order, fully processing one component
+before the next. At any query frontier, retain the exact colors
+of previously queried vertices adjacent to some unqueried vertex,
+check each arc once both endpoints are known, and share a rejecting
+chain that still queries every remaining variable.
+The forest frontier consists of active centroid ancestors, at most
+$\lceil\log_2n\rceil+1$, in addition to at most $2q$ retained
+vertices from $X$. Thus each layer has at most $5^{W_0}+1$
+states, $W_0=2q+\lceil\log_2n\rceil+1$.
+Canonical exact-color frontier merging and five-way fan-out
+give the bound. Every complete path queries each original variable
+once, so accepting-path counting equals original full-assignment
+counting without early-terminal corrections.
+\end{proof}
+
+\paragraph{Four adversarial controls and SAME\_REALIZATION.}
+(i) Omitting $5^c$ incorrectly counts trees and edgeless sources.
+(ii) Wrong cycle orientation or a hidden simple-graph promise misses
+directed triangles, loops and opposing arcs.
+(iii) Any count depending on the chosen spanning forest is invalid:
+alternative forests were explicitly recomputed.
+(iv) $q$ is an upper-bound parameter, not an information-necessity
+measure. A bad specified interleaved-code-bit order cannot imply
+minimum FBDD hardness. The source encoding, graph discovery,
+spanning-tree selection, $q$ cycle searches, centroid ordering,
+32 domain-mask support states, state sharing/eviction, five-way
+fan-out, precision of $O(n)$-bit counts, output, and Boolean/CNF
+conversions are charged in the same realization. No free Fourier
+or algebraic oracle is used. The alternative edge-bit modular system
+has $m$ bits and $q$ congruences, \emph{not} an uncharged
+constant-size CNF gadget encoding; the direct 3-bit source CNF still
+has exactly $3n+15m$ forbidden-tuple clauses.
+
+\paragraph{Four finite verification gates /086.}
+G1: 169 authenticated canonical source cases, 72 SAT and 97 UNSAT,
+eight malformed records rejected, independent SHA-256 checks.
+G2: 139,290 Python pointwise full-source comparisons,
+181,016 complete Boolean-code checks; independent JavaScript
+checked 342,415 full-source assignments and 181,016 code words.
+G3: 169 cycle-DP/complete-OBDD exact count agreements,
+163 exhaustive edge-bit checks, 338 alternate forest checks,
+2,048 oriented domain-mask checks; independent BigInt
+chord-endpoint-conditioned \emph{vertex-side} tree-DP checks on
+all 169 graphs. G4: two deterministic executions of each language
+reproduced identical summaries, zero unexpected failures.
+Largest source had $n=127$; largest constructed OBDD had
+15,826 internal nodes and width 2,126; largest cycle DP had
+960 retained syndromes. All finite checks are COMPUTATIONAL.
+The full Python/Node executables and raw counts are in the
+companion evidence archive; independent mathematical review,
+full LaTeX compilation and physical Turing-machine microsteps remain OPEN.
+
+\paragraph{Handoff D4-T5-HIGH-Q-INTERLEAVED-MINIMUM-BARRIER-087.}
+Continue only with authenticated mixed satisfiable/unsatisfiable
+high-$q$ sources surviving modular cycle DP, chord-endpoint
+backdoors, centroid ordering, twin/palette/complete-join and
+low-separator compression, and the full 32-domain support masks.
+A lower bound for one representation or order does not transfer
+to arbitrary source algorithms. The known NP-completeness
+classification of the $T_5$ target is background, not such a lower
+bound. P versus NP remains OPEN.
 
 \end{document}
 % END TMR-4 OWNED
