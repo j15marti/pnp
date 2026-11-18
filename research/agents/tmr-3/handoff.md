@@ -1,3 +1,27 @@
+# TMR-3/094 handoff | 2026-11-18 | SAT-only intrinsic-critical T5 witness and DTISP transfer firewall
+
+**Identity/configuration retained:** TMR-3 / PNP Time-Space Tradeoffs; existing title, ownership, enabled/paused status, Pacific hourly schedule and four safeguards unchanged. Branch /094 stacks on draft PR #306 (/093), unmerged. New user directive 2026-11-18 supersedes previous /093 nonlinear-interface priority. The purpose is SAT witness finding for a designated deletion G=H-e of a connected edge-minimal T5 UNSAT source H, with no free coNP promise certificate.
+
+**PROVED/EXACT upper-bound mechanism:** Suppress degree-two threads of the original critical H, record exact GF(5) endpoint constraints D(L,f)={2L-f+2j mod5:0<=j<=L}. Criticality forces L<=3. Omit the whole constraint for the one thread containing deleted e (free-ended halves), enumerate at most 5^(b-1) branch assignments after rotation and reconstruct/verify all original-vertex colors. Same-run conservative random-access T=O((N+1)^4(1+5^(b-1))), S=O((N+1)^2) bits, sequential-tape T=O((N+1)^8(1+5^(b-1))), S=O((N+1)^3). All include access, decomposition, failed candidates and complete output. OPEN: any unrestricted lower bound.
+
+**Sharper high-girth structural bound:** Girth(H)>=7 makes the suppressed branching graph simple, since each critical thread has <=3 arcs. n<=b^2, beta>=b/2+1>=sqrt(n)/2+1 after discarding isolates. These improve handed-off constants but are NOT machine-work lower bounds. The external branch-core ZIP and theorem path were unavailable in the live filesystem; the nine short-thread relations and max irredundancy four were independently reconstructed and enumerated. Original Moore arithmetic not fully re-audited.
+
+**PROVED/EXACT pin compiler:** One fresh-vertex triangle u->v,u->w,w->v forces x_v-x_u=1 and x_w-x_u=3 uniquely. Polynomially many exact gadgets support search-to-*ordinary* T5 decision with <=1+5(n-1) queries. This does NOT provide a SAT-only promise oracle because intermediate queries may be UNSAT/off promise.
+
+**PROVED implication (transfer barrier):** A polynomial-time all-outcome reduction from SAT formulas to valid promised critical-deletion pairs, together with a polynomial-time decoder correct on EVERY resulting witness, implies NP=coNP by certifying UNSAT with that witness. Therefore ordinary FLMV/Williams SAT decision bounds, including c<2cos(pi/7) with n^{o(1)} space, cannot be transferred to this promised search without a new correctly quantified reduction and a charged random-access source generator. Source materialization typically destroys the subpolynomial-space premise.
+
+**PROVED nonconstructive existence:** Erdős high-girth chromatic >=6 graphs, oriented arbitrarily and edge-minimized, yield connected, 2-vertex-connected T5-critical UNSAT obstructions of unbounded girth. Neither efficient generation nor witness-search hardness follows.
+
+**COMPUTATIONAL controls:** 512 relation subfamilies, 512 K3,3 full orientations (336 UNSAT, 0 fully edge critical), 19,683 partial oriented K3,3 graphs (288 critical), 250 seeded tree-edge exact checks, 60 exact gadget pins, 50 witness-from-decision trials/321 queries, 234 branch-core actual full witnesses. Zero failures. A 5-vertex 6-arc critical theta source has deletion rooted counts [8,2,2,8,2,2]. GitHub compact smoke source, fuller locally executed Python audit scripts and local ZIP are distinguished. Native TM execution/full combined LaTeX build/peer review unexecuted.
+
+**Gates:** DISJ restricted PASS, relativization no separation, simultaneous DTISP restricted upper PASS/lower OPEN, configuration-count no time necessity. Easy families, Fourier/primal/dual/affine/DP alternatives and source-authentication costs remain admissible.
+
+**Owned files:** main3_PNP_TIME_SPACE_TRADEOFFS.tex updated in place; research/agents/tmr-3/2026-11-18_TMR3_T5_CRITICAL_WITNESS094.md; experiments/tmr/tmr3_t5_critical_witness094_repo.py; results/raw/tmr/2026-11-18_TMR3_T5_CRITICAL_WITNESS094_AUDIT.json; previous sections preserved.
+
+**NEXT: C3-T5-INTRINSIC-PROMISE-LOWER-BOUND095.** Construct a uniform genuinely intrinsic-critical family and prove a same-realization dynamic obstruction to ALL legal SAT witness-finders, or supply a valid noncollapsed reduction bridge with full source-access costs. Both OPEN. **P versus NP OPEN.**
+
+---
+
 # TMR-3/093 handoff | 2026-11-18 | exact sharp T5 connection rank
 
 **Identity/title/ownership/enabled state/hourly schedule preserved.** The /093 branch is stacked on /092 and does not merge either PR. Earlier handoff is retained below.
