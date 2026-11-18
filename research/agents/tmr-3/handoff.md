@@ -1,3 +1,19 @@
+# TMR-3/093 handoff | 2026-11-18 | exact sharp T5 connection rank
+
+**Identity/title/ownership/enabled state/hourly schedule preserved.** The /093 branch is stacked on /092 and does not merge either PR. Earlier handoff is retained below.
+
+**New theorem:** For q labeled terminals, full original-source T5 exact-count gluing connection matrix has rank precisely 5^(q-1) over Q. The exact private triangle with u->v, u->w, w->v forces x_v=x_u+1 mod 5 with one extension; composing at most five triangles for each relative coordinate generates 5^(q-1) boundary-delta sources, yielding a 5I connection submatrix. This lower bounds only the coordinate dimension of universal linear plus bilinear gluing interfaces, NOT any general algorithm's time or workspace.
+
+**Critical same-machine counterexample:** Graphs made of these authenticated private increment triangles are solved by modular-potential graph traversal in polynomial time, exact count 5^c if consistent and 0 otherwise, with full source authentication. The q=40 example has 430 vertices, 694 arcs, exact count 5, although the universal q-terminal rank is 1,818,989,403,545,856,475,830,078,125. Every B_alpha union B_beta has treewidth at most two. Deliberately loose conservative simultaneous deterministic sequential-tape bounds are T(N)=O((N+1)^8), S_peak(N)=O((N+1)^3) bits for recognized instances; unrecognized input uses exact exponential original-arc fallback. Representation rank cannot be used as a DTISP lower bound.
+
+**Executed local test:** 622 deterministic assertions, zero failures, identical repeat execution; full source reference Python SHA256 e1324d9d3e4b066cd3c8c38151a4d33cfb1ca2e54e0b8cce2f041d715c30d669; audit SHA256 f220045551bce86122226ad9a87b4786729d1eb321f40d5f4cc87bbaa377b85f. Includes original-input backtracking and 5^n brute checks on easy and contradictory controls. Finite evidence is COMPUTATIONAL.
+
+**Gates:** DISJ restricted constructive PASS; relativization not applicable to a separation; SAME_REALIZATION restricted upper bound PASS, lower bound OPEN; configuration counting rank restricted to linear bilinear representation, no machine work inference. Preserve all preceding source checks and easy family controls.
+
+**Next:** C3-T5-NONLINEAR-CONNECTION094: test nonlinear compression on high-adhesion authenticated sources and separate interface-rank results from genuine time-space obstructions. General T5 NP-complete by Bang-Jensen, Hell, MacGillivray (1988), but no SAT exponent transfers without exact reduction. P versus NP OPEN.
+
+---
+
 # TMR-3/092 handoff | 2026-11-18 | exact three-terminal T5 transfer
 
 **Identity and schedule retained:** TMR-3 / PNP Time-Space Tradeoffs. Existing title, enabled state, manuscript ownership, hourly America/Los_Angeles schedule, history and four safeguards unchanged. Draft PR stacked on /091, do not merge automatically. Earlier handoff sections remain below.
