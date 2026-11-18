@@ -53,6 +53,14 @@ It counts all original sink colors and matches the source solver. For r=1,2,10,8
 
 The fixed relation is invariant under simultaneous addition modulo five. Therefore every exact b-hub boundary signature obeys M(a_1+s,...,a_b+s)=M(a_1,...,a_b). For b>=1, store only **5^(b-1)** orbit values, giving 25 normalized values instead of 125 when b=3. Recover full 125 entries without ambiguity. This factor-five improvement does not remove exponential dependence on unbounded adhesion and cannot imply a P/NP separation.
 
+**Essential reindexing lemma and executed falsifier.** Put E_j(p,q)=D_j(0,p,q). The *correct* 25-state recurrence, with all arithmetic modulo 5, is
+
+    E_0(p,q)=1,
+    E_{j+1}(d,e) = sum_{a,b} E_j(b-a, -a) F(a,b,0,d,e),
+    Z(G_r)=5 sum_{d,e} E_r(d,e).
+
+The twisted predecessor index (b-a,-a) is required: D_j(a,b,0)=E_j(b-a,-a) by simultaneous translation. A tempting naive reduction using E_j(a,b) instead of E_j(b-a,-a) is **false**. At r=4 it gives 6,274,952,108,160 rather than the correct 6,272,708,104,160. The new independent published Python solver `experiments/tmr/tmr3_t5_transfer25_080.py` matched the full 125-state transfer at all ten tested r=0,1,2,3,4,5,10,20,40,80. Source SHA256 for the locally executed corresponding file: c9e90c750d6589df39f90367eb5e387c4e35f76bd1be84d71f3ba09ff78eac62.
+
 ## Executed falsification and verification
 
 The standalone Python 3 standard-library source and audit are included in the attached reproducibility ZIP. 211 deterministic assertions passed with zero failures. The checks cover random arbitrary directed inputs versus original brute force, random incidence inputs versus independent five-state hub enumeration, malformed sources, structural zeros, 10 chain lengths through r=80 versus the separate 125-state transfer, and cyclic-shift invariance. The r=80 exact count was checked against both implementations. An additional independent NetworkX connectivity audit on r=2,3,6,10 found **zero** cuts of sizes one or two and vertex connectivity exactly three. The 80-link timing (about 17 seconds in the executed CPython environment) is COMPUTATIONAL and not an asymptotic TM performance claim. Python source SHA256: f6e23787e7d5dfd4f7c7950dcc4ce755b18de4830b5717a1ed7c817c6c5a5b0a. Audit-log SHA256: 8ccff09bd833389cbd1973bede896ced665f090c81427ab20921ae259028119e.
