@@ -57,9 +57,9 @@ The only inconsistent macro-cycle is the two-path theta cycle with 2h distinct o
 * A generic binary AC-3 implementation with only a single root fixed to zero returned **fully singleton consistent YES** and **domain wipeout NO** for all seven pairs.
 * All 310 individual root choices on the two smallest pairs likewise resolved the correct result; every vertex can serve as the anchor.
 * Twenty deletion controls on NO pairs verified that removing any theta original vertex yields an actually SAT induced subgraph, using a separate generic AC-3 plus backtracking CSP engine.
-* Two full Python runs produced byte-identical raw JSON, SHA256 `660b177e1036852731bd681e00ee72ea6cc496c4191479e8b353670d8f6f47ab`. Executed main source SHA256 `54ce06da36694c46dd1720267c3d5f0fad70f0b012f3abad1f88dd0a23200532`. Zero failing assertions.
+* Two full Python runs produced byte-identical raw JSON, SHA256 `660b177e1036852731bd681e00ee72ea6cc496c4191479e8b353670d8f6f47ab`. Executed main source SHA256 `ca7cec4c23856267192fb0a12d980e5ab1a22e637439343ff3e888ae1d30fd49`. Zero failing assertions.
 
-Complete executed script and raw JSON accompany this run as conversation artifacts; this report contains the symbolic proof independently of those files. No full repository preflight, compiled LaTeX build, native-machine microstep execution, formal proof kernel, or independent referee audit was performed.
+Executed, fully self-contained Python verifier: `experiments/tmr/tmr5_t5_grid_theta_ac3_083.py`; byte-exact raw evidence: `results/raw/tmr/2026-11-18_0012_TMR5_GENERIC_AC3_GRID_THETA083_RAW.json`. Both were published on the existing draft branch and read back by GitHub blob SHA; the symbolic proof does not depend on the files. No full repository preflight, compiled LaTeX build, native-machine microstep execution, formal proof kernel, or independent referee audit was performed.
 
 ## Ranked dependence and safeguards
 
