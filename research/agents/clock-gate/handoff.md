@@ -1,3 +1,17 @@
+# CLOCKDFAO28 | 2026-11-17 21:30 America/Los_Angeles | latest address-regular semantic no-go
+
+**Owner:** CLOCK-INDEPENDENT-GATE1 (outside five TMR manuscript owners). **PROVED/EXACT restricted**, external mathematical review OPEN, P versus NP OPEN. Published substantive [report](2026-11-17_2130_CLOCKDFAO28.md), separately [executed compact reproducer](../../../experiments/meta_lift/2026-11-17_clock_dfao28_reproducer.py) and [exact full-audit raw summary](../../../results/raw/meta_lift/2026-11-17_CLOCKDFAO28_raw.json) on main with complete readbacks; compact source verified byte-identical to locally executed script (Git blob 7b758e9a9e19fa2b04b86adb8b4ab47c65e99912). The full executed 876,715-check script, detailed local mathematical report, and full raw JSON remain local research artifacts.
+
+**AUTOMATIC-ADDRESS-DYADIC-SECTION28:** A deterministic streaming K-state machine can select its per-address source-bit rule from an A-state DFAO reading each n-bit padded index, not merely a periodic schedule. For every actual N=2^n-bit source f there exists a *single consistent* same-terminal-state source g with CC(g)<=C n A K^2(1+log(AK+2))^2. Proof: for every DFAO state a and block width h, exact Boolean reachability R[h,a]=R[h-1,delta(a,0)]R[h-1,delta(a,1)], with canonical midpoint witnesses and an n-level random-access circuit. Therefore if s dominates the circuit bound, H(Y_s)=im(H), and source MCSP NO exclusion fails. If A_j<=N^(b lambda^j+o(1)), K_j<=N^(a lambda^j+o(1)), a fixed stage (b+2a)lambda^j<beta saturates for s=N^beta. Thue-Morse parity-of-address schedule is aperiodic with A=2 and a unique easy accepted source. Rule-count only without schedule description charge is invalid.
+
+**COMPILER GUARD:** For a headerless one-way source input, n is not necessarily known until EOF. A DFAO with delta(s0,0)=s0 is insensitive to leading zero padding and admits a charged O(N poly(n,A,K)) one-work-tape scanner with explicit tables and counter when A,K=poly(n). Other DFAOs have only the **semantic** theorem; their headerless compiler claim is OPEN. Arbitrary succinct non-DFAO address circuits and source-dependent rule tables not covered.
+
+**COMPUTATIONAL:** exact full local CPython execution seed 202611172130, source SHA256 df47b7c587d0fde1d6ac2db570a2b81280ad4aa2bdb396f2106fda2d2cb550f5, 876715 assertions/0 failures across 1384 models, 267220 source cases, 2920 constructed endpoint witnesses, 49536 witness bits, 5159 direct interval controls. Independently executed compact source: 16731 assertions/0 failures across 1024 models. The two counts are NOT conflated. No physical tape microstep simulation.
+
+**ONE NEXT:** SUCCINCT-NONDFAO-INVERSION29. Address-circuit schedules not of polynomial DFAO size, exact interval reachability and source-fiber sections, proof obligations for both MCSP labels, joint fixed-PH equality and same-tape transport. DISJ N/A, relativization OPEN unrestricted, simultaneous DTISP fails for covered family, deterministic configuration counting is only an upper-bound sanity check. Prior controls remain. Five TMR schedules, ownership, manuscripts and historical trackers unchanged.
+
+---
+
 # CLOCKAUTOMATON27 | 2026-11-17 20:30 America/Los_Angeles | latest Clock Gate scoped no-go
 
 **Owner:** CLOCK-INDEPENDENT-GATE1 (separate from five TMR manuscript owners). **PROVED/EXACT restricted stationary/periodic semantic mixed-fiber theorem; independent mathematics review OPEN; P versus NP OPEN.** Main-branch report, code and raw readbacks verified. No other agent manuscript or schedule modified.
