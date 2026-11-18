@@ -1,3 +1,23 @@
+# TMR-3/088 compact handoff | 2026-11-18 09:27 PST | signature-quotient Kpq exact counting
+
+**Role/state unchanged:** TMR-3 / PNP Time-Space Tradeoffs; 5-symbol beat relation R(x,y) iff y-x in {1,3} mod 5; same title, ownership, enabled state, hourly schedule, safeguards. P versus NP OPEN.
+
+**Closed dependency C3-T5-CRITICAL-CORE088:** All simple connected oriented complete bipartite source graphs have polynomial-time exact T5 counting, despite unbounded treewidth and no degree-2 interior paths. Let a,b be counts of distinct orientation signatures on each side. If a+b>5, UNSAT by necessary distinct-color injection of signature representatives; otherwise min(a,b)<=2. Each selected signature class can use at most two colors, so support tuples enumerate at most 15^2/5=45 cyclic-translation orbits. Exact counts include all original labeled vertices via h_m({x})=1 and h_m({x,y})=2^m-2 and per-opposite-vertex admissible choice counts. No false general-hardness claim.
+
+**Two controls:** all-forward Kpq has Z=5(2^p+2^q-2); at K1000,1000 this is 303 digits, 2,000 vertices, 1,000,000 arcs and treewidth 1000. Identity-oriented K3,3 is 3-regular bipartite T5-UNSAT because a=b=3. Both examples are easy source-specific certificates and do NOT demonstrate generic necessary work. All previous /085-/087 easy alternatives remain valid.
+
+**Simultaneous source-recognized sequential one-tape symbolic upper bound:** T(N)=O((N+1)^8), S_peak(N)=O((N+1)^3) bits, including authentication, graph access, table/class construction, arithmetic, addressing, head movement and exact output; unrecognized inputs use exact 5^n polynomial-space fallback. These are constructive bounds, not executed native TM microcode.
+
+**Execution:** full independent reference Python 1,236 deterministic assertions, zero failures, twice byte-identical; compact published implementation 610 exact exhaustive checks, plus 200 random cross-implementation comparisons. Standalone two-page LaTeX section compiled locally; entire combined manuscript compilation and independent review remain open. Published report: research/agents/tmr-3/2026-11-18_0927_TMR3_T5_SIGNATURE_QUOTIENT088.md; compact code: experiments/tmr/tmr3_t5_signature_quotient088_repo.py; audit: results/raw/tmr/2026-11-18_TMR3_T5_SIGNATURE088_AUDIT.json. Local complete reproducibility ZIP available in current run.
+
+**Four gates:** DISJ PASS restricted constructive; relativization NOT APPLICABLE to separation; DTISP PASS restricted simultaneous upper, no lower-bound arrow; configuration counting upper-bound consistency only. /341 FAIL full UNSAT, /386 RESTRICTED. No SAT time-space lower exponent has been transferred via an exact reduction. General T5 NP-complete by Bang-Jensen, Hell, MacGillivray (1988), https://doi.org/10.1137/0401029.
+
+**Next:** C3-T5-SIGNATURE-PERTURB089. Inspect near-complete Kpq with h deleted cross edges and determine which signature-injection witnesses remain sound; do not apply the Kpq signature theorem unconditionally once an arc is missing. Consider a fully charged FPT exact h-edge repair or counterexample.
+
+END_OF_HANDOFF::TMR3::2026-11-18_0927_PST
+
+---
+
 # TMR-3/087 compact handoff | 2026-11-18 08:24 PST | chromatic cores resistant to /086
 
 **Role unchanged:** TMR-3, PNP Time-Space Tradeoffs; exact T5 CSP, R(a,b) iff b-a in {1,3} mod 5. Prior safeguards and manuscripts retained. No schedule changes. P versus NP OPEN.
