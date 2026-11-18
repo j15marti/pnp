@@ -1,5 +1,5 @@
 % BEGIN TMR-3 OWNED
-% Updated 2026-11-18 02:19 PST. Appended /081 source-conditioned nonclique width; earlier history preserved.
+% Updated 2026-11-18 03:25 PST. Appended /082 orbit and rank-residue theorems; earlier history preserved.
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,amsthm,hyperref,longtable}
@@ -3647,6 +3647,122 @@ General $\textsc{CSP}(T_5)$ remains NP-complete by
 \cite{BangJensenHellMacGillivray1988}, but classification alone
 does not supply a quantitative linear-blowup SAT reduction.
 Next dependency: \textsc{C3-T5-SYMMETRY-AWARE-BAG082}.
+P versus NP remains OPEN.
+
+
+\section{TMR-3/082: source-correct orbit tables and rank-compressed cycle counting}
+\noindent\textbf{Checkpoint:} November 18, 2026, 03:25 Pacific Time.
+The original relation remains $R(a,b)\iff b-a\in\{1,3\}\pmod5$.
+The analysis concerns exact original-vertex colorings and constructive,
+simultaneous upper bounds, not an unconditional lower bound.
+
+\begin{theorem}[Spanning-forest Boolean representation and $\mathbb F_5$ rank]
+Let $G$ be an explicitly encoded loop-free directed graph with no
+opposed pair of arcs. Let $n,m,c$ denote its vertex, arc, and weak
+component counts, and write $t=n-c$, $r=m-n+c$. A deterministic
+source-derived spanning forest yields $t$ bits $b_e\in\{0,1\}$ and
+$c$ free root colors. For every nonforest arc $i$, the source
+induces a checked linear constraint
+$a_i+\sum_e C_{ie}b_e\in\{1,3\}\pmod5$.
+Put $\rho=\operatorname{rk}_{\mathbb F_5}C\leq\min(r,t)$.
+There is an exact rank-residue dynamic program with at most
+$5^\rho$ states and a separate $2^t$-candidate enumeration.
+Both count the original coloring assignments, including isolates,
+with the correct multiplicity $5^c$.
+\end{theorem}
+\begin{proof}
+For a tree arc directed parent-to-child, the child-minus-parent
+increment equals $1+2b_e$; for an arc directed oppositely, it equals
+$-1-2b_e$. Every forest-consistent coloring is uniquely specified
+by the component-root colors and these bits. Summing increments
+along each chord path yields the displayed linear form.
+Choose a basis $B$ of the column span of $C$ and coordinates
+$\gamma_e$ such that $C_{\cdot e}=B\gamma_e$. The exact recurrence
+$P_{j+1}(z)=P_j(z)+P_j(z-\gamma_j)$, $P_0=\mathbf1_{\{0\}}$,
+counts forest-bit vectors by the basis coordinate of $Cb$.
+The final sum over $z$ admits exactly those residues with
+$a+Bz\in\{1,3\}^r$, multiplied by $5^c$.
+\end{proof}
+
+\noindent A fixed deterministic \emph{sequential-tape realization}
+of the residue DP that linearly scans stored state maps admits
+conservative simultaneous bounds
+\[
+T_{\mathrm{rank}}(N)=
+O((N+1)^{12}(1+5^{2\rho+2})),\qquad
+S_{\mathrm{rank}}(N)=O((N+1)^5(1+5^\rho))\text{ bits}.
+\]
+The \emph{separate} streaming forest-bit enumerator has
+$T_{\mathrm{DFS}}(N)=O((N+1)^{12}(1+2^t))$ and
+$S_{\mathrm{DFS}}(N)=O((N+1)^5)$ writable bits.
+These two sets of bounds are not combined into an unearned
+best-time/best-space same-machine assertion.
+Here $N$ includes an explicitly expanded vertex-and-arc encoding;
+integer counts require $O(n)$ output bits in the worst case.
+
+\begin{theorem}[Exact cyclic-orbit factor tables]
+If each source factor is invariant under simultaneous translation of
+all its colors by $\mathbb Z_5$, then all bucket-elimination factors
+are invariant. Every nonempty $k$-variable table can be represented
+by exactly $5^{k-1}$ relative-color entries instead of $5^k$
+absolute-color entries. Applied to original directed-edge indicators
+and factors from exact terminal-sink elimination, this yields
+source-derived exact counting for arbitrary valid directed inputs.
+\end{theorem}
+\begin{proof}
+A translation orbit on a nonempty $k$-tuple has size five,
+and is uniquely represented by its differences to its first entry.
+Products preserve invariance. In
+$\sum_{x_v}\prod_f f(x_{\mathrm{scope}(f)})$, translating remaining
+variables is equivalent to translating the summation variable,
+which is a bijection. Thus every generated factor is invariant.
+Empty-scope factors have one value; summations are performed
+explicitly, avoiding accidental five-fold overcounting.
+\end{proof}
+
+\noindent A min-fill induced-width certificate $w$ and original
+sink factoring give a conservative same-realization sequential-tape
+bound
+\[
+T_{\mathrm{orbit}}(N)=
+O((N+1)^{12}(1+5^{2w+4})),\qquad
+S_{\mathrm{orbit}}(N)=O((N+1)^5(1+5^w))\text{ bits}.
+\]
+An original factor may have $w+1$ variables, so a global
+$5^{w-1}$ memory bound would be incorrect. The five-fold table
+reduction is a constant-factor savings and not a better asymptotic
+base. Externally pinned unary list constraints break this symmetry:
+a one-vertex source pinned to color zero has one coloring, not five.
+
+\noindent\textbf{Executed computational control:}
+The locally executed full Python reference completed
+$1{,}357$ deterministic assertions with zero failures. It includes
+independent original-color brute force, directed forests, disconnected
+cycles, dense rank-deficient examples, terminal-sink wheels, random
+directed sources and independent $5\times5$ adjacency-matrix
+powering for source cycles through 500 vertices. In particular
+the 500-cycle has $t=499$, $r=\rho=1$, so five residue states
+suffice, and the 80-rim private-sink wheel has induced width
+three and a measured peak of 2,000 normalized entries.
+The executed full source and audit are retained in the
+reproducibility package; the repository compact reference is
+\path{experiments/tmr/tmr3_t5_orbit_rank082_repo.py}.
+The detailed proof and restrictions are in
+\path{research/agents/tmr-3/2026-11-18_0325_TMR3_T5_ORBIT_RANK_CYCLE082.md}.
+
+\noindent\textbf{Four gates:} DISJ sanity PASS restricted;
+relativization NOT APPLICABLE to a separation;
+simultaneous DTISP PASS for the specified symbolic upper bounds
+with sequential-table physical scanning, not for a general lower
+bound; deterministic configuration counting PASS for
+upper-bound consistency only. Source access, basis discovery,
+sequential addresses, exact arithmetic, retained data and output
+are charged. No native Turing-machine microcode, independent
+mathematical review, or full manuscript compilation was executed.
+The semicomplete-target NP-completeness classification
+\cite{BangJensenHellMacGillivray1988} gives no quantitative
+SAT reduction blowup. The next dependency is
+\textsc{C3-T5-RANK-RESIDUE-CUTSET083}.
 P versus NP remains OPEN.
 
 \section{Historical checkpoint obligation (superseded by T5 priority)}
