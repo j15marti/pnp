@@ -33,7 +33,7 @@ def affine_preserves(coeff):
     return all((sum(coeff[i]*d[i] for i in range(len(coeff))) % P in (1,3))
                for d in itertools.product((1,3), repeat=len(coeff)))
 
-# Authenticate exact user's named fixed template; graph has 20 directed arcs.
+# Authenticate exact user's named fixed template; graph has 10 directed arcs.
 for a, name in enumerate(NAME):
     check(tuple(NAME[b] for b in range(P) if (a,b) in R) == DECLARED[name],
           'named relation mismatch at '+name)
