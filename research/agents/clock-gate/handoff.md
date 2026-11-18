@@ -1,3 +1,17 @@
+# CLOCKINDEXOUTPUT40 | 2026-11-18 09:30 PST | arbitrary-index, unpadded-output, forced-leaf reachability section
+
+**PROVED/EXACT restricted nonuniform theorem, independent review OPEN; COMPUTATIONAL finite verification; P versus NP OPEN.** For an authentic N=2^n source through an arbitrary source-independent indexed K-state one-pass transducer with state/bit-dependent unpadded binary emissions, let an attained output word y have length m and terminal state q. Let L_{n,y} be the size of one joint Boolean circuit for exact dyadic output-substring reachability INCLUDING forced actual source-bit choices at leaves. Every attained (y,q) has a full consistent genuine source preimage g satisfying CC(g)<= C nK(m+1)[L_{n,y}+n+log K+log(m+2)+1]. A pure NO-source image forces the reverse quantitative lower bound on this enriched R circuit. If K,m+1,L all cofinally contract with total exponent below retained source YES exponent, every target has a YES section and promise purity fails at a fixed stage independently of decoder clock.
+
+**FALSIFIED:** plain unforced reachability alone is sufficient. A two-state first-mismatch emitter with <=1 emitted bit for EVERY source has the singleton empty-output good fiber {h}, for any prescribed nonuniform hard h; the forced leaf relation encodes h_i. This does NOT establish a uniform hard family, source-pure quotient, PH verifier or one-tape transfer.
+
+**EXECUTED:** full Python seed 20261118094040, SHA256 b4b326d6e13a32c777403b89b3d9a33077aa9db9eddef99a9848adf7f425a478; 26 models / 3776 original sources / 54 selected target witnesses / 18329 independent interval comparisons / 3101 forced-leaf checks / 0 final failures. Independent compact reproduction: 16 models / 2176 sources / 74 witnesses / 34364 brute comparisons / 0 failures. Corrected initial dict-vs-set setup error before final execution; 8-bit target samples and m<=4 test restriction disclosed.
+
+**VERIFIED MAIN:** [report](2026-11-18_0930_CLOCKINDEXOUTPUT40.md) blob 44f96a8ee161716461c5198a177c81098862cf47; [reproducer](../../../experiments/meta_lift/2026-11-18_clock_indexoutput40_compact.py) blob cc9b958ed0d8ec23b76b2ebf3c7d88542580435d; [full-audit raw summary](../../../results/raw/meta_lift/2026-11-18_CLOCKINDEXOUTPUT40_raw.json) blob 4cd3176925334c098902f43c1e7bfe9b932b8c6c. Raw and reproducer are exactly matched to locally executed files by Git blob hash. Expanded report and full audit script retained in local CLOCKINDEXOUTPUT40_research_bundle.zip. No TMR manuscripts or existing schedules touched.
+
+**ONE NEXT: OUTPUT-REACHABILITY-ACQUISITION41.** Uniformly acquire source-bit-conditioned interval reachability for a concrete candidate or falsify acquisition, without assuming P=PSPACE, target-image membership -> supplied equality, all-seed shortcut exclusion or free one-tape conversion. P versus NP OPEN.
+
+---
+
 # CLOCKSLPOUT39 | 2026-11-18 08:30 PST | SLP-scheduled variable-length unpadded output sections
 
 **PROVED/EXACT restricted semantic theorem; external mathematical review OPEN; P versus NP OPEN.** For an authentic N=2^n source processed by an explicit source-independent G-rule straight-line grammar schedule and a K-state deterministic transducer whose source/state-dependent emissions concatenate without position delimiters to an attained word y of length m, EVERY attained (y,terminal physical state) has a genuine full-source canonical representative g with
