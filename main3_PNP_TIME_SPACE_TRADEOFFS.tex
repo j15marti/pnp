@@ -3021,6 +3021,160 @@ The source-grounding warning in \emph{Hostage Negotiator} is honored:
 this small evaluator is constructed explicitly; fresh proofs,
 unique outputs and global consistency alone do not supply it.
 
+
+\section{Source-derived separator gluing for local strong two-covers (TMR-3/077)}
+
+\paragraph{Status and exact model.}
+\textsc{C3-T5-STRONG-COVER-GLUING077} is \textbf{PROVED/EXACT
+RESTRICTED}, independent review OPEN. The original input is a fully
+encoded directed graph for $T_5$, not a preloaded factor graph,
+separator or oracle. The recognized family consists of indegree-zero
+hubs and genuine private outdegree-zero sinks, each with three
+distinct hub parents. Multiple sinks with identical parent triples
+remain distinct counting factors. Nonmatching valid sources use
+a complete original-arc spanning-forest enumerator, malformed
+sources reject, and loops or opposed arcs have count zero.
+
+For three hub colors define
+\[
+w(a,b,c)=\sum_{z\in\mathbb Z_5}R(a,z)R(b,z)R(c,z).
+\]
+Its value is $2$ for equal colors, $1$ for two colors differing by
+two modulo five, and $0$ otherwise. For the multiset $\mathcal E$
+of original private-sink parent triples,
+\[
+Z(G)=\sum_{\alpha:H\to\mathbb Z_5}\prod_{e\in\mathcal E}w(\alpha|_e).
+\]
+
+\begin{lemma}[Source-exact relative-cover factorization]
+Suppose $S\subseteq H$ and $B_1,\ldots,B_r$ are the connected
+components of the primal triple graph after deleting $S$.
+For each component choose $C_i\subseteq B_i$ such that
+$|e\cap(S\cup C_i)|\ge2$ for every triple meeting $B_i$.
+Then the exact original count can be computed by enumerating
+$5^{|S|}$ separator colorings and, for each component,
+$5^{|C_i|}$ cover colorings followed by independent five-term
+sums over all other hubs. No $5^{|S|}$ table is required.
+\end{lemma}
+\begin{proof}
+Every triple's parents outside $S$ belong to one component, since
+a triple itself joins every pair of its parents in the primal graph.
+For fixed separator and cover colors, each triple has at most
+one unassigned parent. Its residual factor is constant or unary.
+Thus summing over the other hubs factorizes into independent
+five-term sums. Denote the resulting exact weighted component
+message by $M_i(\sigma)$, where $\sigma:S\to\mathbb Z_5$.
+Then the original count is
+\[
+Z(G)=\sum_{\sigma\in\mathbb Z_5^S}
+\left(\prod_{e\subseteq S}w_e(\sigma)\right)
+\prod_{i=1}^rM_i(\sigma).
+\]
+Each complete source assignment has exactly one separator, local
+cover and free-hub tuple; the equality is therefore exact, with
+multiplicities of repeated original sinks retained.
+\end{proof}
+
+\begin{theorem}[Charged discovery and same-realization bounds]
+Write $N$ for original encoded input bits, $h=|H|$ and
+$B(h,b)=\sum_{j=0}^{\min(b,h)}\binom hj$.
+For search budgets $b,t\ge0$, on every recognized input with
+some $|S|\le b$ and $|C_i|\le t$ as in the lemma, one fixed
+source-authenticated deterministic locally headed machine
+computes the exact original integer count within
+\[
+\boxed{\begin{aligned}
+T(N)&=O\!\left((N+1)^{12}
+ [1+B(h,b)(t+1)3^t+r5^{b+t}]\right),\\
+S_{\mathrm{peak}}(N)&=O((N+1)^4)\text{ bits}.
+\end{aligned}}
+\]
+If discovery fails, a correct original-arc fallback costs
+an additional $O(\operatorname{poly}(N)2^{n-c})$ time and
+polynomial space, with $c$ weak components. Fixed $b,t$
+yield a polynomial exact algorithm for this recognized subclass.
+\end{theorem}
+\begin{proof}
+Authenticate the full arc source and private-sink family.
+Try every $S$ of size at most $b$, constructing all primal
+components from actual source triples. On an offending triple
+with fewer than two selected separator/cover hubs, branch on
+one of at most two singletons or three pairs of remaining hubs.
+Iterative budgets $0,\ldots,t$ find a minimum local cover or
+prove nonexistence within $O((t+1)3^t\operatorname{poly}(N))$
+per component and candidate. On one found decomposition,
+stream the $5^{|S|}$ separator colorings, then stream the
+$5^{|C_i|}$ cover colorings in each independent component,
+multiply the local unary sums, and output the exact integer.
+All parsers, rejected searches, graph construction, head/address
+operations, arithmetic, retained buffers, indices, color stacks,
+caches and output bits belong to the same execution.
+Every intermediate count is at most $5^n$ and has $O(N)$ bits.
+Only polynomially many bits are simultaneously live.
+The separator-discovery factor $B(h,b)$ is essential:
+this is \emph{not} an FPT claim in unrestricted variable $b$.
+\end{proof}
+
+\begin{theorem}[An infinite family with large global strong cover]
+For $r\ge1$ construct original private sinks with parent triples
+$(a,b_i,v_i)$, $(a,c_i,v_i)$ and $(b_i,c_i,v_i)$,
+for $i=1,\ldots,r$, where all hubs except central $a$
+are distinct. The original graph has $n=1+6r$ vertices,
+$m=9r$ arcs, and global strong-two-cover number $1+2r$.
+Nevertheless $S=\{a\}$ and $C_i=\{b_i,c_i\}$
+give $b=1,t=2$ and exact count
+\[
+\boxed{Z(G_r)=5\cdot28^r.}
+\]
+\end{theorem}
+\begin{proof}
+Deleting $a$ disconnects the triple-primal graph into $r$
+three-hub components. Each listed local cover works.
+If a global strong cover includes $a$, each triple
+$(b_i,c_i,v_i)$ forces two further hubs per block.
+If it excludes $a$, the other two triples force all
+$b_i,c_i,v_i$ per block. Hence the minimum is
+$\min(1+2r,3r)=1+2r$.
+For fixed $a$ the local exact factor is
+$\sum_{b,c,v}w(a,b,v)w(a,c,v)w(b,c,v)=28$:
+among the $125$ assignments, one contributes $8$,
+six contribute $2$, eight contribute $1$, and $110$
+contribute zero. Cyclic symmetry gives five choices for $a$.
+\end{proof}
+
+\paragraph{Executable audit and limitations.}
+Local CPython revision \texttt{tmr3-t5-separator-glue077-v1},
+seed 202611172021, ran twice with byte-identical raw JSON:
+341 checks, zero failures. A separate readable repository
+reproduction, \path{experiments/tmr/tmr3_t5_separator_glue077_repro.py},
+ran 152 checks, zero failures. Raw reports are
+\path{results/raw/tmr/2026-11-17_2021_TMR3_T5_SEPARATOR_GLUE077_FULL_PY_RAW.json}
+and \path{results/raw/tmr/2026-11-17_2021_TMR3_T5_SEPARATOR_GLUE077_REPRO_PY_RAW.json}.
+The local full reference SHA256 is
+\texttt{50aad4cd6f4036dc0a3282791b86fadedc5ab62435064dd3976d0cd9bfa7da40}.
+A native multitape interpreter, independent peer review,
+whole-manuscript LaTeX build and repository checkout/preflight
+have not been executed.
+
+\paragraph{Four mandatory gates and next dependency.}
+DISJ \textbf{PASS restricted} for this exact positive upper bound;
+no rank-to-work inference. Relativization \textbf{NOT APPLICABLE
+WITH REASON} to a separation. Simultaneous DTISP \textbf{PASS
+restricted} on one complete source-to-output machine, no
+unrestricted lower bound. Configuration counting \textbf{PASS only
+as upper-bound consistency}, never work hardness.
+Affine/Horn, bounded treewidth, low-degree, module/twin,
+selector, padding, unique-solution, caching/recomputation,
+algebrization and Natural Proofs controls remain admissible.
+/341 still FAIL as full UNSAT authority, /386 RESTRICTED.
+The Bang-Jensen--Hell--MacGillivray semicomplete-digraph
+classification implies general $T_5$ NP-completeness, but supplies
+no numeric SAT reduction exponent here. P versus NP \textbf{OPEN}.
+The single next load-bearing dependency is
+\textsc{C3-T5-TREE-ADHESION078}: source-derived, charged tree
+composition with overlapping interfaces, correct counting
+of shared hubs, and no free decomposition oracle.
+
 \section{Historical checkpoint obligation (superseded by T5 priority)}
 \textsf{C3-NONAFFINE-LONG-DEPTH-TRANSFER}: give a genuine
 source-authenticated compact checkpoint representation for
