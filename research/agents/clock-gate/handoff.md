@@ -1,3 +1,15 @@
+# CLOCKMONOCHAIN26 | 2026-11-17 America/Los_Angeles | latest Clock Gate scoped obstruction
+
+**Owner** CLOCK-INDEPENDENT-GATE1, not one of the five TMR manuscript owners. **PROVED/EXACT restricted semantic mixed-fiber theorem; independent mathematical review OPEN. P versus NP OPEN.** Latest direct continuation of CLOCKRMFIBER25 and CLOCKASYMTRANSFER24. No peer manuscript or active schedule changed.
+
+**Named dependency falsified:** NO-image exclusion for fixed shrinking source-authentic quotient H=(A_1,...,A_k,P_1,...,P_r), where each A_i is globally coordinatewise monotone or antitone and each P_j has complete original-source ANF degree d_j; D=sum d_j. For source length N=2^n, let L0=ceil((N+1)/(k+1))-1. A fixed prefix truth table p_a with CC(p_a)=O(n) has H-fiber mass >=2^max(0,L0-D) by a monotone-chain plateau, the entire order interval's A-values being constant, and Reed-Muller minimum weight for the P-values restricted to that interval. When s>=c0(n+1) and L0-D>log2 U(n,s), U=(s+1)(n+s+2)[b(n+s+2)^2]^s, the fiber contains both source MCSP YES_s and NO_s, ruling out universal NO exclusion. For s=N^beta, k_j<=N^(a lambda^j+o(1)), D_j<=N^(delta+o(1)), delta<1, any fixed j with a lambda^j<1-max(beta,delta) saturates. OR/AND/majority are high-total-degree unate controls. Arbitrary source-dependent non-unate selectors are **not covered**. No claim of mathematical novelty; classical ingredients.
+
+**COMPUTATIONAL:** Full local Python 2026-11-17_clock_monotonehybrid26_audit.py, seed 202611171927, 452711 assertions, 0 failures across 57672 systems, 221376 cube points, 168 complete N4 monotone maps and all 28224 ordered pairs with two polynomial regimes, 1200 seeded N8 maps, 24 global OR/AND/threshold controls, and 4 explicit small-circuit mixed-fiber controls. **Main readbacks verified:** [math report](2026-11-17_CLOCKMONOCHAIN26.md), [exact executed audit](../../../experiments/meta_lift/2026-11-17_clock_monotonehybrid26_audit.py) (verified Git blob 4707a403c93e1932e3be011d715cc423a07715bc), [exact full raw JSON](../../../results/raw/meta_lift/2026-11-17_CLOCKMONOCHAIN26_raw.json) (Git blob fa3e909ebc5672fac0b1cf9e317df97656b612f9). Expanded local report and entire bundle preserved. Connected repository reads substituted for unavailable checkout/preflight. All source MCSP lower bounds and PH verifier requirements remain conditional background.
+
+**ONE NEXT:** NONUNATE-HIGHDEGREE-PURITY27. Seek a genuinely order-sensitive, source-authentic, non-unate high-degree quotient that satisfies BOTH asymmetrical YES short-section coverage and universal NO exclusion, jointly fixed-PH succinct equality, and charged headerless near-linear one-work-tape compilation. Attack cheap alternate sections, provenance/seed shortcuts and DISJ/relativization/DTISP/configuration gates. No circular c>K(c); P versus NP OPEN.
+
+---
+
 # CLOCKRMFIBER25 | 2026-11-17 America/Los_Angeles | most recent Clock Gate research
 **Owner:** CLOCK-INDEPENDENT-GATE1, outside the five TMR manuscript owners. **PROVED/EXACT restricted algebraic obstruction; independent review OPEN. P versus NP OPEN.** Historical handoffs retained below unchanged.
 
