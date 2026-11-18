@@ -6,7 +6,7 @@
 
 Let $D=(V,E)$ be any loopless oriented source. Let $A$ have $N\ge5$ vertices and a binary relation $Q\subseteq A^2$, and set $k=\lceil N/5\rceil$ and
 $
- h_5$Q$=\min_{U,W\subseteq A:\ |U|,|W|\ge k}|Q\cap$U\times W$|.
+ h_5(Q)=\min_{U,W\subseteq A:\ |U|,|W|\ge k}|Q\cap(U\times W)|.
 $
 Form an $N$-fiber lift $L$ with blocks $V_u=\{u\}\times A$. For each original arc $e=(u,v)$, use **explicit** bijections $\alpha_{e,u}:A\to V_u$ and $\alpha_{e,v}:A\to V_v$, inserting precisely the $q=|Q|$ arcs $\alpha_{e,u}(a)\to\alpha_{e,v}(b)$ for $(a,b)\in Q$. The blocks remain disjoint; no edge gadget is appended to an unrelated source.
 
@@ -14,21 +14,21 @@ Form an $N$-fiber lift $L$ with blocks $V_u=\{u\}\times A$. For each original ar
 $
  L-F\longrightarrow T_5\quad\Longleftrightarrow\quad D\longrightarrow T_5.
 $
-**Proof:** A $D\to T_5$ witness lifts by the block projection $\pi(u,a)=u$, regardless of $F$. Conversely let $\varphi:L-F\to T_5$. On each block (V_u), choose a most frequent $\varphi$-color (c_u); at least $k$ vertices have this color. For any original arc $e=(u,v)$, the inverse images under its two edge-specific bijections of these monochromatic block subsets are $U,W\subseteq A$ with $|U|,|W|\ge k$. They contain at least (h_5$Q$) distinct $Q$-arcs. Since $|F|<h_5(Q)$, at least one corresponding lifted arc survives, proving (R(c_u,c_v)). Thus $u\mapsto c_u$ satisfies every original constraint. QED.
+**Proof:** A $D\to T_5$ witness lifts by the block projection $\pi(u,a)=u$, regardless of $F$. Conversely let $\varphi:L-F\to T_5$. On each block $V_u$, choose a most frequent $\varphi$-color $c_u$; at least $k$ vertices have this color. For any original arc $e=(u,v)$, the inverse images under its two edge-specific bijections of these monochromatic block subsets are $U,W\subseteq A$ with $|U|,|W|\ge k$. They contain at least $h_5(Q)$ distinct $Q$-arcs. Since $|F|<h_5(Q)$, at least one corresponding lifted arc survives, proving $R(c_u,c_v)$. Thus $u\mapsto c_u$ satisfies every original constraint. QED.
 
 **Consequences (PROVED):**
-1. If $D$ is UNSAT and $h_5(Q)\ge2$, deleting *any single arc* of $L$ leaves an UNSAT instance. In fact at least (h_5$Q$) arc deletions are needed before $L$ could become SAT. **A redundant fiber shield of this type cannot itself be an edge-minimal UNSAT $H$**. This is an exact obstruction to the proposed criticalization route, not a general obstruction to high-girth critical graphs.
+1. If $D$ is UNSAT and $h_5(Q)\ge2$, deleting *any single arc* of $L$ leaves an UNSAT instance. In fact at least $h_5(Q)$ arc deletions are needed before $L$ could become SAT. **A redundant fiber shield of this type cannot itself be an edge-minimal UNSAT $H$**. This is an exact obstruction to the proposed criticalization route, not a general obstruction to high-girth critical graphs.
 2. Fiber-majority decoding translates any valid lifted witness into an original witness. It is source-aware: the projection, per-edge bijections, source records, and all incurred accesses must be accounted for. Recognition/extraction cannot be treated as free advice.
 3. For an $\varepsilon$-expander relation $Q$, $|Q(U,W)|\ge |Q|(|U||W|/N^2-\varepsilon)$. Thus $h_5(Q)\ge\lceil(1/25-\varepsilon)|Q|\rceil$ (with the integer/boundary convention adjusted for strict inequalities). For fixed girth and $\varepsilon<1/25$, Kun's deterministic twisted-product construction provides high **incidence/undirected** girth and preserves T5 SAT status, with sufficiently large $Q$ ensuring deletion robustness. This imports Kun's theorem for fixed girth; it is **not** a uniform growing-girth or critical-promise hardness theorem. The proof of LS-MIX1 does not assume any girth.
 
-**Status of criticalization:** Any edge-minimal UNSAT subgraph pruned from $L$ must discard at least (h_5$Q$-1) lifted arcs (because every smaller deletion leaves UNSAT); pruning may lose the majority-decoding invariant and selecting a critical core may require nonpolynomial decisions. It is **OPEN** whether a polynomial-time, witness-preserving *intrinsically critical* shield exists without external hard attachments.
+**Status of criticalization:** Any edge-minimal UNSAT subgraph pruned from $L$ must discard at least $h_5(Q)-1$ lifted arcs (because every smaller deletion leaves UNSAT); pruning may lose the majority-decoding invariant and selecting a critical core may require nonpolynomial decisions. It is **OPEN** whether a polynomial-time, witness-preserving *intrinsically critical* shield exists without external hard attachments.
 
 ## Exact theorem LS-PATH2: long path shields erase every terminal constraint
 
 Traverse an arbitrary oriented path of length \(\ell\). A forward-traversed arc permits increment \(\{1,3\}=1+2\{0,1\}\) in \(\mathbb F_5\); a backward-traversed arc permits \(\{2,4\}=2+2\{0,1\}\). If \(b_i\in\{1,2\}\) records the traversal direction, the exact set of endpoint differences is
 $
  \Delta_\ell=\left\{\sum_{i=1}^\ell b_i+2j\pmod5 :j=0,\dots,\ell\right\},
- \qquad |\Delta_\ell|=\min$5,\ell+1$.
+ \qquad |\Delta_\ell|=\min(5,\ell+1).
 $
 All values in the set are constructive: choose exactly (j) arcs' larger increments. **PROVED:** for \(\ell\ge4\) every pair of endpoint colors extends over the path, for every arc orientation. Replacing each source arc by a private path of length at least four therefore produces an instance with a direct linear-time witness generator (assign original vertices zero and fill each path). It cannot preserve T5-SAT decision difficulty or witness difficulty. Paths of length 2 or 3 admit respectively three or four endpoint differences and cannot individually realize the two-valued original relation. This falsifies a naive high-girth shield by long subdivisions, not all branched or expander shields.
 
