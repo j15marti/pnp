@@ -94,3 +94,13 @@ ACTUALLY EXECUTED on local Node v22.16.0: deterministic revision tmr1-t5-weighte
 **Named dependency advanced but not closed as necessary work:** C1-T5-MIXED-HARDCORE-SOURCE-AUDIT now contains a fully source-authenticated high-treewidth mixed family with a *cheap exact counting* YES path and a cheap NO path. **ONE next lemma: C1-T5-MIXED-NONEXCHANGEABLE-CORE**, a source-authenticated mixed YES/NO family whose reduced signed weighted factor graph is not efficiently handled by this complete-graph exchangeability DP, twin/triad/degree-two quotient, bounded-width decomposition or affine shortcuts; any arbitrary-machine necessary-work implication remains OPEN.
 
 Sources and corpus: TMR-5/074 and /076, draft PR #209 (not main merged); TMR-1/072,/073,/075,/076 on draft PR #197; TMR-2/072 and TMR-4/075 controls; Bang-Jensen, Hell and MacGillivray (1988), SIAM J. Discrete Math. 1:281-298, DOI 10.1137/0401029; Garey, Johnson and Stockmeyer (1976), TCS 1:237-267, DOI 10.1016/0304-3975(76)90059-1.
+
+## Published connected arithmetic certificate (narrower than full local parser audit)
+
+A separate, self-contained JavaScript V8 certificate independently calculates all three exact local-factor rows and the complete dense-family O(n^2) recurrence against enumeration of all 2^n assignments for each n=2..9. The SAME function bodies were directly executed in the GitHub-connected JavaScript isolate: **48 exact assertions, zero failures**, with eight full decimal counts, and separate raw JSON. Its scope is the arithmetic/DP certificate only; the 162-check local Node source authenticates bit encodings and checks hostile/parser cases, and is not misrepresented as this published source.
+
+Published draft-branch paths:
+- \`experiments/tmr/tmr1_t5_weighted077_certificate.js\`;
+- \`results/raw/tmr/2026-11-17_1823_TMR1_T5_WEIGHTED077_CERT_V8_RAW.json\`.
+
+Publication is to existing draft PR #197 on branch \`tmr1-20261115-independent-lean060\`, **not a merge into main**. Full GitHub readback verification should be recorded separately from this initial write. The full 162-check executed local source and its original immutable raw remain separately available as current-run downloadable artifacts with the SHA256 digests recorded above.
