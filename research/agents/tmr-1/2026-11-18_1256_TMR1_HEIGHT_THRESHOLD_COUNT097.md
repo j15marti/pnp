@@ -16,7 +16,7 @@ For hardness at height three, the already established parsimonious /096 equality
 **Sharp small obstruction:** The transitive tournament \(TT_4\) on four vertices with all arcs \(i\to j\), \(i<j\), is a height-three DAG with no homomorphism to T5, because T5 has no transitive induced subtournament on four vertices. Every four-subset of T5 contains a directed triangle; by rotational symmetry check the complement of vertex 0, where \(2\to3\to4\to2\). By contrast \(TT_3\) has exactly five homomorphisms, including \((0,3,1)\).
 
 ## Theorem C1-T5-HEIGHT1-COUNT-097 (one-query metric #P hardness)
-Although **every** height-one DAG is satisfiable, exact counting of T5 homomorphisms on the restricted family is #P-complete **under polynomial-time metric counting reductions**. The reduction makes one counting-oracle query. No parsimonious or constant-factor encoded-length reduction is claimed.
+Although **every** height-one DAG is satisfiable, exact counting of T5 homomorphisms on the restricted family is #P-complete **under polynomial-time Turing counting reductions**. Our explicit reduction from #C5 uses one counting-oracle query and metric postprocessing; the source classification is invoked for its standard counting-hardness guarantee. No parsimonious or constant-factor encoded-length reduction is claimed.
 
 The primary Dyer-Greenhill theorem [2,3] establishes #P-completeness of counting homomorphisms from simple undirected graphs into undirected \(C_5\).
 
@@ -47,7 +47,7 @@ This is a **single-query exact metric reduction** with polynomial-time postproce
 \[
 L_D=N+M+2+2Mw(N)=n+3km+2+4kmw(n+km).
 \]
-For \(n\ge1\), \(N=n+3nm\), \(M=6nm\), so \(L_D=O((n+m+1)^2\log(n+m+2))\). The count oracle output is below \(5^N\), thus has \(O(N)\) bits; taking the remainder is polynomial-time on the SAME_REALIZATION sequential bit model. Malformed source graph encodings are rejected without an oracle query. Counting membership in #P is by a standard polynomial witness verifier, and hardness is **only** asserted under the stated metric reduction. Decision is trivial while counting is #P-hard.
+For \(n\ge1\), \(N=n+3nm\), \(M=6nm\), so \(L_D=O((n+m+1)^2\log(n+m+2))\). The count oracle output is below \(5^N\), thus has \(O(N)\) bits; taking the remainder is polynomial-time on the SAME_REALIZATION sequential bit model. Malformed source graph encodings are rejected without an oracle query. Counting membership in #P is by a standard polynomial witness verifier, and #P-hardness is asserted under polynomial-time Turing reductions, with a stronger one-call metric transfer specifically from #C5. Decision is trivial while counting is #P-hard.
 
 ## Verification, falsification and limits
 The independently executed local Node.js verifier checked 33,868 topologically ordered DAGs through six vertices (12,356 height-two-or-less), all 1,100 simple undirected graphs through five vertices, 5,149 small-base polynomial evaluations, 1,100 one-query modular recoveries, 24 directly enumerated T5 target counts, all 25 common-outneighbor entries, and \(TT_3/TT_4\). **34,315 assertions, zero failures.** The separately executed short public replay checked **14,582 assertions, zero failures**. These finite experiments are **COMPUTATIONAL** and do not replace the symbolic proofs.
