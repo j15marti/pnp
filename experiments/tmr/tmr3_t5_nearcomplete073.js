@@ -14,7 +14,7 @@ function triples(k) {
   const out=[];for(let a=0;a<k;a++)for(let b=a+1;b<k;b++)
     for(let c=b+1;c<k;c++)out.push([a,b,c]);return out;
 }
-function little(v,w){let s="";for(let i=0;i<w;i++)s+=((v>>i)&1).toString();return s;}
+function little(v,w){let s="";for(let i=0;i<w;i++)s+=((BigInt(v)>>BigInt(i))&1n).toString();return s;}
 function encode(n,arcs) {
   const w=Math.max(1,Math.ceil(Math.log2(Math.max(2,n))));
   return "1".repeat(n)+"0"+"1".repeat(arcs.length)+"0"+
@@ -63,14 +63,14 @@ function formula(k,missing) {
   const U=[...new Set(missing.flat())].sort((a,b)=>a-b),s=U.length,r=k-s;
   if(k<4||r<1)throw Error("outside-hub requirement");
   const imap=new Map(U.map((h,i)=>[h,i]));
-  const holeMasks=missing.map(t=>t.reduce((v,h)=>v|(1<<imap.get(h)),0));
-  // BigInt masks permit arbitrary s; Number mask loop is used only for s<=30.
+  const holeMasks=missing.map(t=>t.reduce((v,h)=>v|(1n<<BigInt(imap.get(h))),0n));
+  // BigInt masks avoid fixed machine-word limits on the missing-support set.
   const m=Number(choose(k,3))-missing.length;
   let sum=0n;
   for(let mask=0n;mask<(1n<<BigInt(s));mask++) {
     let u=0;for(let i=0;i<s;i++)if((mask>>BigInt(i))&1n)u++;
     let f=0;
-    for(const h of holeMasks){const v=mask&BigInt(h);if(v===0n||v===BigInt(h))f++;}
+    for(const h of holeMasks){const v=mask&h;if(v===0n||v===h)f++;}
     for(let p=0;p<=r;p++) {
       const q=k-u-p;
       const e=Number(choose(u+p,3)+choose(q,3))-f;
