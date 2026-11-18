@@ -91,8 +91,41 @@ for k in (3,4,5,6):
         checks += 1
     orientations[k] = checks
 
+
+# TMR-2/091 reproduction: four terminal paths with lengths (2,3,3,3).
+# Enumerate every orientation and verify that only backward counts matter.
+fourpath = {}
+all_words_no = 0
+for word in itertools.product((0,1),repeat=11):
+    rows = []
+    backward = []
+    offset = 0
+    for length in (2,3,3,3):
+        segment = word[offset:offset+length]
+        offset += length
+        b = sum(segment)
+        backward.append(b)
+        M = mpow(A,0)
+        for reverse in segment:
+            M = mm(M, AT if reverse else A)
+        assert M == mm(mpow(A,length), mpow(P,b))
+        rows.append(M[0])
+    z = 5*sum(__import__('math').prod(row[d] for row in rows) for d in range(5))
+    key = tuple(backward)
+    if key in fourpath:
+        assert fourpath[key] == z
+    else:
+        fourpath[key] = z
+    all_words_no += (z == 0)
+assert len(fourpath) == 192
+assert sum(z==0 for z in fourpath.values()) == 12
+assert all_words_no == 36
+tmr2_fourpath = dict(words=2048, compressed_classes=192,
+                     unsat_words=all_words_no, unsat_classes=12)
+
 print(json.dumps(dict(
     theorem="Z5 gauge cyclic/DAG grid blowup firewall",
     direct_cycle_orientation_census=orientations,
     grid_checks=results,
+    tmr2_fourpath=tmr2_fourpath,
     assertion_failures=0), indent=2))
