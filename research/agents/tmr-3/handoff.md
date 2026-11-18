@@ -1,3 +1,23 @@
+# TMR-3/092 handoff | 2026-11-18 | exact three-terminal T5 transfer
+
+**Identity and schedule retained:** TMR-3 / PNP Time-Space Tradeoffs. Existing title, enabled state, manuscript ownership, hourly America/Los_Angeles schedule, history and four safeguards unchanged. Draft PR stacked on /091, do not merge automatically. Earlier handoff sections remain below.
+
+**C3-T5-3CONNECTED-RESIDUAL092, PROVED restricted constructive theorem; independent review outstanding.** If k source modules have exactly three common terminals and no other cross edges, the unpinned exact count is 5 times the sum, over 25 relative terminal-color pairs, of the product of exact module count-vectors. For an all-forward K(p,p) module with three left terminals, exactly seven of 25 vector entries are nonzero: F(0,0)=2^p+2^(p-2)-2, and six entries of value 2^(p-3). Consequently k such modules, identified along exactly three terminals, have exact count 5[(2^p+2^(p-2)-2)^k+6(2^(p-3))^k].
+
+**New authenticated infinite family:** k>=2,p>=4, n=3+k(2p-3), m=kp^2, vertex connectivity exactly 3, minimum degree p, treewidth >=p, global missing-edge cover k(p-3). Source recognition and closed-form counting are polynomial even though all these parameters grow. At (k,p)=(20,8), n=263, m=1280, cover=100, exact 51-digit Z=559129496820275798186261882797788214499516649308160. No one-vertex or two-vertex cut exists. This is a counterexample to using 3-connectivity/high width/global complement cover as a stand-alone necessary-work claim.
+
+**Same realization:** for authenticated members, a single deterministic sequential-tape algorithm charges input scanning, unique terminal discovery, induced block recognition, 5-state algebra, exact big-integer output, addresses, head movements and workspace. Conservative simultaneous T(N)=O((N+1)^12), peak S(N)=O((N+1)^4) bits. Arbitrary unrecognized inputs require exact exponential fallback. No quantitative sparse-SAT exponent was transferred.
+
+**Computational checks:** locally executed full standard-library reference: 861 deterministic assertions, 0 failures, byte-identical rerun. Independent compact repo implementation: 14 checks, 0 failures. Full reference includes original-vertex propagation/backtracking for three small families, 256 exhaustive pattern controls, all 25 local residues for p=3 through 7, deletion-of-1/2-vertex 3-connectivity tests, relabeling and mutation controls. Full native TM, integrated manuscript compilation and independent proof review outstanding. Computation does not prove a lower bound.
+
+**Four gates:** DISJ restricted constructive PASS; relativization non-separation; SAME_REALIZATION DTISP restricted simultaneous upper only; configuration counting upper-bound consistency, no necessary-work inference. Easy controls remain admitted: loops, opposed arcs, trees, cycles, chromatic UNSAT, path and affine propagation, primal/dual/Fourier/treewidth, signature/near-biclique, block-cut, two-terminal, padding and generic backtracking. General T5 NP-complete via Bang-Jensen, Hell and MacGillivray (1988), DOI 10.1137/0401029, with no exact blowup transferred here. P versus NP OPEN.
+
+**New artifacts:** research/agents/tmr-3/2026-11-18_1327_TMR3_T5_THREE_TERMINAL092.md; experiments/tmr/tmr3_t5_three_terminal092_repo.py; results/raw/tmr/2026-11-18_TMR3_T5_THREE_TERMINAL092_AUDIT.json; appended main3_PNP_TIME_SPACE_TRADEOFFS.tex; this preserved handoff.
+
+**Next load-bearing dependency:** C3-T5-4CONNECTED-RESIDUAL093: test source-authenticated candidates that cannot be 1-,2-,3-vertex separated, and benchmark lawful affine, Fourier, width and branching algorithms before any necessary-resource argument.
+
+---
+
 # TMR-3/091 handoff | 2026-11-18 12:24 PST | exact T5 two-terminal interfaces
 
 **Ownership and scheduled agent unchanged:** TMR-3 / PNP Time-Space Tradeoffs, five-symbol Z5 offsets {1,3}; title, enabled state, hourly schedule and four verification gates preserved. Draft PR stacked on /090, do not merge automatically. Prior handoff remains below.
