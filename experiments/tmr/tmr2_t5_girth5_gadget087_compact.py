@@ -22,10 +22,12 @@ def bundle(ps):
     return [prod(path(k,q)[d] for k,q in ps) for d in range(5)]
 def gadget(n,edges):
     new=[]; n2=n
-    for u,v in sorted(edges):
-        for word in ('--','---','---+'):
+    for u,v in sorted(edges,key=lambda ab:tuple(sorted(ab))):
+        p0,p1=sorted((u,v));reverse=(u>v)
+        for template in ('--','---','---+'):
+            word=''.join('+' if c=='-' else '-' for c in template) if reverse else template
             internal=list(range(n2,n2+len(word)-1));n2+=len(internal)
-            w=[u]+internal+[v]
+            w=[p0]+internal+[p1]
             for i,s in enumerate(word):
                 a,b=w[i:i+2]
                 new.append((a,b) if s=='+' else (b,a))
@@ -79,6 +81,7 @@ assert count(4,yes)==5
 n0,e0=gadget(4,no);n1,e1=gadget(4,yes)
 assert (n0,len(e0),girth(n0,e0))==(34,45,5)
 assert (n1,len(e1),girth(n1,e1))==(34,45,5)
+assert {tuple(sorted(z)) for z in e0}=={tuple(sorted(z)) for z in e1}
 print(json.dumps({'revision':'tmr2-t5-girth5-gadget087.compact',
  'gadget_K':[0,12,0,12,0], 'gadget_girth':5, 'gadget_Z':120,
  'minimum_gadget_arcs':9,'NO':{'n':n0,'m':len(e0),'Z':0},
