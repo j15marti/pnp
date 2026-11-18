@@ -1,3 +1,23 @@
+# TMR-3/091 handoff | 2026-11-18 12:24 PST | exact T5 two-terminal interfaces
+
+**Ownership and scheduled agent unchanged:** TMR-3 / PNP Time-Space Tradeoffs, five-symbol Z5 offsets {1,3}; title, enabled state, hourly schedule and four verification gates preserved. Draft PR stacked on /090, do not merge automatically. Prior handoff remains below.
+
+**Concrete theorem:** for a two-terminal directed H, define F_H(d)=# original-vertex T5 assignments given terminal colors (0,d). Translation invariance gives pointwise multiplication for parallel gluing and Z5 convolution for series gluing. For modules sharing ONLY terminals s,t: Z=5 sum_d prod_i F_i(d). Independent exact counting, no free preprocessing oracle.
+
+**New explicit falsifier:** all-forward Kp,p has F_p=(3*2^(p-1)-2,0,2^(p-2),2^(p-2),0). For k>=2,p>=3, glue k modules on the SAME two left terminals. The source is 2-vertex-connected with min degree p, n=2+k(2p-2), m=kp^2, treewidth >=p, global missing-edge cover k(p-2), yet Z=5[(3*2^(p-1)-2)^k+2(2^(p-2))^k]. The missing-edge cover equality has an explicit cyclic cross-module matching certificate. k=20,p=8: n=282,m=1280,tau=120, count 21889571624213873501580872626770891539924037418352640.
+
+**Simultaneous one-tape upper bounds (restricted, source-authenticated):** T(N)=O((N+1)^8), peak S(N)=O((N+1)^3) bits including source access, decomposition checking, states, addresses, arithmetic, head motion and output. Unrecognized cases retain exact 5^n polynomial-space enumeration. Do not confuse five-entry interface space with a lower bound, or import a quantified SAT exponent without exact reduction blowup.
+
+**Actual finite evidence:** /mnt/data full reference executed twice, 997 deterministic assertions, zero failures and identical SHA256 audit 8c5841d1655b00f7faffb915dd2e81a8f21125645f11aad7762b03564b17bb69. The compact repository implementation separately executed 35 checks without failure. A standalone two-page LaTeX section compiled. Full combined-manuscript compilation, native TM microcode and independent mathematical review remain pending. Source report and manuscript updated without deleting history.
+
+**Four verification gates:** DISJ restricted constructive PASS. Relativization NOT APPLICABLE TO SEPARATION. SAME_REALIZATION DTISP restricted upper-bound PASS (no lower bound). Configuration counting UPPER-BOUND CONSISTENCY ONLY. All easy-family controls and all legitimate primal/dual/Fourier/affine algorithms remain admissible; finite evidence COMPUTATIONAL, P versus NP OPEN.
+
+**Next load-bearing dependency:** C3-T5-3CONNECTED-RESIDUAL092. Test authentic 3-connected SAT/UNSAT families resistant to 1- and 2-separators, affine path, signature quotient, Fourier/dual and primal exact algorithms. Any proposed lower-bound obstruction must survive a same-realization solver comparison.
+
+END_OF_HANDOFF::TMR3::2026-11-18_1224_PST
+
+---
+
 # TMR-3/090 handoff | 2026-11-18 | exact T5 block-cut factorization
 
 **Role and configuration preserved:** TMR-3 / PNP Time-Space Tradeoffs; alphabet Z5, beat offsets {1,3}; existing title, identity, ownership, enabled state, hourly schedule, safeguards and prior manuscripts unchanged. PR is a stacked unmerged draft.
