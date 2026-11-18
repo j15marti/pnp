@@ -24,8 +24,24 @@ Fix f and its complete transcript tau. Let I be the set of distinct probed sourc
 
 This is a quantified strengthening *for adaptive raw probes* of the earlier project THRES-POLYFIBER10 sparse polynomial section: the decision-tree provenance costs q additively rather than the sum of potentially very large degrees of separately encoded seed-output coordinates. Its algebraic sparse-support ingredient is classical. It does NOT claim discovery of a new general Chevalley-Warning theorem.
 
+## Stronger theorem: ALL attained transcript-feature fibers have large mass
+For each fixed *reachable* transcript tau with r distinct probed addresses, and for each attainable complete feature vector v, let B_(tau,v) be the set of authentic N-bit source words that replay tau and have P_tau=v. Its size satisfies the **uniform** bound
+
+|B_(tau,v)| >= 2^{max(0,N-r-D_tau)}.
+
+**Proof:** Pin the r queried addresses as in the sparse-section proof. On the remaining M=N-r Boolean variables, the fiber indicator Q(z)=product_l (1+P_(tau,l)(z)+v_l) is nonzero, has ANF degree at most D_tau, and equals 1 precisely on the desired completions. The classical binary Reed-Muller minimum-weight inequality (equivalently the basic finite-field polynomial nonzero-support bound) yields at least 2^{M-D_tau} solutions when D_tau<=M, and at least one solution in the remaining case. Every completion replays the exact adaptive transcript because all queried replies remain pinned. QED.
+
+Let U(n,s) be the number of n-input Boolean functions of ordinary circuit size at most s, with log2 U(n,s)<=C_0 s log(n+s+2) by standard circuit counting. When
+
+s>=C_1(n+1)(q+D+1) and N-q-D>log2 U(n,s),
+
+**EVERY reachable output label has both a source YES_s preimage and a source NO_s preimage**:
+H(Y_s)=H(NO_s)=im(H).
+
+The first part follows from the sparse section; the second follows because every attained output label contains at least one attained transcript-feature cell of cardinality larger than the entire source YES_s class. This is stronger than merely exhibiting one mixed fiber. For s=N^beta with fixed 0<beta<1 and q+D=o(s/n), both inequalities eventually hold. If D>=N-q, the mass bound becomes one and is not strong enough for this conclusion.
+
 ## Promise and cofinal consequence
-Let Y_s={f:CC(f)<=s} and NO_s={f:CC(f)>s}. If s >= C(n+1)(q+D+1), then H(Y_s)=im(H), and any existing source NO image collides with a source YES image; exact two-sided MCSP promise preservation fails. If all source functions are YES at a finite n, the NO-collision sentence is vacuous. For s=N^beta with fixed beta<1, NO sources exist for all sufficiently large n by standard circuit counting.
+Let Y_s={f:CC(f)<=s} and NO_s={f:CC(f)>s}. If s >= C(n+1)(q+D+1), then H(Y_s)=im(H), and any existing source NO image collides with a source YES image; exact two-sided MCSP promise preservation fails. Under the additional Reed-Muller mass inequality N-q-D>log2 U(n,s), every single attained label is mixed, as proved above. If all source functions are YES at a finite n, the NO-collision sentence is vacuous. For s=N^beta with fixed beta<1, NO sources exist for all sufficiently large n by standard circuit counting.
 
 For a cofinal family with 0<lambda<1, q_j<=N^(a lambda^j+o(1)), branch feature count B_j<=N^(b lambda^j+o(1)), and all branch polynomial degrees <=N^(delta+o(1)), if delta<beta then any fixed j with max(a lambda^j,b lambda^j+delta)<beta eventually forces saturation. This j is independent of any later conjectural PH-decoder clock exponent. All counts refer to the actual selected *intermediate* feature bits, not merely the shorter serialized target.
 
@@ -42,7 +58,7 @@ Source authentication: exact N original truth-table bits, ordered as addresses 0
 Four gates: DISJ NOT APPLICABLE, no general SAT circuit lower bound; relativization SCOPED combinatorial conclusion only, unrestricted P-vs-NP OPEN; simultaneous DTISP FAIL for promise-pure use of the covered family, full same-machine implementation OPEN; deterministic configuration counting NOT APPLICABLE as a runtime lower bound, no declared total machine. Algebrization and Natural Proofs barriers are not bypassed. Existing Partial-MCSP, histogram, q-query, parity, free-seed, exceptional-seed and all-decoder controls retained. /341 remains FAIL as full UNSAT authority; /386 remains RESTRICTED.
 
 ## Computational audit and independent reproduction
-Executed local standard-library Python audit seed 202611180035: 132 deterministic seeded models on N=4 and N=8 original source-bit dimensions; 21,312 exhaustive source/section pairs, 85,516 assertions and zero failures. Checked adaptive transcript replay, branch feature equality, final nonlinear output equality and wt<=q+D in all cases, plus exact tight q=2,D=3, pinning necessity and global-degree-six controls. Full executed source SHA256 a9856d3ee296306d96126771971235d86bb749c5f71dba5f8a85303e8f33a158; full raw JSON SHA256 d8a76bedfbcbffc16629191fafc5c5a0a387f6cec5938f48391bbe89168a3601. A distinct compact reproducer was independently executed for 256 inputs, 1,024 assertions, 0 failures; its source SHA256 ce2f8156abc7233911d896995785bef736f762bf8ede1e4093a6b2023730205a. Full local audit and raw are NOT claimed to be the GitHub compact script.
+Executed local standard-library Python audit seed 202611180035: 132 deterministic seeded models on N=4 and N=8 original source-bit dimensions; 21,312 exhaustive source/section pairs, 87,438 assertions and zero failures, including 1,922 exact reached transcript-feature fiber-mass checks. Checked adaptive transcript replay, branch feature equality, final nonlinear output equality and wt<=q+D in all cases, plus exact tight q=2,D=3, pinning necessity and global-degree-six controls. Full executed source SHA256 d7a1c122c5875456232832615c05af285a364e1e40116f4bb1260425b7eda454; executed-results JSON SHA256 aa193996b07d17d285233706f69518fef67bf7587ce11a3b6f1804fa188bcba9. A distinct compact reproducer was independently executed for 256 inputs, 1,024 assertions, 0 failures; its source SHA256 ce2f8156abc7233911d896995785bef736f762bf8ede1e4093a6b2023730205a. Full local audit and raw are NOT claimed to be the GitHub compact script.
 
 No local Git checkout/preflight was available: container git ls-remote failed network name resolution. Research recovered via connected GitHub main reads. Five TMR manuscripts/schedules and retired trackers untouched. Independent review open; finite tests do not prove the asymptotic result.
 
