@@ -1,0 +1,66 @@
+name: TMR-1 pinned Lean audit 060
+on:
+  push:
+    branches: [tmr1-20261115-independent-lean060]
+    paths: [.github/workflows/tmr1-lean-audit060.yml]
+permissions:
+  contents: read
+concurrency:
+  group: tmr1-independent-lean060
+  cancel-in-progress: false
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      LEAN_NUM_THREADS: '2'
+      LEAN_ABORT_ON_PANIC: '1'
+    steps:
+      - name: Checkout only owned audit and active preflight inputs
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /AGENTS.md
+            /CODEX.md
+            /main1_PNP_MACHINE_MODEL_LEAD.tex
+            /main2_PNP_INFORMATION_NECESSITY.tex
+            /main3_PNP_TIME_SPACE_TRADEOFFS.tex
+            /main4_PNP_COST_SOUND_ABSTRACTION.tex
+            /main5_PNP_MACHINE_BOTTLENECK_REDTEAM.tex
+            /.codex/skills/pnp-research/
+            /research/coordination/2026-11-15_END_TO_END_AGENT_MANUSCRIPTS.md
+            /experiments/tmr/tmr1_lean_rebuild060.sh
+            /experiments/tmr/tmr1_lean_audit060.py
+      - name: Active manuscript preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/tmr1-lean060-logs"
+          python3 .codex/skills/pnp-research/scripts/preflight.py --check --json | tee "$RUNNER_TEMP/tmr1-lean060-logs/preflight.json"
+          python3 experiments/tmr/tmr1_lean_audit060.py self-test | tee "$RUNNER_TEMP/tmr1-lean060-logs/auditor-self-test.json"
+      - name: Install toolchain manager and provision ephemeral swap
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y elan jq
+          sudo fallocate -l 12G /swapfile-tmr1-lean060
+          sudo chmod 600 /swapfile-tmr1-lean060
+          sudo mkswap /swapfile-tmr1-lean060
+          sudo swapon /swapfile-tmr1-lean060
+          git --version
+          go version
+          cargo --version
+      - name: Fresh proof build, transitive axiom check, Lean and nanoda replay
+        shell: bash
+        run: bash experiments/tmr/tmr1_lean_rebuild060.sh "$RUNNER_TEMP/tmr1-lean060-logs"
+      - name: Preserve exact logs on success or failure
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: tmr1-independent-lean060-${{ github.run_id }}
+          path: ${{ runner.temp }}/tmr1-lean060-logs
+          if-no-files-found: error
+          retention-days: 30
