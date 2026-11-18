@@ -1,0 +1,55 @@
+% LSPV-5 RINGTREE1, November 17 2026, 20:06 PST.
+\documentclass{article}
+\usepackage{amsmath,amssymb,hyperref}
+\title{RINGTREE1: Checked Treewidth Counting and Matched-Oracle Certificate Barrier}
+\date{17 November 2026}
+\begin{document}\maketitle
+\noindent STATUS: PROVED/EXACT restricted with independent review OPEN; P vs NP OPEN.
+
+\section{IDEAS PROPOSED BEFORE LITERATURE}
+Frozen proposals: CANDIDATE A, a source-authenticated original-graph width finder plus exact integer DP (test against brute force and $2^{O(k)}$ theorem hypotheses); CANDIDATE B, directed three-cycle ring-strip recognition with linear vertex cover and constant width (test graph skeleton and counts); CANDIDATE C, globally one-output checked-decomposition certificate (test for two different accepted integers); CANDIDATE D, post-disclosure replay control against completion-time WRAPPER arguments (test that freshness alone supplies no unconditional hardness). Original proposals and hashes are retained in local evidence.
+
+\section{LITERATURE CHECK AND REVISIONS}
+Korhonen, SIAM J. Comput. 2023, DOI 10.1137/22M147551X, gives a deterministic $2^{O(k)}n$ procedure outputting a width-$\le2k+1$ decomposition or proving $\operatorname{tw}(G)>k$. This is an imported KNOWN THEOREM, not locally implemented. Bounded-treewidth exact counting over constant-domain graph-homomorphism factors is classical. Hirahara, ECCC TR20-050, Theorem 3.9 and Section 9, proves P-immunity for superpolynomial time-bounded $K^t$ with threshold $|x|-1$, as distinct from Levin $Kt$. Baker, Gill and Solovay, SIAM J. Comput. 4(4), 1975, DOI 10.1137/0204037, give a recursive oracle $A$ with $P^A=NP^A$, using oracle query machines. The matched-oracle extension below is established separately. A--C survive restricted; D does not give a classical hardness theorem.
+
+\section{CONSTRUCTION OR PROOF ATTEMPT}
+Parse the complete canonical ASCII source: header T5, $n$ vertices, $m$ distinct sorted directed arcs. Reject malformed records. For every legal source define
+\[
+R(a,b)=\mathbf 1[(b-a\bmod 5)\in\{1,3\}],\quad
+Z(G)=\sum_{x\in\mathbb Z_5^n}\prod_{(u,v)\in E}R(x_u,x_v).
+\]
+Check a purported tree decomposition with bags $B_i$ of width $w$, covering all vertices/arcs and satisfying running intersection. Assign every source arc to exactly one containing bag $E_i$. Root the tree, set $S_i=B_i\cap B_{p(i)}$ and compute
+\[
+M_i(s)=\sum_{a|_{S_i}=s}\left(\prod_{(u,v)\in E_i}R(a_u,a_v)\right)
+\left(\prod_{j\in \mathrm{child}(i)}M_j(a|_{B_i\cap B_j})\right).
+\]
+\textbf{THEOREM 1 (PROVED/EXACT restricted).}
+The root message is exactly $Z(G)$ for every authentic decomposition, independent of its shape. Its full checked bit-machine time is conservatively $(N+b+2)^{10}5^{w+1}$ and peak space $(N+b+2)^65^{w+1}$, for $b$ bags and source size $N$. Each integer uses $O(n)$ bits. For $b\le N^2,w\le c\log_2(N+2)$ for fixed $c$, certificate length and verifier time/space are polynomial; ALL accepted certificates over the same source yield one and the same integer output, not merely at most one per certificate. Proof: condition on bag intersections, multiply disjoint child-extension counts, and induct over the tree; each original arc is owned once.
+
+\textbf{THEOREM 2 (KNOWN THEOREM composition).}
+For each fixed $c$, a uniform total exact counter can run Korhonen with $k=0,\ldots,\lceil c\log_2(N+2)\rceil$ and evaluate the returned decomposition, giving polynomial total time and space whenever the source graph has treewidth at most $c\log_2(N+2)$. Outside the class, enumerate the $5^n$ assignments with polynomial space. All discovery, validation, integer, and output costs are charged. The accompanying Python does NOT implement the Korhonen decomposer; it DOES implement original-source parsing, arbitrary supplied-decomposition validation and exact DP.
+
+\textbf{THEOREM 3 (PROVED/EXACT restricted).}
+Take $m$ disjoint directed triangles $v_{i,0}\to v_{i,1}\to v_{i,2}\to v_{i,0}$ and forward matched arcs $v_{i,j}\to v_{i+1,j}$. Source-discovered cyclic triangles and three-edge perfect matchings admit a 15-state exact transfer. Every ring has 15 legal assignments. For base ring $(0,1,2)$ precisely four successor rings $(1,2,0),(1,2,3),(1,4,0),(3,4,0)$ satisfy the three forward edges; rotation and translation act transitively on all ring states, so each transfer row has sum four. Hence
+\[
+Z(G_m)=15\cdot4^{m-1},\quad \sum_{m\ge1}Z(G_m)z^m=\frac{15z}{1-4z}.
+\]
+The authentic source is biconnected, min-degree three, triangle-cycle-only, with vertex-cover number at least $2m$, but width at most five. Arbitrary independently directed interring matchings permit BOTH YES and NO originals; for example ring arcs $(0,1),(1,2),(2,0),(3,4),(4,5),(5,3)$ with links $(2,4),(3,0),(5,1)$ have $Z=15$; links $(3,0),(4,2),(5,1)$ yield $Z=0$. Both independently validated.
+
+\textbf{THEOREM 4 (matched-oracle, PROVED/EXACT under explicitly stated oracle conventions).}
+Fix a universal oracle printer $U^O$, polynomial verifier $V^O$ and $P^O,NP^O$, all using the SAME oracle $O$. For any $t(n)=n^{\omega(1)}$, the language $R^{t,O}=\{x:K_U^{t,O}(x)\ge |x|-1\}$ is $P^O$-immune: if an infinite $L\subseteq R^{t,O}$ were in $P^O$, save a prefix of length $n-C\log n$ of a member at infinitely many $n$; the fixed oracle program searches all $n^{C}$ suffixes with that same decider, printing a member of $L$ in polynomial time from a description shorter than $n-1$, contradiction. Now assume polynomial proof length, coverage of every $n$-bit output of $U^A(p)$ in $t(n)$ steps for $|p|\le n-2$, and globally at most two accepted outputs over ALL proofs for each $(n,p)$. The accepted set $E_n^A$ is in $NP^A$ and has cardinality at most $2(2^{n-1}-1)=2^n-2$. For BGS collapsing oracle $P^A=NP^A$, its infinite complement would be in $P^A$ and contained in $R^{t,A}$, impossible. Thus the universal PFCERT schema cannot relativize. This is not a proof that an ordinary universal certificate exists. Nonalgebrization remains OPEN. Prefix/line access, exact full expansion, certified sparsity, existence and global multiplicity are distinct obligations. No cryptographic hardness is assumed.
+
+\section{TESTS AND OUTCOME}
+Six separate saved CPython checkpoints, seeds 202611172007 through 202611172012: 203 finite cases, 783 assertions, zero final failures. Included original-source brute comparisons, checked arbitrary tree decompositions, 88 YES and 12 NO heterogeneous two-ring sources, forged certificate and malformed-source rejection, biconnectivity and min-degree controls, and the aligned infinite-family formula tested to 1,500 rings. Initial cubic triangle enumeration timed out and was replaced by a local adjacency algorithm; only final successful batches counted. These are COMPUTATIONAL controls, not independent mathematical review. The general Korhonen algorithm and universal PFCERT were not implemented.
+
+Four gates: DISJ PASS for restricted upper, rank-to-compulsory-work FAIL; relativization PASS locally with separation OPEN; simultaneous DTISP PASS for scoped upper only; deterministic configuration counting PASS upper guard only. All relevant alternative algorithms, affine/compact, DEAD/COPY/DELAY/INTERP/RECOMP, algebrization and Natural Proofs remain live controls.
+Five-track ledger: TMR-1 conditional E-NP circuit route but NP bridge OPEN; TMR-2 T5 cofactor shortcuts but unrestricted necessary-work OPEN; TMR-3 checkpoint provider/evaluator OPEN; TMR-4 unrestricted costed compiler OPEN; TMR-5 general full-chain separation OPEN; LSPV-5 universal PFCERT OPEN. Current root main.tex is a placeholder; November 15 governance retires root edits, so no restoration, peer overwrite or schedule changes were made.
+
+ONE NEXT TARGET: discover and verify heterogeneous two-/three-vertex separators in original biconnected mixed-answer T5 graphs not reducible to ring templates or existing three-terminal shortcuts. All parameter and proof-status boundaries remain explicit.
+\begin{thebibliography}{9}
+\bibitem{kor} T. Korhonen, SIAM J. Comput., 2023, \url{https://doi.org/10.1137/22M147551X}.
+\bibitem{hir} S. Hirahara, ECCC TR20-050, 2020, \url{https://eccc.weizmann.ac.il/report/2020/050/}.
+\bibitem{bgs} T. Baker, J. Gill and R. Solovay, SIAM J. Comput. 4(4), 1975, \url{https://doi.org/10.1137/0204037}.
+\end{thebibliography}
+\end{document}
+% FINAL_VERIFICATION_SENTINEL::LSPV5::RINGTREE1::2026-11-17_2006::P_VS_NP_OPEN
