@@ -32,6 +32,21 @@ def make_cnf(n, edges):
 def eval_cnf(x,clauses):
     return all(any(((x[var//3]>>(var%3))&1)==(1 if sign==1 else 0)
                    for var,sign in clause) for clause in clauses)
+def five_way_chain(n,terminal):
+    """Actual shared n-layer, five-way complete-query OBDD."""
+    nodes = [{symbol: (i+1 if i+1<n else terminal) for symbol in range(5)}
+             for i in range(n)]
+    def evaluate(x):
+        state = 0
+        for symbol in x:
+            state = nodes[state][symbol]
+        return state=="ACCEPT"
+    walk_accept,walk_reject = (1,0) if terminal=="ACCEPT" else (0,1)
+    for _ in range(n):
+        walk_accept*=5
+        walk_reject*=5
+    return nodes,evaluate,(walk_accept,walk_reject)
+
 def main():
     total=0; cases=0; all_hashes=[]
     for n in range(2,7):
@@ -42,9 +57,12 @@ def main():
             assert parse(text)==(n,edges)
             all_hashes.append(hashlib.sha256(text.encode()).hexdigest())
             c=make_cnf(n,edges);Z=0
+            nodes,eval_obdd,walks=five_way_chain(n,'ACCEPT' if pair is None else 'REJECT')
+            assert len(nodes)==n and all(len(row)==5 for row in nodes)
+            assert walks==((5**n,0) if pair is None else (0,5**n))
             for x in itertools.product(range(5),repeat=n):
                 actual=all(relation(x[i],x[j]) for i,j in edges)
-                assert actual == eval_cnf(x,c) == (pair is None)
+                assert actual == eval_cnf(x,c) == eval_obdd(x)
                 Z+=actual
                 total+=1
             assert Z == (5**n if pair is None else 0)
