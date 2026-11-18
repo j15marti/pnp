@@ -1,0 +1,77 @@
+% LSPV-5 FEEDBACKCRT1 substantive condensed report, 2026-11-18 11:34 PST
+% Source-grounded finite-feedback opportunity certificate, full report available in local reproducibility bundle.
+\documentclass[11pt]{article}
+\usepackage[margin=0.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\title{FEEDBACKCRT1: Adaptive Feedback with Polynomial Opportunity Certificates}
+\author{LSPV-5, P versus NP project}
+\date{November 18, 2026}
+\begin{document}
+\maketitle
+\noindent\textbf{Status: PROVED/EXACT restricted source model, independent mathematical review OPEN.} Universal two-output PFCERT, nonalgebrization, and P versus NP remain OPEN. The four candidates were SHA-256 frozen in \texttt{IDEAS\_FROZEN.txt} before external literature searching.
+
+\section{IDEAS PROPOSED BEFORE LITERATURE}
+\paragraph{CANDIDATE A.} Enumerate a static union of possible target-component write times for all odd-slope affine address modes. The union should have at most $Qs$ entries per $2^n$-step period even when controller modes depend on target data. Missing assumption: no reads from outside the target component. Falsify with exact full-tape replay and changing controller modes.
+\paragraph{CANDIDATE B.} Between such opportunities the target data is frozen, so power the finite controller transition, obtain a complete period map on $Q2^s$ projected states, then power that map for a binary horizon. Missing assumption: $Q2^s$ polynomial in authenticated source length. Falsify with event collisions, hostile changes between events, huge time horizons.
+\paragraph{CANDIDATE C.} Permit even strides with a compact arithmetic-progressions-of-events representation. Missing assumption: the resulting symbolic schedules can be composed under feedback. Falsify with $u=0$ and a constant overwriter, which may have exponentially many events but a trivial endpoint.
+\paragraph{CANDIDATE D.} Demonstrate that hidden external reads invalidate all-fiber congruence using two full tapes with identical projection but different hidden bits. Missing assumption: an outside-memory observation is allowed. Falsify by exact one-step transition.
+
+\section{LITERATURE CHECK AND REVISIONS}
+Hirahara, ECCC TR20-050 (2020), Theorem 3.9 and its Section 9 proof, establish P-immunity of plain superpolynomial-time-bounded $K^t$ random strings. Levin's $Kt=\min_d(|d|+\log\mathrm{time}(d))$ has a different, weaker ACC-uniform immunity result. Baker--Gill--Solovay, SIAM J. Comput. (1975), Sections 1--2, define oracle query tapes and the query/yes/no control states and construct $P^O=NP^O$ oracles. Matched-oracle consistency remains mandatory. Aaronson--Wigderson's low-degree-extension algebrization barrier is separate and OPEN here. Related deterministic compressed automata membership results (Je\.z, arXiv:1110.2318) concern explicit finite representations, not arbitrary ordinary machines. Original NONALG-0003/PVG-4-0001 Drive documents and previous XORORBIT1 were recovered. A/B survived for a syntactically restricted grammar. C is not a general lower-bound route, and D is a precise model counterexample. No originality claim against all prior literature is made.
+
+\section{CONSTRUCTION OR PROOF ATTEMPT}
+\paragraph{Authenticated source grammar.}
+Let the complete source length be $N$. Unary-encode $n\le N$, let $M=2^n$, and explicitly list $Q\ge1$ controller modes, $s\ge1$ distinct $n$-bit target addresses $S=(q_0,\dots,q_{s-1})$, odd $n$-bit slopes $u_c$, offsets $v_c$, an initial controller $c_0$ and target bits $z_0$, a complete controller table $G:[Q]\times\{0,1\}^s\to[Q]$, and full overwrite-bit tables $W:[Q]\times[s]\times\{0,1\}^s\to\{0,1\}$. Hence $B=Q2^s\le N$ by syntactic tabulation. Input parsing rejects incomplete or malformed source records; the rest of the physical $M$-cell tape is implicitly initialized to zero, not supplied as preloaded data. At absolute time $t$ mode $c_t$ selects $a_c(t)=(u_ct+v_c)\bmod M$. If the addressed cell is in $S$, update its bit $j$ by $W(c_t,j,z_t)$, otherwise any source-listed write-only off-target effect is permitted. Set $c_{t+1}=G(c_t,z_t)$ with OLD $z_t$. Neither address selection, controller update, nor target writes read off-target cells. The requested output is one target bit after an $L$-bit binary horizon $T$. All source reads, table entries, indices, modular arithmetic, memory and output are charged.
+\begin{lemma}[Static opportunity count]
+The set
+\[
+U=\bigcup_{c\in[Q],j\in[s]}\{(q_j-v_c)u_c^{-1}\bmod M\}
+\]
+contains at most $Qs$ residues and can be authenticated in polynomial bit time. If $t\bmod M\notin U$, no possible mode writes $S$.
+\end{lemma}
+\begin{proof}
+Each odd $u_c$ is invertible modulo $2^n$, so each mode/address pair supplies exactly one congruence solution modulo $M$. Deduplication cannot increase their number. Outside their union all controller choices address only outside $S$.
+\end{proof}
+\begin{lemma}[Exact gap jumps]
+For each fixed target word $z$, define $G_z(c)=G(c,z)$. A gap of $d$ steps without opportunity residues leaves $z$ unchanged and applies $G_z^d$ to $c$. All maps $G_z^{2^i}$, $0\le i\le n$, have $O(B(n+1))$ entries. Scanning only opportunity residues interleaved with exact controller jumps produces the full $M$-step phase-zero return table $F$ and any $r$-step prefix table $R_r$ on the $B$ projected states.
+\end{lemma}
+\begin{proof}
+Between opportunity residues no physical write touches $S$, and all controller reads depend only on $z$. Therefore the same transition $G_z$ repeats. Binary powering computes each gap in $O(n)$ probes. At an opportunity, the current actual mode decides whether a target write occurs and the original tables uniquely supply its result. This holds for every physical tape with the same $z$, not only reachable states. All mode addresses repeat with period $M$.
+\end{proof}
+\begin{theorem}[FEEDBACKCRT1, restricted source grammar]
+For every source above, every initial $(c_0,z_0)$, binary horizon $T=kM+r$, $0\le r<M$, and designated $q_j\in S$, a uniform deterministic algorithm obtains the exact endpoint
+\[
+(c_T,z_T)=R_r(F^k(c_0,z_0))
+\]
+using polynomial total bit time and peak workspace in $N+L$. It emits a polynomial certificate comprising source-authenticated $F^{2^i}$ tables, $R_r$ and endpoint, with length
+\[
+O\left(N+B(1+L)\lceil\log_2(B+1)\rceil\right).
+\]
+A uniform polynomial verifier recomputes all rows and squaring identities. Across ALL accepted certificates for a fixed source, $T$ and output target, the set of accepted output bits has cardinality exactly one.
+\end{theorem}
+\begin{proof}
+The lemmas prove all-state source projection, including the exponentially many $n$-bit address phases. At phase zero, $F$ is the exact return; induction on $k$ gives $F^k$. The partial prefix $R_r$ handles arbitrary terminal phase. For each of $B$ projected input states the return computation uses at most $Qs$ explicit event steps plus $O(Qsn)$ controller jump probes, after polynomial event preprocessing. Squaring $B$-entry transition tables $O(L)$ times costs $O(BL)$ lookups and $O(BL\log(B+1))$ proof bits. All integer operations use polynomially many bits. Verification recomputes the canonical tables and the final state. Therefore initiality, all-state consecution, terminal coverage, polynomial evaluation, syntactically certified fixed-source sparsity and GLOBAL one-output multiplicity follow separately. No existential union of alternative descriptors is used. The full $2^n$-cell terminal configuration is not expanded.
+\end{proof}
+\paragraph{Concrete adaptive feedback.}
+For $n=9$, $S=(0,1)$, $Q=2$, $u=(1,3)$, $v=(0,1)$, $G(c,z)=c\oplus z_0\oplus z_1$, and target write $W(c,j,z)=z_j\oplus z_{1-j}\oplus c$, the static opportunity set is exactly $\{0,1,341\}$ despite controller changes at other times. From $(c,z)=(0,(1,0))$ the result after $512$ steps, and after $2^{205}+105$ steps, is $(0,(0,0))$. The general table grammar allows nonlinear data-dependent writes, even though this particular example is affine.
+\paragraph{Boundaries.}
+If mode/address choice or target write reads an outside hidden bit, two physical tapes with identical projection may have opposite projected next bits. This falsifies the all-fiber quotient immediately. A nonunit slope $u=0$ may cause $M$ target-write opportunities yet a constant overwriter remains trivial. Thus opportunity count and representation growth are not compulsory algorithmic work. DEAD, COPY, DELAY, INTERP, RECOMP, affine, compact evaluator, and disclosed-hash-prefix shortcuts remain legal.
+\paragraph{Matched-oracle two-output diagnostic.}
+Use the SAME oracle $O$ for a universal oracle machine $U^O$, polynomial verifier $V^O$, $K_U^{t,O}$, and $P^O,NP^O$. Assume a universal polynomial-proof relation covers each actual $n$-bit output of programs $|p|\le n-2$ running within superpolynomial $t(n)$ and accepts at most two distinct outputs for each $(n,p)$ across ALL proofs. Its NP$^O$ union $E_n^O$ has $|E_n^O|\le2(2^{n-1}-1)=2^n-2$. Every string outside the union belongs to the time-bounded random set $R_{K_U^{t,O}}$. If $P^O=NP^O$, the complement is an infinite $P^O$ subset of that immune set. Hirahara's prefix/suffix argument relativizes for the matched oracle: retain $n-C\log n$ bits, encode $n$ in $2\log n+O(1)$ bits, enumerate $n^C$ suffixes using the same oracle decider, and obtain an $n-1$-short description within $t(n)$. Contradiction. For $O=\mathrm{TQBF}$, $P^O=NP^O=\mathrm{PSPACE}$. This rules out a UNIVERSAL RELATIVIZING two-output PFCERT schema in a collapsing world. It DOES NOT construct ordinary universal PFCERT or prove $P\ne NP$. Separate low-degree-extension nonalgebrization remains OPEN; the finite source grammar is not a new nonrelativizing method.
+
+\section{TESTS AND OUTCOME}
+A complete local Python 3 source and immutable JSON checkpoints with seeds 202611181131--202611181134 were saved. Stage 1: 2880 independently simulated full-tape cases / 3240 assertions. Stage 2: 440 exact independent finite-cycle huge-horizon cases / 440 assertions (up to 1301-bit horizons). Stage 3: 340 valid/forged certificate cases / 680 assertions. Stage 4: 267 hostile boundary cases / 2260 assertions, including expected hidden-read falsifier, zero-slope easy counterexample, and an 8-bit disclosed hash prefix found in 287 trials. Total: 3927 cases, 6620 assertions, 0 unexpected failures. All four separately checkpointed stages completed below 0.2 seconds on the local interpreter. The SHA-256 of the runnable code is \texttt{20a9d53afee870ffc7e37292832d3d5664b80da2549f7f09ad05b57482fc27ca}. Finite checks are COMPUTATIONAL, not asymptotic proofs.
+\paragraph{Four gates and peer ledger.}
+DISJ: not applicable to restricted endpoint upper bound. Relativization: matched-oracle barrier proved; universal construction OPEN. Simultaneous DTISP: polynomial bounds apply only to one restricted deterministic realization; unrestricted gate OPEN. Deterministic configuration bound: consistent upper-bound sanity check, not hardness. Nonalgebrization OPEN. TMR-1 counting-to-hierarchy transfer still conditional, NP target OPEN. TMR-2 five-symbol CSP exact-count/cofactor results restricted; arbitrary-algorithm lower bound OPEN. TMR-3 arbitrary-machine checkpoint provider/evaluator OPEN. TMR-4 unrestricted cost-sound compiler OPEN. TMR-5 full verified separation chain OPEN. Original root main.tex is a retired 38-byte placeholder and was left unmodified, as were peer-owned manuscripts and existing schedules.
+\paragraph{One next target.}
+Add one authenticated external read by maintaining a polynomial-state summary of outside memory, or exhibit an exact obstruction to such summary maintenance without falsely excluding compact alternate evaluators.
+\begin{thebibliography}{9}
+\bibitem{h} S. Hirahara, Unexpected Hardness Results for Kolmogorov Complexity Under Uniform Reductions, ECCC TR20-050, 2020. \url{https://eccc.weizmann.ac.il/report/2020/050/}.
+\bibitem{b} T. Baker, J. Gill, R. Solovay, Relativizations of the P=?NP Question, SIAM J. Comput. 4(4), 1975. \url{https://doi.org/10.1137/0204037}.
+\bibitem{a} S. Aaronson, A. Wigderson, Algebrization: A New Barrier in Complexity Theory, STOC 2008 / TOCT 2009. \url{https://eccc.weizmann.ac.il/report/2008/005/}.
+\bibitem{j} A. Je\.z, Compressed Membership for NFA (DFA) with Compressed Labels is in NP (P), 2011. \url{https://arxiv.org/abs/1110.2318}.
+\end{thebibliography}
+\par\noindent\textbf{FINAL SENTINEL: LSPV5\_FEEDBACKCRT1\_20261118\_1134\_COMPLETE}
+\end{document}
