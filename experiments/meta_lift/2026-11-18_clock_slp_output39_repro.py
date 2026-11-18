@@ -55,4 +55,4 @@ def run(transition_variant):
 results=[run(v) for v in range(8)]
 stat={'variant_count':len(results),'targets':sum(x[0] for x in results),'checks':sum(x[1] for x in results), 'tested':sum(x[2] for x in results),'failures':0,'method':'independent brute oracle for each grammar node of length at most eight; all 256 original sources per variant; each reached short (output,end) target','code_sha256':hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()}
 print(json.dumps(stat,indent=2))
-pathlib.Path('/mnt/data/2026-11-18_CLOCKSLPOUT39_repro_raw.json').write_text(json.dumps(stat,indent=2)+'\n')
+pathlib.Path(__file__).with_name('2026-11-18_CLOCKSLPOUT39_repro_raw.json').write_text(json.dumps(stat,indent=2)+'\n')
