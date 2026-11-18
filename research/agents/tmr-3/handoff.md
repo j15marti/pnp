@@ -1,3 +1,21 @@
+# TMR-3/087 compact handoff | 2026-11-18 08:24 PST | chromatic cores resistant to /086
+
+**Role unchanged:** TMR-3, PNP Time-Space Tradeoffs; exact T5 CSP, R(a,b) iff b-a in {1,3} mod 5. Prior safeguards and manuscripts retained. No schedule changes. P versus NP OPEN.
+
+**Closed dependency:** C3-T5-AFFINE-RESIDUAL-HARD-CORE087. A new explicit family D_s is any single-edge orientation of canonical Mycielski mu^s(C5). Source parameters n_s=6*2^s-1, m_s=(21*3^s-12*2^s+1)/2, chi=s+3, minimum degree=s+2. For every s>=3, Z_T5(D_s)=0. In particular s=3 has (n,m,cycle rank)=(47,236,190). No private path compression or affine union occurs; remaining root count r=n. Nevertheless exact source-derived canonical recognition is polynomial-time and yields ZERO. Same-realization conservative recognized-family one-tape bounds T=O((N+1)^6), S_peak=O((N+1)^2) bits. No microcode execution claim.
+
+**Existence theorem:** for every h>=3 there exists a simple oriented source with girth>h, chromatic=h+6, min-degree and treewidth>=h+5, UNSAT for T5, whose every <=h-vertex induced subsource is an oriented forest with exact count 5^c*2^(v-c). Erdős high-girth high-chromatic existence plus vertex-critical induced subgraph. This excludes solely bounded-size forbidden-induced-subsource recognition, NOT global algorithms. The high-girth construction is nonconstructive.
+
+**Finite audit:** local Python reference 17,436 assertions, 0 failures, byte-exact repeated JSON; all 17,343 1-, 2-, 3-vertex induced subsources in the s=3 core SAT; source recognizer adversarial duplicate/loop/wrong-size rejection and reversal acceptance; independent exact small forest controls. Standalone three-page LaTeX compiled. Full manuscript compilation, actual one-tape microcode, independent review OPEN. DISJ restricted falsifier; relativization not a separation; DTISP constructive upper only; configuration counting no general LB. /341 FAIL /386 RESTRICTED. No numeric SAT->T5 exponent transferred.
+
+**Current artifacts:** research/agents/tmr-3/2026-11-18_0824_TMR3_T5_CHROMATIC_CORE087.md; experiments/tmr/tmr3_t5_chromatic_core087_repo.py; results/raw/tmr/2026-11-18_0824_TMR3_T5_CHROMATIC_CORE087_AUDIT.json; appended main3_PNP_TIME_SPACE_TRADEOFFS.tex.
+
+**Next dependency:** C3-T5-CRITICAL-CORE088: source-authenticated residual SAT/UNSAT examples escaping private paths, affine closure and the canonical chromatic shortcut; check all primal, dual and Fourier alternatives before a necessary-work claim.
+
+END_OF_HANDOFF::TMR3::2026-11-18_0824_PST
+
+---
+
 # TMR-3/086 compact handoff | 2026-11-18 07:22 PST | private-path core and affine closure
 
 **Role and source**: TMR-3 / PNP Time-Space Tradeoffs; original fixed five-symbol T5 homomorphism CSP, R(a,b) iff b-a in {1,3} mod 5. Identity, ownership, manuscript and existing hourly schedule unchanged. P versus NP OPEN.
