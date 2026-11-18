@@ -1,0 +1,14 @@
+# CLOCKSUCCINCTGROUP42 handoff | 2026-11-18 11:32 PST
+**PROVED/EXACT as reduction-derived restricted PSPACE-completeness; COMPUTATIONAL finite controls; independent mathematical review OPEN. P versus NP OPEN.**
+
+**One closed dependency:** Fully arbitrary polynomial-circuit-indexed output-conditioned root reachability cannot be assumed uniformly polynomial-time without implying P=PSPACE. Even a K=5 *permutation*-state, no-emission, source-bit-ignoring one-pass transducer has a PSPACE-complete uniform terminal-state question, via a lazy-index Barrington commutator reduction from TQBF. Source word length N=2^n; every genuine f_i is consumed; generator I(i) computed by a polynomial-size source-independent circuit derived from the QBF. Product is either identity or a chosen five-cycle, with padding to N. This is a *uniform acquisition* barrier, NOT an unconditional nonuniform reachability-circuit lower bound.
+
+**Hostile pure-image failure:** source bits are ignored. Every authentic source f maps to the same label, so both cheap all-zero sources and counting-guaranteed hard sources collide. No two-sided Gap-MCSP promise purity, PH-low joint verifier or same-work-tape resource contradiction follows. Width-two commutator group S2 is abelian; this particular construction collapses.
+
+**Executed:** full CPython 3.13.5 audit 137 closed QBFs q=0..5, 121,680 assertions; each position compared among materialized and lazy generators, direct QBF truth checked, 24 target 5-cycle conjugations and S2 controls, 0 failures. Separate **byte-for-byte published and locally executed** compact reproducer 72 independently sampled QBFs, 46,912 checks, zero failures; Git blob 3b26bdb37d25ca3db999b67ed386224ef1f65112. Local full audit SHA256 36e21429a38089c132ea01934e55650199a18049b75f8a951847e131f669dce8, raw SHA256 08ac9afdd58c9e4118bef2df0a9d0b712b4cb376fb8023c2654ce100a33c4712.
+
+**Verified main:** [mathematical report](2026-11-18_1132_CLOCKSUCCINCTGROUP42.md), [compact reproducer](../../../experiments/meta_lift/2026-11-18_clock_succinct_group42_repro.py), [experimental summary](../../../results/raw/meta_lift/2026-11-18_CLOCKSUCCINCTGROUP42_summary.json). Expanded proof, full executed audit and exact raw JSON in local CLOCKSUCCINCTGROUP42_research_bundle.zip. GitHub JSON is condensed summary. No local checkout/preflight; root TMR-owner manuscripts and schedules untouched.
+
+**Gates:** DISJ N/A, relativization restricted/open for P-vs-NP, simultaneous DTISP FAIL/OPEN, deterministic configurations upper sanity. No P=PSPACE inference from P=NP; no nonuniform circuit LB inference from PSPACE-hard uniform acquisition. /341 FAIL full UNSAT; /386 RESTRICTED.
+
+**ONE NEXT: PROMISE-COUPLED-REACHABILITY43.** Construct an authentic source-dependent transducer with verified NO-exclusive output, then independently audit uniform root reachability, section circuit cost, all-seed/decoder PH verifier and charged single-work-tape composition. P versus NP OPEN.
