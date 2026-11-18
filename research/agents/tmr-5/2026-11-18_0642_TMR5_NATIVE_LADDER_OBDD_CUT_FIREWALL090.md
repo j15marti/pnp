@@ -14,7 +14,7 @@ For each h>=1 let m=3h+1. Take vertices t_i,b_i (0<=i<m) and exactly the directe
 
     Z(L_m)=#Hom(L_m,T5)=10*3^(m-1)=10*3^(3h).
 
-A ten-state transfer computes this exactly using O(m) fixed-size arithmetic operations, with O(m)-bit intermediate integers. An OBDD ordered t_0,b_0,t_1,b_1,... has width at most **51**: retain the previous valid rung pair (10 possibilities) and, between assigning the next top and bottom symbols, that pair plus the new top symbol (at most 50), plus a rejection sink. The same ordering provides a bounded-boundary tensor contraction and an adaptive FBDD; direct counting is polynomial in bit time.
+A ten-state transfer computes this exactly using O(m) fixed-size arithmetic operations, with O(m)-bit intermediate integers. A five-valued ordered decision diagram (MDD) in order t_0,b_0,t_1,b_1,... has width at most **51**: retain the previous valid rung pair (10 possibilities) and, between assigning the next top and bottom symbols, that pair plus the new top symbol (at most 50), plus a rejection sink. For a literal **Boolean OBDD**, encode each symbol in three consecutive bits with unused codes 5,6,7 rejected. There are at most 10 previous-rung states, 8 top-bit prefixes, 8 bottom-bit prefixes, and a rejecting sink, giving Boolean OBDD width at most **641**, independent of h. This grouping also provides a bounded-boundary tensor contraction and an adaptive FBDD; direct counting is polynomial in bit time.
 
 **Top-row-first cut-rank theorem.** Now use variable order t_0,...,t_(m-1),b_0,...,b_(m-1). Restrict its top/bottom assignment-indicator matrix to 2^h top strings indexed by alpha in {0,1}^h and 2^h bottom strings indexed by beta in {0,1}^h. For each k=0,...,h-1 set
 
@@ -42,7 +42,7 @@ The separately executed compact verifier [Python](../../experiments/tmr/tmr5_090
 | TMR-1 five-arc C5-to-T5 gadget | **PROVED, restricted** in prior audits, not used here |
 | Native ladder rank >=2^h at one cut | **PROVED, restricted** over all fields |
 | Top-row-first fixed OBDD width >=2^h | **PROVED, restricted** |
-| Interleaved OBDD width <=51 and exact counting in polynomial bit time | **PROVED, restricted** |
+| Interleaved five-way MDD width <=51; encoded binary OBDD <=641; exact counting in polynomial bit time | **PROVED, restricted** |
 | A large rank across a fixed cut forces algorithm-independent work | **FALSIFIED** for this native family |
 | Global cycle rank requires exponential work | **FALSIFIED** as an instancewise claim |
 | Arbitrary-order/adaptive/tensor/general CSP worst-case lower bound | **OPEN** |
