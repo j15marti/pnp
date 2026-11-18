@@ -2611,7 +2611,182 @@ and 32-mask simplifications. Independent mathematical peer review,
 full \LaTeX{} compilation and physical machine microsteps remain
 OPEN; P versus NP remains OPEN.
 
+
+\section*{TMR-4/083: Known NP-completeness of the five-symbol target; exact palette-backdoor compiler}
+
+\paragraph{Scope and literature correction.}
+The sole binary target is the loopless tournament
+$T_5=(\mathbb Z_5,R)$, where $R(a,b)$ holds exactly if
+$b-a\bmod 5\in\{1,3\}$.  The fixed-template problem
+$\operatorname{CSP}(T_5)$ is, in fact, \emph{already known to be
+NP-complete}. This is a consequence of Barto, Kozik and Niven's
+2009 theorem on digraphs without sources or sinks
+\cite{bartokozikniven2009}, independently stated as Theorem 15
+in Larose's survey \cite{larose2017}. It was not proved by
+the finite experiments below and must not be misrepresented
+as an original NP-completeness proof or as a proof that
+$\mathrm P\ne\mathrm{NP}$.
+
+Here is an exact verification of the theorem's hypotheses.
+The five-symbol relation has ten arcs, with indegree and
+outdegree two at every vertex, so the target is smooth.
+Every two distinct vertices of the source tournament
+are joined by one directed arc. A self-homomorphism
+must therefore be injective, since mapping the arc to
+a single vertex would require a loop. Thus every
+self-homomorphism is bijective and $T_5$ is its own core.
+The core cannot be a directed cycle, since its outdegree
+is two rather than one. The smooth-core dichotomy therefore
+implies NP-completeness of this \emph{exact} directed graph
+homomorphism problem. Exhaustive inspection of the $5^5=3125$
+self-maps gives exactly five endomorphisms, all cyclic
+translations; this finite inspection is corroboration,
+not the hardness proof.
+
+A polynomial-time preprocessing filter proves that the
+NP-completeness still holds when the source input must be
+loopless and have no opposing arc pair. Any graph with a
+loop or opposing arcs is necessarily UNSAT for this loopless
+tournament, so replace such a graph with a fixed six-vertex
+oriented tournament, also UNSAT because six mutually adjacent
+vertices cannot map injectively to five. Other graphs
+are left unchanged. This maintains YES/NO for an ordinary
+many-one reduction. It does not show NP-hardness on the
+additional degree, density, connectivity or prime subfamilies.
+
+\paragraph{Candidate D4-T5-PALETTE-BACKDOOR083.}
+Find a source-induced five-vertex tournament isomorphic to
+$T_5$, called a palette $P$. Its homomorphisms are precisely
+five rotations. If an outside vertex is adjacent to exactly
+four palette vertices, its image must be the color of the
+unique missing palette vertex: all other colors would map
+one source arc to a forbidden loop. Checking its four arc
+orientations may instead reject the instance. A vertex
+adjacent to all five palette colors is likewise impossible.
+Let $Q$ be the remaining outside vertices with at most
+three palette adjacencies, and let $q=|Q|$.
+
+Every satisfying coloring is determined by a common
+translation, the $q$ unpinned values, and the uniquely
+forced pinned values. Each literal source arc is then
+checked, with no uncharged propagation. Consequently
+\[
+ Z(G)=5\sum_{z\in \mathbb Z_5^{Q}}
+ [\,\text{all source arcs satisfied under the normalized
+ palette and forced pins}\,].
+\]
+Searching all five-element palette candidates costs at most
+$O(n^5\operatorname{poly}(L))$ bit operations, for full
+canonical byte length $L$; residual exact counting costs
+$O(5^q\operatorname{poly}(L))$. There is no external
+palette oracle, hidden fixed order, or omitted integer
+bit cost. The construction is a restricted parameterized
+algorithm, polynomial when $q=O(\log L)$; arbitrary
+$T_5$ instances remain NP-complete.
+
+Query the five palette variables first, then the $q$
+exceptional variables, then the pinned variables. Maintain
+a rejecting state, or the palette rotation and the
+original values of the exceptional variables seen so far.
+The complete five-way OBDD queries \emph{every} original
+variable on every assignment, including after first
+rejection, and has
+\[
+ \operatorname{width}\le5^{q+1}+1,\qquad
+ \operatorname{internal\ nodes}\le n(5^{q+1}+1).
+\]
+Exact path multiplicities satisfy
+$N_{\rm accept}+N_{\rm reject}=5^n$. For $q=0$ the
+width is at most six and the node bound $6n$.
+This single fixed order is also a valid special case
+of an adaptive read-once branching program.
+
+\paragraph{Four source-aware falsifiers.}
+First, a theorem establishing NP-completeness of a fixed
+target is not a superpolynomial lower bound for every
+deterministic machine on every input. Second, attach each
+vertex $v_i$ of a directed cycle to four of the five
+palette vertices by all target-compatible arcs, using its
+missing palette color as the intended value, then add
+quadratically many compatible arcs between the new
+vertices. The SAT family has exactly five colorings;
+adding one arc between two vertices forced to the same
+color yields an UNSAT family with no colorings. Both
+families are at least four-vertex-connected and strongly
+connected. Tested families with $20,25,30,35$ attached
+vertices also have no directed false twins, connected
+nonadjacency graph, linear vertex cover, and quadratic
+feedback-cycle rank, yet retain complete OBDD width
+at most six. These are cheap \emph{palette-detectable}
+negative controls, not residual hard-core instances.
+Third, ordinary full-domain AC-3 leaves all five
+unary colors on these UNSAT controls, illustrating
+the insufficiency of unary state complexity.
+Fourth, a parsimonious direct three-bit-per-symbol
+Boolean conversion has $3n$ variables,
+$3n+15m$ clauses, and at most seven binary query
+nodes per five-way OBDD node; no native asymptotic
+advantage follows. Only accepting assignments
+and rejected \emph{valid} Boolean codewords correspond
+to original five-symbol assignments.
+
+\paragraph{SAME\_REALIZATION and four verification gates.}
+The separately executed Python source reads and
+authenticates canonical graph bytes, checks variable
+headers, scans every source arc, enumerates palettes,
+checks forced pins, constructs the \emph{complete} OBDD,
+charges five-way fan-out and sharing, counts accepting
+and rejecting original assignments using exact
+integers, constructs/evaluates the direct CNF, and
+outputs source fingerprints and audit data. Unused
+Fourier, floating-point, free cache, eviction and
+unreported representation switches have zero events.
+Gate 1: twelve canonical sources, eight malformed-source
+rejections and two valid nonmember controls.
+Gate 2: $2{,}424{,}125$ original-assignment/OBDD checks,
+$7{,}050$ actual CNF checks and $180$ invalid-bit-code
+checks, with $N_{\rm accept}+N_{\rm reject}=5^n$.
+Gate 3: all $3{,}125$ template maps and $120$
+permutations checked exactly; small partial-source
+counts independently brute-forced.
+Gate 4: a separately executed Node.js verifier checks
+the self-homomorphism count, independent original
+source constructions, forced palette colors and exact
+counts; eight common dense cases agree with the
+Python audit, and repeat Node executions are byte
+identical. There were no unexpected assertions.
+All finite observations are COMPUTATIONAL.
+
+\paragraph{Restricted reverse transfer and next dependency.}
+If a uniform polynomial-time compiler emitted
+polynomial-size exact decision FBDDs for \emph{every}
+$T_5$ input, accepting-reachability on those diagrams
+would give a polynomial-time decision procedure for
+the now-established NP-complete $\operatorname{CSP}(T_5)$,
+so $\mathrm P=\mathrm{NP}$. This is a one-way conditional
+implication, not an FBDD-size lower bound and not the
+converse. The next dependency is
+\texttt{D4-T5-PUBLISHED-REDUCTION-INSTANTIATION}:
+extract an explicit gadget-level hardness reduction
+from the 2009 published proof, instantiate actual
+source families and compare all charged source-aware
+simplifications and adaptive exact representations.
+Full \LaTeX{} compilation, external mathematical peer
+review and physical Turing-machine microstep
+verification remain OPEN. P versus NP remains OPEN.
+
 \begin{thebibliography}{9}
+\bibitem{bartokozikniven2009}
+L. Barto, M. Kozik and T. Niven.
+The CSP Dichotomy Holds for Digraphs with No Sources and No Sinks
+(A Positive Answer to a Conjecture of Bang-Jensen and Hell).
+SIAM Journal on Computing 38(5), 1782--1802 (2009).
+DOI: 10.1137/070708093.
+\bibitem{larose2017}
+B. Larose. Algebra and the Complexity of Digraph CSPs: a Survey.
+Dagstuhl Follow-Ups 7, 267--285 (2017), Theorem 15.
+DOI: 10.4230/DFU.Vol7.15301.267.
+
 \bibitem{bangjensen1988} J. Bang-Jensen, P. Hell and G. MacGillivray.
 The Complexity of Colouring by Semicomplete Digraphs.
 SIAM J. Discrete Math. 1(3), 281--298, 1988.
