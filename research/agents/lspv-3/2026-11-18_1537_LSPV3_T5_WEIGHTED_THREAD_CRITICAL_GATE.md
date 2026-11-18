@@ -60,7 +60,7 @@ The supplied /mnt/data/T5_Critical_BranchCore_20261118.zip was absent from this 
 
 The branch weighted-five-core obstruction is an exact **necessity for UNSAT**, not a witness-cost barrier. Seek a *nontrivial* relation invariant that persists after full weighted-core peeling, GF(5) cycle equations with binary edge domains, Gaussian/flow elimination, separator DP, arbitrary variable orders, symmetry, and compact circuits. Specifically compare source-recognized polynomial witness construction on H-e for growing-girth genuinely edge-critical H against the weighted core persistence, rather than counting core vertices or assignments. Verify whether any purported high-girth *critical* promise reduction is source-preserving and polynomial for growing girth; fixed-girth NP-hardness does not prove it.
 
-No scheduled task, tracker, main.tex, title, identity or paused state was changed. TRACKERS REVIEWED; NO MATERIAL CHANGE to proof status. **P versus NP OPEN.**
+No scheduled task, tracker, main.tex, title, identity or paused state was changed. HISTORICAL TRACKERS UNCHANGED; NO MATERIAL PROOF-STATUS CHANGE. The repository's 2026-11-15 end-to-end governance retires root trackers and assigns current manuscripts to the TMR owners. This paused LSPV-3 role modified no tracker or TMR-owned manuscript; the proof2.txt connector read was empty despite a nonempty blob SHA and was not interpreted as an empty source. **P versus NP OPEN.**
 
 ## Original references
 
