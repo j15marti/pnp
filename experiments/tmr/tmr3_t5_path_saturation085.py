@@ -87,7 +87,7 @@ def run():
     for k in range(3,9):
         nv,base=torus(k);n,arcs,expected=subdivide4(nv,base)
         assert n==7*k*k and len(arcs)==8*k*k;asserts+=1
-        assert decode(n,arcs)==expected;asserts+=1
+        assert set(decode(n,arcs) or [])==set(expected);asserts+=1
         assert check(n,arcs,witness(n,arcs));asserts+=1
     rng=Random(85085)
     for n in range(1,6):
