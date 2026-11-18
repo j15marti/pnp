@@ -9,7 +9,7 @@
    Z(G)=5^c\#\{b\in\{0,1\}^m: Hb=-3H\mathbf1\pmod5\}.
    \]
    This is a bijection up to the exactly charged five root labels per weak component.
-2. **Genuine dynamic syndrome invariant:** \(D_0(0)=1\), \(D_{k+1}(s)=D_k(s)+D_k(s-h_{e_k})\), \(Z=5^cD_m(-3H\mathbf1)\). Source-aware exact count/decision in \(O(m\beta5^\beta)\) arithmetic work, plus polynomial parsing and basis construction, and full \(O(m)\)-bit integer charges. This supersedes the older coarse \(O(5^{2\beta}\mathrm{poly}(n))\) *bound* without withdrawing that valid older algorithm.
+2. **Genuine dynamic syndrome invariant:** \(D_0(0)=1\), \(D_{k+1}(s)=D_k(s)+D_k(s-h_{e_k})\), \(Z=5^cD_m(-3H\mathbf1)\). Source-aware exact count/decision in \(O(m(\beta+1)5^\beta)\) arithmetic work, plus polynomial parsing and basis construction, and full \(O(m)\)-bit integer charges. This supersedes the older coarse \(O(5^{2\beta}\mathrm{poly}(n))\) *bound* without withdrawing that valid older algorithm.
 3. **Every undirected girth-at-least-six multi-theta input is T5-SAT, for arbitrarily many internally disjoint terminal paths and hence unbounded \(\beta\).** Lengths 1/2 force every other path to be length>=5/4; otherwise all length>=3 paths permit terminal difference zero, and length>=4 paths permit all endpoint pairs.
 4. **Source-aware short-core forest certificate:** After leaf removal and maximal degree-two suppression, if the original-length-at-most-three core edges form a forest, answer SAT and construct a witness; all long paths extend independently. Consequently, any loopless simple oriented UNSAT component with \(\beta\ge2\) has original undirected girth \(g\le9(\beta-1)\). The bound is not asserted sharp.
 
