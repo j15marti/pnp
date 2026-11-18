@@ -113,6 +113,6 @@ is an upper-algorithm control and exact semantic reformulation. Dropping the Boo
 
 **Next blocker:** give one explicit polynomial-time, source-authenticated reduction whose outputs satisfy the intrinsic critical deletion promise at the necessary quantifiers and whose witness decoder is proved for all relevant colorings, while charging criticalization, girth construction, source access, candidate acquisition, verification, memory, and output. Alternatively, prove a complete polynomial witness algorithm for the promise by combining thread contraction with treewidth and GF(5) syndrome methods.
 
-TRACKERS REVIEWED; NO MATERIAL NODE CHANGE. The authorized LSPV-5 root-main region was reconciled with this firewall; no automation, role state, schedule, route label, or proof tracker was modified.
+TRACKERS REVIEWED; NO MATERIAL NODE CHANGE. The authorized LSPV-5 region was reconciled in the local historical `main.tex` snapshot, but it was **not published**: the current GitHub contents endpoint returns blob `22e5354d504130bdcf9a1b2abe1b315e0d42f06a` with literal body `PLACEHOLDER_TOO_LARGE_USE_LOCAL_APPEND`, so replacing it with the stale 2.1 MB local snapshot would risk overwriting concurrent canonical content. XeLaTeX verification was also blocked by the installed TeX configuration's missing `xelatex.fmt`. The report, handoff, code, and raw JSON were published and read back. No automation, role state, schedule, route label, or proof tracker was modified.
 
 % END_OF_VERIFIED_REPORT::LSPV-5::LSPV5-T5-GIRTH-XFER-001
