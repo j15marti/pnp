@@ -41,7 +41,7 @@ The full proof tolerates forests, loops, opposed arcs, disconnected instances, i
 
 ## Primary-source complexity context
 
-Bang-Jensen, Hell and MacGillivray, *The Complexity of Colouring by Semicomplete Digraphs*, SIAM J. Discrete Math. 1(3) (1988), pp. 281–298, DOI https://doi.org/10.1137/0401029, prove the relevant homomorphism dichotomy. The specified \(T_5\) is a tournament containing more than one directed cycle (e.g. \(0\to1\to2\to0\) and \(0\to3\to1\to0\)), so general \(\mathrm{Hom}(-,T_5)\) is NP-complete. Prior role-owned constructive reductions and parsimonious strict-3-CNF compilation remain available. The Fourier result is a **parameterized exact algorithm**, not a polynomial-time decision algorithm on unrestricted instances. It does not establish a superpolynomial lower bound for any model.
+Bang-Jensen, Hell and MacGillivray, *The Complexity of Colouring by Semicomplete Digraphs*, SIAM J. Discrete Math. 1(3) (1988), pp. 281–298, DOI https://doi.org/10.1137/0401029, prove the relevant homomorphism dichotomy. The specified \(T_5\) is a tournament containing more than one directed cycle (e.g. \(0\to1\to2\to0\) and \(0\to3\to4\to0\)), so general \(\mathrm{Hom}(-,T_5)\) is NP-complete. Prior role-owned constructive reductions and parsimonious strict-3-CNF compilation remain available. The Fourier result is a **parameterized exact algorithm**, not a polynomial-time decision algorithm on unrestricted instances. It does not establish a superpolynomial lower bound for any model.
 
 ## Executed computational controls and machine accounting
 
