@@ -10,25 +10,25 @@ Pre-search falsifiers: (1) editing one occurrence of a shared grammar symbol ina
 Let a height-$n$ binary DAG grammar, all internal productions $X\to UV$ of equal-length children, generate a source-independent schedule of exactly $N=2^n$ transition-template labels. The grammar has $G$ nodes including terminals. At $d$ **fixed, source-independent** addresses, replace a label with an explicitly supplied template. Each template specifies for each $p\in[K]$ and genuine read bit $b\in\{0,1\}$ a next state and a finite binary emission (possibly epsilon). Read all original source bits $f_0,\ldots,f_{N-1}$ in order, concatenate output without timestamps, and retain terminal state.
 
 A persistent path-copy construction represents the modified schedule by another balanced dyadic grammar of size
-$
+$$
 G'\le G+d(n+1).
-$
+$$
 For any attainable emitted string $y$ of length $m$ and terminal state $q$, a **uniform finite algorithm given the grammar, all explicit templates, $(y,q)$** computes exact output-conditioned reachability and constructs a Boolean circuit $C_{y,q}:\{0,1\}^n\to\{0,1\}$ whose full truth table $g$ satisfies the exact pair
-$
-(H_{\rm word}(g),H_{\rm state}(g))=$(y,q)$.
-$
+$$
+(H_{\rm word}(g),H_{\rm state}(g))=(y,q).
+$$
 Writing $E=G'K^2(m+1)^2$, a conservative bounded-fan-in bound is
-$
+$$
 \boxed{CC(g)\le C n E\bigl(n+\log_2(E+2)+1\bigr).}
-$
+$$
 The offline exact dynamic program uses $O(G'K^3(m+1)^3)$ Boolean table operations, up to polynomial bit-cost factors for template descriptions, offsets, state IDs and emission comparisons. Storing the reachability bits and chosen splits takes $O(E\log(G'K(m+2)+2))$ bits, plus the explicitly charged grammar, output and template tables. This is NOT an online/one-tape complexity claim.
 
-**Proof.** Updating one chosen occurrence of a shared dyadic grammar leaf copies at most its (n) ancestors and one leaf; other references remain unchanged. Apply the operation to all (d) fixed overrides. For every grammar node (X), states (p,r), offsets (0\le a\le b\le m), let (R_X(p,r,a,b)) assert existence of a genuine input word on that block taking (p) to (r) and emitting **exactly** substring (y[a:b]). At terminals, test both source bits against their actual explicitly supplied transition and emission. At (X\to UV), (R_X) is equivalent to
-$
+**Proof.** Updating one chosen occurrence of a shared dyadic grammar leaf copies at most its $n$ ancestors and one leaf; other references remain unchanged. Apply the operation to all $d$ fixed overrides. For every grammar node $X$, states $p,r$, offsets $0\le a\le b\le m$, let $R_X(p,r,a,b)$ assert existence of a genuine input word on that block taking $p$ to $r$ and emitting **exactly** substring $y[a:b]$. At terminals, test both source bits against their actual explicitly supplied transition and emission. At $X\to UV$, $R_X$ is equivalent to
+$$
 \bigvee_{t=0}^{K-1}\bigvee_{z=a}^{b}
 R_U(p,t,a,z)\land R_V(t,r,z,b).
-$
-This is exact because unpadded output concatenates without deleting or permuting bits. Compute every table entry bottom-up, store the first feasible pair ($(t,z)$), and choose source bit 0 at a feasible terminal if possible, otherwise 1. Given requested original address (i), traverse the unique occurrence path from the root while updating the selected interface; repeated grammar nodes may legitimately be visited with different state/offset interfaces. Induction yields **one globally consistent source**. The stored table contains at most (E) entries, each with (O(\log(E+2))) addressable selection data. A hardwired table selector costs conservatively (O(E[n+\log(E+2)+1])) gates per one of $n$ address levels, giving the bound. All template descriptions and the construction cost must be paid by a uniform decoder. QED, subject to independent review.
+$$
+This is exact because unpadded output concatenates without deleting or permuting bits. Compute every table entry bottom-up, store the first feasible pair $(t,z)$, and choose source bit 0 at a feasible terminal if possible, otherwise 1. Given requested original address $i$, traverse the unique occurrence path from the root while updating the selected interface; repeated grammar nodes may legitimately be visited with different state/offset interfaces. Induction yields **one globally consistent source**. The stored table contains at most (E) entries, each with (O(\log(E+2))) addressable selection data. A hardwired table selector costs conservatively (O(E[n+\log(E+2)+1])) gates per one of $n$ address levels, giving the bound. All template descriptions and the construction cost must be paid by a uniform decoder. QED, subject to independent review.
 
 **MCSP consequence.** Let $YES_s=\{f:CC(f)\le s\}), $NO_t=\{f:CC(f)>t\}), $s\le t$. If every original-source output has length at most $M$, and $s\ge Cn(G+d(n+1))K^2(M+1)^2[n+\log_2(E_{\max}+2)+1]), then (H(YES_s)=\operatorname{im}H). Every attained NO image collides with a YES image, so exact two-sided promise purity fails when NO is nonempty. For cofinal parameters (G_j+d_j(n+1)\le N^{a\lambda^j+o(1)}), (K_j\le N^{b\lambda^j+o(1)}), (M_j+1\le N^{c\lambda^j+o(1)}), and source threshold (s=N^\beta), a fixed (j) with ((a+2b+2c)\lambda^j<\beta) forces saturation, independent of any decoder clock. This is a scoped obstruction, NOT an unconditional lower bound.
 
@@ -36,15 +36,15 @@ This is exact because unpadded output concatenates without deleting or permuting
 For each $n\ge2$, choose a primitive length-$n$ binary LFSR. Let $a_i$ be its output bit at time $i$ for $0\le i<2^n=N$, using the period-((N-1)) sequence and one repeated bit. Each consecutive $n$-bit window starting at a position $0\le i\le N-n$ is distinct, since it is exactly an LFSR state, and those starting positions lie within one primitive cycle.
 
 Any **binary** SLP with $G$ concatenation rules can introduce at most $n-1$ new length-$n$ factors per rule: assign each factor occurrence to its lowest concatenation node, where it crosses the rule boundary. Hence its number of distinct length-$n$ factors is at most (G$n-1$). Therefore the schedule $a_0\ldots a_{N-1}$ requires
-$
+$$
 \boxed{G\ge (2^n-n+1)/$n-1$=\Omega(N/n).}
-$
+$$
 Nevertheless, each indexed bit $a_i$ has a **nonuniform** $O(n^3)$-gate circuit: the primitive feedback matrix and its squared powers are hardwired, then at most (n) matrix-vector applications compute (A^i v_0). Existence of a uniformly constructible primitive polynomial in deterministic poly(n) time is NOT assumed.
 
 For a concrete two-state source-authentic streaming quotient with **no emitted bits**, set
-$
+$$
 q_{i+1}=q_i\oplus f_i\oplus a_i,\quad q_0=0.
-$
+$$
 Every nonempty interval has trivial unforced endpoint reachability (either endpoint is possible), and both terminal labels have explicit (O(n^3+n))-circuit source preimages: use $f=a$, or flip one fixed bit. Thus exponentially large SLP complexity **does not** imply large indexed transition complexity, hard reachability, hard fibers, or MCSP purity. This falsifies the attempted implication “efficient indexed schedule -> efficiently compressed grammar” without proving an unrestricted lower bound.
 
 ## Hostile executed controls and provenance
