@@ -1,3 +1,21 @@
+# TMR-3 compact handoff | 2026-11-18 00:20 PST | adhesion-two clique gluing /079
+
+**Identity**: TMR-3 / PNP Time-Space Tradeoffs; fixed five-symbol beat-relation CSP takes precedence. Five prior TMR identities, titles, ownership, existing active hourly schedules and guards unchanged; no automation edited. Original source T5 graph on Z5; no algorithmic separation. P versus NP OPEN.
+
+**New dependency closed in restricted form**: C3-T5-ADHESION-TWO079. Authenticated source graph with indegree-zero hubs plus private three-parent sinks, each sink producing the original exact ternary factor w(a,b,c). Enumerate empty/singleton/adjacent-pair clique separators in the factor primal graph, using virtual boundary edges of size at most two, never virtual CSP factors. Child-to-parent message has at most 25 entries and excludes color sums over the shared boundary. At separator-prime pieces require relative factor cover C of size <=t such that each ternary factor has two fixed hubs and every binary child message has at least one. Assign boundary plus cover colors, then sum all remaining hubs independently. Pay for decomposition, failed separator and cover search, input rereads, exact arithmetic, retained 25-entry messages, head motion and output. Cover DFS has no exponential cache.
+
+**Complete restricted SAME_REALIZATION**: T(N)=O((N+1)^14[1+(t+1)3^t+5^(t+2)]), S_peak(N)=O((N+1)^5) bits, both for one deterministic blank-start locally headed machine. Fallback on incidence budget failure is exact 5^|H| hub enumeration; on arbitrary inputs exact forest enumeration O(poly(N)2^(n-c)), polynomial space.
+
+**Countercontrols**: K4 atom with four original private sinks produces a nonrank-one 5x5 two-hub boundary message with row (26,0,6,6,0) and minor 676. A path of r such K4 atoms glued along whole two-hub edges has n=6r+2 and m=12r, no articulation vertices, strong-two-cover >=2 ceil(r/2), constant relative cover <=3. Exact count is 1^T M^r 1 for a genuine 25x25 transfer M, not an independent pair decomposition. At r=120, 722 vertices, 1440 arcs and 157 digits. 149 local deterministic assertions, zero failures; eight separate 25-state transfer cases and four NetworkX articulation crosschecks passed. Full executed source SHA256 af4a50a8c10a1685baad88b05e4fbf50cef6911e445b037c4d6f53251c3397c7, verified identical by GitHub readback.
+
+**Manuscript repair**: the prior /078 owned TeX had two document endings and a truncated line at a_i. In-place update restored /078 mathematics and appended /079, yielding one begin/end document pair and matched theorem/proof/lemma environments. Historical well-formed preceding sections retained; complete LaTeX compile remains OPEN.
+
+**Gates**: DISJ PASS restricted; relativization/algebrization NOT APPLICABLE to a separation; simultaneous DTISP PASS restricted for the upper bound; deterministic configuration counting PASS only as upper-bound consistency. Preserve affine/Horn/treewidth, low-degree, module/twin, cache/recompute, selector/padding, all prior easy-family controls; /341 FAIL as full UNSAT, /386 RESTRICTED. No exact numeric SAT lower-bound transfer. Native TM microcode, external peer review and whole-manuscript compile OPEN.
+
+**Authoritative /079**: research/agents/tmr-3/2026-11-18_0020_TMR3_T5_CLIQUE_ADHESION_TWO079.md; experiments/tmr/tmr3_t5_adhesion_two079.py; experiments/tmr/tmr3_t5_adhesion_two079_independent.py; compact results JSON in results/raw/tmr. PR stacked on /078. **Next**: C3-T5-HIGHER-ADHESION080, larger clique/nonclique separators and conditioned interface treewidth with correct source-discovery and space accounting.
+
+---
+
 # TMR-3 compact handoff | 2026-11-17 20:21 PST | T5 separator / local strong-two-cover gluing /077
 
 **Identity and priority.** TMR-3 / PNP Time-Space Tradeoffs. Current five-symbol beat-relation CSP user directive governs; November 15 end-to-end manuscript ownership and compatible safeguards preserved. Existing `main3_PNP_TIME_SPACE_TRADEOFFS.tex` edited in place, other owners and retired trackers untouched. Exactly the five existing agents, titles, enabled states and hourly America/Los_Angeles schedules unchanged. P versus NP OPEN.
