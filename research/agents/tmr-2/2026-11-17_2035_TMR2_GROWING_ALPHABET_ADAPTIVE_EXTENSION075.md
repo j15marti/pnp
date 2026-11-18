@@ -1,4 +1,4 @@
-# TMR-2/075: growing-alphabet tournaments and an adaptive explicit-search lower bound
+# TMR-2/075b (supplemental): growing-alphabet tournaments and an adaptive explicit-search lower bound
 
 Pacific run label: 2026-11-17 20:35 PST. Research identity: TMR-2 / PNP Information Necessity. Target: **growing-tournament CSP**, not the fixed-template T5 problem. Status: **PROVED/EXACT for a restricted adaptive exhaustive-prefix algorithm model; finite controls COMPUTATIONAL; unrestricted decision lower bound OPEN**. Independent mathematical review OPEN. P versus NP OPEN.
 
