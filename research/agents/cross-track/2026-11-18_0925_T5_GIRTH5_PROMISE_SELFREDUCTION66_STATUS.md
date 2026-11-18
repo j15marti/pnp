@@ -10,7 +10,7 @@
 The third candidate is the strongest closeable implication.
 
 ## Newest specialist research consulted
-- **Resource contraction:** [TMR-1/092 Fourier-flow exact count and poly(L) min(5^rho,2^(n-c)) upper bound](https://github.com/j15marti/pnp/blob/tmr1-20261115-independent-lean060/research/agents/tmr-1/2026-11-18_0759_TMR1_T5_FOURIER_FLOW_DUAL092.md); [TMR-3/086 affine/path source contraction](https://github.com/j15marti/pnp/blob/research/tmr3-t5-affine-core086-20261118/research/agents/tmr-3/2026-11-18_0722_TMR3_T5_IRREDUCIBLE_AFFINE_CORE086.md).
+- **Resource contraction:** Newer [TMR-1/093 full-rank path-transfer theorem](https://github.com/j15marti/pnp/blob/tmr1-20261115-independent-lean060/research/agents/tmr-1/2026-11-18_0903_TMR1_T5_PATH_INVERSE093.md) proves det(M_path)=2^ell and rank five despite fully positive endpoint support for ell>=4, with a polynomial-time exact transfer algorithm. This eliminates exact-rank and positive-support proxies for unavoidable work. Predecessor [TMR-1/092 Fourier-flow exact count and poly(L) min(5^rho,2^(n-c)) upper bound](https://github.com/j15marti/pnp/blob/tmr1-20261115-independent-lean060/research/agents/tmr-1/2026-11-18_0759_TMR1_T5_FOURIER_FLOW_DUAL092.md); [TMR-3/086 affine/path source contraction](https://github.com/j15marti/pnp/blob/research/tmr3-t5-affine-core086-20261118/research/agents/tmr-3/2026-11-18_0722_TMR3_T5_IRREDUCIBLE_AFFINE_CORE086.md).
 - **Nonrelativizing simulation:** [LSPV-5 FOLDPARITY1 typed semiconjugacy](https://github.com/j15marti/pnp/blob/main/research/main/2026-11-18_0811_MAIN_LSPV5_FOLDPARITY1_CONDENSED.tex); restricted endpoint proof, not unrestricted machine separation.
 - **Universal obstruction:** [TMR-2/087 exact directed edge lift, girth five](https://github.com/j15marti/pnp/blob/main/research/agents/tmr-2/2026-11-18_0812_TMR2_T5_GIRTH5_BALANCED_GADGET087.md).
 - **Proof transport:** [TMR-4/090 complete-query five-way OBDD/FBDD width-one versus at-least-five theorem](https://github.com/j15marti/pnp/blob/tmr4-20261118-0836-width-gap090/research/agents/tmr-4/2026-11-18_TMR4_T5_UNIFORM_WIDTH_GAP090.md), not a Resolution lower bound.
@@ -54,7 +54,7 @@ Falsifiers: native pin girth fails but recompile repairs C5; high-girth8/five-re
 | P versus NP | **OPEN** |
 
 ## Next four specialist assignments
-- **Resource contraction, TMR-1/TMR-3:** Audit the source-authentic F compiler/recognizer and residual base-source after weighted/Fourier/affine compression, charging full access, generation, workspace and exact arithmetic.
+- **Resource contraction, TMR-1/TMR-3:** Incorporate /093's invertible-but-easy path transfers; audit the source-authentic F compiler/recognizer and residual base-source after weighted/Fourier/affine compression, charging full access, generation, workspace and exact arithmetic.
 - **Nonrelativizing simulation, LSPV-5:** Check relativization of this derived-query extractor and reject any WRAPPER step lacking a proven indispensable nonrelativizing operation. Stress-test hidden-cost tape certificates.
 - **Universal obstruction, TMR-2:** Add the composed D5-extractor to all same-input common-clock UWI challengers; distinguish girth-five from five-regular girth-eight, and seek a valid stronger promise reduction if possible.
 - **Proof transport, TMR-4:** Check the precise width acquisition corollary and work toward a checked proof-system-specific translation; never infer unrestricted Resolution or arbitrary-algorithm lower bounds.
