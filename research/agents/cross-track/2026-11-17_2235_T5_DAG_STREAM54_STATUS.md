@@ -31,7 +31,7 @@ A_i=1: s_i→w_i; A_i=0: s_i→a_i.
 Bob's m-bit string B chooses one additional edge:
 B_i=1: t_i→w_i; B_i=0: b_i→t_i.
 
-These 5m edges on 6m vertices constitute a genuine unweighted T5 input graph. Each source has a *fixed, input-independent* integer header and exactly 5m equal-width records, streamed as the common 3m-edge scaffold, all m Alice edges, then all m Bob edges. There are no artificial Boolean constraints, extra target relations, loops, antiparallel pairs, or duplicated edges. Every graph is an **oriented DAG** under the per-gadget topological order b,s,t,u,w,a.
+These 5m edges on 6m vertices constitute a genuine unweighted T5 input graph. Each source has a *fixed, input-independent* integer header and exactly 5m equal-width **pure edge-pair records** with no A/B/C labels or separate Boolean fields, streamed as the common 3m-edge scaffold, all m Alice edges, then all m Bob edges. There are no artificial Boolean constraints, extra target relations, loops, antiparallel pairs, or duplicated edges. Every graph is an **oriented DAG** under the per-gadget topological order b,s,t,u,w,a.
 
 **Local exact counts**, independently determined by checking all 5^6 assignments:
 A_i B_i = 00: 160 T5 colorings; 01: 100; 10: 50; 11: ZERO.
@@ -65,8 +65,8 @@ in the customary fixed-program asymptotic regime, with O(1) finite control. (If 
 5. No uncharged guest calls, cache, source parsing, generation, address index, recursion, work tapes, communication, or output. Upper algorithm uses paid bitset. Multi-pass protocol transmits every writable-state bit. No claim that output-counting rank or proof width forces arbitrary SAT runtime.
 
 ## 5. Executed audit
-Reproducible CPython standard library script: `t5_dag_stream54_audit.py`. Deterministic seed 202611172229. All 87,380 complete (A,B) input pairs for m=1..8 checked, 9,840 YES and 77,540 NO; all local exact 5^6 counts independently enumerated; all 2^m prefix signatures checked for m<=10, i.e. 2^10 distinct states at the largest tested m. The five-arc core and each single-edge deletion were tested. Ordinary Resolution proof independently reconstructed, 100 inferences, 119 original CNF axioms, 291 recursive DPLL visits. 84 additional seeded fixed-length DAG/source/renaming source controls plus 5-ary relation controls.
-**265,583 assertions, ZERO unexpected failures.**
+Reproducible CPython standard library script: `t5_dag_stream54_audit.py`. Deterministic seed 202611172229. All 87,380 complete (A,B) input pairs for m=1..8 checked, 9,840 YES and 77,540 NO; all local exact 5^6 counts independently enumerated; all 2^m prefix signatures checked for m<=10, i.e. 2^10 distinct states at the largest tested m. The five-arc core and each single-edge deletion were tested. Ordinary Resolution proof independently reconstructed, 100 inferences, 119 original CNF axioms, 291 recursive DPLL visits. 84 additional seeded fixed-length DAG/source/renaming controls, exact edge-only source parsing and 84 malformed-header rejection controls, plus 5-ary relation controls.
+**265,751 assertions, ZERO unexpected failures.**
 The finite test is a check of construction and certificate, not a proof of the asymptotic communication bound, whose separate fooling-set/prefix-distinguishability proof is above. External peer review OPEN.
 
 ## 6. Explicit proof DAG
