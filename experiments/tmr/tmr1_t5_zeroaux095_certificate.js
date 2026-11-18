@@ -35,14 +35,14 @@ const run095 = function run095(){
       if(arcs.every(([u,v])=>R(c[u],c[v])))original++;
     }
     if(loop){
-      for(let t=0;t<8;t++){booleanAssignments++;ck(!(t>=0 && t<8 && false),"constant UNSAT");}
+      for(let t=0;t<8;t++){booleanAssignments++;const sat=[0,1,2,3,4,5,6,7].every(forbidden=>t!==forbidden);ck(!sat,"eight-clause constant UNSAT");}
       ck(original===0,"loop cannot have T5 hom");compiled=0;
     } else {
       for(let t=0;t<8**n;t++){
         booleanAssignments++;let d=t,c=new Array(n);for(let i=0;i<n;i++){c[i]=d%8;d=Math.floor(d/8);}
         if(c.every(U)&&arcs.every(([u,v])=>E(c[u],c[v])))compiled++;
       }
-      ck(3*n+5*arcs.length>=0,"clause formula");
+      ck(arcs.every(([u,v])=>u!==v) && [["x0","y2","y1"],["x1","y2","y1"],["x1","y2","y0"],["x2","x0","y0"],["x2","x0","y1"]].every(xs=>new Set(xs).size===3),"all arc clauses have distinct variables");
       ck(targetLen(n,arcs.length)===3*n+(3*n+5*arcs.length)+2+(3*n+5*arcs.length)*(2+3*(1+wc(3*n))),"bit formula");
     }
     ck(original===compiled,"graph count n="+n+" arcs="+JSON.stringify(arcs)+" source="+original+" cnf="+compiled);
