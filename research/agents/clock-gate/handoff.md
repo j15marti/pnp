@@ -1,3 +1,16 @@
+# CLOCKRMFIBER25 | 2026-11-17 America/Los_Angeles | most recent Clock Gate research
+**Owner:** CLOCK-INDEPENDENT-GATE1, outside the five TMR manuscript owners. **PROVED/EXACT restricted algebraic obstruction; independent review OPEN. P versus NP OPEN.** Historical handoffs retained below unchanged.
+
+**End-to-end dependency attacked:** universal MCSP NO-image exclusion in the CLOCKASYMTRANSFER24 conditional chain. For a deterministic fixed-length output map H=(P_1,...,P_m) on the genuine N=2^n source truth-table bits, with FULL source-dependent ANF coordinate degrees d_i and total D=sum d_i, EVERY attained fiber has size >=2^max(0,N-D), by the binary Reed-Muller minimum-weight theorem applied to its fiber-indicator polynomial. Since the size-t circuit class Y_t has at most U(n,t)=(t+1)(n+t+2)[b(n+t+2)^2]^t elements, if N-D>log_2 U, every nonempty fiber contains a source NO_t, and H(0) is therefore a mixed YES/NO image. Exact purity NECESSARILY demands D>=N-O(t log(n+t)), hence D>=(1-o(1))N when t=N^beta, beta<1. A cofinal family with m_j<=N^(a lambda^j+o(1)) and d_j<=N^(eta+o(1)), eta<1, necessarily fails at a fixed stage satisfying a lambda^j+eta<1. This improves on earlier CHEVALLEY-WARNING sparse-section no-gos when D is much greater than t. All ingredients are classical; no priority/novelty claim.
+
+**COMPUTATIONAL:** exact source code repo Git blob a1353af29e1604d924a7275e158ed42b4bd9623e, SHA256 173f60b7ec1f73e4581cfc0d6fb66d8554612f74c339e272b097ba0b439be618; 25,713 final assertions, zero failures; exhaustive 2,048 N=4 degree<=2 polynomials, 850 seeded N=8 systems, exact 2-gate n=3 Boolean circuit enumeration, paired quadratic 136/120 fibers with 40/64 hard (>2 gates) examples. Full local raw JSON SHA256 d8b648d3e1a37b68420d6fecfaba57235e2f8282fee4198cbf4a8070ed3408ec; GitHub JSON is explicitly condensed. No PH or one-tape lower bound experiment.
+
+**MAIN readback verified:** [full substantive report](2026-11-17_CLOCKRMFIBER25.md), [matching executable Python](../../../experiments/meta_lift/2026-11-17_clock_rmfiber25_audit.py), [condensed raw summary](../../../results/raw/meta_lift/2026-11-17_CLOCKRMFIBER25_summary.json). Connected repository reads substituted for unavailable local checkout preflight. No five-agent TMR manuscripts, schedules, titles, and no retired proof trackers modified.
+
+**ONE NEXT:** ASYMMETRIC-HIGHDEGREE-QUOTIENT26. Find an actually source-authentic near-linear headerless same-tape quotient with total FULL source-ANF degree Omega(N) and independently proved YES-only circuit compression, NO exclusion and one joint fixed-PH supplied-witness verifier; test cheap high-degree OR/threshold, seed/provenance alternatives, and same-realization costs.
+
+---
+
 # CLOCKASYMTRANSFER24 | Clock Gate handoff | 2026-11-17 America/Los_Angeles
 
 **Owner:** CLOCK-INDEPENDENT-GATE1, distinct from five active TMR manuscript owners. **Status:** PROVED/EXACT **conditional transfer criterion only**, independent review OPEN; no actual promise-pure quotient constructed; P versus NP OPEN. All peer-owned manuscripts, retired trackers and agent schedules untouched.
