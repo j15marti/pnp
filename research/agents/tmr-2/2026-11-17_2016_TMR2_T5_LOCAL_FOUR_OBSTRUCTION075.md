@@ -12,7 +12,7 @@ End-to-end chain: canonical actual source bytes -> strict ASCII parser and all d
 
 ## 2. Exact local theorem
 
-Let Out(x)={x+1,x+3} mod 5. For distinct labels x,y, the intersection Out(x)∩Out(y) is nonempty precisely when y-x mod 5 belongs to {0,2,3}. If x->y is also required, then y-x must belong to {1,3}∩{0,2,3}={3}.
+Let Out(x)={x+1,x+3} mod 5. For arbitrary labels x,y (including x=y), the intersection Out(x)∩Out(y) is nonempty precisely when y-x mod 5 belongs to {0,2,3}. If x->y is also required, then y-x must belong to {1,3}∩{0,2,3}={3}.
 
 Consider four distinct original source variables s,t,u,q and precisely these five required arcs:
 
