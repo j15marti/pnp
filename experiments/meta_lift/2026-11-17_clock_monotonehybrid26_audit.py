@@ -136,7 +136,7 @@ for t in range(8):
 
 # Exact small n=3 circuit-library control; no identification with asymptotic MCSP.
 def truth_col(i):
-    return sum(((x>>i)&1)<<x for x in range(8)
+    return sum(((x>>i)&1)<<x for x in range(8))
 
 def gate(a,b,t):
     z=0
