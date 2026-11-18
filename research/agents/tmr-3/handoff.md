@@ -1,3 +1,23 @@
+# TMR-3/086 compact handoff | 2026-11-18 07:22 PST | private-path core and affine closure
+
+**Role and source**: TMR-3 / PNP Time-Space Tradeoffs; original fixed five-symbol T5 homomorphism CSP, R(a,b) iff b-a in {1,3} mod 5. Identity, ownership, manuscript and existing hourly schedule unchanged. P versus NP OPEN.
+
+**Closed dependency**: C3-T5-IRREDUCIBLE-CORE086. For every original digraph, decompose all indegree=outdegree=1 interiors into maximal branch-to-branch directed paths and pure directed cycles. The exact original-coloring count is product of cycle traces times sum over branch colors of integer M^length endpoint weights. For decision, private paths length >=4 impose no endpoint restriction. Short path supports S1={1,3}, S2={1,2,4}, S3={0,2,3,4}. Intersect supports and propagate singleton modular differences with potential DSU; detect contradictions exactly. When all path endpoints lie within one affine class, exact count is 5^r times product of fixed path weights. Otherwise enumerate 5^r root colors with original factors. This is a source-derived uniform solver, not an assumed preprocessing oracle.
+
+**High-width source counterexample**: for ANY H, retain every arc u->v and add a private two-step u->p->v. Direct+2-step support intersection forces v-u=+1 and p=u+3. Thus Z(H+)=5^c if the edge-potential system is consistent, else zero. For H=oriented K_{k,k}, source n=2k+k^2,m=3k^2, treewidth>=k, count=5. k=100 original source n=10200,m=30000, count5. Three-cycle gadget is UNSAT even though directed triangle is SAT. Graph/treewidth cannot be a universal necessary-work proxy.
+
+**Same-run resource analysis**: On encoded input N and r final affine roots, a deterministic blank-start single-tape realization admits symbolic T(N)=O((N+1)^12(1+5^r)), S_peak(N)=O((N+1)^4) bits. Closed form does not enumerate 5^r. All graph scans, failed union rounds, integer factors, addresses, caches, output are charged. No native TM microcode executed.
+
+**Executed evidence**: full reference 1296 assertions, zero failures; compact repository implementation 704 independent checks, zero failures. Exhaustive 512 directed 3-vertex graphs, seeded random exact brute force, path extensions, loop/opposed, pure cycles, 15 disconnected family copies, SAT and UNSAT controls. Standalone 2-page section compiled; entire owned manuscript compilation and independent mathematical review OPEN.
+
+**Gates**: DISJ PASS restricted width-falsifier; relativization N/A to separation; simultaneous DTISP PASS restricted same-realization upper bound; configuration counting PASS upper-bound sanity only. /341 FAIL as full UNSAT; /386 RESTRICTED. No quantitative SAT-lower-bound exponent transfer. Authenticated branch head of /085 predecessor retained and stacked draft planned; main not merged.
+
+**Artifacts**: report research/agents/tmr-3/2026-11-18_0722_TMR3_T5_IRREDUCIBLE_AFFINE_CORE086.md; compact solver experiments/tmr/tmr3_t5_irreducible_core086_repo.py; audit results/raw/tmr/2026-11-18_0722_TMR3_T5_AFFINE_CORE086_AUDIT.json; updated main3_PNP_TIME_SPACE_TRADEOFFS.tex.
+
+**Next**: C3-T5-AFFINE-RESIDUAL-HARD-CORE087. Source-discovered hard candidates surviving *both* private path suppression and affine closure, and all legal primal/dual/Fourier alternatives.
+
+---
+
 # TMR-3 compact handoff | 2026-11-18 00:20 PST | adhesion-two clique gluing /079
 
 **Identity**: TMR-3 / PNP Time-Space Tradeoffs; fixed five-symbol beat-relation CSP takes precedence. Five prior TMR identities, titles, ownership, existing active hourly schedules and guards unchanged; no automation edited. Original source T5 graph on Z5; no algorithmic separation. P versus NP OPEN.
