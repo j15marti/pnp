@@ -1,5 +1,5 @@
 % BEGIN TMR-1 OWNED
-% Updated by TMR-1, 2026-11-18 05:00 PST. Owned living manuscript, not a shared tracker.
+% Updated by TMR-1, 2026-11-18 06:00 PST. Owned living manuscript, not a shared tracker.
 \documentclass[11pt]{article}
 \usepackage[margin=0.9in]{geometry}
 \usepackage{amsmath,amssymb,amsthm,hyperref}
@@ -10,6 +10,114 @@
 \date{November 17, 2026 (PST)}
 \begin{document}
 \maketitle
+
+\section{TMR-1/090: parsimonious bounded-width Boolean compiler and bit-linear decision normalization}
+\noindent\textbf{Status: PROVED explicit finite-template compiler and encoded-bit bound;
+finite COMPUTATIONAL verification; independent review OPEN. P versus NP OPEN.}
+
+For any directed source graph $G$ on $n$ vertices and $m$ arcs, including
+self-loops and opposed arcs, create five one-hot bits $y_{v,a}$
+and two auxiliary bits $p_v,q_v$ per source vertex.
+The ten clauses $\neg y_{v,a}\vee\neg y_{v,b}$ for $a<b$
+enforce at most one color.
+Encode $p_v\leftrightarrow(y_{v,0}\vee y_{v,1})$ and
+$q_v\leftrightarrow(y_{v,2}\vee y_{v,3})$ with three
+clauses each, of widths $(3,2,2)$, and require
+$p_v\vee q_v\vee y_{v,4}$.
+For each directed arc $u\to v$ and $a\in\mathbb Z_5$ add
+\[
+\neg y_{u,a}\ \vee\ y_{v,a+1}\ \vee\ y_{v,a+3},
+\qquad \text{all color subscripts modulo }5.
+\]
+
+\begin{theorem}[C1-T5-3CNF-PARSIMONIOUS-ISOLATE-OPT090]
+The resulting Boolean formula $F(G)$ has exactly $7n$ Boolean
+variables, $17n+5m$ clauses of width at most three,
+including $14n$ binary and $3n+5m$ ternary clauses,
+and $37n+15m$ literal occurrences. Its satisfying Boolean
+assignments are in \emph{bijection} with the $T_5$ homomorphisms:
+\[
+\boxed{\#\mathrm{SAT}(F(G))=\#\operatorname{Hom}(G,T_5).}
+\]
+For canonical unary-count, fixed-width endpoint source encoding
+of length $L_G=n+m+2+2m\,w(n)$, where
+$w(t)=\max(1,\lceil\log_2\max(2,t)\rceil)$,
+a canonical unary-count and binary-index target encoding has
+exact length
+\[
+L_F=58n+15m+2+(37n+15m)(w(7n)+1).
+\]
+After removing the $i$ isolated source vertices and relabeling
+the remaining $n'=n-i$ vertices, the target formula $F(G')$
+satisfies the exact count relation
+$\#\operatorname{Hom}(G,T_5)=5^i\#\mathrm{SAT}(F(G'))$
+and the \emph{decision} output has
+\[
+\boxed{L_{F(G')}\le 200L_G}.
+\]
+The full compiler is parsimonious; the isolate-normalized
+constant-factor compiler is not parsimonious unless $i=0$.
+\end{theorem}
+\begin{proof}
+The ten binary exclusions and one final ternary inclusion
+ensure exactly one of the five color bits is true. The two
+auxiliary variables are uniquely determined by their
+definitional equivalences. For a source arc $u\to v$,
+only the clause indexed by the unique true color $a=x_u$
+has a false first literal; it forces the unique color
+$x_v$ into $\{a+1,a+3\}$, exactly the beat relation.
+This also rejects every self-loop. Consequently the witness
+map is bijective.
+
+The ten exclusions and four binary gate implications
+give $14n$ binary clauses; the two gate implications
+in the reverse direction, final inclusion, and five
+per arc give $3n+5m$ ternary clauses.
+The canonical binary-index encoding uses
+$7n$ unary variable-header ones, $17n+5m$
+unary clause-header ones, two header terminators,
+two clause-width bits per clause, and
+$37n+15m$ signed literals of width $w(7n)+1$;
+substitution proves the displayed exact length.
+
+Each isolated vertex contributes five unconstrained colors,
+so deleting $i$ such vertices introduces the factor $5^i$.
+If $m\ge1$, every remaining vertex belongs to some arc,
+thus $n'\le2m$. Since $w(7n')\le w(n)+3$,
+\[
+\begin{aligned}
+L_{F(G')}&\le 58(2m)+15m+2+
+ (37(2m)+15m)(w(n)+4)\\
+ &=487m+89m\,w(n)+2\\
+ &\le489m+89m\,w(n)
+ <200(m+2m\,w(n))\le200L_G.
+\end{aligned}
+\]
+For $m=0$, emit the two-bit empty CNF. Valid input
+parsing, source validation, vertex relabeling, clause
+emission and witness reconstruction can be performed
+with conservative simultaneous sequential-bit-machine
+bounds $O((L_G+1)^4)$ time and
+$O((L_G+1)^2)$ peak writable space. No unrestricted
+time lower bound follows.
+\end{proof}
+
+\noindent\textbf{Counting classification qualification.}
+Dyer and Greenhill (2000) prove $\#\mathrm{Hom}(-,C_5)$
+is $\#P$-complete under their counting-reduction convention;
+the previously established parsimonious five-arc
+$C_5\to T_5$ gadget transfers this hardness to $\#T_5$
+under at least the same convention. This theorem supplies
+a parsimonious reverse compiler to width-at-most-three CNF.
+Do not conflate this with exactly-three-literals-per-clause
+or infer parsimonious $\#3SAT$-completeness without a
+separate reduction. The full local executable checked
+741 digraph instances, 2,573,078 five-state assignments,
+and 2,579,782 assertions with zero failures. These are
+finite computational controls, not a formal proof kernel.
+Independent review, LaTeX build and Lean/nanoda replay
+remain OPEN.
+
 
 \section{TMR-1/089: strongly connected Eulerian bipartite four-cycle hardness}
 \noindent\textbf{Status: PROVED explicit finite-template reduction,
@@ -4321,6 +4429,10 @@ J. Comput. System Sci. 4(2) (1970).
 \emph{Lectures in Computational Complexity}, 2003,
 Sections 3.4.1 and 12.1 (TQBF and relativizing equality).
 \url{https://pages.cs.wisc.edu/~jyc/810notes/book.pdf}
+\bibitem{dyergreenhill2000} M. Dyer and C. Greenhill,
+\emph{The Complexity of Counting Graph Homomorphisms},
+Random Structures \& Algorithms 17 (2000), 260--289.
+\url{https://doi.org/10.1002/1098-2418(200010/12)17:3/4%3C260::AID-RSA5%3E3.0.CO;2-W}
 \end{thebibliography}
 \end{document}
 % END TMR-1 OWNED
