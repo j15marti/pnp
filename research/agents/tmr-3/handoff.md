@@ -1,3 +1,21 @@
+# TMR-3/089 handoff | 2026-11-18 10:24 PST | complement-cover exact T5 counting
+
+**Owner/state preserved:** TMR-3 / PNP Time-Space Tradeoffs; five-symbol beat relation \(R(x,y)\iff y-x\in\{1,3\}\bmod5\); agent identity/title/enabled state/hourly schedule/ownership/safeguards unchanged.
+
+**Closed C3-T5-SIGNATURE-PERTURB089:** For connected bipartite source \(G=(U,V,E)\), form the source-authenticated bipartite complement \(H\) on missing U-V cross pairs. Let \(\tau\) be its minimum vertex-cover size, computed exactly by maximum matching and Kőnig alternating reachability. Pin the \(\tau\) cover vertices (at most \(5^\tau\) assignments). Remaining residual is genuinely complete bipartite, with exact unary domains from pinned arcs. /088 two-signature-class support counting generalizes using vertex-specific onto counts \(H_A(S)=\sum_{Q\subset S}(-1)^{|S|-|Q|}\prod_{v\in A}|D_v\cap Q|\); at most 225 support tuples per pinned coloring. This yields exact count for **every bipartite underlying source** with one symbolic simultaneous sequential-tape upper bound \(T=O((N+1)^{12}(1+5^\tau))\), \(S=O((N+1)^4)\) bits. \(\tau\le h\), the number of missing cross pairs. On nonbipartite sources exact \(5^n\) fallback.
+
+**Falsifier:** all-forward \(K_{2,2}\) has 30 original colorings; deleting one arc yields a tree with 40. Same-colored left vertices can have different INCOMPLETE signatures, so raw signatures with a missing-edge marker do not justify /088 injection. Conditioning before signatures repairs the proof. Large SAT control: all-forward \(K_{120,121}\) minus 60 edges all incident to one left vertex has 241 vertices, 14460 arcs, \(h=60,\tau=1\) and 38-digit exact count \(19938419936773738105086320950273638380\).
+
+**Actual evidence:** full reference 2176 deterministic assertions with 0 failures (including independent 5^n enumeration, 596 exact cover-size checks), byte-identical repeated audit; separately authored compact executable 453 independent comparisons, 0 failures and identical repeat. Local source SHA256 full: 35ad570fcc55ff30090d92855dfd5b29cdbe25170eb01f8cfc17570ca12dd748; compact: 9e476b59df02c6755b5a5c504485a9752aecfcadb396c99ae186c7431a554cbf. Full script, repo script, report, LaTeX standalone and raw audit provided in reproducibility package. Published compact script: experiments/tmr/tmr3_t5_perturb089_repo.py; report: research/agents/tmr-3/2026-11-18_1024_TMR3_T5_COMPLEMENT_COVER089.md; raw audit: results/raw/tmr/2026-11-18_TMR3_T5_COMPLEMENT_COVER089_AUDIT.json. Existing owned main3 manuscript appended and historical handoff preserved.
+
+**Gates:** DISJ PASS restricted upper; relativization NOT APPLICABLE to nonseparation; simultaneous DTISP PASS restricted symbolic single-realization upper with complete charging, no lower-bound conclusion; configuration counting upper consistency only. No arbitrary-source lower bound or P versus NP proof. Native one-tape microcode, full combined LaTeX compile and independent math review unexecuted.
+
+**ONE next load-bearing dependency:** C3-T5-BICLIQUE-MODULE090. Try source-authenticated glue of several near-complete bipartite blocks and correct boundary support functions, with matching, decomposition and interface search fully charged. Test families with globally large complement cover but small boundary versus high-overlap obstruction controls. Preserve easy-family SAT/UNSAT, affine, path, treewidth, signature, Fourier, alternate spanning forest, caching, recomputation and padding controls.
+
+P versus NP OPEN.
+
+---
+
 # TMR-3/088 compact handoff | 2026-11-18 09:27 PST | signature-quotient Kpq exact counting
 
 **Role/state unchanged:** TMR-3 / PNP Time-Space Tradeoffs; 5-symbol beat relation R(x,y) iff y-x in {1,3} mod 5; same title, ownership, enabled state, hourly schedule, safeguards. P versus NP OPEN.
