@@ -4392,6 +4392,130 @@ C1-T5-HIGH-ADHESION-MIXED-PC-RESIDUAL.}
 P versus NP remains OPEN.
 % END TMR-1/085
 
+
+% BEGIN TMR-1/091: strict exactly-three CNF with unique witness extension
+\section{Strict three-distinct-variable CNF for the five-symbol beat CSP /091}
+Fix $T_5=(\mathbb Z_5,R)$, $R(a,b)$ iff
+$b-a\bmod5\in\{1,3\}$.  A canonical source is a loop-permitted
+directed graph with distinct, lexicographically ordered arcs and
+bit length $L_G=n+m+2+2m w(n)$, where
+$w(k)=\max(1,\lceil\log_2\max(2,k)\rceil)$.
+The witness is $3n$ low-first bits decoding labels $0,\ldots,4$;
+malformed labels and source encodings are rejected before compilation.
+
+\begin{lemma}[Unique global Boolean constant /091]
+Let $z,s,t$ be three fresh Boolean variables and put one
+three-literal clause on the three distinct variables for each of the
+seven assignments in $\{0,1\}^3\setminus\{(1,0,0)\}$, falsified only
+by its associated assignment. Then this seven-clause CNF has
+exactly one satisfying assignment, namely $(z,s,t)=(1,0,0)$.
+\end{lemma}
+\begin{proof}
+A clause with literals $x$ for a forbidden zero coordinate and
+$\neg x$ for a forbidden one coordinate is falsified exactly
+at that forbidden triple. The conjunction eliminates seven distinct
+triples and retains precisely the eighth.
+\end{proof}
+
+\begin{theorem}[Parsimonious strict 3-CNF /091]
+For every valid directed $T_5$ source $G$, with $n$ vertices and $m$
+arcs, there exists a canonical strict $3$-CNF $F^*(G)$ having exactly
+\[
+ B=7n+3\quad\text{variables},\qquad
+ K=17n+5m+7\quad\text{clauses},
+\]
+where \emph{every clause has exactly three literals on three
+distinct Boolean variables}. There is a bijection between the
+satisfying Boolean assignments and the homomorphisms $G\to T_5$:
+\[
+ \boxed{\#\mathrm{SAT}(F^*(G))=\#\mathrm{Hom}(G,T_5).}
+\]
+This includes self-loops, opposed arcs, disconnected sources, and the
+empty source. The exact canonical target bit length is
+\[
+ \boxed{L_{F^*}=7n+5+
+    (17n+5m+7)\bigl(6+3w(7n+3)\bigr).}
+\]
+\end{theorem}
+\begin{proof}
+Start from the unique-extension one-hot compiler /090, having five
+color bits and two functionally determined gate bits per source vertex,
+fourteen two-literal clauses and three three-literal clauses per
+vertex, and five three-literal clauses for each directed source arc.
+Use the preceding global gadget, and replace every binary clause
+$(\ell\lor r)$ by $(\ell\lor r\lor\neg z)$.
+The seven gadget clauses force $z=1$ uniquely, so each padded
+clause has exactly the previous truth value. All old binary
+clauses have two distinct variables, the fresh $z$ differs from both,
+and old ternary clauses also have three distinct variables, even
+for a loop, because the indices $a,a+1,a+3$ differ modulo five.
+Every satisfying source witness extends uniquely to the previous
+gate bits and then to $(z,s,t)=(1,0,0)$; conversely any satisfying
+Boolean assignment determines exactly one source witness.
+The headers $1^B0\,1^K0$, the two-bit clause-width fields, and
+three signed $w(B)$-address literals per clause give
+$L=B+K+2+K(2+3(w(B)+1))$, yielding the displayed formula.
+\end{proof}
+
+\begin{corollary}[Isolate-normalized bit-linear decision compiler /091]
+Delete the $i$ isolated original vertices, let $n'=n-i$, and
+compile the surviving graph $G'$. Then
+\[
+ \#\mathrm{Hom}(G,T_5)=5^i\,\#\mathrm{SAT}(F^*(G')).
+\]
+The result preserves satisfiability and efficiently reconstructs
+witnesses but is not parsimonious when $i>0$. Its length is
+at most $500L_G$ on every valid source.
+For malformed source words, use the fixed contradictory strict
+$3$-CNF consisting of all eight possible clauses on three variables,
+with $101$ target bits, so the total decision reduction
+has affine bound $\lvert f(s)\rvert\le500(\lvert s\rvert+1)$.
+\end{corollary}
+\begin{proof}
+An isolated vertex has five freely chosen labels. If $m=0$, the
+normalized output is the seven-clause global gadget, whose length
+is exactly $89$ bits. For $m\ge1$, $n'\le2m$ and
+$w(7n'+3)\le w(n)+4$. Writing $w=w(n)$, the exact formula yields
+\[
+\begin{split}
+L_{F^*(G')}&\le 14m+5+(39m+7)(18+3w)\\
+ &=716m+131+117mw+21w\\
+ &\le847m+138mw\le500(m+2mw)\le500L_G.
+\end{split}
+\]
+A binary clause padded by a fresh \emph{free} Boolean bit would not
+be parsimonious: a satisfied clause has two such extensions.
+For the full compiler on an edgeless $n$-vertex source,
+$L_G=n+2$ while $L_{F^*}=\Theta(n\log n)$, so the exact full map
+has no universal constant-factor encoded growth.
+\end{proof}
+
+\paragraph{Same-realization and verification guard /091.}
+A complete deterministic sequential bit-machine implementing parsing,
+normalization, compilation, serialization, and witness translation
+has conservative simultaneous $T=O((L+1)^4)$ and writable
+$S_{\mathrm{peak}}=O((L+1)^2)$ bounds, charged on one machine.
+These are \emph{upper bounds}, not lower bounds.
+Executed local Node certificate:
+\path{experiments/tmr/tmr1_t5_strict3cnf091_certificate.js}.
+It checked 531 directed small graphs, 64,411 source assignments,
+655,360 complete Boolean assignments, and 163,314 assertions,
+with zero failures. The finite tests are \textbf{COMPUTATIONAL}.
+Raw record:
+\path{results/raw/tmr/2026-11-18_TMR1_T5_STRICT3CNF091_RAW.json}.
+Complete report:
+\path{research/agents/tmr-1/2026-11-18_0655_TMR1_STRICT3_PARSIMONIOUS091.md}.
+The semicomplete tournament theorem gives NP-completeness
+(\url{https://doi.org/10.1137/0401029}); the counting dichotomy of
+Dyer--Greenhill supports counting hardness under its stated reductions.
+Neither this parsimonious translator nor those classifications
+establish a superpolynomial time or space lower bound. All cheap
+algorithms and alternate representations remain permitted.
+Full LaTeX compilation, external review and formal kernel replay
+are OPEN. No agent identity, schedule or owned workflow was modified.
+P versus NP remains OPEN.
+% END TMR-1/091
+
 \begin{thebibliography}{9}
 \bibitem{garey1976} M. R. Garey, D. S. Johnson and L. Stockmeyer,
 \emph{Some Simplified NP-Complete Graph Problems},
