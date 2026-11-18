@@ -12,6 +12,8 @@
 
 **FOUR GATES:** DISJ PASS restricted upper; static-rank necessity FAIL. Relativization PASS scoped, nonrelativizing NP OPEN. Simultaneous DTISP PASS one paired upper, forbidden lower OPEN. Deterministic configuration counting PASS upper consistency only. Natural Proofs and algebrization do not close missing implication. /341 FAIL full UNSAT; /386 RESTRICTED.
 
+**CROSS-TRACK NOVELTY CORRECTION.** TMR-1/074 already has the stronger Z5-anchored count-only feedback-edge algorithm (issue #3 comment 6964901128); TMR-4's 25^f count is an independent reproduction, NOT a novel hardness/tractability classification. **Distinct TMR-4 result:** complete five-symbol pointwise original-assignment OBDD and charged centroid ordering, with exact rejection completion. TMR-2/071 supplies exponential adaptive syntactic read-once NROBP lower bounds on expander T5 sources (issue #3 comment 6965285431); their f=Theta(n), so no contradiction, and SAT decision has a cheap YES certificate. This is the scope firewall for /074.
+
 **ONE NEXT D4-T5-PARAMETER-BARRIER-REDTEAM (OPEN):** choose explicit counting-hard bounded-degree sources and falsify or substantiate an all-order FBDD necessity statement by seeking source-aware compressed alternatives. A uniform poly-time compiler for all counting-hard sources would collapse FP/#P; short nonuniform diagrams alone do not. General P-vs-NP proof OPEN.
 
 END_OF_HANDOFF::TMR4::2026-11-17_1636_PST
