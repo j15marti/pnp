@@ -41,6 +41,7 @@ const parse=s=>{let lines=s.split('\n');if(lines.pop()!==''||lines.some(l=>l.inc
  for(let i=0;i<n;i++)if(lines[1+i]!=='v '+i)throw Error('vertex');let E=[];
  for(let i=0;i<m;i++){let z=/^a (0|[1-9][0-9]*) (0|[1-9][0-9]*)$/.exec(lines[1+n+i]||'');
  if(!z)throw Error('arc');let a=+z[1],b=+z[2];if(a>=n||b>=n)throw Error('index');E.push([a,b])}
+ for(let i=1;i<E.length;i++)if(E[i][0]<E[i-1][0]||(E[i][0]===E[i-1][0]&&E[i][1]<=E[i-1][1]))throw Error('sort/duplicate');
  if(enc(n,E)!==s)throw Error('canonical');return [n,E];};
 const lift=(n,E)=>{let arcs=[];E.forEach(([x,y],j)=>{let s=n+4*j,t=s+1,u=s+2,v=s+3;
  arcs.push([x,s],[t,s],[t,u],[u,y],[y,v],[v,t]);});
