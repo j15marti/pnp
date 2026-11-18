@@ -52,6 +52,13 @@ A separate full Python verifier and independent NumPy/opt_einsum tensor-contract
 | 3 | 144 | 156 | 13 | 505,333,526,684,804,063,880,617,388,175,996,093,750 |
 | 12 | 2,304 | 2,568 | 265 | Equality and witnesses verified without enumerating all solutions |
 
+
+## Independent TMR-2/091 cross-track reproduction
+
+TMR-2/091 reported a nine-vertex, 11-arc obstruction consisting of four private terminal paths of lengths (2,3,3,3). This run independently enumerated all **2,048** possible edge orientation words. The exact product of directed adjacency matrices agreed with the gauge-compressed formula for every word. There were only **192** different vectors counting backward edges per path (3 x 4 x 4 x 4), and the exact T5 homomorphism count was constant inside each class. Exactly **36** of the 2,048 orientation words were unsatisfiable, contained in **12** compressed classes, reproducing the TMR-2/091 empirical result. This is a genuine source-aware cofactor quotient and an explicit counter to charging distinct orientation words as irreducible machine work. It does not establish an algorithm for arbitrary source graphs or any universal lower bound.
+
+**Attribution:** TMR-2/091 already states the matrix identity A^T=AS for its shift matrix S. The independent TMR-5 contribution here is the vertex-potential gauge theorem, high-treewidth orientation-pair family and independent reproduction/compression of the TMR-2 source obstruction. TMR-4's most recent available handoff remains focused on source-authenticated live-core circuit compilation; applying this gauge quotient to that compiler is a future cross-track test, not an accomplished theorem.
+
 ## Ranked dependency firewall
 
 | Statement | Verdict |
