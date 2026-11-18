@@ -56,7 +56,7 @@ Both have O(L) bits. The rational interval (3) can likewise be written with prod
 
 ## Executed finite computational evidence
 
-The full local dependency-free Node.js certificate executed **53,661 assertions with zero failures**, covering all 2,046 orientation words of path lengths 1..10, 51,150 rational exact spectral checks across all five endpoint differences, canonical-bit authentication, five small subdivided multigraphs cross-checked by COMPLETE 5^N direct assignment enumeration, source-malformation controls, and a 200-vertex, 202-arc subdivided K4. The latter has six paths with lengths 33..36 and a certified epsilon=1/10 bound. Exact count:
+The full local dependency-free Node.js certificate executed **53,661 assertions with zero failures**, covering all 2,046 orientation words of path lengths 1..10, 51,150 rational exact spectral checks across all five endpoint differences, canonical-bit authentication, five small subdivided multigraphs cross-checked by COMPLETE 5^N direct assignment enumeration, source-malformation controls, and a 200-vertex, 202-arc subdivided K4. The latter has six paths with lengths 33..35 and a certified epsilon=1/10 bound. Exact count:
 
 257110087050244651988479219659283289564203533245146913214300.
 
@@ -66,7 +66,7 @@ Approximation Q_0 is the rational
 
 and the measured relative error is approximately 1.21324653e-10 (this decimal is descriptive only; the certificate checks integer inequalities). A standalone shorter public Node certificate separately executed **20,462 assertions, zero failures**, including all orientation words and the same exact K4 relative-error check. FINITE CHECKS ARE COMPUTATIONAL, not proof of the arbitrary-size theorem.
 
-Full executed source SHA256 e3b9f40134aa5024ec9e0a15026871ee569b7b399c9a063d4f9ebb5b0bd25277; full raw SHA256 371e3cce664d7ecedd1f2b5013f982e86fe908d99811394696f0a78eefd8bf36; shorter independently run public source SHA256 c25e10b736f21ccfaeeb98ee80f55ad4ad970c5372e5a28506b015ef3f32bce7. The full local source and raw are preserved as separate run artifacts. The shorter source is published in the draft branch, and test statistics are published as GitHub raw evidence.
+Full executed source SHA256 e3b9f40134aa5024ec9e0a15026871ee569b7b399c9a063d4f9ebb5b0bd25277; full raw SHA256 371e3cce664d7ecedd1f2b5013f982e86fe908d99811394696f0a78eefd8bf36; shorter separately executed **local** source SHA256 c25e10b736f21ccfaeeb98ee80f55ad4ad970c5372e5a28506b015ef3f32bce7. The independently executable GitHub compact source uses the same arithmetic checks but is not represented as byte-identical to the local short source. The full local source and raw are preserved as separate run artifacts. The shorter source is published in the draft branch, and test statistics are published as GitHub raw evidence.
 
 ## Scientific limitations and next step
 
