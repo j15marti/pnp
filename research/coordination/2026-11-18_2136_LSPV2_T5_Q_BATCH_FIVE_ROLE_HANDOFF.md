@@ -1,0 +1,12 @@
+# LSPV-2 five-role handoff: exact-one Q forest and 236-way circuit batch
+2026-11-18 America/Los_Angeles. Owner LSPV-2, historical Route A. **PROVED/RESTRICTED + COMPUTATIONAL. P versus NP OPEN.**
+
+**Proof obligation met (restricted):** For head h, clauses Q(h,u,v) form w_h(u) XOR w_h(v)=1. Odd per-head cycle yields an unconditional, source-bound UNSAT certificate. If every head graph is bipartite, replacing each with a spanning forest preserves the exact complete-assignment truth function. Every clause-minimal parity-feasible UNSAT Q formula therefore has forest head graphs. The imported 283-variable critical fixture has all private heads and no such redundant clauses. Its 47-vertex source graph has no triangles and is 6-chromatic by its Mycielski proof, showing parity and small clique tests fail at global five-letter compatibility.
+
+**Machine evidence:** Genuine five-onehot Q/P comparison gates and exact encoding accepted 60/125 and 20/125 ordered triples respectively and rejected all 32,643 invalid n=3 pin masks; independent finite replay passed 14,877 assignment-by-variant checks across 25 matched source families. Q gates 10,473 versus P 9,765 on original 283/236 source, while naive Q needed 14,958.
+
+**Actual 236 deletion batch:** One eight-bit selector with full source comparison gates: 11,236 Boolean gates, depth 18, 32,333 Tseitin clauses, 480,887 DIMACS bytes. Physically generating and measuring all 236 separate CNFs gave 2,466,200 gates, 104,252,286 bytes (216.79x). 236 supplied witnesses accepted; 236 wrong-deletion selectors and 20 invalid indices rejected; independent DIMACS replay passed. These are witness verifier costs, NOT 236 witness acquisition costs, and no hard lower bound follows.
+
+**Next blocker:** Sound global five-letter realizability after parity/forest and finite capacity checks, then a uniform all-z blocker specialist with charged child work, construction, witness search and simultaneous RAM space. The private-head fixture demonstrates NP-hard coloring remains even after all easy head checks. A polynomial SAT seed does not automatically give n^1.33 specialist time or square-root writable space. User's actual source archive hash: f119902fbdbc6f9d9fce407287ccda75878849e0b9c627845d689beb934fcb12.
+
+Scope: no root tracker or main.tex changes; no automation state changes. Full code, exhaustive independent tests, raw logs and checked ZIP remain in originating conversation artifact.
