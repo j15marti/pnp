@@ -1,0 +1,226 @@
+% LSPV-5 REPORT::SELECTOR-REALIZATION-REDTEAM530::2026-11-18T19:48:00-08:00
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newcommand{\SAT}{\mathrm{SAT}}
+\newcommand{\UNSAT}{\mathrm{UNSAT}}
+\newcommand{\UNKNOWN}{\mathrm{UNKNOWN}}
+\title{LSPV-5 independent red team: arbitrary bad-block selectors, correct paths, and encoding consistency}
+\author{LSPV-5 Independent Proof Red Team (Route B)}
+\date{18 November 2026, America/Los\_Angeles}
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.93\linewidth}{\textbf{Verdict.}
+An arbitrary row-to-bad-block function can be realized by an edge-critical, connected source in which every row has exactly one bad block and every one-clause deletion has a unique SAT witness.  This theorem is \textbf{PROVED/EXACT} and independently reproduced, but it duplicates the stronger simple construction already present in LSPV-1/626.  Dense affine selectors, the full selector table, and the T5 H9 four-path cover are source-easy hostile controls.  Therefore selector entropy, range, full input support, unique deletion witnesses, or table size do not by themselves imply witness-search or refutable-block acquisition hardness.  The fully charged supplied-layout recurrence remains \textbf{PROVED/EXACT}; its arbitrary-CNF hereditary compiler remains \textbf{OPEN}.  P versus NP remains \textbf{OPEN}.}}
+\end{center}
+
+\section{Target, quantifiers, and frozen falsifiers}
+
+\textbf{Target claim.}  Test whether the existence of a row-dependent refutable block, together with a large or ``complex'' selector $f:z\mapsto j(z)$, yields a hard one-sided specialist or a square-root-space lower bound.  The relevant quantifiers are
+\[
+ \forall F\in\UNSAT\;\forall z\in Z(F)\;\exists j\le B(F)
+ \quad F_j(z,\cdot)\in\UNSAT,
+\]
+while the desired specialist must be one fixed deterministic uniform program, receive no answer advice, and pay source parsing, candidate acquisition, every failed child of either polarity, verification, replay, materialization, output, and peak live workspace.
+
+Before searching, the claim was tested against four precise falsifiers:
+\begin{enumerate}
+  \item a source that realizes every selector $f$ but remains easy to solve from its syntax;
+  \item a selector in which every shared bit is relevant and each flip changes many output bits, yet $f$ and $f^{-1}$ are algebraically cheap;
+  \item a complete selector table of size $o(n^{1/2})$ in the advertised exponent regime; and
+  \item an inconsistency between the parameter $n$ and the physical size of all $RB$ maximum-length children.
+\end{enumerate}
+
+\section{Arbitrary selector realization}
+
+Let $h\ge1$, $Z=\{0,1\}^h$, and let $f:Z\to[B]$ be arbitrary.  For $s\in Z$ define the full-sign clause
+\[
+ C_s=\bigvee_{i=1}^{h}\ell_i(s),\qquad
+ \ell_i(s)=\begin{cases}x_i,&s_i=0,\\ \neg x_i,&s_i=1.\end{cases}
+\]
+Thus $C_s$ is false at exactly the row $s$.  Put $C_s$ in block $f(s)$ and let
+\[
+ H_f=\bigwedge_{s\in Z}C_s.
+\]
+
+\begin{theorem}[arbitrary selector, critical deletion, and unique witness]
+For every $h\ge1$, every $B\ge1$, and every function $f:Z\to[B]$:
+\begin{enumerate}
+  \item $H_f$ is UNSAT;
+  \item under row $z=s$, exactly block $f(s)$ is UNSAT and every other block is SAT;
+  \item deleting $C_t$ makes the source SAT with the unique satisfying assignment $t$;
+  \item all private variable sets are empty and hence pairwise disjoint; and
+  \item for $h\ge2$ the primal graph is connected and every original clause is indispensable.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+At row $s$, clause $C_s$ is false and every $C_t$ for $t\ne s$ is true.  Hence exactly the block containing $C_s$, namely $f(s)$, is false.  Every row falsifies one clause, so $H_f$ is UNSAT.  If $C_t$ is deleted, row $t$ satisfies every remaining clause.  Any other row $s$ still falsifies the present clause $C_s$, proving uniqueness and indispensability.  Every full-sign clause contains every shared variable, so the primal graph is complete when $h\ge2$.
+\end{proof}
+
+The same selector can be realized with explicit disjoint private variables: introduce fresh $u_s$ and place
+\[
+ (C_s\lor u_s)\wedge(C_s\lor\neg u_s)
+\]
+in block $f(s)$.  At $z=s$ this is $u_s\wedge\neg u_s$; at every other row it is true independently of $u_s$.  This variant independently checks that the phenomenon is not an artifact of empty private sets.
+
+There are $B^{2^h}$ possible selectors.  Nevertheless the full-sign source is easy.  A parser extracts the unique falsifying mask of each valid clause.  Completeness of the mask set certifies the full-cover UNSAT case.  On the one-clause-deletion promise, the missing mask is recovered by XORing all masks in $Z$ with the masks present in the source, then checked against every clause.  This is a source-aware upper algorithm, not a lower bound.
+
+\section{Dense affine and table-size hostile controls}
+
+For even $h$, define over $\mathbb F_2$
+\[
+ f(z)=(J+I)z,
+\]
+where $J$ is the all-ones matrix.  Each input-bit flip changes exactly $h-1$ output bits; every input bit is globally relevant.  Since $h$ is even,
+\[
+ (J+I)^2=J^2+2J+I=hJ+I=I,
+\]
+so $f$ is a self-inverse permutation and is evaluated by parity in $O(h^2)$ elementary bit operations (or faster with word operations).  If one target block is deleted in the bijective selector source, its unique satisfying row is $f^{-1}(t)=f(t)$.  Thus dense dependence and bijectivity do not imply hard acquisition.
+
+At the advertised values $R\le n^{.195+o(1)}$ and $B\le n^{.65+o(1)}$, a literal selector table uses
+\[
+ R\lceil\log_2 B\rceil=n^{.195+o(1)}\log n=o(n^{1/2}).
+\]
+It may be too large for logarithmic space, but it cannot alone prove a square-root-space lower bound.  Its information content also does not prove that a solver must materialize it; the affine control computes entries on demand.
+
+These results \textbf{FALSIFY/RETIRE} the following standalone mechanisms: selector range, selector-table entropy, full input support, a fixed bad block, or a unique deletion witness as an unrestricted time or space lower bound.  They do not construct a general arbitrary-CNF specialist and do not rule out a more sophisticated model-matched invariant.
+
+\section{The reproduced charged recurrence and a new encoding caveat}
+
+For an authenticated supplied layout
+\[
+ F(z,y_1,\ldots,y_B)=\bigwedge_{j=1}^B F_j(z,y_j)
+\]
+with disjoint private sets, $R\le n^{.195+o(1)}$, $B\le n^{.65+o(1)}$, and child length $L\le n^{.35+o(1)}$, a sequential deterministic scan using one fixed total exact child SAT decider $A$ obeys
+\begin{align*}
+ T'(n)&\le n^{1.195+o(1)}+n^{.845+o(1)}T_A(n^{.35+o(1)}),\\
+ S'(n)&\le n^{.35+o(1)}+S_A(n^{.35+o(1)}),
+\end{align*}
+when only one streamed child is live and all indexing fits the stated budget.  Hence a one-step $n^{1.33+o(1)}$ time bound requires child exponent $t\le97/70$, and $n^{.5+o(1)}$ space requires $s\le10/7$.  A generic polynomial SAT seed supplies neither numerical gate.  The hereditary fixed point $(1.30,.35)$ remains conditional on an all-input, solver-dependent, recursively closed compiler.
+
+There is an additional source-size consistency obligation.  If all $RB$ maximum-length children are independent and physically explicit, then their aggregate size is
+\[
+ RBL=n^{.195+.65+.35+o(1)}=n^{1.195+o(1)}.
+\]
+Thus $n$ cannot simultaneously be ordinary encoded input length and the parameter governing all independent maximum-size children.  One must either (i) remeasure exponents in the true expanded input length, or (ii) provide a compressed source with charged random access, virtual child generation, replay, and materialization.  This is a model-consistency firewall, not a proof that every compressed layout is hard.
+
+\section{Correct paths, polarity, and wrong-path soundness}
+
+\paragraph{SAT output.}
+A sound successful path outputs one common row $z$ plus a private witness for every block; the verifier checks every original-source constraint.  Wrong or malformed paths return $\UNKNOWN$, never UNSAT.  Candidate acquisition and witness output are charged.
+
+\paragraph{UNSAT output.}
+A sound successful path supplies, for every row $z$, a block index and either a source-bound local refutation or a replay of a total exact child decider.  Every universal row is checked.  Indices alone are not arbitrary-CNF refutations.  Wrong paths return $\UNKNOWN$, never SAT.
+
+\paragraph{Free polarity.}
+A free bit that identifies the correct side is answer advice.  Two uniformly sound partial specialists become a decision algorithm only after all-input completeness and a common worst-case clock are proved.  Timeout cannot be interpreted as the opposite label without such a theorem.
+
+\paragraph{$k$ verifiable bits.}
+If a total verifier is sound on every path, complete for one polarity, and costs at most $V(n)$ time and $W(n)$ writable space on every capped replay, deterministic enumeration costs
+\[
+ 2^{k(n)}V(n)\operatorname{polylog}n
+ \quad\text{time},\qquad
+ W(n)+O(k(n)+\log V(n))
+ \quad\text{space}.
+\]
+At verifier time $n^{1.33+o(1)}$, space $n^{.5+o(1)}$, and $k=\alpha\log_2 n+o(\log n)$, Buss--Williams' $1.34070$ point excludes all fixed $\alpha<.01070$; $\alpha\le.0106$ is a safe rounded statement.  The full selector table has $k=n^{.195+o(1)}\log n$, far outside this logarithmic boundary.
+
+\paragraph{Adaptive and alternating strategies.}
+A supplied favorable root-to-leaf path is not the whole strategy.  A depth-$k$ adaptive strategy may have $2^k$ leaves.  Any universal branch must be visited or represented by a sound globally verified policy.  ``Correct path'' cannot erase the $\forall z$ or $\forall y$ quantifiers.
+
+\paragraph{Certificate access.}
+An external random-access read-only certificate tape is a verifier/advice model distinct from ordinary writable workspace.  Its length, address computation, access time, and replay are charged.  A standard one-way nondeterministic guess is not freely reread unless stored.
+
+\section{Simultaneous time--space literature audit}
+
+\begin{center}
+\small
+\begin{tabular}{p{.20\linewidth}p{.26\linewidth}p{.46\linewidth}}
+\toprule
+Polarity/model & Sourced statement & Exact consequence here\\
+\midrule
+Deterministic SAT decision & Buss--Williams, random-access DTISP, Figure 8.2: an alternation-trading refutation exists at $(c,\epsilon)=(1.34070,.5)$. & A uniform all-input $n^{1.33+o(1)}$-time, $n^{.5+o(1)}$-space deterministic decider in the same model is excluded.  Promise layouts and foreign RAM models require a reduction/simulation.\\
+Nondeterministic SAT & FLMV Theorem 1.2: for every $c<\sqrt2$ there is some $d(c)>0$ such that SAT is not in nondeterministic random-access time $n^c$ and space $n^{d(c)}$.  Fortnow separately rules out near-linear time with $n^{1-\varepsilon}$ space. & This corrects the prior report's overbroad claim that no superlinear nondeterministic-SAT exclusion applies.  Neither cited result excludes the particular $(1.33,.5)$ pair; the optimized FLMV exponent recorded in LSPV-1/551 is about $.0893$, not $.5$.\\
+Nondeterministic UNSAT / TAUT & FLMV's coNTISP simulations and the Diehl--van Melkebeek--Williams improvement give superlinear small-space regions (subpolynomial-space endpoint $4^{1/3}$ for TAUT). & They require exact branch clocks and sufficiently small space.  They do not state an exponent-$.5$ exclusion at time $1.33$.\\
+External certificate verifier & Read-only proof/certificate syntax with random access. & Not automatically DTISP, NTISP, or coNTISP in the cited model.  Certificate length/access and writable verifier space must be declared; deterministic enumeration remains charged.\\
+Named proof system & Resolution, Frege, ER, or historical mixed-calculus refutations. & A lower bound transfers only to that proof system unless an explicit machine-to-proof theorem is supplied.  It does not lower-bound unrestricted SAT execution.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The FLMV paper itself states Theorem 1.2 for nondeterministic SAT and separately explains the conondeterministic simulation used in the indirect diagonalization.  The polarity cannot be inferred from a secondary abstract alone.
+
+\section{T5 and computational controls}
+
+For T5, an oriented path step contributes $\{1,3\}$ in the forward direction and $\{2,4\}$ in the reverse direction.  Exact dynamic programming independently reproduces the H9 four-path words
+\[
+ \mathrm{BBB},\quad\mathrm{FBB},\quad\mathrm{FFF},\quad\mathrm{BB}
+\]
+with forbidden endpoint differences $\{4\},\{3\},\{1\},\{0,2\}$.  These form an exact one-bad-path cover of the five differences.  Hence H9 is a source-aware cheap control, not evidence that $RB$ semantically possible routes must all be expensive.
+
+The new standard-library Python audit exhausts every two-block selector for $h=1,2,3$: 276 maps, 2,120 selector rows, both the one-clause and fresh-private-variable realizations, and all 2,120 one-clause deletions.  It also checks $J+I$ at $h=2,4,6$, five asymptotic table-size points through $\log_2n=1024$, the exact $1.195$ aggregate-child exponent, the $.01070$ advice boundary, and the H9 path relations.  There were 9,036 assertions and zero failures in under one second.
+
+Executable SHA-256:
+\begin{quote}\ttfamily aeb857afd1b8486344c4099ec7e59545c362ea4e6e7d2c7543429d30d2ca20cd\end{quote}
+Raw JSON SHA-256:
+\begin{quote}\ttfamily cc987a336ac722f264b9995d905f85946b4f8252e0a46b8a81a66ea1ef5e399b\end{quote}
+
+The separately supplied \path{SELECTOR_ADVERSARY1_20261119.zip} agrees on the selector theorem and affine control, but its bundled script omits the T5 JSON dependency needed to reproduce its bundled T5 subsection exactly.  This is a reproducibility defect in that package only; the new audit is self-contained.
+
+\section{Corpus reconciliation and disposition}
+
+\paragraph{CORPUS REVIEWED.}
+Both root proof trackers; AGENTS.md; CODEX.md; the full project research protocol; root main; current coordination handoffs; LSPV-5/529; LSPV-1/626; LSPV-2's 19:20 block-batch audit; Clock Gate/46; the selector-adversary package; T5 H9/H33 deposited controls; and repository searches for selector, correct-path, support-selector, batching, and hereditary-split claims.  Primary theorem statements were checked in FLMV and Buss--Williams; the Fortnow and Diehl--van Melkebeek--Williams scopes were compared by model and polarity.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.}
+The arbitrary-selector theorem in the new selector package is not novel: LSPV-1/626 already proves the stronger and simpler one-clause full-sign construction, including connectedness, clause criticality, and unique deletion witnesses.  This report independently reproduces that construction and adds the dense affine, table-size, and physical-input consistency audits.  No contradiction with the row--block recurrence was found; the selector result attacks a proposed lower-bound mechanism, not the recurrence's upper bound.
+
+\paragraph{WHAT CHANGED RELATIVE TO ROOT MAIN.}
+No P-versus-NP claim is promoted.  Selector entropy/full support/unique witness are retired as standalone hardness mechanisms; the encoding-size caveat is added; and the prior LSPV-5/529 statement about nondeterministic SAT lower bounds is corrected.  The GitHub root still returns the literal placeholder \texttt{PLACEHOLDER\_TOO\_LARGE\_USE\_LOCAL\_APPEND} with blob SHA \texttt{22e5354d504130bdcf9a1b2abe1b315e0d42f06a}; the local root is a stale 2.1MB snapshot.  A conflict-safe whole-document reconciliation and complete readback are therefore blocked.  The canonical file was not overwritten.
+
+\paragraph{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS.}
+Adopted: the exact row--block semantics, charged recurrence, tri-state wrong-path interface, and T5 H9 control.  Rejected: free polarity, one favorable adaptive path, uncharged read-only advice, and treating $n$ as both compressed source length and expanded child volume.  Retired for this target: selector entropy, range, full support, or unique deletion witness as unrestricted execution lower bounds.
+
+\paragraph{STALE OR OVERSTATED CLAIMS FOUND.}
+LSPV-5/529's phrase ``no applicable superlinear alternation-trading exclusion for the existential SAT witness path'' is too broad.  FLMV Theorem 1.2 does give a nondeterministic SAT time--space lower-bound region; it simply does not reach space exponent $.5$ at time exponent $1.33$.  Secondary descriptions that call the same theorem only ``conondeterministic'' must be reconciled with the paper's explicit theorem statement and its separate simulation argument.
+
+The latest scheduled LSPV-4 predecessor artifact could not be located with a valid current-run marker and sentinel.  No predecessor scientific body was reconstructed.  The scheduler/agent-control interface needed to issue a direct retry was unavailable in this run; this is recorded as a write-recovery blocker.
+
+\section{Status ledger and next blocker}
+
+\begin{center}
+\begin{tabular}{p{.30\linewidth}p{.17\linewidth}p{.45\linewidth}}
+\toprule
+Claim & Status & Scope / blocker\\
+\midrule
+Arbitrary selector realization, critical deletion, unique witness & PROVED/EXACT & All $h,B,f$; full-sign original clauses; source-easy hostile control.\\
+Fresh-private-variable guard realization & PROVED/EXACT & Pairwise disjoint $u_s$; two clauses per row.\\
+Dense affine selector is a hard acquisition witness & FALSIFIED/RETIRED & $J+I$ is self-inverse for even $h$ and computed by parity.\\
+Selector table forces $n^{1/2}$ space & FALSIFIED/RETIRED & $R\log B=n^{.195+o(1)}\log n=o(n^{1/2})$.\\
+Charged supplied-layout recurrence & PROVED/EXACT & Authenticated layout, total exact child seed, streamed one-live-child port.\\
+Hereditary arbitrary-CNF compiler & OPEN & Must be uniform, solver-dependent, recursively closed, source-authenticated, and fully charged.\\
+One-step $1.33/.5$ from an arbitrary polynomial seed & FALSIFIED/RETIRED & Needs $t\le97/70$ and $s\le10/7$.\\
+Unrestricted P-versus-NP conclusion & OPEN & No general specialist or all-input transfer theorem is constructed.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Highest-value next test.}  Replace selector cardinality by a source-invariant acquisition statement that survives the full-sign and dense-affine controls: either construct a uniform hereditary compiler for every arbitrary CNF child, or state a model-matched property that every legal source must satisfy but neither the guard source nor a compact algebraic selector can fake.  The property must be tied to actual machine work, not to an extensional table.
+
+\section*{Primary references}
+\begin{enumerate}
+  \item L. Fortnow, R. Lipton, D. van Melkebeek, and A. Viglas, ``Time-Space Lower Bounds for Satisfiability,'' \emph{JACM} 52(6), 2005, \url{https://lance.fortnow.com/papers/files/tst.pdf}.
+  \item S. Buss and R. Williams, ``Limits on Alternation-Trading Proofs for Time-Space Lower Bounds,'' \emph{Computational Complexity} 24, 2015, \url{https://mathweb.ucsd.edu/~sbuss/ResearchWeb/npProofLimits/paper-journal.pdf}.
+  \item L. Fortnow, ``Time--Space Tradeoffs for Satisfiability,'' \emph{JCSS} 60(2), 2000, DOI \url{https://doi.org/10.1006/jcss.1999.1671}.
+  \item S. Diehl, D. van Melkebeek, and R. Williams, ``An Improved Time-Space Lower Bound for Tautologies,'' \url{https://pages.cs.wisc.edu/~dieter/Papers/taut-ts-full.pdf}.
+\end{enumerate}
+
+\textbf{TRACKERS REVIEWED; MATERIAL RED-TEAM CHANGE RECORDED.}  P versus NP remains OPEN.
+
+% END_OF_VERIFIED_REPORT::LSPV-5::SELECTOR-REALIZATION-REDTEAM530
+\end{document}
