@@ -4,7 +4,7 @@
 
 ## PROVED/EXACT restricted source result
 
-Given independent matrix h with r=2^q shared rows and m columns, introduce one genuinely private y[u,b] per cell and two source clauses (G_u(z) OR y[u,b]) and (G_u(z) OR (y[u,b] if h=0 else NOT y[u,b])), with G_u(z) false exactly for z=u. All source matrix bits are independently realized as actual literal signs, not black-box hypothetical outputs.
+Given independent matrix h with r=2^q shared rows and m columns, introduce one genuinely private y[u,b] per cell and two source clauses (G_u(z) OR y[u,b]) and (G_u(z) OR (y[u,b] if h=0 else NOT y[u,b])), with G_u(z) false exactly for z=u. All source matrix bits are independently realized as actual literal signs, not black-box hypothetical outputs. A duplicate-free three-clause variant with private y,t variables per cell preserves UNSAT iff AND_u OR_b h[u,b] and has exact count (# all-zero rows)*4^((r-1)*m), so the theorem does not rely on retaining duplicate clauses.
 
 UNSAT(F_h) iff AND_u OR_b h[u,b]. Number of complete satisfying assignments equals (# all-zero rows)*2^((r-1)*m). On the promised template, deterministic adaptive sign-cell probe complexity is exactly r*m, by a zero-until-last-probe adversary per row. This lower bound survives explicit original-source access *in this restricted sign-cell model*, but input size N is Omega(r*m) and a direct authenticated parse solves it in O(N). Therefore it gives no N^(1+delta) or superpolynomial runtime lower bound.
 
@@ -16,7 +16,7 @@ Important correction: if "rows<=N^.195" are *the 2^q shared assignments*, do not
 
 ## COMPUTATIONAL finite checks and existing T5 controls
 
-The locally executed standalone full Python /095 script returned 12,996 assertions, 0 failures, 356 independently encoded matrices across (q,m)=(1,1),(1,2),(1,3),(2,1),(2,2). Every matrix was directly brute-counted, compared against the exact analytic formula, parsed, source-authenticated for valid correct-path verification, rejected wrong-polarity/false negative certificates and corrupted/truncated/trailing sources, and exercised adversarial query orderings. Script SHA256 12189fd877774019490ae9b6e0128f29cddf054f0d164ae8696de9e49fe1907e; raw JSON SHA256 609188bd4bc35bcc3f8e0a80c371ec34dfd85f16a1cf3eee7c16bef30e263556.
+The locally executed standalone full Python /095 script returned 13,396 assertions, 0 failures, 356 independently encoded matrices plus 100 duplicate-free variants across (q,m)=(1,1),(1,2),(1,3),(2,1),(2,2). Every matrix was directly brute-counted, compared against the exact analytic formula, parsed, source-authenticated for valid correct-path verification, rejected wrong-polarity/false negative certificates and corrupted/truncated/trailing sources, and exercised adversarial query orderings. Script SHA256 7c642af75878de1df627b2fc67bd01da4598cc3061af01f1148a142f949d092b; raw JSON SHA256 04ff9e5c0166e0d604eb167dcf2d73f45a14da32639e703c42e9d79d3a3536f3.
 
 Existing T5 four-path controls: n=9, m=11, beta=3, exact counts 0 and 135, each peak syndrome states 119 and transition updates 644. First-real-violated-arc selection and legitimate source-aware path transfer remain cheap legal algorithms.
 
