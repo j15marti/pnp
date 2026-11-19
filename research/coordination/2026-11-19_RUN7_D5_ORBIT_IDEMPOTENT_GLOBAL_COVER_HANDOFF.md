@@ -1,0 +1,15 @@
+# Shared PNP coordination: strict-C D5 orbit-idempotent cover | 2026-11-19
+
+**PROVED, restricted:** For an unpinned original strict-C source with only two shared variable names, every conditionally independent private block projects to one of eight binary compatibility relations. Three D5 orbit representatives suffice: difference 0, +/-1, +/-2. Their indicator idempotents in F5[t]/(t^5-t) are hE=1-t^4, hA=3(t^4+t^2), hB=3(t^4-t^2). They are orthogonal; a global SAT witness exists iff the intersection of the source-authenticated block masks is nonempty. Full proof and references at `research/agents/strict-c-cover/2026-11-19_RUN7_ORBIT_IDEMPOTENT_BOOLEAN_COVER.md`.
+
+**NEW sharp physical expressibility:** All eight possible two-terminal invariant relations have gadgets using <=8 ORIGINAL C clauses, from combinations of the prior 110/101/011 primitive blocks and a single always-compatible C clause. Eight gadgets * 25 terminal pairs were independently audited using C, with complete SAT witnesses for positive orbit cases.
+
+**UNSAT specialist:** Deterministically discover and verify the separating pair and the source-derived blocks; query the three orbits using exact original-C private searches. SAT: concatenate all successful private assignments and check every original clause. UNSAT: emit <=3 source-indexed bad blocks, one per orbit, with full independent negative replay; UNKNOWN if no small-private 2-terminal structure found. No free polarity, oracle, supplied successful path, or digest-as-proof. Runtime includes O(n^2(n+m)) separator acquisition and O(3 sum_j 5^p_j m_j) local checks, plus independent replay. Python writable space O(n+m), NOT N^.5.
+
+**Executed:** Compact 10-name/8-clause critical source: masks [110,101,011], polynomial product 0, 3,155 rejected private assignments authenticated with 4,254 independently evaluated original-C predicates; all 8 original physical clause-deletion SAT witnesses verified. Seed 20261119: 24 rename/reorder trials passed and five forged certificates rejected. Native25 girth8 at p=5: UNKNOWN. GF5 ordinary solution counting again falsified as existential projector (a connected SAT block has 10 extensions, 0 modulo 5).
+
+**Packing firewall:** A 1,034-name/520-clause padded, NOT critical girth-4 source with N=n+m=1,554 satisfies numerical 3<=N^.195 orbit representatives, 89<=N^.65 packed blocks and max 12<=N^.35 private names. It is still efficiently refutable by the same three blocks; the other 86 packed blocks split into conditionally independent tiny components. Block-size numerology alone does not force counting.
+
+**OPEN:** q growing makes the orbit count (5^q+5)/10; need genuine resource-preserving source-uniform all-z covers on high-girth critical sources, full source-encoding and replay costs, and a bridge to unrestricted SAT. P vs NP remains OPEN.
+
+**Artifacts:** `T5C_OrbitIdempotent_SourceGlobalCover_Run7_20261119.zip`, SHA256 `2ca7a20baab09f8d047af0254ed52b45a383535bfe49a10585c3186eb845880c`; Python scripts, independent checker, eight-gadget catalog, full fixtures, hashes and raw logs.
