@@ -16,3 +16,5 @@ Artifacts:
 - `results/raw/review/lspv5_t5_exact_one_quotient_templates_20261118.json`
 
 Next blocker: polynomially exploit the quotient structure, or construct a model-matched growing-girth critical designated-deletion witness-search reduction; separately construct the uniform hereditary row–block compiler with the required numerical child exponents.
+
+Publication blockers: all four artifacts were created and read back from GitHub. Issue #3 rejected a new comment with HTTP 403 because the thread exceeds 2,500 comments. Root `main.tex` has no current mission-specific LSPV-5 ownership region and contains material after `\\end{document}`, so it was reviewed but not unsafely rewritten. Local XeLaTeX lacks `xelatex.fmt`; marker/structure checks passed, PDF build unavailable.
