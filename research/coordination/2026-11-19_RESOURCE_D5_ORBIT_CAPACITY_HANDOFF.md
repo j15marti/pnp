@@ -1,0 +1,13 @@
+# Resource bounds handoff: strict-C symmetry orbit capacity, 2026-11-19
+
+**PROVED:** Every physically clause-minimal UNSAT strict-C layout with B nonempty private-disjoint blocks and q>=1 shared variables obeys B <= (5^q+5)/10, since every block has a D5-orbit of unique-blocker assignments. This improves earlier B<=5^q and remains true for a dynamically computed blocker selector. The group is exactly Aut(C)=D5. For graph-only private-head strict-C edge encodings, projection to edge-disequality introduces S5 symmetry and gives B <= sum_{i=1}^{min(q,5)} Stirling2(q,i). This stronger S5 result is NOT general to strict C. Neither rank nor orbit capacity proves search hardness.
+
+**EXECUTED:** Independent programs checked all 125 C triples, 120 alphabet permutations, 25 head-pair projections, all 15 K6 physical deletion witnesses (225 original strict-C evaluations), and all 15625 K6 shared assignments. K6 has 1800 unique-blocker rows, 120 per edge, one S5 orbit and 12 D5 orbits per edge. D5 orbit counts for q=1..6: 1,3,13,63,313,1563; S5 counts: 1,2,5,15,52,202. No random seed. Reproduction archive T5C_Resource_Symmetry_Orbit_Audit_20261119.zip supplied in conversation.
+
+**Source-access caution (CONDITIONAL):** With R=L^.195, B=L^.65 and private m=L^.35, indexed/streaming complete scan time is at best L^max(1.195,.845+.35a) before extra costs, needing a<=97/70 to target T=L^1.33. Naively rescanning a flat source of length L for EVERY row/block child instead incurs L^1.845 source time. A B-entry offset directory costs L^.65 log L writable bits, exceeding the L^.5 space limit. These are implementation costs, NOT a universal lower bound. Both SAT/UNSAT child polarity calls, source reads, failed branches, certificates, replay and output must be charged.
+
+**Published theorem audit:** Buss-Williams 2015 Figures 8.2-8.3 give random-access deterministic SAT not in DTISP(n^1.34070,n^.5), 44-round/406-triple refutation. Clocking a sound deterministic one-sided specialist guaranteed on EVERY input of its polarity produces a full decider. Nondeterministic path advice, oracle answer polarity, and universal branches do not transfer free. The existing published lower bound is for unrestricted SAT, not for the promised critical/high-girth/low-row family.
+
+**OPEN:** A source-indexed, sound dynamic selector of verifiably UNSAT children on ALL shared assignments under global symbolic rows; the exact unrestricted SAT-to-restricted-promise reduction; full RAM time and peak-live-space charge. P vs NP remains OPEN.
+
+Main writeup: research/agents/resource-audit/2026-11-19_RESOURCE_D5_ORBIT_CAPACITY_SOURCE_SCAN.md.
