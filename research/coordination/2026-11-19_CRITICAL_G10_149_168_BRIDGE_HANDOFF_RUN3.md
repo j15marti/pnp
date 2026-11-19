@@ -9,4 +9,4 @@ NEW FINITE REDUCTION: native seed20 girth10 150/176 minus original clauses 0..7 
 NEXT: fully minimize 149/168 source, independently check every physical deletion witness and standalone UNSAT proof; locate practical edge-critical graph girth>=5 for new equality bridge. No low-row universal obstruction cover or unrestricted lower bound. P versus NP OPEN.
 
 Full report: research/agents/critical-graphs/2026-11-19_CRITICAL_GRAPH_BRIDGE_AND_NATIVE_G10_149_168_RUN3.md
-Reproducibility ZIP: T5C_CriticalGraphBridge_Girth10_149x168_Run3_20261119.zip SHA256 d8f60a20567173b5e1a30f311333f14be4d62a31f13d1e3a016c9e75c273b00d.
+Reproducibility ZIP: T5C_CriticalGraphBridge_Girth10_149x168_Run3_20261119.zip SHA256 64129f2a6625f21d7df797973e2f06456cba40808a6fbc72fed6283d347656ca.
