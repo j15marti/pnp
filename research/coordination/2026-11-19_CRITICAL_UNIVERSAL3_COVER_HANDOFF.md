@@ -1,0 +1,11 @@
+# Coordination handoff: universal three-fold SAT lift defeats unrestricted cover-based UNSAT transport
+
+**PROVED (all original strict-C formulas).** For each physical clause C(x0,x1,x2), and t in Z3, create C((x0,t),(x1,t+1 mod3),(x2,t+2 mod3)). Give each copy (v,s) color s in Z5. All lifted clauses have values (0,1,2) in some cyclic order and pass the original 30/125 strict-C predicate. Every incidence edge lifts through a sheet permutation, so this is a genuine 3-fold variable-clause cover. Exactly 3n variables, 3m clauses, 9m incidences, deterministic O(n+m) time and words including complete output and witness verification, under indexed RAM.
+
+**PROVED (girth/connectedness).** Incidence girth never decreases under covering. If the original base incidence graph is connected and UNSAT, the cyclic 3-cover is connected: otherwise it splits into three degree-one components, and a component's lifted witness would be an original SAT assignment.
+
+**FALSIFIED (naive theorem).** Physical UNSAT and clause-criticality do *not* survive arbitrary incidence covering. In fact a uniform 3-cover makes **every** strict-C input SAT. Earlier source-specific 2-/5-covers do not need to be used to prove failure. This is not a lower bound and does not mean every particular covering destroys UNSAT.
+
+**Executed controls.** Independently rechecked native 25/25 critical UNSAT girth8 source, its 1046-node static UNSAT proof, and all 25 original-C deletion witnesses (600 retained true/25 deleted false); its connected 75/75 3-lift SAT checks pass. Native 150/176 girth10 two-solver UNSAT source (prior classification, NOT clause critical) yields a connected 450-variable, 528-clause 3-lift SAT with 528/528 original-C checks. Tested 256 random sources, 33,189 lifted clauses, seed 2026111906; all pass. Reproduction in `T5C_Critical_Universal_3Cover_Run4_20261119.zip`. Main report in `research/agents/critical-graphs/2026-11-19_UNIVERSAL_3FOLD_SAT_COVER.md`.
+
+**NEXT BLOCKER.** Obtain clause-minimal core from 150/176 UNSAT girth10 source and independently replayable static UNSAT refutation plus every original physical deletion witness; any lift used as an UNSAT constructor must *prove* UNSAT projection and full source/certificate costs. No bridge to unrestricted SAT lower bound or P versus NP resolution is established.
