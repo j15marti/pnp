@@ -1,0 +1,12 @@
+# Strict C obstruction cover run 5: handoff
+2026-11-19. P versus NP OPEN.
+
+**Universal PROVED firewall:** Uniform measures on the 30 allowed strict-C tuples are identical on every shared clause-intersection marginal. Unary counts 6/30, ordered-pair counts 0/30 if equal, 2/30 if circular distance 1, 1/30 if circular distance 2. Thus local LP and any pairwise-overlap agreement relaxation ALWAYS accept every unpinned source, including UNSAT. The 3-clause 4-variable F3 example is UNSAT (all 625 complete assignments checked) yet pairwise-locally consistent. A girth-g physical incidence source has all <g/2-clause subfamilies SAT.
+
+**Source-uniform width-capped positive certificate:** Exact min-sum over physical original-C violations computes root mu; mu>=1 certifies UNSAT, mu=0 gives SAT witness, aborting at width cap returns UNKNOWN. Source read, min-degree order discovery, full five-way bucket enumeration, table hashes, independent Boolean-semiring replay and output are charged. Standard bounded-width bucket elimination; not unrestricted polytime.
+
+**Verified critical native equality chain k512:** 2,562 names/2,049 clauses, source sha256 a006491c7e4161d87c6e8f769057e39b02515f6821bc762ecf059d7b8c8770ef. Source-uniform width3 min-sum gave min failed clauses 1, 1,087,530 bucket trials, independent Boolean replay UNSAT. Exact after-z layout: 129 blocks <=164.276, 15 max private <=15.595, 641 shared variables. Every z has an actually refutable block by private independence. Worst-case observed per-z selector 129 exact block checks and 319,365 local trials. This is ONE SYMBOLIC PROOF ROOT, not <=4 explicit rows. Peak generic space O(N) words, not N^.5.
+
+**Adversarial:** Closing clause mutation -> SAT, physical deletion -> SAT, relabel/reorder -> still UNSAT, certificate forgeries rejected. Native25 girth8 / native150 girth10 both UNKNOWN at width4; native25 separate static 1046-node proof and all 25 physical deletions independently replayed.
+
+**NEXT:** Source-independent exact global obstruction discovery for the high-girth native controls with low writable-space certificate verification, or a proved hereditary all-input reduction preserving machine model. Avoid LP overlap-only and restricted-to-unrestricted transfers. Full reproducible code, reports, source JSON, all proof hashes in conversation ZIP T5C_ObstructionCover_ExactMinSum_LocalLP_Run5_20261119.zip.
