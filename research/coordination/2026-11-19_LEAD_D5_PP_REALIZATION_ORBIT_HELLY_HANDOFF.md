@@ -1,0 +1,17 @@
+# Coordination handoff: strict-C physical orbit realization, 2026-11-19
+
+**New PROVED:** Every D5-invariant finite shared-assignment block-refutability matrix has a native strict-C physical realization. Proof uses exact polymorphism classification: C pp-defines !=; every K5^tensor k proper 5-coloring is a coordinate projection followed by a permutation (Hoffman equality); C restricts the permutation to D5. The explicit categorical-power gadget has 5^r variables and 30^r/6 strict-C clauses for r D5 orbit representatives, plus 4q terminal-equality clauses. This may be double-exponential in q. It is **NOT a low-resource transfer**.
+
+**New PROVED:** With q shared variables and disjoint-private blocks, every UNSAT source has an UNSAT subcollection of at most K(q)=(5^q+5)/10 blocks. This is tight for genuine physically realizable BLOCK-critical C constructions for every q. NOT physical CLAUSE criticality.
+
+**COMPUTATIONALLY VERIFIED:** Tight q=2 three-block source with 38 variables, 161 original C clauses, private block sizes (33,2,1), incidence girth 4, projections E∪A, E∪B, A∪B. Two independent exhaustive UNSAT solvers: 355 and 88 nodes; 25-power-variable square core exactly 20 models; all three full block-deletion witnesses pass 322 retained original-C clause checks; native equality gadget exhaustive 15,625 assignments. Deleting physical clause 0 still UNSAT: not clause-critical. Full 2^20 sources on six names were exhausted for binary projections; seven of eight orbit relations appear, missing E∪A, which the 35-name power gadget realizes. Seed: none.
+
+**Impact on existing abstract orbit-query obstruction:** Its column relations can indeed be implemented by physical C, but source-aware algorithms may inspect the gadgets, and their sizes do not meet <=N^.35 private-size or encoded-input requirements. **Do not promote** the black-box matrix lower bound to unrestricted strict-C computational lower bounds.
+
+**Highest-priority OPEN bridge:** A uniform, hereditary, solver-dependent self-improvement for arbitrary strict-C SAT and UNSAT with complete source/bit encoding, indexable accesses, each recursive child of BOTH polarities, failed paths, all certificate acquisition/replay, output and peak-live workspace. The recurrence t'=max(1.195,.845+.35t), s'=max(.35,.35s) is CONDITIONAL and no such transformation exists yet. The local full scan needs a<=97/70 for N^1.33 under true child encoded size <=N^.35. A full source reread per row-block costs N^1.845. Even a fixed-point resource exclusion is not P!=NP.
+
+**Agent tasks:** red team: synthesize smaller E∪A gadgets and attack physical deletion/source authentication; cover agent: source-uniform authenticated symbolic cover for the q=2 fixture and high-girth critical controls; witness role: test pp-projection compression and extract cheap concrete witnesses for deletions; resource audit: exact bit-length expansion + compatible Buss-Williams DTISP model; critical role: do not conflate this block-critical/girth4 fixture with native girth8/10 clause-critical work.
+
+Full proof: [LEAD_D5_PP_REALIZATION_ORBIT_HELLY](https://github.com/j15marti/pnp/blob/main/research/agents/proof/2026-11-19_LEAD_D5_PP_REALIZATION_ORBIT_HELLY.md). Reproducibility archive: T5C_ProofLead_PowerGadget_OrbitHelly_20261119.zip in this conversation.
+
+**P versus NP remains OPEN.**
