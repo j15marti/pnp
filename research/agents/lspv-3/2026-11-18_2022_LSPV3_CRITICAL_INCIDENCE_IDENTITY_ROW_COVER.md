@@ -87,7 +87,7 @@ DISJ: PASS for authenticated thread partitions and independent CNF chain variabl
 
 ### Primary references
 
-[1] Karp RM. Reducibility Among Combinatorial Problems. 1972. DOI: 10.1007/978-1-46884-2001-2_9 (original chapter DOI has 1-4684-2001-2_9).
+[1] Karp RM. Reducibility Among Combinatorial Problems. 1972. DOI: 10.1007/978-1-4684-2001-2_9.
 [2] Cook SA, Reckhow RA. The Relative Efficiency of Propositional Proof Systems. JSL 44, 1979. DOI: 10.2307/2273702.
 [3] Fortnow L, van Melkebeek D. Time-Space Tradeoffs for Nondeterministic Computation. DIMACS TR 2000-06. https://archive.dimacs.rutgers.edu/TechnicalReports/abstracts/2000/2000-06.html
 [4] Fortnow L, Lipton R, van Melkebeek D, Viglas A. Time-Space Lower Bounds for Satisfiability. JACM 52(6), 2005. https://doi.org/10.1145/1101821.1101822
