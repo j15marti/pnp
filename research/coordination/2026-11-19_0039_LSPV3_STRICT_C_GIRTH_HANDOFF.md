@@ -20,3 +20,11 @@ Raw summary: results/raw/t5/2026-11-19_0039_LSPV3_STRICT_C_CRITICAL_GIRTH_AUDIT.
 **Next blocker:** C-GIRTH-CRITICAL-WITNESS-ACQUISITION2. Construct an efficiently generated and authenticated growing-incidence-girth strict C clause-critical family, certify *each* deletion, and test whether GF(5), graph-coloring, flow, treewidth, compact witness or recoloring methods defeat every proposed intrinsic witness obstruction. Keep source access, failed discovery, all children and full output charged.
 
 P versus NP OPEN.
+
+
+## Source-bound original-record specialist, independently executed after initial handoff
+
+New executable: experiments/t5/lspv3_strict_c_canonical_specialist_20261119.py (SHA256 92f327b16498d8ed156b4a4e826076eb424615b0caee016835668bfe46994df2).
+New raw evidence: results/raw/t5/2026-11-19_LSPV3_STRICT_C_SOURCE_SPECIALIST_SELFTEST.json.
+
+The code accepts explicit canonical C source records and *discovers* the single missing clause without an advice index. Full exact source gives theorem-certified UNSAT; actual single-clause deletion gives source-verified complete strict-C SAT coloring; other inputs give UNKNOWN. Executed t5 and t7: 2 authenticated full UNSAT, 564 original-clause deletions SAT, 162,716 retained original C checks, 8 malformed UNKNOWN. 241,964 peak traced CPython bytes; no arbitrary-machine space lower bound. This reinforces that high cover rank, criticality and fixed-girth Mycielski sources have an efficient, no-advice counteralgorithm. The general growing-girth source acquisition problem remains OPEN. No schedule or manuscript changed.
