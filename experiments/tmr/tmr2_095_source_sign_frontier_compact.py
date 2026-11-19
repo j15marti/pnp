@@ -51,12 +51,20 @@ def claim_sat(clauses, q, m, u):
                guard(q,u)+(q+u*m+j+1,)
                for j in range(m))
 
+def fixed_width_source(nv, clauses):
+    width=len(str(nv))+1
+    return ('p cnf %d %d\n' % (nv,len(clauses))+
+            ''.join(' '.join(str(v).rjust(width) for v in clause+(0,))+'\n'
+                    for clause in clauses))
+
 table = []
 for q,m in ((1,1),(1,2),(1,3),(2,1),(2,2)):
     r=1 << q
     pos=neg=0
+    source_sizes=set()
     for h in product((0,1), repeat=r*m):
         nv, c = original_cnf(q,m,h)
+        source_sizes.add(len(fixed_width_source(nv,c)))
         cnt = sum(eval_cnf(c,x) for x in range(1 << nv))
         zero_rows = [u for u in range(r) if not any(h[u*m:(u+1)*m])]
         ck(cnt == len(zero_rows) * (1 << ((r-1)*m)), ('count',q,m,h))
@@ -73,6 +81,7 @@ for q,m in ((1,1),(1,2),(1,3),(2,1),(2,2)):
         for u in range(r):
             ck(claim_sat(c,q,m,u) == (u in zero_rows),
                ('SAT row validation',q,m,h,u))
+    ck(len(source_sizes)==1,'no source byte-length side channel')
     table.append((q,m,r*m,pos,neg))
     # A row-interleaving adversary returning a 1 on each row's last
     # queried cell forces every adaptive solver to inspect all r*m cells.
