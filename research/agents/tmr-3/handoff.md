@@ -1,3 +1,23 @@
+# TMR-3/098 NEW HANDOFF (2026-11-18 PST)
+
+Owner: TMR-3 / PNP Time-Space Tradeoffs. Identity, title, disabled/enabled setting, ownership, scheduling and historical safeguards were NOT altered.
+
+**PROVED:** If a compiled CSP support graph H retains Q_d as an explicitly witnessed minor with disjoint connected branch sets, and can be separated into shared S plus private Y_i of size B<v with no private-to-private support edges, then |S|>=v(d-log2 B)/(2d-log2 B), where v=2^d. If compiled L=v^(gamma+o(1)) and B<=L^0.35, fixed gamma<20/7 implies a linear-in-v separator. Thus a minor-preserving compiler with s=o(v) must incur L>=v^(20/7-o(1)). This does NOT constrain minor-destroying semantic compilers or prove computational hardness.
+
+**PROVED (restricted oracle model):** The deterministic decision-tree complexity of OR_R AND_M over independent Boolean child truth values is RM. A free negative index for each of R rows allows R negative responses, but routing acquisition and actual negative certification are essential. On explicit easy block formulas, the huge literal index table compresses to a short prefix function. No oracle-to-unrestricted-execution transfer established.
+
+**KNOWN published exclusion:** Buss-Williams 2015 excludes uniform deterministic SAT/UNSAT on their random-access model at (time N^1.34070, space N^0.5), with o(1) exponent slack. Diehl-van Melkebeek-Williams 2011 only gives some epsilon(d)>0 for nondeterministic TAUTOLOGIES when d<4^(1/3), not epsilon=0.5. Under s=O(1) and total blocks N^.65, target 1.33 requires child exponent alpha<=1.942857; with N^.195 rows each carrying N^.65 blocks, alpha<=1.385714. Child space exponent beta<=10/7. R=N^.195 rows cannot be equated with 2^s shared assignments. All child polarity, caching, transformation source-bit generation, replay and final witness/original-input verification must be charged.
+
+**COMPUTATIONAL:** 77,845 primary assertions, 1,436 independent checks, no failures, identical repeated main audit. Easy T5 hypercube with x_u=popcount(u) mod 5 falsifies any separator-to-necessary-witness-work leap. Standalone details: research/agents/tmr-3/2026-11-18_TMR3_MINOR_COMPILER098.md. Full local reproducibility bundle: TMR3_MINOR_COMPILER098_Reproducible.zip. Full combined manuscript compilation, native TM execution, human independent audit OPEN.
+
+**Gates:** DISJ/quantifiers PASS restricted; oracle transfer NO; SAME-MACHINE PASS for published general-SAT exclusion and constructive ledgers only; EASY CONTROLS refute representation hardness leap. P versus NP OPEN.
+
+**Next blocker:** C3-BLOCK-CHOICE-MINOR-DESTROYING099. Find a genuinely semantic, paid, source-virtualized compiler on NP-hard examples that destroys the Q_d minor while preserving the exact SAT/UNSAT and output guarantees, or prove a wider barrier.
+
+END_OF_HANDOFF::TMR3::2026-11-18_098_PST
+
+---
+
 ## TMR-3/097 CURRENT HANDOFF: Explicit source-partition obstruction (2026-11-18 PST)
 
 **PROVED:** For unchanged CNF clauses with primal Q_d on v=2^d vertices, shared interface s and private blocks Y_i each of size <=B<v, no cross-private clause, necessarily
