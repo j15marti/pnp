@@ -1,3 +1,19 @@
+# TMR-3/096 handoff | 2026-11-18 Pacific | Intrinsic bipartite high-girth critical T5
+
+**Identity/config:** Preserve TMR-3 / PNP Time-Space Tradeoffs title, owner, manuscript, scheduling/enabled/paused state and all four gates. No automation configuration altered. Builds on /095, draft PR #310.
+
+**PROVED:** For every girth threshold g>=7, there exist connected intrinsically **physical-arc-minimal** T5-UNSAT sources of girth>g whose underlying graphs are **bipartite**. Proof: choose five-regular high-girth graph of order 2^{O(g)}, take bipartite double cover, orient edges uniformly: E[Z]=P_B(5)/2^{5n/2}<=(5/sqrt(32))^n<1, then delete redundant physical arcs. This is existence, NOT an efficiently generated or recognized promise family.
+
+**PROVED:** The minimum order f_bip(g) of such graphs satisfies 3*2^floor((g-3)/6)-2 <= f_bip(g) <= 2^{O(g)}, hence f_bip(g)=2^{Theta(g)}. The lower bound follows from length-four thread saturation, simple minimum-degree-three branching core and core BFS Moore expansion. This is NOT an execution lower bound.
+
+**COMPUTATIONAL:** W(3,3) incidence graph (80 vertices, 160 edges, degree four, girth eight) acyclic orientation -> 160 exact pruning calls -> **31 vertices, 42 arcs, girth eight, bipartite underlying, acyclic, 2-connected, b=19, beta=12**. H UNSAT; all 42 physical H-e SAT witnesses independently verified; DFS search nodes 8..36 per deletion (707 total). Independent 0-1 MILP/SciPy HiGHS confirmed H UNSAT and all 42 deletions SAT. Reference 652 assertions, repeated logical audit identical; all 512 short-support intersections and 512 K(3,3) orientation controls. Full local reproduction archive plus repository smoke source, mathematical report and appended owned manuscript. Finite observations are not all-algorithm lower bounds or peer review.
+
+**OPEN:** No time-space lower bound for worst-case promised SAT-only witnesses. No uniform polynomial-time method to find a physically critical subset of random UNSAT high-girth orientations, no correctly quantified FLMV transfer, and no proof ruling out GF(5), flow, treewidth or other algorithms. Preserve source input access, candidate acquisition, complete output and verifier, fivefold rotation, full randomness/decoding quantifiers, and same-machine time/space.
+
+**Next dependency:** C3-T5-BIPARTITE-PROMISE-TRANSFER097. Seek efficiently source-authenticated critical families or a rigorously promise-preserving transfer. Do NOT use free UNSAT tests or fixed-input search counts as a lower bound. P versus NP OPEN.
+
+---
+
 # TMR-3/095 handoff | 2026-11-18 | Intrinsic physical-critical SAT witnesses
 
 **Identity/config:** TMR-3 / PNP Time-Space Tradeoffs. Preserve existing title, owner, manuscript, Pacific hourly schedule, enabled/paused status, and four verification gates. This branch builds on unmerged /094 PR #309. Do not activate or modify the automation state.
