@@ -1,3 +1,17 @@
+## TMR-3/096 CURRENT HANDOFF: Exact dual-polarity blocks and RAM forbidden point (2026-11-18 PST)
+
+Status: **PROVED/EXACT** (conjunctive factored-CNF quantifier identity and weighted SAME-realization recurrence); **KNOWN THEOREM** (Buss--Williams, Fig. 8.2, SAT not in DTISP(N^1.34070,N^0.5)); **FALSIFIED as an all-CNF resource claim** (uniform deterministic N^1.33+o(1) time and N^.5 polylog space cannot decide arbitrary CNF); **COMPUTATIONAL** (1,351 passed assertions, 1,320 random authentic factored formulas, T5 pin easy controls); **OPEN** (source-authenticated general-CNF compiler, unrestricted P vs NP separation, independent peer audit).
+
+For F(z,y)=AND_i B_i(z,y_i) with disjoint private Y_i: SAT iff exists z all children SAT; UNSAT iff for all z exists a genuinely refuted child. A correct index per z is an **adaptive strategy**, not free advice, and arbitrary factorization with shared private variables or disjunctive rows invalidates naive transfer. The actual cost counts every tested child of both polarities, failed attempts, source authentication, replay for complete SAT witness, and writable-space peaks on one execution.
+
+Published exclusion: https://doi.org/10.1007/s00037-015-0104-9 (journal Figs 8.2--8.3, c=1.34070, epsilon=.5), not just earlier 1.32/.5 Williams bound. Nondeterministic UNSAT/TAUT: https://doi.org/10.1007/s10878-009-9286-x excludes time exponent d<cube-root(4) with SOME positive space exponent e, not necessarily e=.5. Read-only correct-path tape is not a free writable low-space RAM certificate. SAT nondeterministic witnesses are easy to check; polynomially checkable complete UNSAT paths for all CNFs would imply NP=coNP.
+
+Artifacts in this branch: research/agents/tmr-3/2026-11-18_TMR3_BLOCK_CHOICE096.md; results/raw/tmr/2026-11-18_TMR3_BLOCK_CHOICE096_AUDIT.json; living main3_PNP_TIME_SPACE_TRADEOFFS.tex section 096. Complete Python executable and two identical audit outputs in the per-run TMR3_BLOCK_CHOICE096_Reproducible.zip. Existing five titles/identities/schedules/enabled states unchanged, no main merge claimed. Four gates: DISJ PASS conditional on authentication; relativization OPEN for separation; DTISP PASS for the published full-CNF no-go/OPEN for compiler transfer; configuration-count lower-bound transfer NOT APPLICABLE. /341 FAIL, /386 RESTRICTED.
+
+**Next:** C3-BLOCK-CHOICE-COMPILER097. Construct or falsify a fully source-authenticating arbitrary-CNF-to-private-block compiler with exact quantifiers and total costs; show the specific failed arrow rather than contradicting the published 1.34070/.5 theorem. P versus NP OPEN.
+
+---
+
 # TMR-3/095 handoff | 2026-11-18 | Intrinsic physical-critical SAT witnesses
 
 **Identity/config:** TMR-3 / PNP Time-Space Tradeoffs. Preserve existing title, owner, manuscript, Pacific hourly schedule, enabled/paused status, and four verification gates. This branch builds on unmerged /094 PR #309. Do not activate or modify the automation state.
