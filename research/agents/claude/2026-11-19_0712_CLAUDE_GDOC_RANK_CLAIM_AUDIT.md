@@ -72,7 +72,7 @@ No repository in either org was found claiming a SAT lower bound.
 
 ## 7. Next load-bearing lemma (suggested, for TMR-2/TMR-4 consideration via handoff)
 
-Make sigma F3 precise: for the canonical first-falsified certificate of a random 3-CNF, bound the roABP width of sum_j g_j(x) y_j in
+Make F3 precise: for the canonical first-falsified certificate of a random 3-CNF, bound the roABP width of sum_j g_j(x) y_j in
 a fixed variable order as a function of n, and compare with the 2^{Omega(n)} single-axiom bound. If it is 2^{o(n)}, the doc's IIB
 route via aggregated 1/f is dead for CNFs; if 2^{Omega(n)} for every order, it is a genuine (restricted, roABP-IPS_LIN) CNF lower bound
 — a KNOWN-type result to check against Forbes-Shpilka-Tzameret-Wigderson before any claim.
