@@ -8,6 +8,8 @@ Given independent matrix h with r=2^q shared rows and m columns, introduce one g
 
 UNSAT(F_h) iff AND_u OR_b h[u,b]. Number of complete satisfying assignments equals (# all-zero rows)*2^((r-1)*m). On the promised template, deterministic adaptive sign-cell probe complexity is exactly r*m, by a zero-until-last-probe adversary per row. This lower bound survives explicit original-source access *in this restricted sign-cell model*, but input size N is Omega(r*m) and a direct authenticated parse solves it in O(N). Therefore it gives no N^(1+delta) or superpolynomial runtime lower bound.
 
+Important source-format safeguard: full audit uses fixed-width whitespace-separated DIMACS literal fields. Every h table for fixed q,m has exactly the same physical byte length; naive variable-width text could leak sign information through file length.
+
 ## Correct paths and resource/accounting fence
 
 UNSAT accepts a verified column index for *every* row: k_minus=r*ceil(log2(m)) read-only bits, r true sign checks, plus full source authentication. SAT accepts one all-zero row index: k_plus=q bits, m zero sign checks, plus authentication. Invalid advice is rejected, never treated as a correct decision. Streaming fixed-grammar verifier has theoretical O(N) source time and O(q log(rm)+log m) writable bits with separate sequential read-only source/certificate tapes. If advice is stored in writable memory, charge k_minus in addition. Python implements semantic checks but does not measure native small-space work or physical machine RAM resources. Deterministic negative-path enumeration costs up to m^r verifier attempts. Explicit source parsing, all failed choices, materialization, child proofs/witnesses, all universal branches and peak live writable storage remain charged.
@@ -16,7 +18,7 @@ Important correction: if "rows<=N^.195" are *the 2^q shared assignments*, do not
 
 ## COMPUTATIONAL finite checks and existing T5 controls
 
-The locally executed standalone full Python /095 script returned 13,396 assertions, 0 failures, 356 independently encoded matrices plus 100 duplicate-free variants across (q,m)=(1,1),(1,2),(1,3),(2,1),(2,2). Every matrix was directly brute-counted, compared against the exact analytic formula, parsed, source-authenticated for valid correct-path verification, rejected wrong-polarity/false negative certificates and corrupted/truncated/trailing sources, and exercised adversarial query orderings. Script SHA256 7c642af75878de1df627b2fc67bd01da4598cc3061af01f1148a142f949d092b; raw JSON SHA256 04ff9e5c0166e0d604eb167dcf2d73f45a14da32639e703c42e9d79d3a3536f3.
+The locally executed standalone full Python /095 script returned 13,401 assertions, 0 failures, 356 independently encoded matrices plus 100 duplicate-free variants across (q,m)=(1,1),(1,2),(1,3),(2,1),(2,2). Every matrix was directly brute-counted, compared against the exact analytic formula, parsed, source-authenticated for valid correct-path verification, rejected wrong-polarity/false negative certificates and corrupted/truncated/trailing sources, and exercised adversarial query orderings. Script SHA256 2fe26150c5b9a67782b5b6dd0d1312357064382354839d92ce26661bf18746f2; raw JSON SHA256 8c1f8a8983b7182355e1854b4350ed5a94ff0d4cd570b54367fe04ca2ea07aef.
 
 Existing T5 four-path controls: n=9, m=11, beta=3, exact counts 0 and 135, each peak syndrome states 119 and transition updates 644. First-real-violated-arc selection and legitimate source-aware path transfer remain cheap legal algorithms.
 
