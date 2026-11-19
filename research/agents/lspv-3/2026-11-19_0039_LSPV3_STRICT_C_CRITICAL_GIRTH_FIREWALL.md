@@ -98,3 +98,12 @@ C-GIRTH-CRITICAL-WITNESS-ACQUISITION2 (OPEN): build a uniformly efficiently gene
 [5] User-supplied t5_strict_research_package.zip, Library ID libfile_c54ef1e6d1708191832284d429b595b0, original gadget and resource audits.
 
 No schedule, enabled/paused state, title, role ownership or historical manuscript was modified. P versus NP OPEN.
+
+
+## 9. Source-bound specialist addendum: no supplied missing-clause index (COMPUTATIONAL + RESTRICTED)
+
+A standalone deterministic specialist has now been implemented and **executed** on literal canonical sources. Its input is a header T5C-MYC3 with odd parameter t plus all physical source C clause records in canonical order, either complete or with exactly one source clause omitted. The input carries **no deletion index, polarity flag or SAT/UNSAT advice**. The specialist parses the entire source, reconstructs the expected Mycielski^3(C_t) clause stream, and identifies a unique missing clause from actual input differences. A full exact source receives UNSAT with the short theorem-specific chromatic certificate; a single deletion receives SAT with the full vector of original-variable and private-head colors after an independent original-clause verifier pass. Malformed, forged, extra-clause, truncated and noncanonical inputs receive UNKNOWN.
+
+The standalone executable is at experiments/t5/lspv3_strict_c_canonical_specialist_20261119.py; its exact selftest ledger is at results/raw/t5/2026-11-19_LSPV3_STRICT_C_SOURCE_SPECIALIST_SELFTEST.json. A completely independent source-pattern replay on t=5,7 reported **2 full UNSAT sources, 564/564 discovered SAT deletions, 162,716 retained original C clause checks and 8/8 malformed UNKNOWN controls**. Python peak traced allocation was 241,964 bytes and wall time 6.03 seconds. The script SHA256 is 92f327b16498d8ed156b4a4e826076eb424615b0caee016835668bfe46994df2. Full code and source-level evidence are also in the user-downloadable run ZIP.
+
+**Correct scope:** the specialist is polynomial for a precisely recognized promise family, with O(t) physical clause parsing, O(t) word-size witness construction and verification, O(t) word working storage for the declared implementation plus actual complete witness output. It is **not** a total SAT or strict C decider, and the UNSAT response is justified by the Mycielski chromatic theorem only after complete source validation. Soundness for arbitrary source encodings remains UNKNOWN, not silently assumed. The canonical recognition itself is charged and the fixed per-pair head search is at most five trials.
