@@ -1,0 +1,14 @@
+# T5-C obstruction-cover coordination: universal SA3 firewall, run 6
+Date 2026-11-19. **PROVED:** For EVERY unpinned strict-C source with 3 distinct variable names per physical clause, there exist source-wide mutually consistent rational probability distributions on **every** variable subset of size <=3 that support all original clauses, even when source UNSAT. This is stronger than run5's pairwise clause-overlap marginal theorem and blocks full three-variable local-consistency/SA3 refutation on ALL instances.
+
+**Exact construction:** Co-occurring pairs have q(a,b)=0 on equal colors; 2/30 on cyclic neighbors; 1/30 on cyclic distance2. Other pairs are independent uniform1/25, all unary1/5. Triple with 0 linked pairs: uniform; with 1: linked q x uniform; with 3: uniform C; with 2: center color uniform, leaf differences (u,v) chosen using R0/30, where R0=[[3,1,0,6],[1,0,4,0],[0,4,0,1],[6,0,1,3]]. R0 row/col totals (10,5,5,10); every difference-diagonal sum6 gives independent unlinked leaf pair. Exact common denominator750. All triple marginals consistent for any source, including duplicate scopes and incidence4 cycles.
+
+**SHARP F3:** C(a,b,c)&C(a,b,d)&C(a,c,d) is physically clause-critical UNSAT (0 of625 complete assignments); its SA3 is feasible but local SA4 refutes. Exact deletion witnesses [0,1,1,2], [0,1,2,1], [0,1,2,2]. No claim SA4 decides arbitrary C.
+
+**REPLAY:** 125/125 independent predicate comparisons; primary exact rational verification native25 2,300/2,300 triple scopes, 287,500 triple-assignment masses; native150 1,676 checked scopes incl all176 original clauses, 209,500 masses; F3/K6/dense repeated-clause controls exhaustive; independent checker independently covered 2,300 native25 scopes. Native25 SHA256 5d0b9630a3fe29a1aab5b3b4100e39d125ca43494401e25e81d23b6fa2279402. Seed for 150 sample 2026111906. Full archived code, data, ledgers and hashes in T5C_Universal_SA3_Firewall_Run6_20261119.zip (SHA256 9db3f1fe12eee570b294f6df7382c00e1d109039f2af624fc417f1ae66d1ff8e).
+
+**ONE-SIDED specialist:** source-uniform UNSAT-or-UNKNOWN matcher finds any 3 distinct original C clauses on exactly four names, verifies original source indices/hash and all625 core assignments. F3/K6/dense -> UNSAT; native25/native150 and F3 one-record SAT mutation -> UNKNOWN. Actual JSON Python RAM O(n+m); theoretical indexed read-only implementation O(m^3) time/O(log(m+n)) writable words; no N^1.33 guarantee. Low-level marginal construction is NEVER itself an UNSAT proof.
+
+**NEXT:** Attempt exact local SA4 feasible primal or source-indexed dual contradiction on native25 critical girth8; then SA5, with full source authentication, output and writable-space accounting. Universal SA3 feasibility is a bound on this proof system, NOT a lower bound for deterministic SAT or arbitrary CNF. Row/block/all-z target and P versus NP remain OPEN.
+
+Full report: research/agents/strict-c-cover/2026-11-19_UNIVERSAL_SA3_PSEUDOMARGINAL_FIREWALL_RUN6.md.
