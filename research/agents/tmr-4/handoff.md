@@ -1,3 +1,23 @@
+# TMR-4/099 compact handoff, 2026-11-18, exact-one T5 private-follower quotient
+
+**Identity:** TMR-4 / PNP Cost-Sound Abstraction. Enabled state, ownership, living manuscript path and hourly schedule unchanged. Stacked draft branch `tmr4-20261118-2033-exactone-head099` on /098; not merged into main.
+
+**PROVED/EXACT restricted:** Each head's follower graph is bipartite or supplies an odd-cycle UNSAT witness. For each bipartite follower component, a two-orientation formula eliminates followers used exclusively by one head with exact 2/3 color-extension multiplicities. Retain heads, all shared interface variables and followers of multiple heads. The factor product preserves exact accepting and rejecting extension counts for every retained assignment. Five-letter global rotation reduces total sum enumeration by one factor five but not asymptotic exponential growth. Pointwise eliminated assignment identities require original-verifier replay.
+
+**New row control, independently checked:** Two private-disjoint rows sharing four letters each separately have 150 and 50 nonzero boundary fibers, with empty intersection; the total six-variable T5-XOR source is UNSAT. Deleting one core clause gives exactly 60 satisfying full assignments. Ten structural fixture brute-force counts matched head-factor counts and orbit counts; 25 conditional fibers and 625 row combinations checked. A separate character-level verifier agreed. Direct 3-bit Boolean encoding: 3n+65m clauses and no auxiliary bits; all 4096 Boolean assignments for each four-variable control, plus 15625 valid-code assignments for each six-variable control, agreed (0/10/0/60 counts). The original exact-one archive verifier separately checked all 236 critical deletion witnesses, 55,696 clause tests, PASS.
+
+**PROVED/EXACT asymptotic existence:** By Erdős high-girth/high-chromatic graphs, there exist fresh-private-head clause-deletion-critical UNSAT T5-XOR instances with arbitrarily large incidence girth, all bounded-size clause subsets SAT and every per-head parity graph bipartite. This excludes bounded-clause UNSAT catalogues, not arbitrary source-level algorithms; no uniform polynomial constructor or intrinsic runtime hardness is claimed.
+
+**SAME_REALIZATION:** Source parsing/dedup, adjacency, BFS/orientation, per-letter tests, big-integer multiplicities, caching/eviction, table output, failed paths, full z enumeration and peak space paid. Uniform n^1.33/sqrt(n) specialist still OPEN. DISJ PASS as sanity check; relativization OPEN; simultaneous DTISP OPEN; deterministic configurations PASS upper bound only. P versus NP OPEN.
+
+**Files:** `research/agents/tmr-4/2026-11-18_TMR4_T5_EXACTONE_HEAD_ROW099.md`; owned root `main4_PNP_COST_SOUND_ABSTRACTION.tex` updated without dropping earlier results. New tested code and raw audit are in the separately downloadable TMR-4/099 evidence ZIP in this run; they have not been claimed committed to GitHub. Source archive `T5_Exact_One_Experiments_2026-11-18.zip` is in user's Library. Local Python verified; a GitHub-hosted physical TM/preflight and independent external mathematical review remain OPEN.
+
+**NEXT ONE:** D4-T5-ROW-GLOBAL-REALIZABILITY-100: a source-derived globally complete retained-letter join, not a free per-head XOR bit strategy, over high-girth critical controls with full paid discovery/failed attempts, proof checks, row materialization and same-machine peak storage.
+
+**Previous handoff (exact pre-099 body) preserved at:** `research/agents/tmr-4/archive/handoff_pre_099_2026-11-18.md`.
+
+---
+
 # TMR-4 compact handoff, 2026-11-18 18:36 PST /097
 
 **Identity and continuity:** TMR-4 / PNP Cost-Sound Abstraction. The original title, owner, enabled state and staggered hourly America/Los_Angeles schedule were not modified. This is a draft branch stacked on /096 'tmr4-20261118-1436-randomized-source-probe096', not a merge into main. Prior science remains in the living main4 and previous handoff is archived verbatim at 'research/agents/tmr-4/archive/handoff_2026-11-18_096_before_097.md' (old blob 2164bb91cc8d4580e40c4e708a57d04a0971d0a8).
