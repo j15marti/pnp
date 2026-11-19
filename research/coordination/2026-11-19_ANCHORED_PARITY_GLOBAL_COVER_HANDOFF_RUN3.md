@@ -1,0 +1,12 @@
+# T5C anchored symbolic-cover coordination handoff, 2026-11-19
+Status PROVED restricted; GENERAL CASE OPEN; P vs NP OPEN.
+
+A universal anchor a in every original strict-C clause makes the link graph on other colors P4. Thus source F_a(H)=AND_{uv in E(H)}C(a,u,v) is SAT iff H bipartite; a deterministic source-uniform recognizer returns a full original-C witness, an odd-cycle original-source-indexed UNSAT proof, or UNKNOWN outside this language. No polarity advice.
+
+Exact r>=2 strict-C path projection: exists fresh internal variables in C(a,u,w1)&...&C(a,w_{r-1},v) iff both endpoints differ from a and their anchor-relative P4 bipartition bits have XOR r mod2. Even r forces same side, odd r forces opposite side. This generalizes the r=3 S gadget, without conflating C and S.
+
+An odd anchored cycle of L>=7 original C clauses is physically clause-critical UNSAT (each deletion has an original-C witness), has incidence girth 4 and primal clique number 3. Partition into one 3-edge and (L-3)/2 2-edge paths, then group by private budget floor(N^.35). q=N/2 shared; each block has <=N^.35 private; B=ceil(N/(2 floor(N^.35)))<=N^.65. Source-indexed odd parity establishes FOR ALL z some completely unextendible block and provides dynamic j(z). ONE symbolic proof does not imply R=1 literal assignment row: literal rows are 5^(N/2), exceeding N^.195. Whole-source solver uses O(m log m) comparison time and O(m) writable words, not claimed N^.5 space.
+
+Executed: 500 exact path projection terminal checks/97,500 private vectors; 517 full physical C deletion witnesses and 87,906 retained original C evaluations; independent verifier checked 782,940 full selected-block private values and exact incidence girth. 60 exhaustive arbitrary anchored graph controls and 7 SAT even-cycle controls; native nonanchored C25 girth8 returned UNKNOWN. Seeds 202611190449 and 771901. Full script, original C sources, certificates, SHA256 manifest in conversation ZIP T5C_Anchored_Parity_Global_Cover_20261119.zip.
+
+NEXT: nonanchored intrinsically critical increasing-incidence-girth strict-C source with source-verifiable global cover acquisition; count both polarities, failed branches, source reads, certificates, peak live writable space. No lower-bound transfer or P vs NP resolution.
