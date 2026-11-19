@@ -33,6 +33,12 @@ Build follower graphs by charged input reading, deduplication, BFS and bipartite
 
 For n^0.195 rows and n^0.65 blocks of size n^0.35, the parent per-fixed-z n^(0.845+0.35d+o(1)) seed bound still requires a sufficiently small d, paid indexing, and a separate all-z join. This factor theorem supplies no universal bound on |S| or shared z and therefore no (n^1.33,n^0.5 polylog n) algorithm.
 
+## Direct three-bit Boolean/CNF control (COMPUTATIONAL and exact encoding identity)
+
+Map every original five-valued variable to its unique three-bit code 000 through 100; exclude codes 101, 110 and 111 by three three-literal clauses per variable. For each original Q(h,u,v) exclude the 65 nonaccepting valid triples using one nine-literal CNF clause per forbidden triple. This produces a **no-auxiliary, exactly parsimonious** encoding with 3n Boolean variables and exactly 3n+65m clauses. The old beats-both P comparator would require 3n+105m clauses by the same raw truth-table method. Any correct Boolean algorithm may simplify more aggressively, so these are size measurements of explicit encodings, not model lower bounds.
+
+The new independent literal-CNF verifier evaluated all 8^4=4096 three-bit-code assignments for the four-variable five-clause UNSAT core and its one-clause deletion, including all 3471 invalid assignments. The model counts were 0 and 10, and the clause counts were 337 and 272. It also checked all 5^6=15625 original-letter codes for the six-variable two-row UNSAT and one-clause-deleted SAT controls, finding counts 0 and 60, with 473 and 408 clauses. No unexpected mismatches. The full original-code encoding and its new raw JSON result are in the run evidence archive.
+
 ## New finite two-row obstruction
 
 Shared variables a,b,c,d, private p for row 1 and q for row 2:
