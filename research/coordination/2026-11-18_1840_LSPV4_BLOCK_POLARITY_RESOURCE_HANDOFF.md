@@ -1,0 +1,11 @@
+# LSPV-4 block-polarity resource handoff, 2026-11-18 18:40 PST
+
+**PROVED:** For F(z,x)=AND_j B_j(z,x_j) and disjoint private variables, F UNSAT iff all z have some locally UNSAT block; SAT iff some z has all blocks SAT. One correct bad-block path says nothing about global UNSAT. A finite exact family B_u=(C_u(z) OR x_u) AND (C_u(z) OR NOT x_u) has F_all UNSAT and F_without_one SAT while sharing the same local correct bad-block proof for every z except the omitted address. AND-of-OR rows require a different quantifier. 
+
+**CONDITIONAL resource:** q<=n^.845 if n^.65 blocks PER each of n^.195 rows, L<=n^.35, seed T_A(L)=O(L^p), then T_one_z<=n^(.845+.35p+o(1)); 2^t z choices needed for total UNSAT determination. n^1.33 at p=1 permits t<=(.135-o(1))log2 n for this implementation. SAT witness self-reduction from decision-only seed incurs extra n^.35, yielding an n^1.545 conservative upper bound, not a lower bound. Sequential peak writable space includes child buffer, guest space, t, index, outputs and verification, not accumulated child peaks.
+
+**KNOWN DTISP guard:** FLMV (2005) at c=1.33 yields deterministic d=.279104226449 and conondeterministic d=.089299910571; N^.5 space not excluded. If n^.845 actual distinct blocks of n^.35 bytes mean source length N=n^1.195, then claimed (n^1.33,n^.5) is (N^1.11297,N^.41841), which would contradict deterministic FLMV for a universal all-instance SAT decider. It does not contradict promised-specialist algorithms or assume that arbitrary CNF reduces with this size.
+
+**COMPUTATIONAL:** 2733 blocker assertions, 20 exhaustive small CNF model-count checks, 11 original-arc T5 witnesses for 9/11 control and one 33/44 deletion witness, no unexpected failures. Full 33-vertex UNSAT not re-proved. Full dated scientific report and reproducibility ZIP are available as local conversation artifacts.
+
+**OPEN:** source row grammar, global BOTH-label uniform algorithm, correct-path acquisition/strategy coverage and all arbitrary input-space reduction. Source-authentic private factorization, nondeterministic SAT vs UNSAT certificates, wrong-path soundness, and peak writable space are separate gates. P versus NP OPEN. Agent schedule/status unchanged.
