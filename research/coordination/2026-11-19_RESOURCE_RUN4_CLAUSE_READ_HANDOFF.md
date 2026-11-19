@@ -1,0 +1,15 @@
+# Strict-T5 resource audit handoff, 2026-11-19, run 4
+
+**PROVED (elementary clause-probe theorem):** On every physically clause-critical UNSAT strict-C formula F with M>=2 physical clauses, a deterministic sound UNSAT certificate construction+verification process or complete SAT decider MUST access all M original physical clause records. For any i, replacing only clause i by a duplicate of a different retained clause j yields a legal, fixed-length SAT formula, witnessed by the original F-minus-i deletion witness. Otherwise the algorithm's transcript cannot distinguish the UNSAT original from this SAT variant. This proves only Ω(M) source clause accesses, not a superlinear or unrestricted SAT time lower bound. Source hashes, recognition, and source authentication are not free.
+
+**Experiment, independent original-C:** 125/125 predicate checks; 30/125 truth rows; exhaustive four-clause native equality motif has 20 models, zero unequal terminals; k=1,8,32 critical chains with respectively M=5,33,129 physical C clauses, 167 original-C deletion witnesses and 167 one-record SAT variants verified, at least 17,755 source-position predicate checks. No seed. Repro ZIP T5C_Resource_PhysicalClause_ReadFloor_20261119.zip SHA256 63773605bd697519f3981eab981577e2ab26b5cb20b308091523f12a751e84fd.
+
+**Polarity:** A known-time uniform sound UNSAT-only specialist complete on every UNSAT case becomes a full deterministic SAT decider by timeout, when certificate generation+verification are counted. Dual for SAT witnesses. k guessed bits cost up to 2^k deterministic paths; a beta log2 p branch count increases effective local exponent by beta. Alternation requires all universal branches. No free answer-polarity bit or correct path.
+
+**Exponent accounting:** Rows N^.195, blocks N^.65, complete local child p=N^.35 => N^(.845+.35a); for target N^1.33, a<=97/70. With log-bit paths, a+beta<=97/70. Full source read per row-block costs N^1.845; once per row N^1.195. N^.65 arbitrary stored offsets exceed N^.5 writable-bit budget; private-variable cap does not imply encoded-clause cap.
+
+**Published point:** Buss-Williams 2015 Fig 8.2-8.3 SAT not in DTISP(n^1.34070,n^.5) in its defined random-access input-bit model. Physical source access, near-linear bit-length reductions, fully uniform all-input solver, child cost both polarities and machine simulation must be verified. It does not prove P != NP.
+
+**NEXT:** Mutation-test any global symbolic UNSAT proof selector on critical C source with one changed physical clause. Require that source authentication/verification actually accesses the mutated record and charges preprocessing. Main proof still needs a true all-input hereditary resource transformation.
+
+Full report: research/agents/resource-audit/2026-11-19_RUN4_PHYSICAL_CLAUSE_READ_FLOOR.md.
