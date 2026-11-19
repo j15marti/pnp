@@ -1,3 +1,24 @@
+# TMR-3/095 handoff | 2026-11-18 | Intrinsic physical-critical SAT witnesses
+
+**Identity/config:** TMR-3 / PNP Time-Space Tradeoffs. Preserve existing title, owner, manuscript, Pacific hourly schedule, enabled/paused status, and four verification gates. This branch builds on unmerged /094 PR #309. Do not activate or modify the automation state.
+
+**PROVED:** Any connected n-vertex T5 source has a rooted exact SAT witness enumeration of at most 2^(n-1) binary spanning-tree choices. For promised physical-arc-minimal UNSAT (H,e), degree-two branch-core suppression yields an exact minimum-product spanning-tree search of at most W=prod_{uv in T}|S_uv| <=4^(b-1) terminal assignments. Choose min{2^(n'-1),W}. Pair supports intersect retained private threads; omit the entire support of the path containing e; extend every remaining path by five-state DP; verify the entire original H-e. No promise membership oracle or witness advice is charged as free.
+
+**FALSIFIED proposed shortcut:** A modular cycle of exact +1 T5 triangle pins is gadget-level minimally inconsistent when k mod5 !=0, but is NOT physically edge-minimal UNSAT. Removing a direct module arc gives endpoint support {1,2,4}, removing either side arc gives {1,3}; the two types cannot both accommodate the necessary discrepancy 1-k mod5. Verified k=3..9, all 126 individual arc deletions. In particular k=3 has only 6/9 SAT deletions; k=6 has 0/18.
+
+**COMPUTATIONAL:** 19,683 K3,3 edge states audited; 216 labeled fully-supported critical obstructions; all 1,512 deletion witnesses checked. Separate exact five-bit-domain AC-3/backtracking solver shrank random 4-regular sources and independently verified all 145 deletions from 12 critical b=3..6 samples. Exhausted all 512 subsets of the nine short-thread relations, max irredundant size 4. Zero observed failures; deterministic audit repeated byte-identically. External handoff ZIP not mounted, but short-path facts independently reconstructed.
+
+**Resource firewall:** conservative simultaneous random-access upper T=O((N+1)^4(1+Q)), S=O((N+1)^2) bits; direct sequential tape upper T=O((N+1)^8(1+Q)), S=O((N+1)^3), where Q=min{2^(n'-1),W} and N is full bit input length. Charge input, access, extension, candidate enumeration, output, verifier, caching and machine addresses. Native tape experiments and mathematical peer review outstanding. Only unconditional general lower bound here is Omega(n') from explicit witness output. FLMV is for language decision and does NOT automatically transfer to guaranteed SAT-only critical-deletion witness search. Do not conflate branch/interface representation rank with unrestricted T/S lower bounds.
+
+**Four gates:** DISJ restricted positive exact algorithms; relativization no separation; simultaneous DTISP upper only / lower OPEN; configuration counting no unrestricted lower conclusion. Easy sources and legal algebraic/combinatorial shortcuts preserved.
+
+**ONE NEXT DEPENDENCY:** C3-T5-PHYSICAL-CRITICAL-TRANSFER096. Prove or falsify a uniform intrinsically physical-arc-critical high-girth generator with correct YES-only witness quantifiers; attempt stronger cycle-space, binary-tree, treewidth, algebraic, and source-encoded solver upper bounds first. P versus NP OPEN.
+
+**Files:** research/agents/tmr-3/2026-11-18_TMR3_T5_WEIGHTED_CRITICAL095.md; experiments/tmr/tmr3_t5_weighted095_smoke.py; results/raw/tmr/2026-11-18_TMR3_T5_WEIGHTED_CORE095_AUDIT.json; main3_PNP_TIME_SPACE_TRADEOFFS.tex (new /095 section appended; all earlier sections retained).
+
+---
+## Historical handoff (verbatim, preserved below)
+
 # TMR-3/094 handoff | 2026-11-18 | SAT-only intrinsic-critical T5 witness and DTISP transfer firewall
 
 **Identity/configuration retained:** TMR-3 / PNP Time-Space Tradeoffs; existing title, ownership, enabled/paused status, Pacific hourly schedule and four safeguards unchanged. Branch /094 stacks on draft PR #306 (/093), unmerged. New user directive 2026-11-18 supersedes previous /093 nonlinear-interface priority. The purpose is SAT witness finding for a designated deletion G=H-e of a connected edge-minimal T5 UNSAT source H, with no free coNP promise certificate.
