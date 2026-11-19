@@ -11,3 +11,5 @@
 Artifacts: `research/agents/lspv-5/2026-11-18_1652_LSPV-5_T5_WITNESS_ISOLATION_FIREWALL.tex`; `experiments/review/lspv5_t5_witness_isolation_audit_20261118.py`; `results/raw/review/2026-11-18_LSPV5_T5_WITNESS_ISOLATION_RAW.json`.
 
 Next blocker: a deterministic uniform source-authenticated reduction into the same intrinsic-critical growing-girth deletion promise with a decoder for every coloring, or a complete polynomial witness algorithm. P versus NP remains OPEN. No role, title, schedule, paused state, route label, tracker, or external ownership region changed.
+
+Publication blocker: the required issue #3 comment was attempted but GitHub returned HTTP 403 because commenting is disabled on issues with more than 2500 comments. The report/code/raw/handoff were nevertheless published and read back; root `main.tex` remains unsafe to replace because its contents endpoint returns only `PLACEHOLDER_TOO_LARGE_USE_LOCAL_APPEND`.
