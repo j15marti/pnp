@@ -1,3 +1,27 @@
+# TMR-3/100 CURRENT STRICT-C HANDOFF (2026-11-19 PST)
+
+Owner/title: TMR-3 / PNP Time-Space Tradeoffs. Previous schedule, enabled/paused state, ownership and safeguards unchanged. Superseding current T5 canonical relation: the **strict directed triangle C**, not historical permissive Q or O/P. C(a,b,c) requires cyclic orientation of all three pairs and 30/125 legal ordered tuples. Use R(x,y) iff y-x in {1,3} mod5.
+
+**PROVED:** C has exactly ten color automorphisms x -> ±x+t. For s>=1 shared variables, K_C(s)=(5^(s-1)+1)/2 orbits. Exhaustive orbit enumeration saves at most a factor ten and remains exponential for s=N^.195. Correct, sound negative-child discovery still requires every representative to be covered, with all unsuccessful child calls and negative verification charged.
+
+**PROVED:** Eliminating a fresh private C head gives exact multiplicities (0,2,1,1,2), projecting to u != v. For the K6 private-head instance (21 variables and 15 strict C clauses), full UNSAT and all fifteen clause deletions SAT are verified; every deleted instance has 76,800 **original full-variable C witnesses**. This is not the prior Q counting kernel or the Q 1,584-witness experiment.
+
+**COMPUTATIONAL:** K6 UNSAT complete deterministic original-C block scan: all 5^6 assignment enumeration used 70,785 child calls and 210,509 C tests; dihedral quotient used 7,079 calls and 22,424 tests across exactly 1,563 orbits. The matched K6-minus-edge SAT control used 516 versus 454 child calls (full vs quotient) and checked every emitted original clause. Counts are machine-algorithm-specific, not necessary work. Two audits matched deterministic digest a40d3e403fb2127b57eb3a0400107da92aa2e31931db35f21b0e919fd75121f6.
+
+**CHARGED RECURRENCE:** T includes source authentication, C orientation/capacity/distance filters, orbit enumeration O(s*5^(s-1)), all called children of actual polarity, attempted false blockers, source materialization, optional replay, output and independent C verification. S_peak is simultaneously live writable memory, including filters, shared assignment, addresses, child workspace and stored/replayed witnesses. No free correct-path oracle. If both a uniform SAT-positive and a uniform UNSAT-negative deterministic specialist are sound and independently capped at N^1.33 time and N^.5 space, dovetailing creates a forbidden all-CNF decider *only when both apply to all Boolean CNFs on the same model*. A single promised SAT witness finder does not imply that decider.
+
+**SOURCE/MODEL:** The Buss-Williams table excludes general Boolean SAT with deterministic indexed random-access multitape TM exponents (c,e)=(1.34070,.5). An arbitrary unit-cost RAM or the strict-C promise requires a proper transfer. Local fixed-width-record C<->S gadgets support O(log N) scratch indexed access with polylogarithmic overhead, not a generic near-linear Boolean SAT-to-C time-space reduction. General SAT N^1.33 N^.5 polylog is already excluded in the stated model. Nondeterministic tautology and named resolution results do not prove the same exclusion for an unrestricted strict-C solver.
+
+**PR/ARTIFACT:** research/agents/tmr-3/2026-11-19_TMR3_STRICT_C_ORBIT_COST100.md. Full local standard-library script, raw JSON, theorem LaTeX and source audit are in the TMR-3/100 reproducibility ZIP. Full manuscript compilation, independent mathematical peer review and native TM execution outstanding.
+
+**GATES:** DISJ PASS restricted; machine-space bound constructive restricted; relativization/separation OPEN; orbit/state count only an enumeration upper, not lower. Keep all easy-family controls and all allowed algebraic, treewidth, graph-coloring and adaptive alternatives.
+
+**NEXT:** C3-STRICT-C-SEMANTIC-BLOCK-ROUTING101: find a fully uniform, source-authenticated refutable-block selector for nontrivial strict-C sources that proves it bypasses exponential orbit enumeration, with full polarity and workspace charges. P versus NP remains OPEN.
+
+Previous TMR-3/099 and older handoff follows verbatim for historical record. Its active Q convention is superseded.
+
+---
+
 # TMR-3/099 CURRENT HANDOFF (2026-11-18 PST)
 
 Owner and title: TMR-3 / PNP Time-Space Tradeoffs. Existing ownership, schedule, activation/disabled state, manuscript history, and safeguards are unchanged. Superseding technical focus: exact-one Q(h,u,v)=R(h,u) XOR R(h,v) over T5, in matched comparison against P(h,u,v)=R(h,u) AND R(h,v), together with charged SAT-witness and UNSAT block-discovery recurrences.
