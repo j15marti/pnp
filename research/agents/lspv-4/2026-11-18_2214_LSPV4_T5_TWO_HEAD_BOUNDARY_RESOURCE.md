@@ -1,0 +1,77 @@
+# LSPV-4 Time-Space Resource Auditor: two-head boundary and global T5 exact-one obstruction
+
+**Date:** 2026-11-18 America/Los_Angeles. **Track:** exact-one `Q`, same-machine discovery and resource accounting. **Status:** PROVED/EXACT for the theorems under their stated grammar; COMPUTATIONAL for finite tests; OPEN for unrestricted time lower bounds, increasing-girth critical promise and square-root-space transfer. Historical role title and all automation states unchanged.
+
+## One candidate, three falsifiers
+
+**Candidate:** On exact-one sources with a disjoint set of head-only variables and follower-only variables, with each follower belonging to at most two per-head connected parity components, fixing head colors reduces global T5 realizability to an exact 2-SAT instance. The algorithm uses polynomial space and time `O((n+m) 5^(h-1))` word operations, where `h` is the number of head-only variables. The nontrivial global problem is encoded entirely by the head colors and can still be NP-complete as `h` grows.
+
+Falsifiers tested: (i) self-ties and different variables given equal letters, (ii) a parity-feasible source with no T5 labeling, (iii) authentic critical-clause deletion witnesses and a head-degree guard for the 283-variable Mycielski control. The numerical 2-SAT rules are tested independently against the uploaded original generalized-arc-consistency solver. This is a constructive upper bound and a restricted NP-completeness reduction, not a lower bound for arbitrary machines.
+
+## Exact relation and comparison signature
+
+T5 colors are 0..4, `R(a,b)=1` exactly when `(b-a) mod 5` belongs to `{1,3}`; `R(a,a)=0`. The new clause is `Q(h,u,v)=R(h,u) XOR R(h,v)`. All source variable names within a clause are different; assigned letters can coincide. The old `P` rule is the AND of those two comparisons. Of 125 ordered value triples, exactly 60 satisfy Q and 20 P; their intersections are empty.
+
+For a pair of head colors a,b, define the image of the *joint comparison signature*:
+
+`S(a,b) = {(R(a,c),R(b,c)) : c in Z_5}`.
+
+**Lemma 1 (full-signature classification, PROVED).** `S(a,b)={0,1}^2` if and only if `(b-a) mod 5` is 2 or 3. This follows by checking the five translation-reduced offsets 0..4, which is an exhaustive constant-size proof, and is independently reproduced by the executable. For offsets 0, 1 and 4, at least one signature is absent. This matters because a zero comparison may denote either a loss or a tie.
+
+## Six-clause pair gadget and NP-complete global realizability
+
+For two head-only variables x,y, create four private followers `t_00,t_01,t_10,t_11`. Add three Q clauses with head x on follower pairs `00--10, 10--01, 01--11`. Add three with head y on pairs `00--01, 01--10, 10--11`. Each of the two resulting follower graphs is a connected path of length 3 and is bipartite, with parity classes given respectively by the first and second subscripts. Each follower occurs in exactly one connected parity component for x and one for y.
+
+**Lemma 2 (gadget equivalence, PROVED).** The gadget is satisfiable for prescribed colors a,b at x,y if and only if `S(a,b)={0,1}^2`, equivalently `(b-a) mod 5` is 2 or 3.
+
+*Proof.* Each head's path forces its four comparison bits to alternate. Thus there are independent flips `s_x,s_y`; at follower `t_ij`, the required signature is `(s_x XOR i,s_y XOR j)`. The four followers require all four ordered signatures regardless of flips. A solution exists exactly when S(a,b) covers them. If it does, assign each follower any letter realizing its required signature, independently. This gives a complete original-Q witness and proves both directions.
+
+**Theorem 3 (NP-complete restricted Q grammar, PROVED modulo the established Hell-Nešetřil H-coloring theorem).** From a simple undirected graph K=(V,E), replace each edge by a fresh copy of Lemma 2 with its endpoints as the heads. The Q source contains exactly `|V|+4|E|` variables and `6|E|` clauses. Every per-head parity graph is bipartite, head and follower sets are disjoint, and each follower belongs to precisely two head parity components. The Q instance is SAT iff K admits a homomorphism to the undirected five-cycle `C5` on colors with difference ±2. Since fixed-C5 graph homomorphism is NP-complete [1], deciding SAT for this Q subclass is NP-complete. A source encoding and reduction require `O((|V|+|E|)log(|V|+|E|))` bits and `O(|V|+|E|)` word operations. The reduction also converts every C5 homomorphism into an original-label T5 Q witness in linear work.
+
+This strengthens the old private-head graph-5-coloring embedding: **global five-letter incompatibility survives even when all head parity checks pass, heads never appear as tails, and every tail touches only two parity components.** NP-completeness does not give a superpolynomial lower bound and does not establish hardness on the designated critical-deletion promise.
+
+## Polynomial inner algorithm for fixed head colors
+
+Let H be the `h` head-only variables and U the follower-only variables. Construct the undirected per-head graph B_x whose vertices are followers and whose edges are tail pairs of Q clauses headed by x. If some B_x has an odd cycle, return UNSAT with a valid parity reason. Otherwise bipartite BFS gives, for every component C, a known side `sigma_xC(u) in {0,1}`.
+
+Each component has one Boolean selector `s_xC`; the comparison bit for any follower u in that component is `R(a_x,c_u)=s_xC XOR sigma_xC(u)`. Enumerate all head-color tuples after fixing one head to color 0 under fivefold rotation, so there are at most `5^(h-1)` candidates. For a fixed tuple, a follower appearing in r components, r<=2 by the input guard, must admit a letter satisfying its r comparison bits. Test all `2^r` selector assignments and forbid those with no T5 letter. Each forbidden r-tuple yields a CNF clause with at most two literals. The resulting instance is 2-CNF, solvable and witness-producing by a linear-time strongly-connected-component algorithm [2]. Recover each follower letter from its nonempty comparison domain. Verify every original source Q clause, then emit all n assigned letters. If no head tuple works, return UNSAT. If the source violates the r<=2 guard, return UNSUPPORTED, never UNSAT.
+
+**Theorem 4 (exact same-source solver, PROVED).** The preceding algorithm is deterministic, sound, complete and outputs a full Q witness for every SAT input obeying the declared partition and tail-degree condition. It is not an oracle or advice algorithm. With explicit triple-list input and w-bit word RAM (`w=Theta(log(N+n+m))`, `N` the encoded input length), sequential work is
+
+`O(N/w + (n+m)(1+5^(h-1)))` word operations, with `O(n+m)` retained words, i.e. `O((n+m)log(N+n+m))` writable bits; reading a non-word-aligned source and emitting the witness add actual bit-access/output costs. A conservative bit-tape simulation has polynomial access overhead; no sharp single-tape exponent is claimed. The conditional bound assumes the exact grammar, not arbitrary Q formulas or arbitrary CNFs.
+
+For `h<=2`, the parity criterion alone is sufficient: choose two distinct head colors 0 and 2, for which all four comparison signatures exist, so every tail can satisfy both heads regardless of overlapping parity components. Therefore a parity-feasible UNSAT separated-head formula needs at least three distinct heads. The three-head control below proves this head-count boundary sharp.
+
+## Whole-execution ledger and caching
+
+* Input and guards: parse all n indices and m explicit ternary clauses, validate the head/follower partition and distinct names; any failure returns INVALID/UNSUPPORTED, never a false UNSAT. The user-supplied original exact-one archive's SHA and script SHA are recorded in the run manifest.
+* Preprocess: two adjacency entries per Q clause, bipartite BFS visits each adjacency entry, retains one parity side and component ID per head-follower incidence, and checks the maximum tail component count. This work remains charged on SAT, UNSAT and unsupported inputs.
+* Head discovery: enumerate **every failed** pinned head tuple up to `5^(h-1)`; the first successful tuple triggers exact 2-SAT selector reconstruction, follower-letter choice and full source verification. No free polarity routing.
+* 2-SAT: a tail with r<=2 contributes at most 4 forbidden selector tuples. The implication graph has O(k+u) vertices/arcs where k is the number of head parity components, and SCC discovery plus a satisfying assignment takes O(k+u) word operations. The two directions of every implication are retained until SCC completion and then released/reused between head tuples.
+* Cache: the list of forbidden selector patterns depends only on up to two pairs `(head color, parity side)`. Thus **at most `1+10+100=111` distinct profiles** exist for this fixed alphabet. The cache is shared across all head-color trials and requires constant-size pattern storage, plus keys/pointers. Reused patterns do not imply that distinct inference occurrences or original-source verification are free.
+* Live space: the main input index, per-head sparse adjacency, component labels, per-tail incidence list, up to O(u) 2-CNF clauses and implication arcs, SCC worklist, head-label tuple, one Boolean selector vector, and a final n-letter witness coexist at peak. Neither all `5^(h-1)` candidates nor all UNSAT children are retained. The actual Python `tracemalloc` measurement is an *allocation proxy*, not the machine-independent bit-space bound or RSS.
+* Output: SAT witness consumes `3n` payload bits for five letters under a fixed 3-bit code, plus framing/source indexing as required; every emitted assignment undergoes m original-Q checks. UNSAT output is the binary decision; exporting a formal UNSAT certificate is a separate potentially much larger obligation.
+
+On the critical 15-clause source, both cached and uncached variants tested 25 pinned head tuples and generated 240 2-CNF forbidden-pattern clauses/480 implication arcs. Cache reduced checked selector patterns **1,200 to 400**, T5 comparison checks **7,040 to 2,320**, with 200 cache hits and 100 misses/entries. The numeric ledger is Python logical-operation counting, not physical instruction cycles or asymptotic lower bounds.
+
+## Independent finite controls and adversarial audit
+
+The six-clause gadget applied to K3 has 3 heads, 12 followers, and 18 Q clauses. All three head-parity graphs are bipartite and all followers touch exactly two parity components, but the source is UNSAT because a triangle cannot map to C5. An independent original generalized-arc-consistency solver returns UNSAT with 2,088 DFS nodes and 82,607 support intersections; **the old matched-scope P formula is SAT**, showing Q is not a relaxation.
+
+Greedy deletion in deterministic descending clause order removes three redundant clauses and produces an explicit 15-variable, **15-clause edge-of-constraint-minimal Q-UNSAT** formula, with all 15 original-label clause-deletion witnesses independently verified by the original solver. The complete Q source remains UNSAT (original solver: 7,556 DFS nodes, 245,217 support intersections), whereas the same-scope P source is SAT (15 DFS nodes). All `C(15,4)=1,365` induced four-variable subinstances are SAT, so parity and four-variable local obstruction checks miss the global incompatibility. The complete 15-clause formula, deleted indices and every full witness are in HEAD_PAIR_RAW.json.
+
+The standalone solver and exact independent graph-C5 backtracking agree on **all 75** simple graphs on 1..4 head vertices and on 20 fixed-seed random graphs on 3..5 head vertices. The independent original solver also agrees on **96** additional random bipartite head/tail instances, 75 SAT and 21 UNSAT. All 21 UNSAT random controls fail a local parity test; the important parity-feasible UNSAT counterexample is the deliberately constructed K3. Both code paths verified every SAT witness against original Q triples.
+
+The supplied 283-variable, 236-clause Mycielski control has head/follower partition but maximum follower component degree **23**, so the new algorithm correctly returns **UNSUPPORTED after preprocessing**, rather than disguising the inherited critical UNSAT source as a solved instance. Its independently supplied 236 deletion witnesses passed the package's `verify_bundle.py` (55,696 direct checks). The earlier exploratory grid's one UNKNOWN remains UNKNOWN, not UNSAT.
+
+## Gates and limitations
+
+DISJ sanity: no unrestricted separation claimed; PASS as a restricted NP-completeness transfer. Relativization: no general oracle separation inferred; NOT APPLICABLE to this positive algorithm/reduction. Simultaneous DTISP: Buss-Williams [3] rules out general SAT in their deterministic random-access time `N^1.34070` and space `N^0.5` region, hence also smaller time `N^1.33` with that space for general SAT, but this does not bind the Q critical-deletion promise without a same-machine reduction with exact exponent preservation. Deterministic configuration counting: a polynomial workspace upper bound does not prove time hardness; NOT APPLICABLE as lower bound. Natural Proofs/algebrization: no circuit lower bound attempted.
+
+**OPEN:** A high-girth, intrinsically critical promise-preserving reduction and quantitative witness-search lower bound, a uniform general-CNF specialist with N^1.33+o(1) time and N^0.5 polylog space, and any unrestricted circuit or RAM lower bound. The present implementation is **linear-space** in source words, not square-root-space, and exponential in h. SAT witness search and UNSAT exhaustive enumeration are distinct; free nondeterministic choices, k-bit correct-path advice and an external UNSAT proof cannot replace actual deterministic discovery/costs. Source girth and incidence girth are distinct, and the K3 fixture is not a high-girth construction. P versus NP remains OPEN.
+
+## Evidence, independent review and next blocker
+
+Executed CPython standard-library scripts: `t5_head_pair_resource_audit.py` and `independent_package_crosscheck.py` with seed 202611182214 and 202611182217. Exact JSON: `HEAD_PAIR_RAW.json`, `CROSSCHECK_RAW.json`, `MYCIELSKI_GUARD_RAW.json`. Imported official evidence from `T5_Exact_One_Experiments_2026-11-18.zip` and ran its `verify_bundle.py`: PASS. The script and numerical checks independently corroborate the reduction; the symbolic proofs above establish all-input statements. No external independent peer has yet reviewed this new gadget theorem. The next decisive experiment is to construct **growing-incidence-girth** critically UNSAT Q families that evade the fixed six-clause pair gadget and determine whether an algorithm for the stricter promise can exploit the special certificate structure. The symbolic NP-completeness theorem itself does not address that promise.
+
+References: [1] P. Hell and J. Nešetřil, “On the complexity of H-coloring,” *J. Combin. Theory B* 48 (1990) 92-110, https://doi.org/10.1016/0095-8956(90)90132-J. [2] B. Aspvall, M. Plass and R. Tarjan, “A linear-time algorithm for testing the truth of certain quantified boolean formulas,” *Inf. Process. Lett.* 8 (1979) 121-123, https://doi.org/10.1016/0020-0190(79)90002-4. [3] S. Buss and R. Williams, “Limits on Alternation-Trading Proofs for Time-Space Lower Bounds,” *Comput. Complexity* 24 (2015) 533-600, https://doi.org/10.1007/s00037-015-0104-9.
