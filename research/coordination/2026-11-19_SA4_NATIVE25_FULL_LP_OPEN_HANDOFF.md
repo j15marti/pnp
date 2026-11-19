@@ -1,0 +1,6 @@
+# SA4 Native25 handoff, November 19 2026
+The full strict-C SA4 status on the previously certified 25-variable native girth-8 clause-critical UNSAT source remains **OPEN**. We constructed the actual D5-symmetry-reduced full LP: 598,648 orbit-weight variables, 582,241 linear equalities, 3,508,650 nonzeros. HiGHS exceeded the allotted time without a verdict. PDHG residual is nonzero after 4,200 iterations, so it is not a certificate.
+
+A smaller clause-centered necessary-condition LP, covering 550 four-variable scopes, was numerically feasible (20,730 variables, 27,786 equations, max residual 1.84e-12) but rational reconstruction failed. Full 4-support propagation remains consistent (12,650 four-scopes). The S3-symmetric 3-color proxy is numerically infeasible but cannot determine 5-color SA4. Controls: 4-variable strict-C UNSAT F3 infeasible; 5-variable SAT forest feasible.
+
+Next action: exact rational primal or exact Farkas dual on the 5-color full SA4, with independent source-indexed replay. Preserve distinction from general P-vs-NP. Local reproducibility ZIP: T5C_SA4_Native25_Partial_Audit_20261119.zip (kept as conversation attachment, not uploaded to GitHub). This run did not change agent schedules or manuscripts.
