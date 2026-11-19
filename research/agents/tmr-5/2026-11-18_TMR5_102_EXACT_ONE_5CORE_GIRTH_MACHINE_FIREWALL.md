@@ -1,12 +1,12 @@
 # TMR-5/102: exact-one T5 private-head machine and girth firewall
 
-**Scope.** TMR-5 independent red team, 2026-11-18 Pacific Time. The fixed tournament has \(R(a,b)\iff (b-a)\bmod5\in\{1,3\}\), no loops, and \(Q(h,u,v)=R(h,u)\oplus R(h,v)\). In the **private-head** subfamily \(F(H)=\bigwedge_{\{u,v\}\in E(H)}Q(h_{uv},u,v)\), each head is fresh, appears in no follower position, and has its own clause. This is not the general shared-head problem.
+**Scope.** TMR-5 independent red team, 2026-11-18 Pacific Time. The fixed tournament has \(R(a,b)\iff (b-a)\bmod5\in\{1,3\}\), no loops, and \(Q(h,u,v)=R(h,u)\oplus R(h,v)\). In the **private-head** subfamily \(F(H)=\bigwedge_{\{u,v\}\in E(H)}Q(h_{uv},u,v)\), each head is fresh, appears in no follower position, and has its own clause. We take the source vertex set to consist exactly of the **active followers**, with no isolated vertices added to the formula count. This is not the general shared-head problem.
 
 ## New proved statements
 
 **Exact projection and paid witness extension.** \(F(H)\) is SAT exactly when source graph \(H\) is 5-colorable. Given a proper coloring, choose each private head's value equal to the endpoint color that beats the other. Computing and checking all \(n+m\) output letters costs \(O(n+m)\) time, but the source coloring must first be found, supplied and charged. A read-only, random-access supplied coloring permits \(O(\log(n+m))\) *additional* bit workspace for streamed output; this is NOT a deterministic low-space coloring algorithm. Source graph extraction with ordinary adjacency lists costs linear workspace.
 
-**Critical degree/density.** If \(F(H)\) is clause-minimal UNSAT, \(H\) is connected, edge-critical 6-chromatic, and has minimum degree at least 5. Deleting a clause is exactly deleting one follower graph edge. All \(H-e\) are 5-colorable, while \(H\) is not; one fresh sixth color restores \(H\), so \(\chi(H)=6\). A degree-at-most-four vertex could be greedily recolored after deleting that vertex, a contradiction. Therefore \(m\ge5n/2\); with \(N=n+m\) variables, \(n\le2N/7\) and at least \(5N/7\) variables are private heads.
+**Critical degree/density.** If \(F(H)\) is clause-minimal UNSAT, the active-follower graph \(H\) is connected, edge-critical 6-chromatic, and has minimum degree at least 5. Deleting a clause is exactly deleting one follower graph edge. All \(H-e\) are 5-colorable, while \(H\) is not; one fresh sixth color restores \(H\), so \(\chi(H)=6\). A degree-at-most-four vertex could be greedily recolored after deleting that vertex, a contradiction. Therefore \(m\ge5n/2\); with \(N=n+m\) variables, \(n\le2N/7\) and at least \(5N/7\) variables are private heads.
 
 **Moore girth barrier.** For a simple minimum-degree-five graph of girth \(g\),
 \[
