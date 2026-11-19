@@ -3,16 +3,12 @@
 
 ## Reused established equality primitive, not a new gadget
 The user's `t5_strict_research.pdf`, page 4, already proves the four-original-C primitive-positive definition
-[
-E(x,y;p,q,a,b)=C(x,p,q)C(y,p,q)C(p,a,b)C(q,a,b).
-]
+`E(x,y;p,q,a,b) = C(x,p,q) AND C(y,p,q) AND C(p,a,b) AND C(q,a,b)`.
 All six are distinct **variable names**. It projects to x=y, with exactly 4 auxiliary extensions per equal ordered pair, 20 models total. This uses original strict C (30/125), not historical Q/P/S. If H(u,v)={h:C(h,u,v)}, H has two heads at pentagon distance 1, those heads are distance 2 apart, and H has one head at distance 2. The two outer clauses and required p!=q force the two inner names p,q to be the two heads of a distance-1 pair. Consequently x=y. An equal-terminal witness is (x,y,p,q,a,b)=(0,0,1,4,2,3) and its shifts.
 
 ## New physically critical native-C chain (PROVED)
 For every integer k>=1, introduce t_0,...,t_k, 4 fresh auxiliary names p_i,q_i,a_i,b_i per link, and one closing head h. Define
-[
-F_k=igwedge_{i=0}^{k-1} E(t_i,t_{i+1};p_i,q_i,a_i,b_i) wedge C(t_0,t_k,h).
-]
+`F_k = (AND over i=0,...,k-1 of E(t_i,t_{i+1};p_i,q_i,a_i,b_i)) AND C(t_0,t_k,h)`.
 Then F_k has exactly N=5k+2 used names and M=4k+1 **physical C clauses**. It is UNSAT, since all links impose t_0=t_k but the closing C requires t_0 != t_k. It is **physically clause-minimal UNSAT**: for any deletion inside link i, set t_0...t_i=0, t_{i+1}...t_k=2, closing h=1. Use one of four complete broken-link vectors (x,y,p,q,a,b), indexed by deleted clause 0..3:
 ```
 (0,2,1,3,0,4)
