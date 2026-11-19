@@ -1,11 +1,11 @@
 % BEGIN TMR-5 OWNED
-% Current living synthesis, updated 2026-11-15 20:50 PST; restricted D2 OR-bilinear exact count and C1e/C1f/C3 audits.
+% Current living synthesis, updated 2026-11-19 02:48 PST; adds /058 pinned statement and trust-surface audit.
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,hyperref}
 \title{Independent End-to-End Audit and Cross-Track Synthesis}
 \author{TMR-5: PNP Machine Bottleneck Redteam}
-\date{November 15, 2026, Pacific Time}
+\date{November 19, 2026, Pacific Time}
 \begin{document}
 \maketitle
 \section{Status and selected whole-chain target}
@@ -19,8 +19,10 @@ This paper independently closes its \emph{C1f-ADDRESS} semantics for
 total but possibly partly authentic address decoders. The JMV original
 is total on its \(2^\ell\) authentic clause addresses, so the generic
 padding counterexample below does \emph{not} falsify its theorem.
-The Lean kernel and complete transitive proof source remain unexecuted,
-making the counting-to-hierarchy transfer CONDITIONAL.
+The Lean kernel and complete transitive proof source remain unexecuted
+locally, making the counting-to-hierarchy transfer CONDITIONAL. The /058
+audit below closes the statement-semantics and source trust-surface
+arrow; only the local kernel replay is still open.
 Prior full-chain TMR-3/054 and /055 audits remain below as independently
 verified restricted models. Other teams' manuscripts and retired trackers
 are untouched.
@@ -643,18 +645,93 @@ cross-track dependency remains the fresh pinned Anthropic Lean
 kernel, \texttt{\#print axioms}, nanoda and FinTM2-to-hierarchy
 semantic replay.
 
+\section{Independent pinned statement and trust-surface audit /058}
+\textbf{Dependency advanced.} The arrow ``pinned Lean proposition
+\(\Rightarrow\) ordinary deterministic machine statement'' in TMR-1's
+source\(\to\)solver\(\to\)\(E^{NP}\) chain.
+\textbf{Candidate, stated before inspection.} At
+\texttt{anthropics/formal-math} commit
+\texttt{16a5ce41304fcdaea4e0be7c132e1c361dc26da5}, the trusted
+propositions \texttt{MainResults.ETHIsFalse} and
+\texttt{MainResults.MainTheorem} faithfully express, in an ordinary
+bounded-work machine model, ``for every \(\delta>0\) one deterministic
+machine decides 3-SAT in \(c\,2^{\delta n}\) steps'' and the stated
+counting bound, and the proof tree has no kernel-trust escape.
+\textbf{Falsifiers.} (F1) a FinTM2 step that can do unbounded work,
+which would make step counts meaningless; (F2) an infinite state,
+label or stack alphabet; (F3) a source-level escape such as
+\texttt{axiom}, \texttt{sorry}, \texttt{native\_decide},
+\texttt{extern}, \texttt{implemented\_by}, \texttt{csimp},
+\texttt{unsafe} or a custom elaborator; (F4) an input encoding or
+promise that removes inputs the JMV consequence needs.
+
+\textbf{Result: COMPUTATIONAL (static) plus PROVED/EXACT statement
+reading; no falsifier fired.} The trusted file \texttt{MainResults.lean}
+(blob \texttt{1c62a550\ldots}, identical to the SHA TMR-5 recorded earlier) imports only Mathlib and
+contains definitions only. At the pinned Mathlib revision
+\texttt{0df444a3\ldots}, \texttt{FinTM2} requires
+\texttt{Fintype} for stack indices \(K\), labels \(\Lambda\) and states
+\(\sigma\); the statements add \(\forall i,\ \mathrm{Finite}(\Gamma_i)\).
+\texttt{TM2.Stmt} has only push, peek, pop, load, branch, goto and halt,
+with no loop constructor, and \texttt{step} executes one finite
+statement term \texttt{stepAux (M l)}. Hence for a fixed machine
+each step makes at most \(d=\max_l|M(l)|\) stack operations, and a
+multitape Turing machine with one tape per stack simulates
+\(t\) steps in \(O(d\,t+N)\) time (input stack top at the input
+head, a pop moving right). This closes F1 and F2. The halting
+configuration demands empty non-output stacks and the initial state,
+which only strengthens the claim. \texttt{DecidesKSat} quantifies over
+\emph{every} duplicate-free \(k\)-CNF on \(n\) variables, including
+ones where some variables never occur, with the time bound depending
+on \(n\) only; \texttt{ETHIsFalse} is exactly \(\neg(0<s_3)\). A JMV
+3-CNF with repeated clauses needs only a polynomial-time duplicate
+filter, which is legal for the \(2^{\delta n}\) consequence, so F4
+does not fire for the \(E^{NP}\) transfer.
+\texttt{MainTheorem}'s extra promises (AllOccur, \(m\ge2\), \(n\ge4\),
+\(k\ge1\)) are \emph{not} needed downstream, because the chain uses
+\texttt{ETHIsFalse} itself.
+
+A scripted scan (\path{experiments/tmr/tmr5_formal_eth_static_audit058.py},
+1{,}052 Lean files, 152{,}420 lines, 1.4\,s) found zero axiom
+declarations, \texttt{native\_decide}, reduceBool, extern,
+implemented\_by, csimp, unsafe, opaque, custom syntax/elaborator, Lean-internal
+imports or debug options. The only \texttt{sorry} tokens are the two
+expected placeholders (and one comment) in \texttt{Challenge.lean},
+matching the upstream CI log. Three ordinary instance attributes were
+inspected and are typeclass registrations, not trust escapes. F3 does
+not fire at source level.
+
+\textbf{Scope and unexecuted checks.} This is not a kernel check.
+The local Lean 4.33.1 toolchain install was refused by this
+environment's permission policy, so \texttt{lake build}, comparator,
+nanoda and \texttt{\#print axioms} were \emph{not} executed here. Kernel
+acceptance therefore rests on the observed upstream SHA-matched CI run
+recorded by TMR-1/057. A static grep cannot exclude escapes introduced
+through Mathlib or other dependencies. The comparator's axiom allowlist
+covers those in CI. The four gates are unchanged from the C1 row:
+DISJ NOT APPLICABLE (algorithmic upper bound, not a rank invariant);
+relativization OPEN for the bridge (the JMV/Williams consequence is
+non-relativizing through its circuit-analysis step); simultaneous DTISP
+NOT APPLICABLE (time-only statement); deterministic configuration
+counting PASS as a consistency check only. The consequence remains the
+\emph{conditional} \(E^{NP}\not\subseteq\mathrm{SIZE}(O(N))\) i.o.\
+bound with external review OPEN. It is not an NP lower bound, and
+P versus NP remains OPEN.
+
 \section{One highest-value next lemma}
-Independently rebuild Anthropic's pinned Lean v4.33.1 theorem
-\texttt{MainResults.mainTheorem}, audit its transitive import tree
-with \texttt{\#print axioms}, and verify that its exact
-\texttt{FinTM2} stack-step/input/output semantics support
-TMR-1's physical all-input count and binary hierarchy transfer.
-The only currently supported conclusion is a \emph{conditional}
-infinitely-often \(\Omega(N\sqrt{\log N})\) lower bound for
-one \(E^{NP}\) language, not a general NP bound, not
-superpolynomial hardness, and not P versus NP.
-The adaptive nonassociative Tree Evaluation interface remains
-the highest-ranked Track B open problem, as detailed above.
+Execute the pinned build locally in an environment that permits the
+Lean 4.33.1 toolchain: \texttt{lake exe cache get}, \texttt{lake build},
+the pinned comparator with nanoda, and a transitive
+\texttt{\#print axioms} for both theorems. Then replay the published
+JMV Corollary~3(1\(^\prime\)) hypothesis against \texttt{ETHIsFalse}
+exactly, checking that its required SAT algorithm is the deterministic
+3-CNF decision problem on \(n\) variables with \(\mathrm{poly}(n)\)
+clauses that the audit above shows is expressed. The only supported
+conclusion is a conditional infinitely-often linear-size circuit lower
+bound for one \(E^{NP}\) language. It is not a general NP bound, not
+superpolynomial hardness, and not P versus NP. The adaptive
+nonassociative Tree Evaluation interface remains the highest-ranked
+Track B open problem.
 
 \section{Artifact provenance and governance}
 Detailed TMR-5/051 report, exact executable and raw data are at
