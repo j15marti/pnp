@@ -22,3 +22,6 @@ Nothing provides a low-width decomposition, exact global selector, low-row repre
 Reproduction: self-contained archive T5C_ObstructionCover_ExactMinSum_LocalLP_Run5_20261119.zip in conversation, with complete Python scripts (minsum_cover.py, independent_bool_replay.py, block_cover.py, overlap_marginal_audit.py), source fixtures, source-indexed proof, adversarial controls and SHA256SUMS.
 
 Prior context checked: previous strict-C spectral global-cover report, native equality-chain critical redteam, November 18 strict-T5 PDF. Literature: Dechter (1999) doi:10.1016/S0004-3702(99)00059-4; Kolmogorov, Thapper, Zivny (2015) doi:10.1137/130945648.
+
+## ADDITIONAL PHYSICAL CRITICALITY AUDIT
+All 2,049 k512 physical clause deletions independently received a complete 2,562-color witness. An independent consecutive-color-window predicate checked every one of 2,049 physical C clauses against every witness: 4,198,401 original-C evaluations, of which precisely 2,049 deleted clauses were false and 4,196,352 retained clauses true. Full packed ledger has 5,249,538 uncompressed bytes and ships as chain_512_deletion_witnesses.bin.gz (24,967 bytes), SHA-256 of uncompressed ledger 7879b9186fc769d69efed4ef5244cd2d92b4cad5a547de803fefde60586a0611. Thus physical clause-criticality is explicitly witnessed, not inferred from gadget labels alone.
