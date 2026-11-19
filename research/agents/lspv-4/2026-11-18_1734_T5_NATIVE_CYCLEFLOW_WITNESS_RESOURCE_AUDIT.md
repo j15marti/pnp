@@ -1,0 +1,40 @@
+# LSPV-4 | Native T5 cycle-flow SAT-witness extraction and same-machine audit
+Date: 2026-11-18 17:34 PST. Role: historical LSPV-4 Time-Space Resource Auditor. Status: PROVED/EXACT in stated model, COMPUTATIONAL independent finite audit, OPEN unrestricted witness lower bound. P versus NP OPEN.
+
+## Candidate and four falsifiers
+Candidate: count actual T5 colorings by an integer-exact GF(5) cycle-flow expansion, condition spanning-tree edge differences one at a time, then output the full original-vertex SAT witness. Unlike a generic Fourier count alone, this constructs a witness without a SAT oracle, a witness adviser, or uncharged discovery.
+F1: incorrect sign/normalization and noninteger count; F2: forced edge increments break cyclotomic symmetry; F3: choosing increment 3 when increment 1 has zero count might lose all completions; F4: input discovery, exact integers, failed queries, output and verification hide non-polynomial writable space. Each is addressed by the proof and independent original-label controls below.
+
+## Theorem (native T5 exact count and uniform witness, PROVED)
+Let G be a connected explicitly encoded simple oriented graph, n vertices and m arcs. The target is R(a,b) iff (b-a) mod 5 belongs to {1,3}. A subset of arcs may be forced to a particular difference d_e in {1,3}. Let Z_F be the number of valid complete original-vertex colorings, and beta=m-n+1. With zeta a primitive fifth root and signed incidence D, define for edge frequency k
+- unforced: p_e(k,X)=X^{-k}+X^{-3k};
+- forced to d_e: p_e(k,X)=X^{-d_e k}.
+All exponents are modulo five. Fourier inversion gives the exact identity
+Z_F = 5^(n-m) sum_{a in ker(D^T) over GF(5)} prod_e p_e(a_e,zeta).
+Enumerate the 5^beta flows by assigning values to non-tree edges and uniquely solving the tree frequencies by vertex-divergence cancellation. Evaluate every summand in Z[X]/(X^5-1), represented by five exact integer coefficients, never by floating point. Let the total coefficients be (c0,c1,c2,c3,c4). The flow scaling a -> r a, r in GF(5)^*, proves c1=c2=c3=c4 even under forced increments. Therefore
+**Z_F = 5^(n-m) (c0-c1)**,
+with exact integer division when m>n. This proves nonnegativity and integrality from the original source interpretation.
+
+For any connected G with Z_empty>0, choose a spanning tree and its root. Before each tree arc is fixed, the remaining solutions split into difference 1 or difference 3. Evaluate the completion count after forcing difference 1; retain 1 if positive, otherwise retain 3. This choice retains a solution, requires only ONE exact counting call per tree edge, and never asks an external SAT oracle. After n-1 steps the whole coloring is determined up to five rotations. Pin the root at zero, propagate the signed differences, emit all n original labels, and check every surviving original directed arc. The final conditional count is exactly five. A general uniform solver needs n counts including initial feasibility; the SAT-only promise version needs n-1. Extra final count is optional and was executed as a diagnostic in the finite audit.
+
+For intrinsically critical H and designated e, the algorithm reads and parses the full H, explicitly deletes e, and works on G=H-e. Connected edge-minimal UNSAT implies G connected. It need not validate the promise by proving H UNSAT; it also handles arbitrary connected SAT/UNSAT G correctly.
+
+## Same-machine resource ledger (PROVED bound)
+Let N be the input bit length including n, m, all oriented arcs and designated deleted-edge ID. Charge source reading and authentication, deletion, adjacency representation, connectedness, BFS, chord discovery, all 5^beta enumerated flow assignments, tree-flow postorder reconstruction, m polynomial updates per flow with integer coefficients of at most O(m+beta)=O(N) bits, n conditional calls (including zero-result failures), forcing buffers, signed reference arithmetic, output of 3n vertex bits, and rereading/checking every retained arc. Store the source, graph, one current flow, five coefficient accumulators, the current forcing map, the spanning tree and final labels, **not** the exponential flow list.
+
+A conservative deterministic single-tape implementation has total bit time O((N+1)^5 (1+5^beta)) and simultaneous peak writable memory O((N+1)^2) bits. The exact arithmetic-operation count is O(n m 5^beta), plus polynomial parsing, with O(N)-bit integers. These are upper bounds on THIS source-reading algorithm, not lower bounds for other solvers. No count-once sharing is double charged.
+
+On the 33-vertex/44-arc intrinsically critical benchmark, beta(H-e)=11, so even one dual query requires 5^11=48,828,125 flows. The n-count witness method would scan up to 1,611,328,125 flows. The previously established branch-MST method was much cheaper on this source. Cycle-rank growth is therefore not a witness-time lower bound.
+
+## Independent finite audit (COMPUTATIONAL)
+The standalone stdlib Python script t5_cycleflow_witness_20261118.py executed with 145 locally tallied check groups and no failures. For the original 9-vertex 11-arc edge-minimal UNSAT graph, all eleven SAT deletions were counted independently by direct enumeration of the original five-color labels; both methods returned [60,60,60,60,60,60,40,40,40,180,180]. Eleven full original-vertex witnesses were constructed and checked against every remaining directed arc; each violated its removed critical arc. The intact original9 count was zero. A transitive orientation of K5 was also exactly UNSAT. For 65 seeded small connected oriented graphs with randomly forced original-edge increments, exact flow counts matched independent 5^n enumeration and the witness outcomes matched brute SAT labels. An original-source-derived connected 17-vertex, 19-arc subgraph of the 33-source (beta=3, 211 serialized bytes, SHA256 ee4bd3a88ccce363c082794e80acef407969718546dddbc5ddff4a7e9015cd0a) had 47,400 colorings by both the flow method and independently programmed original-label DFS, with 84,615 DFS trial colors. The flow witness audit used 18 evaluations and 2,250 flow terms, constructing and checking all 17 labels. The complete 33-source flow enumeration and physical one-tape instruction trace were NOT run.
+
+Full local report SHA256 ebb8135340c97c8807748c32d9ca1e53f82cc61a9ea4f11fcdf832d4c00bf3b0. Executable SHA256 b4ead43f5a71903744fd1cb465f5e7d577823a45d23f305f5af150013d32c3f2. Full local raw JSON SHA256 a09cc58905e0b5f80d01b78f2fb38fa39aad8cba028164b552b1f84b779793e4. They are conversation artifacts, not claimed GitHub-committed.
+
+## Literature and duplicate-work firewall
+[1] Bang-Jensen, Hell and MacGillivray (1988), DOI 10.1137/0401029: T5 homomorphism NP-complete on general inputs, NOT under growing-girth intrinsic-critical deletion promise.
+[2] Cranston et al. (2026-08-19), DOI 10.1002/jgt.70115: planar high-girth exclusion, no general witness lower bound.
+[3] DOI 10.1002/rsa.21089: classic finite-abelian flow partition-function background.
+[4] Project LSPV-5, research/main/2026-11-17_1603_MAIN_LSPV5_T5CYCLEFLOW1_CONDENSED.tex, already gave integer cyclotomic flow recovery for a restricted weighted mixed-gadget quotient. TMR-4/086 and TMR-3/083 studied GF(5) syndrome and Fourier algorithms. No novelty claim for Fourier inversion; the specialized native-edge witness self-reduction and full resource accounting are the present result.
+
+**OPEN:** A source-authenticated increasing-girth intrinsically edge-minimal UNSAT family with a same-machine superpolynomial SAT-witness lower bound; proof that critical-deletion promise is NP-hard under growing girth; exclusion of faster GF(5), flow, bounded-width, compact-circuit, nonlocal and alternate-order algorithms. DISJ, relativization/algebrization, deterministic configuration and simultaneous DTISP are barriers, not completed separation mechanisms. P versus NP remains OPEN. No schedules, identities, activation/paused states, or peer ownership changed.
