@@ -1,0 +1,35 @@
+# Strict T5 proof lead: improved sparse critical high-girth existence theorem
+Date 2026-11-19 Pacific. **PROVED** probabilistic existence. **COMPUTATIONALLY VERIFIED** 18,589 exact histogram cases and all native-C25 source certificates. **OPEN** P versus NP and all-input low-row resource reduction.
+
+## 1. Canonical predicate and a sharp density bound (PROVED)
+Colors Z5, R(a,b) iff (b-a) mod5 belongs to {1,3}; C(a,b,c) is either directed triangle. Three distinct variable **names** per clause; values may repeat elsewhere. C accepts 30/125 ordered triples. It is equivalent to the unordered set being three consecutive residues modulo five, not historical Q (60), P (20), S (40).
+
+**Theorem (weighted directed-triangle bound).** Let p_0,...,p_4 be any probability distribution on the T5 colors. Draw three colors independently; let K be the probability they form a directed cycle, D the probability they are distinct, and for each color i let o_i and h_i be the total outgoing/incoming probability masses. In a distinct transitive triple one vertex has one incoming and one outgoing edge, while in a cyclic triple all three do. Thus D+2K=6 sum_i p_i o_i h_i. Since o_i+h_i=1-p_i and 4o_i h_i <= (1-p_i)^2, and D=1-3 sum_i p_i^2 +2 sum_i p_i^3,
+K <= (1-sum_i p_i^3)/4 <= (1-1/25)/4 = 6/25.
+The last step is convexity. Equality holds for uniform p in regular T5. For a uniform original C clause on three distinct **named** variables among n, the satisfaction probability under any fixed assignment is <= (6/25)/[(1-1/n)(1-2/n)] <= 400/1617 < 1/4 for n>=100.
+
+## 2. Stronger physically-critical logarithmic-girth existence theorem (PROVED)
+**Statement:** For every integer n>=100, there exists a clause-minimal UNSAT strict-C instance using at most n named variables and at most ceil(7n/2) original C constraints, with **bipartite incidence girth** at least 2(floor(log_22(n)/2)+1) = Omega(log n). The guarantee refers to the construction parameter n, not necessarily the final remaining variable count.
+
+**Proof:** Independently sample m=ceil(7n/2) clauses, each choosing three distinct names uniformly. With fixed colors a, the number of SAT clauses is stochastically dominated by Bin(m,1/4). Thus the chance that a violates at most n clauses is <= exp[-m D(1-n/m ||1/4)], where D is binary relative entropy. This is <= exp[-n h] for h=(7/2)D(5/7||1/4)=1.659474415203107: the large-deviation exponent is increasing in m at fixed n, as its derivative is ln((m-n)/(m p))>0 for p=1/4 and m>=7n/2. Union over 5^n assignments yields failure probability <=exp[-(h-ln5)n] with h-ln5=0.0500365027690.
+
+For a simple incidence cycle of length 2ell (ell>=2), counting ordered distinct clause and variable indices gives E X_{2ell} <= (6m/(n-1))^ell/(2ell) <=22^ell/(2ell) for n>=100. Set L=floor(log_22(n)/2). Then E X_{<=2L} <= sum_{ell=2}^L22^ell/(2ell) <=(11/42)sqrt(n), with empty sum zero. By Markov, Pr[X_{<=2L}>=n] <=11/(42sqrt(n)). At n=100 the sum of the two failure bounds is <0.033, decreasing thereafter. A source thus exists with every coloring violating >n clauses and <n short incidence cycles. Delete a clause per short cycle (fewer than n deletions), leaving UNSAT and girth >=2(L+1). Finally greedily remove any further clause whose deletion preserves UNSAT. This finite process leaves every remaining physical C clause indispensable and cannot create short cycles. QED.
+
+**Scope:** existence only, no polynomial-time generator and no machine lower bound. Compared with the prior 8n / base-49 proof, this improves clause budget to 3.5n and cycle bound base to 22. Sampling and color assignments were used only to prove existence, not in a proposed solver.
+
+## 3. Independent executable audit (COMPUTATIONALLY VERIFIED)
+- All 125 original C rows match an independent consecutive-triple characterization and the GF(5) quadratic identity; exactly 30 accepted.
+- Exhausted **18,589** five-color histograms for n in {3,4,5,6,7,8,10,12,15,20}. Their iid cycle probabilities agree exactly with the independently derived weighted in/out formula, none exceeding 6/25.
+- The sharp n>=100 single-clause upper probability is 400/1617<1/4, the KL union margin is 0.05003650276900684, and the cycle-failure bound is 11/(42sqrt(n)).
+- Independently replayed *prior* native-C25 physical source: 25 variables, 25 C clauses, incidence girth 8, all **25/25 physical deletion witnesses** with 600 true retained and 25 false deleted original-C checks, plus a full **1046-node, 600-leaf** UNSAT proof tree. Source SHA256 a372c198871f73ec9ebf6665e597f0fae7b3af8613aeae325c07bd6e3ca5bd75. This is a finite control, **not** a constructed instance witnessing the improved asymptotic theorem.
+- No random seed in this audit. Old finite control generation used seed 2026111946.
+
+Reproducibility ZIP: T5C_Lead_SparseGirth_20261119.zip, sha256 ca7aee118d9e0d1e85f09fa2dd2d9a9014c608708c635da16ca642f675c8d8be. Contains a standalone standard-library auditor, full original-C witness source, independent original UNSAT proof checker and tree, result JSON, report, handoff and SHA256SUMS.
+
+## 4. SINGLE lead bridge to unrestricted P vs NP (OPEN)
+The strongest already-identified pathway in the repository is a **solver-dependent, hereditary, all-input** self-improvement: a full correct source-uniform split using <=N^.195 rows, <=N^.65 blocks, each child <=N^.35, charged preprocessing <=N^1.195 and <=N^.35 live writable overhead would hypothetically send seed exponents (t,s) to (max{1.195,0.845+0.35t}, max{0.35,0.35s}). Repetition tends to (1.30,0.35) and would contradict a suitable unrestricted SAT simultaneous time-space lower bound, provided exact near-linear bit encoding, source access and compatible DTISP machine model. Prior research already derives this conditional recurrence; the hard **hereditary construction** is missing. A solver-INDEPENDENT all-input splitter would give an unconditional impossible SAT speedup, so a legitimate hypothetical-P=NP argument must use the seed's semantics essentially without hiding SAT answers in preprocessing.
+
+Buss and Williams (2015), Figure 8.2: unrestricted deterministic SAT not in DTISP(n^1.34070,n^0.5) in their formalized framework. Exact RAM/TM/encoding transfer is still an obligation. Neither high incidence girth nor clause-criticality nor a restricted cover yields unrestricted lower bounds. S/C gadget translation must separately verify projected solution sets, physical clause criticality and charged source size. SAT witness discovery and global UNSAT proof acquisition remain separate. The simple one-pass scan needs local full decision exponent t<=97/70 to meet N^1.33, and cannot assume a free answer-polarity bit, refutable block index, successful path or uncharged verification.
+
+## References and files
+Previous native proof: research/agents/critical-graphs/2026-11-19_NATIVE_STRICT_C_25_CLAUSE_GIRTH8_AND_LOG_GIRTH.md. Earlier fixed-point work: research/agents/cross-track/2026-11-18_1825_ROW_BLOCK_SPECIALIST72_STATUS.md. B&W original paper: https://mathweb.ucsd.edu/~sbuss/ResearchWeb/npProofLimits/paper-journal.pdf . P vs NP remains OPEN.
