@@ -5,26 +5,26 @@
 ## 1. New result: an AND-of-OR oracle table embedded in genuine, explicit CNF
 
 Let $q\ge1$, (r=2^q), $m\ge1$, and let (h=(h_{z,b})\in\{0,1\}^{r\times m}) be arbitrary independent bits. Shared variables are $z_1,\dots,z_q$. For each row index $u\in\{0,1\}^q$, set
-$
+$$
 G_u(z)=\bigvee_{i=1}^{q}\begin{cases}z_i&u_i=0,\\ \neg z_i&u_i=1.\end{cases}
-$
+$$
 Thus (G_u(z)=0) if and only if (z=u). Each cell ((u,b)) owns its own new private variable (y_{u,b}); put into the *actual input CNF* the pair of clauses
-$
+$$
 B_{u,b}^{(h)}(z,y_{u,b})=
  (G_u(z)\lor y_{u,b})\land
  (G_u(z)\lor (-1)^{h_{u,b}}y_{u,b}).
-$
+$$
 (Here (h=0) means the second literal is (y), and (h=1) means $\neg y$.) The complete source (F_h=\bigwedge_{u,b}B_{u,b}^{(h)}) has exactly (2rm) clauses of width (q+1) and (q+rm) Boolean variables. Private scopes are pairwise disjoint. One genuine literal-sign field, not a freely assumed oracle response, encodes each independent table bit. Its fixed-shape DIMACS rendering has (\Theta(rm(q+1))) literal occurrences and (O(rm(q+1)\log(rm+q))) ordinary encoded bits. In a padded fixed-record model the (rm) flags each occupy a separate addressable record.
 
 **Theorem 095-A (source embedding, proved).** For every (z=u), the existential projection of cell ((u,b)) to its private variable is true exactly when (h_{u,b}=0); all other row cells are automatically true. Consequently
-$
+$$
 \boxed{\mathrm{UNSAT}(F_h)\iff \bigwedge_{u\in\{0,1\}^q}
                         \bigvee_{b=1}^{m} h_{u,b}.}
-$
+$$
 Moreover, with (g(h)=\#\{u: h_{u,1}=\cdots=h_{u,m}=0\}),
-$
+$$
 \boxed{\#\mathrm{SAT}(F_h)=g(h)\,2^{(r-1)m}.}
-$
+$$
 The latter counts every private-variable assignment, not merely distinct shared (z). This construction realizes *all* (2^{rm}) independent bit tables as genuine, syntactically almost identical CNFs. Unlike /094's oracle-only theorem, this result survives access to the explicit original source, within the indicated restricted family.
 
 ## 2. What deterministic information lower bound actually survives
@@ -48,10 +48,10 @@ For the *arbitrary-CNF* block grammar, local NO certificates additionally requir
 ## 4. Quantitative resource ledger and sourced model firewall
 
 For an authenticated external iterator over at most (N^{.195}) rows, (N^{.65}) blocks/row, and child strings of length at most (N^{.35}), a sequential all-children composition with child SAT time (L^{a}) costs, *conditionally on those caps actually coexisting and charged materialization*,
-$
+$$
  T\ \le\ T_{\mathrm{auth}}+
  O\big$2^q N^{.845}\big[N^{.35}+N^{.35a}\big]\,\mathrm{polylog}\,N\big$.
-$
+$$
 For (a=1.33) the stated per-shared-assignment exponent is (0.195+0.65+0.35(1.33)=1.3105). To fit (N^{1.33+o(1)}), the enumeration (2^q) has at most an extra (N^{.0195+o(1)}) multiplicative allowance. This is **not** an impossibility theorem for clever source-aware solvers and assumes (N^{.195}) rows *and* an extra independent (2^q) outer factor; if rows are precisely the (2^q) shared assignments, do not multiply the same row count twice. The fixed-cell family here is the latter case and runs in linear source time.
 
 The following results apply to their stated computation models, *not* to externally supplied free proof bits: Fortnow--Lipton--van Melkebeek--Viglas obtain deterministic random-access SAT time-space exclusions; a quantitative precursor states the region (b<((a+2)/a^2-a)/2) for time (N^a), space (N^b). At (a=1.20), the threshold is $23/45\approx .5111$, whereas at (a=1.33) it is $977363/3537800\approx .2763$; therefore this stated curve does not exclude ((1.33,.5)). Williams improves subpolynomial-workspace deterministic SAT time bounds to the (2\cos$\pi/7$\approx1.8019) regime; Buss--Williams show the limit of the **specified alternation-trading framework**, not a barrier to every possible method. For conondeterministic SAT / nondeterministic TAUT, Diehl--van Melkebeek--Williams give (N^{4^{1/3}-o(1)}) time lower bounds when workspace is (N^{o(1)}); this does not rule out (N^{.5}) space. Ordinary nondeterministic SAT already has linear-time witness verification in appropriate encoded-access models; no corresponding unrestricted NP-versus-coNP separation follows. Resolution proof-size lower bounds remain proof-system-specific.
