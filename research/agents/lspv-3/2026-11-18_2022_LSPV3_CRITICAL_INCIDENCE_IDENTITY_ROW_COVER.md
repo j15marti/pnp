@@ -51,6 +51,14 @@ e a_i)) excludes exactly (a); standard existential Tseitin 3CNF chains keep priv
 
 Independent finite control: 24 random 16-row/6-block set systems (`seed=20261119`), 2,304 exact source/row membership assertions and 24/24 equality checks of the optimum; separately 5,440 single-forbidden-row existential-Tseitin tests for (k=3,4,5,6). No failures. This reproduces an old mechanism and calibrates the newer critical-matrix observation.
 
+## Sound deterministic row-cover specialist (restricted, source indexed)
+
+For any authenticated oriented T5 source with every degree-two thread of length at most three, construct all maximal threads, verify that they partition the original arc list, and compute for each thread its exact five-color endpoint-difference mask from its actual orientation word. Given **explicit supplied branch-color rows** (Z), scan each row and all thread masks; output the first original-thread identifier that is infeasible at those fixed endpoint colors, or return `UNKNOWN` on a row with no such identifier. Every output blocker can be reverified by enumerating at most (5^2=25) internal thread assignments. Wrong/source-mismatched rows return `UNKNOWN`, not a false UNSAT label. No SAT/UNSAT advice is used. If no thread is blocked at a row, local witness reconstruction produces a full SAT coloring for that row after independently verifying every original arc; this is a positive result, not an UNSAT certificate.
+
+After ordinary indexed-graph parsing and source validation, a deterministic word-RAM implementation uses (O((n+m)log(n+m)+|Z|(b+B))) operations, including worst-case deterministic sorting of adjacency and scanned branch colors, plus (O(|Z|log(B+1))) output bits for row pointers; (O(n+m+b)) working words suffice with row streaming. A stricter bit-time bound must charge word widths, source addresses and serialization. The finite Python program below uses lists and complete DFS only to **acquire** the critical witness rows and verify global UNSAT, not to implement this low-cost row-mask scan.
+
+Crucially `COVER_ONLY` over a partial set of rows is not `UNSAT(H)`. A global negative verdict requires proving that the supplied rows exhaust all (5^b) branch assignments (or a separate source-bound symbolic negative derivation). This condition holds for the explicitly enumerated 25-row H9 and 125-row H_2 controls, not the 1,024-sampled H33 or H_7 controls. In the intended (Rle N^{.195}) layout, large intrinsic-critical branch domains cannot be enumerated for free. This is the exact completeness and acquisition gap.
+
 ## Correct-path, two polarities, and source-bound certification
 
 For private-disjoint blocks:
