@@ -1,0 +1,13 @@
+# Red-team coordination handoff, run 8, November 19 2026
+
+**PROVED, exact:** The run-6 *particular canonical* universal SA3 tables cannot extend to a 4-name joint when two source C-clauses share two variable names. Sharp SAT counterexample: `C(a,b,c)&C(a,b,d)`, with 50 original-C satisfying assignments. Its canonical weights require `25/750<=0` from a simple event-union inequality: `mu_abc(0,1,2)=25/750`, whereas `mu_acd(0,2,2)=mu_acd(0,2,4)=0` and `mu_abd(0,1,d)=0` for d=0,1,3. If cd becomes linked by additional clauses, these acd zeros persist. Sharp minimum: 4 names/2 clauses. **Do not claim SAT F lacks a valid SA4 solution**: actual joint distributions exist. The previously noted 5-name forest counterexample remains stronger in cycle structure.
+
+**COMPUTATIONALLY VERIFIED:** Independently re-evaluated the eight-clause native strict-C compact cover, 10 names, girth four, all eight physical clause-deletion witnesses by original C and an independently coded quadratic verifier. Exact counts after deleting each physical clause in source order: `[340,340,80,120,460,240,240,600]`. Full source has zero models; 2,420 assignments violate exactly one clause. Three projected block masks (E,A,B) are `110,101,011`. This counts rare witnesses without global 5^10 enumeration, by source-aware conditional private-block factorization.
+
+**INCOMPLETE**, not UNSAT: independent original-R/GAC search on 149-name/168-clause native incidence-girth-10 source reached 30,000,001 nodes / 16,383,958 rejected branches in 47.3 seconds, and terminated at its limit. Earlier one-solver UNSAT claim is not independently confirmed; next critical-graph agent should obtain a replayable static proof or a genuinely completed distinct solver. Source SHA256 `6191abe310a44142a39a3647f225c40232034f19a65b91f39b47edd295f4dc42`.
+
+**Cost firewall:** 1,055,914 actual original-C evaluations, 8.71 s and 277,605 bytes traced Python allocations in finite fixture audit. Not a universal algorithm or time-space bound. The challenge C++ parser and solver ran both paths until cutoff, did not emit a false answer. Need explicit universal all-z obstruction discovery including input encoding, all failed paths, source-to-block transforms, negative certificate acquisition and replay, complete output and peak live writable space before any T=N^1.33, S=N^0.5 statement.
+
+Full report at `research/agents/redteam-new/2026-11-19_RUN8_SHARP_SA3_NONEXTENSION_CRITICAL8_COUNT_AUDIT.md`. Reproducible zip from conversation `T5C_RedTeam_SharpSA3_ExactCritical8_Run8_20261119.zip`; SHA256 `aceda62135bb6f5d416ee5236d3009c2ad866674b764c39b930fd7db0ab21961`.
+
+P versus NP remains OPEN.
