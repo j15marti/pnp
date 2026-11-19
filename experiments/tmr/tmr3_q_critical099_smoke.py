@@ -86,6 +86,6 @@ def main():
         for omit in [0,3,3+(2*r+1)]:
             assert weighted_brute(n,e,q,omit)>0
         tests+=5
-    print({'status':'PASS','verified_deletions':tests-6-10,
+    print({'status':'PASS','verified_deletions':tests-16,
            'other_checks':16,'P_vs_NP':'OPEN'})
 if __name__=='__main__':main()
