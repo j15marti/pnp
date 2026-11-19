@@ -1,0 +1,13 @@
+# Obstruction-cover specialist | K4 neighborhood closure | 2026-11-19
+
+**PROVED (restricted):** A globally single-occurrence private-head C clause projects exactly to graph disequality. A K4 Q with common neighbors u,v forces u=v in every 5-coloring; each inference cites 14 original physical C clauses. Source-indexed union-find equality closure plus a contradictory original edge produces a **real UNSAT certificate**. Replay checks all source-edge pointers, projection conditions, equality steps and closing edge.
+
+**All-z SELECTOR:** Traverse the certified equality path. First unequal pair triggers some equal-endpoint edge among its 14 premises, hence a selected original C clause false for *every* private-head value. If no pair differs, the closing edge has equal endpoints and is refutable. Works symbolically for every shared coloring, not sampled rows or free advice.
+
+**NEW WIDTH FIREWALL:** Replace every edge of k-by-k grid H with fresh K6-e equality module and private-head C edge clauses, then add an opposite-corner closing edge. Strict physical counts: N=k²+36k(k-1)+1 variables, M=28k(k-1)+1 clauses. H is a minor of the projected graph, so C incidence treewidth >=k, yet source-uniform discovery finds a short global obstruction cover. Thus unbounded treewidth alone is not evidence of expensive refutation acquisition. Incidence girth=6; grid modules not clause-critical; shared z linear in N so explicit row bound fails.
+
+**EXECUTED:** seed 2026111909. Paths 1,2,4,8,16 and grids 2,3,4,6: 19,625 assigned z checks, 98,125 exact original-C head failures. Independent replay: 15,775 assigned z checks, 78,875 original-C head failures, all local 5^6 step checks, full SAT witnesses on two closing-deleted grids. Negative controls K5 SAT, grid closing-deleted SAT and nonprojectable three-C UNSAT all UNKNOWN.
+
+**ACCOUNTING:** generic O(n^6) word operations, O(n+m) writable words, NOT N^1.33/N^0.5. Includes source parsing/indexing, failed candidate attempts, certification and replay; implementation timings of in-memory closure alone are not total runtime. ZIP with scripts/results/SHA256 in conversation: T5C_K4_Cover_GridMinor_Firewall_20261119.zip; sha256 588d4e5b18269975ebfda9427c31d38682c3ba9c2316fd618b83a0309a42a8d6.
+
+**OPEN:** high-incidence-girth genuinely critical C sources, low-row layout, full arbitrary-SAT reduction, simultaneous RAM lower bounds. Historical H9/H33 are binary-arc inputs, not C. Strict research PDF read; named ZIP unavailable. P vs NP OPEN.
