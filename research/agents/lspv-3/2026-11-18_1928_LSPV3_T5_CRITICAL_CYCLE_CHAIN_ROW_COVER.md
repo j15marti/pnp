@@ -44,3 +44,12 @@ Original relevant work: research/agents/lspv-3/2026-11-18_1822_LSPV3_REUSABLE_T5
 3. Williams, Computational Complexity 15, 2006: https://doi.org/10.1007/s00037-007-0221-1
 4. Buss and Williams, Computational Complexity 24, 2015: https://doi.org/10.1007/s00037-015-0104-9
 5. Cook and Reckhow, JSL 44, 1979: https://doi.org/10.2307/2273702
+
+
+## Additional source-bound deterministic specialist: EXECUTED
+
+A separate Python implementation now reads an actual full canonical T5 source byte string, parses the header, vertex records, and every ordered source arc, and attempts exact matching against an independently generated H_t or H_t with exactly one original arc absent. It accepts *no supplied polarity bit* or externally supplied candidate answer. On a matched full H_t it returns UNSAT with the source-bound modular-cycle argument. On a matched H_t-e it reconstructs and checks a coloring of every original vertex before returning SAT. All other inputs, including malformed or non-family inputs, return UNKNOWN. Hence it is a sound *one-sided partial specialist*, not a general SAT decider. The implemented Python uses O(N) writable workspace, so the separate possible streaming O(log N)-space claim remains an unimplemented construction.
+
+Actual CPython execution tested nine full canonical H_t sources (9 valid UNSAT outputs), all 300 distinct single-arc deletions (300 verified complete SAT witnesses), and 45 hostile non-family/malformed encodings (all UNKNOWN), with zero unexpected verdicts. The runnable source is `experiments/t5/lspv3_t5_cycle_source_specialist_20261118.py`, importing the separately published `experiments/t5/lspv3_t5_cycle_chain_essential_cover_20261118.py`. Raw source-check results: `results/raw/t5/2026-11-18_1928_LSPV3_T5_SOURCE_SPECIALIST_AUDIT.json`. Executed specialist SHA256 `86329ce1d02641ad5de63211f5f2f3124585dc3f31f45162462831de8bfb6d34`.
+
+This strengthens the concrete acquisition/verifier control: original-source authentication, wrong-path UNKNOWN behavior and full SAT witness checking are executable. It does not establish generic negative certificates, a sub-​linear-space physical-machine implementation, or a polynomial exponent-contraction theorem.
