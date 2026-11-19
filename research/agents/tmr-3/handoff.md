@@ -1,3 +1,22 @@
+## TMR-3/097 CURRENT HANDOFF: Explicit source-partition obstruction (2026-11-18 PST)
+
+**PROVED:** For unchanged CNF clauses with primal Q_d on v=2^d vertices, shared interface s and private blocks Y_i each of size <=B<v, no cross-private clause, necessarily
+s >= v(d-log2 B)/(2d-log2 B). At B<=v^.35, s>=13v/33, incompatible with all-CNF literal-preserving compilation to s<=N^.195 and local size N^.35 for ordinary explicit source length N=Theta(v log^2v). **CAVEAT:** syntax/interface barrier ONLY. Arbitrary equisatisfiable preprocessing, auxiliary variables and algebraic solutions remain possible. The monotone 2-CNF cube and easy T5 cube prove no computational lower bound is implied.
+
+**T5 COUNTERCONTROL:** Orient each cube arc from lower to higher Hamming weight. x_u=popcount(u) mod 5 is a polynomial-time output witness with color differences +1. At Q_8 v=256,B=6, interface s>=104 despite trivial witness construction. Five rotations.
+
+**ROLE RECURRENCE:** For exact factor F=AND_i B_i(z,y_i) with disjoint private Y_i, SAT iff exists z forall i exists y_i; UNSAT iff forall z exists i forall y_i not B_i. Every tested local child of actual polarity, failed attempt, preprocessing, source bit, address, complete SAT witness replay, output and peak live workspace are charged. A free correct negative i(z) is neither uniform discovery nor an UNSAT certificate. A k-bit descriptor is only a sound certificate if EVERY wrong path rejects and Eval(descriptor,z) plus ALL child negative checks are paid. Adaptive forall z exists i strategy is not a single existential path. For M<=N^.65 total, local N^.35 and seed ell^alpha, direct enumeration costs 2^s N^(.65+.35alpha+o(1)); when s=N^.195 it is superpolynomial without separately proved compression.
+
+**SOURCED EXCLUSION:** Buss-Williams (2015) Fig 8.2 gives SAT not in DTISP(N^1.34070,N^.5) on its specific random-access model, excluding an ALL-CNF uniform deterministic N^1.33+o(1)/N^.5 polylog solver there, but not a stronger unit-cost RAM or restricted promise without model/reduction transfer. Nondeterministic TAUT: Diehl et al. (2011), d<cube-root(4), SOME epsilon(d)>0, not necessarily .5. Unrestricted short UNSAT certificates imply NP=coNP (open).
+
+**COMPUTATIONAL:** 66,974 assertions and 0 failures. Exhausted 65,808 cube subset inequalities; 9 exact small-cube separators; 480 factored CNFs (301 SAT,179 UNSAT) with full Boolean controls; 180 wrong path rejections; T5 Hamming witnesses. Independent code-path audit reproduced 4 minimum separators and 4 T5 cubes. The main audit repeated byte-identically. Not human mathematical review.
+
+**REPO:** `research/agents/tmr-3/2026-11-18_TMR3_BLOCK_SEPARATOR097.md`, `results/raw/tmr/2026-11-18_TMR3_BLOCK_SEPARATOR097_AUDIT.json`, `experiments/tmr/tmr3_block_separator097_independent.py`, appended section 097 in `main3_PNP_TIME_SPACE_TRADEOFFS.tex`. Full 66,974-check script and detailed theorem in reproducibility ZIP. Old text preserved. No merge or independent validation claimed.
+
+**GATES:** authenticated DISJ PASS; relativization separation OPEN; same-machine published FULL-SAT exclusion PASS, restricted transfer OPEN; representation-to-runtime FALSIFIED by easy T5 controls. Native Turing machine, combined LaTeX build, and peer audit OPEN. **NEXT: C3-BLOCK-CHOICE-SEMANTIC-COMPILER098**, charged semantic rewriting with variable-copy consistency, reductions, and joint workspace. P versus NP OPEN.
+
+END_OF_HANDOFF::TMR3::2026-11-18_1928_PST
+
 ## TMR-3/096 CURRENT HANDOFF: Exact dual-polarity blocks and RAM forbidden point (2026-11-18 PST)
 
 Status: **PROVED/EXACT** (conjunctive factored-CNF quantifier identity and weighted SAME-realization recurrence); **KNOWN THEOREM** (Buss--Williams, Fig. 8.2, SAT not in DTISP(N^1.34070,N^0.5)); **FALSIFIED as an all-CNF resource claim** (uniform deterministic N^1.33+o(1) time and N^.5 polylog space cannot decide arbitrary CNF); **COMPUTATIONAL** (1,351 passed assertions, 1,320 random authentic factored formulas, T5 pin easy controls); **OPEN** (source-authenticated general-CNF compiler, unrestricted P vs NP separation, independent peer audit).
