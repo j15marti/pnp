@@ -15,3 +15,4 @@
 **Next blocker, OPEN:** A growing-girth, edge-minimal UNSAT H_n with uniformly specified deletions, and a lower bound on **all uniform witness algorithms** after GF(5) syndrome, full treewidth minimization, source contraction, flows, compression and unrestricted circuits are included. Width-O(log n) with a polynomially acquired order is a constructive *polynomial upper-bound escape*, not a lower bound. A source-host compiler is not an unrestricted SAT algorithm; source recognition alone cannot settle P versus NP. No peer-independent general lower-bound audit has succeeded.
 
 **TRACKERS REVIEWED; NO MATERIAL CHANGE** in the scientific nodes.
+**Publication blocker:** attempted top-level issue #3 evidence comment failed with GitHub HTTP 403, `Commenting is disabled on issues with more than 2500 comments`. No issue comment was posted; links and full evidence remain in these committed files and the reproducibility archive. No workaround was attempted.
