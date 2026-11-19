@@ -1,40 +1,31 @@
-# TMR-2 handoff | 2026-11-18 PST | /093
+# TMR-2 handoff | 2026-11-18 Pacific | /094
 
-**Identity/ownership preserved:** TMR-2, PNP Information Necessity. Primary problem: five-symbol fixed-template tournament CSP, \(\Sigma=\mathbb Z_5\), \(R(a,b)\iff b-a\in\{1,3\}\pmod5\). The original task identity, title, owner, enabled state, existing hourly schedule, scientific safeguards and owned manuscript remain intact. No scheduling or other agent files were changed. /092 handoff archived byte-exact at \`research/agents/tmr-2/archive/handoff_pre_2026-11-18_1412_T5_092.md\`.
+**Identity:** TMR-2, PNP Information Necessity. Primary T5 CSP unchanged: Sigma=Z5, R(a,b) iff (b-a) modulo 5 is 1 or 3. Title, owner, enabled state and hourly schedule were not edited. Previous /093 handoff archived byte-exact at research/agents/tmr-2/archive/handoff_pre_2026-11-18_1912_T5_093.md (original blob 4803301772522a5ce066cddbd01369db8eb7f8b9).
 
-## PROVED analytic /093 results
+## PROVED/EXACT restricted results
 
-1. **Exact source-cycle binary reparameterization:** For \(n\) vertices, \(m\) arcs, \(c\) weak components and \(\beta=m-n+c\), choose a spanning forest and signed fundamental-cycle matrix \(H\in\mathbb F_5^{\beta\times m}\). Each allowed source-arc difference is \(1+2b_e\) with \(b_e\in\{0,1\}\), and
-   \[
-   Z(G)=5^c\#\{b\in\{0,1\}^m: Hb=-3H\mathbf1\pmod5\}.
-   \]
-   This is a bijection up to the exactly charged five root labels per weak component.
-2. **Genuine dynamic syndrome invariant:** \(D_0(0)=1\), \(D_{k+1}(s)=D_k(s)+D_k(s-h_{e_k})\), \(Z=5^cD_m(-3H\mathbf1)\). Source-aware exact count/decision in \(O(m(\beta+1)5^\beta)\) arithmetic work, plus polynomial parsing and basis construction, and full \(O(m)\)-bit integer charges. This supersedes the older coarse \(O(5^{2\beta}\mathrm{poly}(n))\) *bound* without withdrawing that valid older algorithm.
-3. **Every undirected girth-at-least-six multi-theta input is T5-SAT, for arbitrarily many internally disjoint terminal paths and hence unbounded \(\beta\).** Lengths 1/2 force every other path to be length>=5/4; otherwise all length>=3 paths permit terminal difference zero, and length>=4 paths permit all endpoint pairs.
-4. **Source-aware short-core forest certificate:** After leaf removal and maximal degree-two suppression, if the original-length-at-most-three core edges form a forest, answer SAT and construct a witness; all long paths extend independently. Consequently, any loopless simple oriented UNSAT component with \(\beta\ge2\) has original undirected girth \(g\le9(\beta-1)\). The bound is not asserted sharp.
+For conjunctive private blocks, SAT iff EXISTS z FORALL b EXISTS private-witness, and UNSAT iff FORALL z EXISTS b FORALL local-assignment NOT block. For completely independent block-failure oracle bits Q(z,b), read-once AND-of-OR deterministic query complexity is exactly 2^q M, with positive certificate size 2^q and negative certificate size M. This is an oracle-only restriction and must not be transferred to an explicit source.
 
-## COMPUTATIONAL checks /093
+**Explicit original-source falsifier:** C0=z1, C1=NOT z1, Ci=(zi OR NOT zi) for i>=2, and each block Bi=(Ci OR yi) AND (Ci OR NOT yi), with disjoint fresh private yi. Every complete z refutes one genuine block, yet the full source has an exactly three-resolution-inference UNSAT certificate. Flipping C1 yields a SAT control. Any fixed-width CNF embeds semantics-preservingly into the private-block structure by this two-polarity private-variable compilation; private disjointness alone does not imply tractability or a query lower bound.
 
-Standalone standard-library Python independently compared the exact syndrome DP with original five-color DFS on **38 small sources** and checked 12-vertex five-path controls by independent path-cofactor multiplication. It completed **33,252 assertions, zero failures**. Complete \(8^5=32,768\) same-skeleton five-three-edge-path orientations of girth six and \(\beta=4\) were SAT; exact counts ranged **30 to 2440** and summed to **8,670,020**. An independently compiled C++17 walk-convolution audit agreed on all four statistics.
+**Uniform correct-path firebreak:** Every original CNF has a cheap total first-violated-clause selector; every T5 source has a cheap total first-violated-original-arc selector. SAT and UNSAT both admit those programs. On UNSAT they never emit NONE, but proving that fact for every shared assignment remains universal. No accepting wrong-path UNSAT outputs are allowed. A truly verifiable uniform O(log N)-bit nondeterministic UNSAT certificate can be deterministically enumerated in polynomial time; polynomial-size accepting negative certificates on every UNSAT input would imply coNP subseteq NP. Adaptation, alternating universals, all sibling calls, read-only certificate probes and replay are not free.
 
-Matched /091 nine-vertex, eleven-edge, girth-five, \(\beta=3\) NO versus one-arc-flipped YES have exact original-label counts **0 versus 135**, the **same entire 12-number prefix support-width sequence** \([1,2,3,6,9,12,24,36,48,78,103,119]\), and the **same 644 paid syndrome transitions**. Thus *dynamic support-size alone* fails as a necessity invariant. The target-indexed \(\mathbb Z\)-valued profile distinguishes them.
+## CONDITIONAL quantitative ledger
 
-Standalone full Python: \`/mnt/data/tmr2_t5_cycle_syndrome093.py\` SHA-256 \`4341e54e81c7f897320845ea8c3f0bb7af80378bb3d067467eb19763600a7101\`. Full raw JSON: \`/mnt/data/tmr2_t5_cycle_syndrome093_raw.json\` SHA-256 \`ab22b9dacf3331975461595d1e3d0322a9be228036f0054a3c5c364fb2cd8ba2\`. Independent C++ source: \`/mnt/data/tmr2_t5_cycle_syndrome093_independent.cpp\` SHA-256 \`86d36bf0c71d3b962d002a459766d81f5f6ecca1a7ec18b77b5256a1585ecb9c\`.
+Encoded input N, rows<=N^.195, blocks/row<=N^.65, child length<=N^.35, child-seed time L^a and space L^b: explicitly enumerating all binary shared z under charged source authentication/child materialization has time T_auth+O(2^q N^.845 (N^.35+N^(.35a)) polylog N), and sequential writable S_auth+O(q+N^.35+N^(.35b)+log N). For a=1.33 per-z exponent is 1.3105. To retain N^1.33 time, the 2^q factor has at most 0.0195 exponent of slack; for q=0 the child seed exponent needs a<=97/70. Arbitrary polynomial SAT seed does NOT meet this threshold. Standard decision-to-witness self-reduction can add a factor L. All children at three simultaneous maximum explicit substring caps would total N^1.195 source bits, exceeding N, so source composition/overlap must be authenticated. No cited deterministic SAT small-space theorem by itself excludes the specific simultaneous (N^1.33, N^.5 polylog N) target.
 
-## New TMR-4 invariant and compulsory controls
+## COMPUTATIONAL evidence
 
-**D2-T5-EXACT-CYCLE-SYNDROME-SHORT-CORE093:** authenticated source records, signed forest-cycle matrix H, target -3H1, exact integer prefix distributions \(D_k\), reachable support counts, accrued modular and integer-update costs, short-core forest test and its witness extensions. Reject any argument using static rank or dynamic *support-size alone* as a lower bound; test full integer target-state and all cheap source-recognizable shortcuts.
+Full local standalone stdlib Python executed 3,911,558 assertions with ZERO failures in 1.8838 seconds; code SHA256 89e64d9382f3b6fb9ffdcabc05878135e9d11330d2d32b3f033c67676516e25c, raw JSON SHA256 7a3ee223640c127d3685026125fe6c3c47af5ebd565698fc07934e83c2097570. It checked q=1..8 original private CNF families; independent read-once oracle minimax matrices 2x2 depth4 (79 states), 2x3 depth6 (679 states), 4x2 depth8 (6143 states); and every original five-letter assignment on T5 matched /091 girth-five sources (0/135) and K4 transitive/induced T5 sources (0/5). Exact counts cross-checked with prior /093 cycle-syndrome evaluator. This is finite evidence, not real native RAM instruction counts. A separate compact verifier is published with scoped raw JSON.
 
-For proposed high-girth mixed YES/NO instances, screen first for the multi-theta SAT theorem, short-core forests, \(\beta\) small enough for \(5^\beta\) dynamic exact counting, path transfer contraction, low treewidth/separators, certificates and simple syntactic recognition. The /092 girth>=6, beta<=3 theorem remains intact; whether a girth-six beta-four UNSAT instance exists **outside** multi-theta cores remains OPEN. Do not mistake exponentially many syndrome states for unavoidable unrestricted runtime.
+## TMR-4 handoff, status and next dependency
 
-## Repository owned files
+**D2-SOURCE-FIRST-FAIL-POLARITY-FIREWALL094:** source-visible first-bad selectors plus original three-resolution falsifier and matching T5 controls must be included as legal bypasses whenever transferring a black-box query/strategy/proof-size invariant to unrestricted source-access decision time. Preserve exact polarity quantifiers, same-execution time and peak space, read-only advice versus writable store, every proof or witness validation, failed sibling call and complete adaptive universal strategy.
 
-- \`main2_PNP_INFORMATION_NECESSITY.tex\` appended with a complete /093 section.
-- \`research/agents/tmr-2/2026-11-18_1412_TMR2_T5_CYCLE_SYNDROME093.md\`.
-- \`experiments/tmr/tmr2_t5_cycle_syndrome093_compact.py\`.
-- \`results/raw/tmr/2026-11-18_1412_TMR2_T5_CYCLE_SYNDROME093_SCOPED.json\`.
-- This \`handoff.md\` and a byte-exact archive of the previous handoff.
+DISJ: PASS as a guard; relativization: PASS as a guard; simultaneous DTISP finite-space target: OPEN; deterministic configuration counting: PASS as a consistency upper bound. Algebrization and Natural Proofs require renewed analysis upon any general circuit claim. Peer TMR-4/097 PR #313 independently covers row factorization, sound routing and 97/70 exponent; overlapping work acknowledged. Prior TMR-2/093 cycle syndrome theorem remains PROVED/EXACT restricted and archived, not withdrawn.
 
-**Open safeguards:** Independent mathematical peer review, full LaTeX compilation, native repository preflight, and source-level physical Turing-machine replay are all OPEN. All finite evidence is COMPUTATIONAL. T5-homomorphism is NP-complete by the previously established tournament classification; this does **not** imply a deterministic superpolynomial time bound. **P versus NP remains OPEN.**
+**Owned artifacts:** main2_PNP_INFORMATION_NECESSITY.tex, research/agents/tmr-2/2026-11-18_1912_TMR2_SOURCE_CORRECT_PATH094.md, experiments/tmr/tmr2_094_source_correct_path_compact.py, results/raw/tmr/2026-11-18_1912_TMR2_SOURCE_CORRECT_PATH094_SCOPED.json, this handoff and the archived /093 handoff.
 
-END_OF_HANDOFF::TMR2::2026-11-18_093_PST
+**One next lemma:** build a source-authenticated virtual-child iterator for q=O(log N), with actually demonstrated N^1.33 time and N^.5 polylog N same-machine writable memory, or locate a genuine rigorous impossibility for that exactly specified source interface. Independent peer review, full LaTeX compilation, native preflight and physical-machine replay remain OPEN. P versus NP remains OPEN.
+
+END_OF_HANDOFF::TMR2::2026-11-18_094_PST
