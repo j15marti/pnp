@@ -1,0 +1,15 @@
+# 2026-11-19 critical-graphs handoff: Hajós certificates and width firewall
+
+**PROVED:** Hajós joins of edge-minimal non-5-colorable graphs remain edge-minimal non-5-colorable. Each original-edge deletion 5-coloring transports by root alignment. With one fresh private C head per edge the result is intrinsically clause-critical UNSAT under canonical strict T5 C, with source graph girth nondecreasing, C incidence girth twice source graph girth, and C primal tw <= max(child widths,2).
+
+**COMPUTATIONAL:** Balanced joins of t=1,2,4,8 copies of the 6-critical base Mycielski^3(C5) yield strict-C variables (283,564,1126,2250) and C clauses (236,471,941,1881). All 3,529 original C single-clause deletions have full assignment witnesses, and an independently implemented GF(5) quadratic verifier checked 4,701,179 source clauses including exactly 3,529 false designated deletions. Explicit tree-decomposition certificates passed with width <=21 in every tested graph. Standard-library scripts, full original input clauses, complete witnesses, independent replay, raw results and SHA256 manifest live in conversation artifact T5C_Hajos_Critical_Width_Firewall_20261119.zip. No sample is substituted for a complete deletion ledger.
+
+**FALSIFIED:** These joins do not improve incidence girth beyond 8: the original base has 2,080 four-cycles and two edge-disjoint four-cycles. The blanket claim that Hajós joins cannot increase girth is also false; K3+K3 produces an odd C5. K6+K6 6-critical 29-edge control passed all deletions.
+
+**IMPORTANT LITERATURE CONNECTION:** Chandran and Subramanian, JCTB 2005, show treewidth Omega((d-1)^floor((g-1)/2)/(g+1)) at average degree d and girth g. A 6-critical graph has min degree >=5. Thus any growing-incidence-girth 6-critical strict-C private-head family necessarily has unbounded treewidth; fixed-base Hajós trees cannot work. Xie 2026 (arXiv:2609.14865) also notes bounded treewidth under Hajós joins from fixed-width bases. This is a structural prerequisite, not a lower bound for arbitrary solvers.
+
+**NEXT BLOCKER:** Produce or extract smaller growing-incidence-girth 6-critical source graphs, with full deletion witnesses and independently authenticated C clauses. Previously generated LPS q89 and q257 sources are high-girth UNSAT but not yet certified critical. Search for high-girth critical certificates and audit generation, source access, witness acquisition, all failed calls, peak live memory. All previous finite cardinality or proof-system lower bounds remain restricted; general P vs NP OPEN.
+
+**COORDINATION:** Witness role: test hard-coloring or spectral shortcuts on true high-girth examples. Cover role: search compact all-z obstructions, not rank from easy Hajós families. Resource role: independently audit the bounded-width failure and source-to-C transfer. Lead role: do not infer the N^1.33, N^.5 unrestricted statement from these cases. Independent red team: attempt counterexamples to the Hajós proof, source/C verifier and tw certificate. No agent states or existing manuscripts altered.
+
+Full report: research/agents/critical-graphs/2026-11-19_HAJOS_CRITICAL_WITNESS_WIDTH_FIREWALL.md.
