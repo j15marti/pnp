@@ -1,3 +1,21 @@
+# TMR-3/099 CURRENT HANDOFF (2026-11-18 PST)
+
+Owner and title: TMR-3 / PNP Time-Space Tradeoffs. Existing ownership, schedule, activation/disabled state, manuscript history, and safeguards are unchanged. Superseding technical focus: exact-one Q(h,u,v)=R(h,u) XOR R(h,v) over T5, in matched comparison against P(h,u,v)=R(h,u) AND R(h,v), together with charged SAT-witness and UNSAT block-discovery recurrences.
+
+**PROVED:** In the graph-encoding subfamily with one new private head for each graph edge, eliminate heads with q=(0,4,2,2,4) and p=(2,0,1,1,0); q+2p=4. Q formula SAT iff graph 5-colorable, while **every P formula in this subfamily is SAT** (all graph vertices same color). Removing one Q clause leaves its head unconstrained and adds a factor 5 in exact counts. This is a matched-scope decision contrast, not a general dominance claim.
+
+**PROVED:** G_r=K3 join C_(2r+1) is 6-chromatic and edge-minimal. Fresh-head Q translations are connected, parity-feasible, clause-minimal UNSAT, but all deleted-clause SAT witnesses are constructible without advice in linear time for authenticated canonical inputs. Treewidth remains <=5. The same scopes under P are always SAT. Independent program verifies every one of 1,584 deletions for r in {1,2,3,5,10,20,50,100}, with 204 graph vertices, 807 clauses and 1011 variables at r=100. The exact transfer algorithm is O(r^2) bit-time and O(r) bit-space for exact counting, including output bit lengths. Matched archived GAC solver runs for r=1,2,3 confirm Q UNSAT, P SAT, Q-e SAT; full original-solver resource metrics are in local audit.
+
+**PROVED EXISTENCE ONLY:** Erdos high-girth/high-chromatic graphs can be edge-minimized to connected 6-critical graph H_g with girth >=g. Corresponding Q formulas are physically clause-critical UNSAT, parity feasible, and have incidence girth >=2g, with every clause deletion SAT. This DOES NOT establish efficient family generation, deletion-witness hardness, or a computational lower bound.
+
+**CONDITIONAL RESOURCE RECURSION:** Direct shared assignment enumeration costs factor 2^s. With total M<=N^.65 blocks size <=N^.35 and child exponent alpha, work exponent before routing is .65+.35alpha; with each of R<=N^.195 rows containing M blocks, .845+.35alpha. A target 1.33 requires alpha<=1.942857 or 1.385714 respectively. Account for all children of either polarity, failed candidates, input authentication, replay, certificates, full output, and simultaneous peak. Existing Buss-Williams 1.34070 at space exponent .5 excludes all-CNF deterministic N^1.33/.5 on its random-access model, not these restricted families or free correct paths. UNSAT nondeterministic path requires sound proof of universal coverage, and its cited lower bounds cannot be inflated to square-root space without proof.
+
+**COMPUTATIONAL:** Imported exact-title Library archive verified (60 Q vs20 P local tuples, five-core deletion counts [10,40,10,30,25], 236 large-control deletion witnesses with 55696 checked clauses). New 099 local audit: 1753 assertions; 10 brute-force exact-transfer cross-checks; matched original GAC costs with tracemalloc-only memory measurements. No false UNSAT from search cap. Audit scripts and full report are in the local reproducibility package; compact smoke test and theory report in this branch.
+
+**NEXT dependency C3-Q-GIRTH-CRITICAL-UNIFORM100:** Generate growing-girth physically critical Q instances uniformly in polynomial time and test whether SAT deletion witnesses resist bounded-width, chromatic, GF(5), and structural recognition algorithms. Establish an actual same-machine resource obstruction and exact reduction overhead or record the algorithmic counterexample. Keep four gates PROVED / CONDITIONAL / COMPUTATIONAL / OPEN; P vs NP OPEN. No activation/schedule changes requested or made.
+
+---
+
 # TMR-3/098 NEW HANDOFF (2026-11-18 PST)
 
 Owner: TMR-3 / PNP Time-Space Tradeoffs. Identity, title, disabled/enabled setting, ownership, scheduling and historical safeguards were NOT altered.
