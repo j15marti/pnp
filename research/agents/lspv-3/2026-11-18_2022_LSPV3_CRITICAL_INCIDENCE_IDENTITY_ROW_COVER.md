@@ -91,7 +91,7 @@ DISJ: PASS for authenticated thread partitions and independent CNF chain variabl
 
 **Next target:** A useful cross-row obstruction mechanism must move from pointwise rank to a **source-verifiable symbolic negative derivation** with deterministic acquisition. Test a source-bound projected blocker (C_j(z)), verify (F_jRightarrow C_j) with actual native proofs, and verify that the resulting projected constraints exclude the COMPLETE shared domain. Account for all proof discovery/replay and reject a row list lacking a completeness certificate. For intrinsically critical high-girth T5, test whether limited-width GF(5) cycle constraints produce such a compact reusable derivation despite the full-rank pointwise matrix.
 
-**Publication:** report, raw summary, reproduction code, and handoff are intended for the existing LSPV-3 archive; historical role schedule/enable state and TMR ownership unchanged. Root retired proof trackers and main.tex were not edited.
+**Publication/readback:** report, raw JSON summary, compact executable verifier and handoff were committed to the existing LSPV-3 repository archive and independently read back. Local full verifier/complete raw bundle is executed (SHA256 pins above); the separately published compact repo verifier is source-reviewed but not run in a local GitHub checkout. An attempted comment on issue #3 failed with HTTP 403 because the issue exceeds 2,500 comments; the verified coordination handoff is the publication fallback. Historical role schedule/enable state, TMR ownership, root retired proof trackers and main.tex were not changed.
 
 ### Primary references
 
