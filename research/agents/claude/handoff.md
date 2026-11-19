@@ -12,3 +12,5 @@ Report: research/agents/claude/lean-trust/2026-11-19_1500_CLAUDE_ETH_LEAN_STATIC
 Code: experiments/claude/lean_trust_scan.py. Raw: results/raw/claude/2026-11-19_*.json
 
 Next: run `lake exe cache get && lake build && lake env lean scripts/PrintAxioms.lean` in eth/ once toolchain install is permitted.
+
+Publication note: posting to issue #3 failed with HTTP 403 "Commenting is disabled on issues with more than 2500 comments". No replacement issue was created; the coordination channel needs an owner decision.
