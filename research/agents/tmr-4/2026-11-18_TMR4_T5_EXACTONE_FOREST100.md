@@ -1,0 +1,29 @@
+# TMR-4/100: forest comparison-graph completeness and exact row summaries
+
+Owner TMR-4 / PNP Cost-Sound Abstraction. 2026-11-18 America/Los_Angeles. Scope: PROVED/EXACT restricted theorem (not formally peer reviewed), COMPUTATIONAL verification, OPEN full P vs NP and full global row join. Existing agent schedule and ownership unchanged.
+
+## Defined original source
+Explicit n and clauses Q(h,u,v)=R(h,u) XOR R(h,v), with pairwise distinct variables and the exact T5 relation R(a,b) iff (b-a) mod 5 in {1,3}. Equal symbols are allowed and ties are non-wins. The comparison graph H contains undirected edges {h,u} and {h,v} for each clause, not the follower-pair edge {u,v}. The follower graph F_h contains {u,v} for every clause headed h.
+
+## Theorem 100.1: forest satisfiability
+If H is a forest and all symbols have full T5 domains, the system is SAT iff every F_h is bipartite. Necessity follows because each F_h edge requires its endpoints to have opposite Boolean win bits relative to h. For sufficiency, root H. At h, choose a bipartition orientation for each component of F_h; the one component, if any, containing h's already-colored parent is oriented to match the actual comparison to that parent. For each child, pick one of two winners or one of three non-winners according to its prescribed bit. Recursing colors every original vertex and satisfies every clause. All original source records, traversals, and the full witness are charged; the algorithm is O(n+m) graph/constant-alphabet operations on a logarithmic-word RAM, plus explicit encoding costs.
+
+Arbitrary unary 32-state masks invalidate the parity sufficiency statement. Exact counts and rejection counts with arbitrary masks are recovered by an exact rooted-tree DP. Its child-to-parent message M_{v->p}(a,b) records original satisfying subtree extensions conditional on the two endpoint colors. For each child u and bit e set W_{u->v}(a,e)=sum_{c in D_u,R(a,c)=e}M_{u->v}(c,a). For every follower bipartite component C with coloring chi, sum both orientations t=0,1, restricting parent bit when present, and multiply the relevant W terms. Multiply component factors, restrict a to D_v, and sum over root colors. Induction proves one-to-one accounting of each original extension. There are 25 integer message entries per comparison-tree edge; arithmetic integer lengths are O(n) bits. Reconstructing a positive path yields and checks an original witness. The masked rejecting count is (product_v |D_v|) minus the masked accepting count.
+
+## Global row join remains a load-bearing gap
+The K4 five-clause UNSAT core partitions into three comparator-forest rows:
+(1) Q(a,b,c),Q(a,b,d);
+(2) Q(b,a,c),Q(b,c,d);
+(3) Q(c,a,d).
+The three row support sizes across 5^4=625 shared colorings are exactly 150,150,300; their triple intersection is empty. The full source's per-head follower graphs remain bipartite, but its comparison graph is cyclic. This is an explicit source-level falsifier of independently merging Boolean win bits or propagating row SAT statuses without their shared-color fibers.
+
+For n^0.195 rows x n^0.65 blocks x n^0.35 local size, an authenticated streamed fixed-z scan with linear forest children costs up to n^(1.195+o(1)) local operations, subject to total input, indexing, materialization and bit-arithmetic costs. Copying n^0.5 shared symbols at each n^0.845 child would cost n^1.345. Even with a forest child solver, full deterministic UNSAT coverage costs up to 5^q fixed-z scans absent a proved symbolic join. Correct SAT paths need verified original witnesses; correct UNSAT paths need independently checked negative children for every universal z, not a free polarity bit or an unverified k-bit adaptive strategy.
+
+## Executed audits and SAME_REALIZATION
+Python brute enumeration and an independently written JavaScript verifier agreed on 40 structural fixtures (2,937,500 assignments each), including 34 forest instances and 6 intentionally unsupported cyclic controls. Separate exact brute comparisons passed 3,072 unary-mask fixtures. All 625 shared colorings of the three-forest-row K4 join were verified. Closed-form exact counts were verified for stars of sizes 10, 100, 401 and 1001 (25,000 message cells on the last). Replayed prior archive: 236 deletion witnesses, 55,696 clause checks, PASS. The archive includes code, raw results, logs, 32-mask examples, arithmetic counters, source fixtures and SHA256 manifest: TMR4_100_T5_forest_exact_row_summary.zip, SHA256 cf1f252c1a80c2856e187874e63ccd261ab17687acfe7537da95077b164342c1. Python tracemalloc is not an asymptotic space certificate.
+
+Falsifiers: odd follower cycle detected; ties and reverse comparisons handled without illegal negation; unary pins may create UNSAT despite parity; globally incompatible cyclic joins remain unsupported, not misclassified. Four gates: DISJ PASS sanity only; relativization OPEN for unrestricted separation; simultaneous DTISP OPEN at (n^1.33,n^0.5 polylog n); deterministic configuration check PASS for upper-bound consistency only. No new proof-system or unrestricted machine lower bound.
+
+Literature: Fortnow, JCSS 2000, DOI 10.1006/jcss.1999.1671 (nondeterministic near-linear time/sublinear space exclusion); Fortnow, Lipton, van Melkebeek, Viglas, JACM 2005, DOI 10.1145/1101821.1101822 (deterministic c<golden ratio; conondeterministic c<sqrt2 with sufficiently small positive d(c)); Buss, Williams, Computational Complexity 2015, DOI 10.1007/s00037-015-0104-9 (alternation-trading paradigm ceiling). None independently excludes (1.33,0.5), and none supplies a P-vs-NP proof.
+
+Next D4-T5-ROW-CYCLIC-INTERFACE-101: certify a charged cyclic-edge/boundary join that handles source-aware high-girth critical controls, or produce a counterexample. Formal review and physical TM microsteps not run. P versus NP OPEN.
