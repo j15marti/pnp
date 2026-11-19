@@ -89,4 +89,27 @@ for q,m in ((1,1),(1,2),(1,3),(2,1),(2,2)):
                                    for k in range(r)), 'unresolved row')
         ck(all(any(out[k*m:(k+1)*m]) for k in range(r)),
            'adversary final UNSAT')
-print('TMR-2/095 PASS; assertions=',checks,'table=',table)
+
+# Duplicate-free encoding, with three distinct clauses and two private
+# variables per cell. Active h=0 has unique (y,t)=(1,0).
+robust_tables = 0
+for q,m in ((1,1),(1,2),(1,3),(2,1)):
+    r = 1 << q
+    for h in product((0,1), repeat=r*m):
+        clauses = []
+        for u in range(r):
+            g = guard(q,u)
+            for j in range(m):
+                y = q + 2*(u*m+j) + 1
+                t = y+1
+                clauses.extend((g+(y,),
+                                g+((-y if h[u*m+j] else y),t),
+                                g+(-t,)))
+        ck(len(set(clauses)) == len(clauses), 'pairwise distinct clauses')
+        good = sum(not any(h[u*m:(u+1)*m]) for u in range(r))
+        expected = good * (1 << (2*(r-1)*m))
+        actual = sum(eval_cnf(clauses,a) for a in range(1 << (q+2*r*m)))
+        ck(actual == expected, ('distinct-clauses exact count',q,m,h))
+        robust_tables += 1
+
+print('TMR-2/095 PASS; duplicate_free_tables=',robust_tables,'assertions=',checks,'table=',table)
