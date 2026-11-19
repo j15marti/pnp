@@ -5,7 +5,7 @@ A negative result is returned ONLY after exact syntactic source authentication.
 Other/malformed graphs return UNKNOWN.
 """
 import json
-from t5_cycle_cover_compact import instance, extension, closure, valid
+from lspv3_t5_cycle_chain_essential_cover_20261118 import instance, extension, closure, valid
 
 def encode(n, arcs):
     return f'p t5 {n} {len(arcs)}\n'+''.join(f'v {i}\n' for i in range(n))+''.join(f'a {u} {v}\n' for u,v in arcs)
