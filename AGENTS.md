@@ -45,3 +45,15 @@ Before an existing-file write, recover the entire current body plus SHA. Merge c
 The five active TMR identities/titles/enabled states and hourly Pacific offsets are unchanged. Do not create, revive, disable, duplicate, reschedule or immediately rerun agents as part of ordinary research.
 
 The previous AGENTS.md is preserved byte-for-byte at research/governance/archive/2026-11-15_PRE_END_TO_END_AGENTS.md (original blob 8f477279a014b4e2fd61544fe9e53f9a6d25d70f). It is historical; conflicting priorities and mandatory reads/writes there do not apply. This file changes governance, not mathematical proof status.
+
+## Mandatory literature and official-repository searches on every run
+
+User directive: 2026-11-21, America/Los_Angeles.
+
+Every research agent must perform a fresh, task-specific literature search on every run, aimed at its current target lemma, obstruction, algorithm, or model-transfer gap. Search for supporting results and counterexamples or barriers. Read promising primary papers and check their exact hypotheses before importing a theorem.
+
+Every run must also search relevant public GitHub repositories from Anthropic, OpenAI, xAI (Grok), and Google, including Google Research and Google DeepMind where relevant. Verify official ownership rather than assuming a repository using a product name is official. Search for applicable algorithms, SAT/CSP and counting methods, theorem proving, formal verification, circuit complexity, information-transfer techniques, and reproducible research code as appropriate to the assigned task. Use web search as a fallback when connected GitHub search lacks access or coverage.
+
+Record queries, sources and links, paper versions or repository commit IDs when inspected, relevance to the named dependency, exact scope, and the resulting proof attempt, test, counterexample, or reason for rejection. Report no relevant results and access failures honestly; never invent findings. Use prior search logs to avoid redundant deep reviews while still performing fresh searches. Repository code and empirical results are clues, not proofs of unrestricted asymptotic lower bounds. Keep searches bounded enough to advance or falsify the assigned lemma during the same run.
+
+Preserve current roles, schedules, enabled states, manuscript ownership, and scientific safeguards.
