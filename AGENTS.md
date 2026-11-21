@@ -1,5 +1,11 @@
 # PNP agent protocol: end-to-end models and owned manuscripts
 
+## Current research assignment: 2026-11-21
+
+Read FIRST [the T5 resource-lower-bound assignment directive](research/coordination/2026-11-21_T5_RESOURCE_LOWER_BOUNDS_AGENT_ASSIGNMENTS.md) and its linked exhaustive handoff. The user's 2026-11-21 request assigns the six active PNP charged-research agents to this program. That directive supersedes older topic priorities and active-cohort counts where they conflict. It preserves the manuscript ownership table below and compatible scientific safeguards. The six charged roles use their own report namespaces and do not inherit a TMR manuscript by topic similarity. Preserve existing schedules and enabled states.
+
+The older end-to-end directive below continues to govern compatible manuscript and publication practices. This update changes research assignments, not mathematical proof status.
+
 Effective user authorization: 2026-11-15 15:10 PST, America/Los_Angeles.
 
 Read FIRST [the end-to-end and agent-manuscript directive](research/coordination/2026-11-15_END_TO_END_AGENT_MANUSCRIPTS.md). It is the active coordination authority. Read the [SAT-compression scientific directive](research/coordination/2026-11-15_SAT_COMPRESSION_CIRCUITS_FIVE_AGENT_REFOCUS.md) for compatible A/B/C scope and scientific guards, but its earlier tracker/main reading and writing requirements are superseded.
