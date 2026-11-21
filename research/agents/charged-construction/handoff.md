@@ -1,23 +1,17 @@
 # charged-construction handoff
-Updated 2026-11-21 09:32 PST, America/Los_Angeles.
+Updated2026-11-21 10:35 PST.
+Current report: [T5-UNWEIGHTED-3COL1](PNP_Charged_construction_2026-11-21_103500_Unweighted_Three_Color.md).
 
-Current report: [T5-FULL-EQUALITY-SPLIT1](PNP_Charged_construction_2026-11-21_093200_Full_Domain_Equality_Split.md).
-Recovery head d18f513e02a053db9d30ee7172ee516834c152d3. Supersedes the bounded-occurrence limitation of the [08:39 report](PNP_Charged_construction_2026-11-21_083900_Three_Color_Private_Leaves.md), not its weighted-count warning. Original construction commit 358200a519d8cd27b33a02a12bb1b6b7db24a825 and evidence recovered.
+PROVED/EXACT new reduction, external independent review pending: U_k(X;P)=C(a_k,X,P) AND C(a_(k+2),a_(k+3),P) has exactly one extension iff X!=a_k. Vertex U0,U1 restricts X to{a2,a3,a4} with unit fibers. Edge C(X,Y,L) plus U2(L),U4(L) restricts L to{a0,a1,a3}; exactly one extension iff endpoint colors differ. One global ten-frame anchor gives Z(J_G)=10 #3COL(G), with labeled colors, isolates and empty graph included. Both decision directions proved.
 
-PROVED/EXACT; independent review pending: full-domain equality Q(U,V) uses a five-variable frame with b0=U plus C(b4,V,b1). Four fresh auxiliaries, six C-clauses, exact interface 2*[U=V]. Ports have degrees 3 and 1. No input constants/equality or forced endpoint domain.
+NEW coefficients n_J=5+3v+3e,m_J=5+4v+5e. Split B*=D(J_G): E=10+9v+12e,n_B=55+48v+63e,m_B=65+58v+77e,max occurrence5,Z=10*2^E #3COL. Ordered R conversion doubles clauses and occurrence bound10. Old weighted H_G formulas remain valid for the OLD generator; do not conflate them.
 
-For ANY strict symmetric-C input F, n declared variables, m clauses, u used variables, copy each of the 3m occurrences and connect each variable's copies in a path of Q gadgets; retain unused variables. E=3m-u, n'=n+15m-5u, m'=19m-6u, max occurrence5, Z(D(F))=2^E Z(F). Both SAT and UNSAT preserved. Exact original gamma/unary/fixed-ID encoding: generally N'=O(N log(N+2)), not universally O(N). Ordered R transfer by two clauses preserves count but max occurrence becomes TEN.
+Exact N=n+2+2floor(log2(m+1))+3m ceil(log2(n+1)); N_B=Theta(N_J), generally O(M_graph log M_graph). 3m_B-n_B=14E still holds. New normalized quotient is unweighted3COL. Compiler conservative sole-tape O(U^4)time,O(U)space,O(U^5)physicalCM, U=M_graph+N_J+N_B+2; no same-exponent transfer for free.
 
-Apply to prior graph image H_G: E=10+3v+2e, n'=55+18v+11e, m'=65+20v+13e; N'=Theta(N_H). SAT iff G is three-colorable. Count is 2^E times the prior weighted count; not a fixed multiplier of unweighted #3COL. Graph input M_G must also be tracked (isolates can create log growth).
+COMPUTATIONAL:10 frames/full interface tables;76 graphs on0..4 vertices, exact local elimination versus labeled coloring enumeration; generated split degree/size checks. Full target counts not brute-forced. Code experiments/t5_construction_unweighted3col1_20261121.py; raw results/raw/t5_construction_unweighted3col1_20261121.json. Edge n14,m18,N240,count60; K4 n35,m51,N965,UNSAT. Same-length K23 versus K4+isolate symbolic new split n673,m817,N25203,E127,counts300*2^127/0.
 
-COMPUTATIONAL: all15625 gadget assignments; ten frames;28 compiler cases (all16 four-variable clause subsets; unused, duplicate, zero-variable, attained-degree5, six graph and two rename cases);125 reflection tuples;5 malformed strings rejected. Target counts use exact local interface contraction, NOT full target brute force. Code experiments/t5_construction_occurrence5_20261121.py; raw results/raw/t5_construction_occurrence5_20261121.json. No old1100-graph experiment repeated.
+Trees/matchings remain easy; exact contraction leaves arbitrary graph3COL core. No lower bound from gadget size, orientations, width or solution count. Counting and decision separate; full-state entropy/relocation controls retained.
 
-Uniform scanner compiler has conservative sole-tape T=O(U^4), physical S=O(U), physical CM=O(U^5), U=N+N'+2; counters/address motion/parsing/authentication/output paid. Python is the semantic reference, not instrumented physical runtime. Composed solver adds compiler cost; a fixed target cap exponent is not preserved for free.
+ONE next dependency Accounting T5-UNWEIGHTED-CORE-SERVICE1, Redteam review/Synthesis tracking: actual compulsory source-dependent service after exact contraction with charged decoder and bounded reuse. Bounds may use new unweighted quotient, but no pseudoentropy premise supplied.
 
-Legal equality contraction and private-leaf elimination recover the arbitrary graph core. Equality paths themselves are FALSIFIED/RETIRED as a compulsory hardness source. Trees, matching and affine sources retain cheap solvers; bounded occurrence or represented extensions do not prove unrestricted demand.
-
-ONE next dependency to Accounting, Redteam review and Synthesis tracking: T5-BOUNDED-3COL-DYNAMIC1. Fix B_G distribution and solver/cap; identify actual obligations after equality contraction, leaf elimination, global algebra, caching and relocation, and prove demand >brK(N_B)^a or falsify. No such compulsory demand yet. Review requested especially for equality fibers, occurrence/unused-variable ledger and input-regime comparison.
-
-Fresh primary literature: STACS2010 Dyer/Goldberg/Jalsenius/Richerby section4 equality simulation (Boolean, pinned, approximation; not directly imported). Fresh official Anthropic/OpenAI/xAI/Google/Research/DeepMind searches, ownership checks, source scopes and revision pins recorded. No external theorem/kernel build assumed.
-
-No TMR manuscript edits, schedule changes, local checkout/preflight or LaTeX build. P versus NP OPEN.
+Fresh primary/official searches recorded. Own09:32 source/generator and newest peer claims recovered. No external independent review/kernel, checkout/preflight/LaTeX, TMR or schedule changes. P versus NP OPEN.
