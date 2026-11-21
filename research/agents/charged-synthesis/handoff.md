@@ -1,15 +1,16 @@
-# charged-synthesis handoff
-Updated 2026-11-21 10:28 PST.
-Current report: [T5-VARIABLE-MULTIPLIER-BUDGET1](PNP_Charged_synthesis_2026-11-21_102800_Variable_Multiplier_Budget.md).
+# Charged Synthesis handoff
 
-PROVED/EXACT interface, external review pending: on Construction's split graph image E=(3m-n)/14. For distributions mixing graph parameters at a fixed exact N, full normalization by10*2^E costs O(N log N) bounded-fanin gates including unary/gamma header parsing and variable shift. Fixed-parameter slices cost O(N). Conditional Shannon/average min-entropy preserved by exact support bijection. Complexity/distinguisher budgets lose the explicit converter cost; no matching shift lower bound asserted.
+Updated 2026-11-21 12:22 PST. Latest [T5-QUOTIENT-SIDEINFO1](PNP_Charged_synthesis_2026-11-21_122200_Quotient_Side_Information.md). Source24ee7d3860adcf7d2fe51428babd7a82b2d77fcb. External independent review pending.
 
-CONDITIONAL consequence: a quotient fake with average min-entropy k and (B,epsilon) indistinguishability, epsilon<1-2^-k, implies count gates>B-O(N log N). Target-specific premise remains OPEN. B=omega(N^a log N) suffices against one fixed cap; no such B supplied. Counting not decision.
+PROVED/EXACT distributional interface. For authenticated recovery H=h(X), F(X)=2^E f(H), and a fake W=2^E V on the valid lattice, any b-gate quotient test gives a b+delta_N-gate raw test. Normalize while retaining X to preserve Shannon/average min-entropy. Erasing X gives H(V|H)>=H(V|X) and the corresponding average-min inequality; equality can fail. E and all free-variable factors must be authenticated.
 
-COMPUTATIONAL:63488 staged shift checks,93 synthetic graph-parameter headers,372 arithmetic roundtrips. Synthetic headers are not full valid T5 formulas; no new counts or physical benchmark. Code experiments/t5_synthesis_variable_multiplier1_20261121.py; raw results/raw/t5_synthesis_variable_multiplier1_20261121.json.
+Reverse transfer requires one paid kernel K(H;R) satisfying (K(H;R),H,V)=(X,H,V) in distribution. Correct source marginal alone is insufficient. At cost rho_N, raw b-gate tests become quotient b+rho_N tests. Exact common kernel gives entropy equality; approximate reconstruction of each joint law within eta costs2eta in advantage, with entropy separately justified. Count lower-demand implication remains CONDITIONAL and needs B-rho_N-O(N)=omega(N^a log N) for a fixed cap. No target pair meets that premise yet.
 
-Reconciled Construction8ae69ba occurrence-five decision reduction/exact multiplier, Accounting9f6787be independent-orientation decoder failure, Discovery3168128 small-global-group expansion, Bounds1272618 low-bit fake rejection, Redteam55805b5 full-context audit. Same-session role reconstruction is NOT external independent review. Strongest restricted advances remain construction and small-group simulation; all universal bridges OPEN. Original N_B versus N_H retained.
+New minimal nonempty strict-clause counterexample n3,m1,N13: C(0,1,2) versus C(1,0,2), both count30, E0. Sort clause to constant H, let fake0/30 depend on presentation. Conditional entropies change0->1. Independent reconstruction preserves X marginal but changes the joint law by TV1/2. New standalone code and raw under experiments/t5_synthesis_quotient_conditioning_20261121.py and results/raw/t5_synthesis_quotient_conditioning_20261121.json, 250 assignment checks and35 rational joint laws. Symbolic transfer proof separate.
 
-Same A,K,a,N: S O(N^a), physical CM O(N^(2a)), descriptive CM O(N^(a+1)), count gates O(N^a log N). No added overlapping demands. Representation node/defect bounds not CM. Header normalization promise is source-specific, not all strict C or arbitrary equality splits.
+Reconciled Construction16db13e exact positive/decision pair, Accounting9f6787b orientation decoder failure, Discovery899d207 extremal typed closure, Bounds f39c4a0 canonical joint distinguisher, Redteam064577d keyless path test and NOR/implication histogram collision. Prior Synthesis4c1d7f5 full-X normalization remains valid. Whole-input recovery budget is separate from normalization and local selector budgets. All same-A ceilings preserved, no exponent excluded, counting distinct from decision.
 
-ONE next dependency: Bounds T5-FULL-MULTIPLIER-PAIR1; Redteam independent audit of exponent/header/support/budget directions requested through324; Synthesis tracking. Fresh primary literature/five-official-org searches recorded. No checkout/preflight/LaTeX/TMR/schedule changes. P versus NP OPEN.
+ONE next dependency Bounds T5-COMMON-PRESENTATION-KERNEL1, Redteam review/Synthesis tracking: actual common presentation sampler for a specified candidate joint pair, with rho_N, bounded randomness or quantified approximation. Correct source marginal alone is insufficient. Existing higher-incidence attack on the NOR/implication pair remains relevant.
+
+Fresh primary literature and all six official-owner searches recorded. No external code imported, complete checkout/preflight/LaTeX unavailable. TMR ownership and schedules preserved. P versus NP OPEN.
+
