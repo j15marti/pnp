@@ -1,15 +1,16 @@
 # charged-accounting handoff
-Updated 2026-11-21 08:48 PST (America/Los_Angeles).
-Current report: [T5-EVENT-SELECTOR1](PNP_Charged_accounting_2026-11-21_084800_Event_Selector_Capacity.md).
+Updated2026-11-21 09:48 PST, America/Los_Angeles.
+Current: [T5-ORIENTATION-OBLIGATION1](PNP_Charged_accounting_2026-11-21_094800_Orientation_Decoder_Obstruction.md).
+Recovery8ae69ba65b79af7d3da945293eacb7bbf1ebe2d1.
 
-PROVED/EXACT scoped refinement: for actual selected-event indices I_j, payload P_j with b bits/event, decoder side information B_j, and exact reconstruction, H(U_j|B_j)<=H(I_j|B_j)+b E|I_j|. Bounded pathwise reuse gives sum demands <= sum selector entropies + br E T. Additional metadata is charged separately. Original handoff/original entropy note already include it; no contradiction with their theorem.
+FALSIFIED/RETIRED: externally sampled auxiliary orientation bits are compulsory information in an arbitrary deterministic decision/counting trace. For fixed source and witness, U uniform on2^E choices is independent of input and entire trace; H(U|B,Pi)=E, exact decoder impossible, best guess2^-E. PROVED/EXACT obstruction, independent review pending. This is our tested candidate, NOT a Construction claim.
 
-FALSIFIED/RETIRED only payload-only sparse-record capacity when a decoder silently uses event timing. Legal strict-C repeated-clause inputs encode h bits through argument order but all count 30; N=6*2^h+2h+5. Two constant labeled events at phase times 1 and 2U+4 encode U through their gap. h=3,N=59 already defeats the local two-bit charge. It does NOT violate the coarse full-runtime inequality or establish compulsory demand. Full globally polynomial correct counter remains hypothetical; polynomial-cap wrapper statement is conditional and requires a>=2.
+Smallest positive-link control: source two clauses sharing one variable, E1; split n10,m8,N114 with two explicit lifts. Equal-length both-label graph controls K2,3 versus K4+isolate: v5,e6,H n26,m21,N351; split n211,m243,E37,N6059. SAT count9411819533762560 versus UNSAT0. Canonical positive orientations lift without random choices. No expanded brute-force claim.
 
-COMPUTATIONAL: 126 sources h=1..6; 15750 assignment evaluations; actual fixed-state tape phases and relocated traces agree. Code experiments/t5_accounting_event_selector1_20261121.py; raw results/raw/t5_accounting_event_selector1_20261121.json. No end-to-end bit-machine timing or peak-memory measurement.
+COMPUTATIONAL code experiments/t5_accounting_orientation1_20261121.py; raw results/raw/t5_accounting_orientation1_20261121.json; dependency Construction occurrence5 generator at8ae69ba.293 checked lifts plus reflection/renaming, graph3^5 enumerations and minimal witness pair. New test of new bounded-occurrence family, not rerun of timing experiment.
 
-Recovered baseline 10d2ccb, current assignment/instructions unchanged; newest peer Construction 358200a519d8cd27b33a02a12bb1b6b7db24a825 gives the three-color private-leaf interface, not a dynamic lower bound. Original Entropy_Unrestricted_Counting §6 actual-read. Independent review requested; none claimed.
+Prior T5-EVENT-SELECTOR1 remains valid: exact decoding prerequisite; sum H(U_j|B_j) <= selector/header entropy + br E T with actual event reuse. Here prerequisite fails even using full trace. None of the cap ceilings is exceeded. Counting and decision remain separate.
 
-ONE next dependency: Accounting T5-3COL-DYNAMIC1, review Redteam. Declare a graph-image distribution; obligatory U_j, full source/cache B_j, actual decoder, charged selector metadata and bounded reuse. Need net demand above brKN^a. Virtual residuals or free timing are not services. No such demand established.
+ONE next dependency T5-CORE-SERVICE1 to Accounting, Redteam review, Synthesis tracking: actual source-dependent graph-core obligations after contraction, with charged decoder, side information and reuse. Broader bounded-3COL dynamic bridge OPEN. All easy-family/relocation/full-state controls retained.
 
-Same-run ceilings: S O(N^a), physical CM O(N^(2a)), descriptive CM O(N^(a+1)), count gates O(N^a log N). No manuscript ownership, checkout/preflight or LaTeX build. P versus NP OPEN.
+Fresh literature and five-org searches recorded in report. No external theorem imported, no independent review/kernel/physical-machine measurement. No TMR/schedule changes. P versus NP OPEN.
