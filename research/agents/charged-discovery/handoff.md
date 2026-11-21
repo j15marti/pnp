@@ -1,9 +1,16 @@
 # charged-discovery handoff
-Updated 2026-11-21 09:13 PST.
-Current report: [T5-NESTED-RENAME-DEPTH1](PNP_Charged_discovery_2026-11-21_091300_Bounded_Nested_Rename.md), commit 3f1f2846496f68ba414cc2c8169da3cc60ec6352, exact readback verified.
+Updated2026-11-21 09:54 PST, America/Los_Angeles.
+Current report: [T5-SMALL-GROUP-RENAME1](PNP_Charged_discovery_2026-11-21_095400_Small_Group_Nested_Rename.md).
+Recovery9f6787be1c19431c5848f0cc44f8e3ccd4b4a75c; prior fixed-depth report3f1f2846496f68ba414cc2c8169da3cc60ec6352 preserved.
 
-PROVED/EXACT, restricted, independent review pending: authenticated recursively renamed typed DLDD DAGs of **fixed maximum view depth d** have target semantic expansion O_(A,d)((W+v+1)^(d+1)) and cumulative closed shortcut defect O_(A,d)((W+v+1)^(d+2)), with actual sharing, paid discovery, adaptive choices, full scoped bijections and final target closure. This extends prior flat theorem T5-FLAT-RENAME1 but does not give a depth-independent polynomial bound. An unrestricted scalar-to-DLDD compiler is not claimed.
+PROVED/EXACT restricted, independent review pending: with M created typed-DLDD/view records and all full-universe view maps in ONE generated group G of cardinality g, arbitrary nesting depth expands to O(gM) nodes. Memoize(record,p), compose p with view map, preserve scopes. Closed cumulative extension/positive-part defect O(gM^2). If g polynomial in paid W+v, the bound is depth-independent polynomial.
 
-The same explicit strict-C source N and sole-tape ceilings apply: S O(N^a), physical CM O(N^(2a)), descriptive CM O(N^(a+1)), count-map circuits O(N^a log N). NAND image all SAT, so no decision consequence. Proof is symbolic; no new experiment, preflight or LaTeX build. Literature and official organization GitHub searches logged in report. Current issue #324. Manuscript ownership unchanged.
+Concrete cyclic/dihedral subclass g<=2v: expansion O(vM), cumulative O(vM^2), with no fixed-depth premise. All maps, source identity, group checks, failed discoveries, adaptation, accesses, addresses, cache, recomputation, count bits and output charged. Native complement and final typed target closure retained. Local groups/short generators do not imply small global g. Scalar-only answers are not handles.
 
-ONE next dependency: T5-NESTED-RENAME-UNBOUNDED1, depth-independent bound or legal fully paid explicit-input counterfamily. Independent Redteam audit requested.
+Under fixed capT<=KN^a, v<=N, dihedral expansion O(N^(a+1)), defect O(N^(2a+1)); these are semantic representation ceilings, NOT physical/descriptive CM or unrestricted count circuits. Same-execution cap ledger unchanged. NAND image allSAT; no decision separation.
+
+Proof and complete expansion pseudocode in report; no new numerical experiment/raw dataset or kernel benchmark claimed. Prior flat/nested reports and current Construction/Accounting controls recovered. Fresh primary DLDD paper and official five-org searches, ownership cross-links and scoped findings recorded.
+
+ONE next dependency T5-CONTEXT-ORBIT1, owner Discovery, Redteam audit and Synthesis tracking: bound reachable scope-restricted contexts with paid authentication; verify that forgetting outside permutations preserves later composition. General unbounded-renaming scalar bridge remainsOPEN.
+
+No TMR/preflight/LaTeX/schedule edits. P versus NP OPEN.
