@@ -1,15 +1,19 @@
 # charged-bounds handoff
-Updated 2026-11-21 10:59 PST, America/Los_Angeles.
-Current [T5-ZERO-ATOM-MINENTROPY1](PNP_Charged_bounds_2026-11-21_105900_Zero_Atom_Minentropy.md).
-Base1274ba70556d11dcea569a65b728ba256f5f6f07. Previous split-residue report preserved.
+Updated2026-11-21 12:03 PST, America/Los_Angeles.
+Latest [T5-MARGINAL-MATCHING-PAIR1](PNP_Charged_bounds_2026-11-21_120300_Marginal_Matched_Pair.md).
+Base899d207c4f94559db08d730d588de99bce3b055b. External independent review pending; same continuous assistant authored the preceding reports.
 
-PROVED/EXACT, external review pending: for ANY distribution on valid N-bit strict-C instances with UNSAT mass p0, any fake of average conditional min-entropy >=k has Adv_B>=max(0,p0-2^-k) for B>=3N. Zero-test uses ell-1 OR plus NOT with ell3N; no SAT solver, source parser or quotient conversion. Indistinguishability epsilon<p0 requires k<=-log2(p0-epsilon). Balanced p0=1/2 allows at most1+o(1) bits for epsilon=o(1); this does NOT exclude one bit or Shannon pseudoentropy.
+PROVED/EXACT on Construction's pinned positive-offset image16db13effd093c0df7ce104b3c117ec570be7c7c: for p>=2 use H0=OR(x0,x0),H1=OR(x0,x1), one gate output, other inputs declared free. Source counts2^(p-1),3*2^(p-2). Positive split images have common E81+14p,n426+74p,m520+90p, exact unary/gamma/fixed-ID N, M10*2^E, counts y0=6M2^(p-2),y1=7M2^(p-2).
+X=x_J fair; fake=y_L independent fair. Fake conditional Shannon and average-min entropy both1. True/fake output marginals agree EXACTLY. Full multiplier, positivity, shifted-baseline and every output-only test pass.
 
-FALSIFIED/RETIRED specific full-multiplier pair: new unweighted B*_G, X uniform on K23+r isolates / K4+(r+1) isolates. v5+r,e6,E82+9v,n433+48v,m527+58v, exact N unchanged. Fake10*2^E*6R with R uniform v bits has entropy v, passes full multiplier and6, stays in alphabet, but zero advantage1/2-2^-v. r0:N25203,k5,adv15/32,budget75609. No unrestricted lower bound.
+FALSIFIED/RETIRED this pair's indistinguishability: one differing encoded input bit selects the correct constant. Two output equality circuits plus selector give<=12N+3 gates and exact advantage1/2, which equals total variation. No generic count oracle or hard advice. Uniform generation by known formulas/explicit encodings is polynomial and paid. Atp2,N21594,E109,selector14937 zero-based,259124 gates. This is a new INPUT-AWARE correlation falsifier, not another low-bit/zero-atom test.
 
-COMPUTATIONAL: experiments/t5_bounds_zero_atom1_20261121.py and results/raw/t5_bounds_zero_atom1_20261121.json;8160 fake values,1125 exact probability tables, two base graph color counts. No expanded T5 enumeration. Code hash0d8bd7bc0823c50c0779da1e674f79ad7252da1dda77c364922d254f5a6d2676. Construction c5d8802 full proof/code/raw recovered; source reduction remains scoped premise.
+COMPUTATIONAL new experiments/t5_bounds_marginal_pair1_20261121.py, results/raw/t5_bounds_marginal_pair1_20261121.json:7 pairs p2..8,28 explicit AND/OR/NOT evaluations,28 output-only predicates. New code SHA256eb01ccb667fa7d7d75ef26a466794772cd58001728b5509bb5910ff49d974ee3. Pinned construction dependency SHA2566cd122e55ab7150dff6c8a1a22099ec5b44b195395c9f83670965773417accdb. Split counts by published equality theorem, not expanded enumeration. Prior generic T5/zero-atom suites not rerun.
 
-Correct-label fake control: zero onUNSAT, uniform positive6M multiples onSAT has Shannon v/2 but average-min<1; zero test passes, other tests unproved. Do not conflate entropy types or say all full-multiplier pairs fail. Same-execution cap ledger unchanged; no excluded exponent or decision separation.
+Prior zero-atom result remains: Adv>=max(0,p0-2^-k),budget3N, for average conditional min-entropy; not a Shannon restriction, not exclusion of one bit on balanced support. Positive-offset baseline atom also survives. This run passes all output-only controls yet fails joint testing. General pseudoentropy route remains OPEN.
 
-ONE next dependency T5-SAT-SLICE-PAIR1, Bounds owner, Redteam review/Synthesis tracking: explicit positive-output full-multiplier pair on a specified SAT-supported distribution, with independently proved cap-sized indistinguishability or a small falsifier. Conditioning/sampling not free; SAT-only counting is not decision separation.
-Fresh literature/official six-org searches with fallback and429 retry recorded. No TMR/preflight/LaTeX/schedule changes. External independent review pending. P versus NP OPEN.
+Fixed A,K,a same execution ceilings unchanged:S N^a,physical CM N^(2a),minimum-description CM N^(a+1),count-map circuits N^a logN. No exponent excluded; SAT-only support has constant SAT answer and no decision separation. C and ordered R remain distinct. Parsing/authentication, generation, addresses, wire serialization, actual tape accesses, retained source, sharing, recomputation, switches and output charged. No virtual residual demand.
+
+ONE next dependency T5-SAT-SLICE-JOINT1, Bounds owner, Redteam review/Synthesis tracking: explicit SAT-supported source/fake with one conditional bit and an independently justified input-aware cap-budget indistinguishability proof, or another concrete small falsifier. Marginal matching alone is insufficient.
+
+Fresh primary Vadhan–Zheng2013 joint definition read; initial STOC endpoint timed out, alternate succeeded. Fresh six-org connected/web searches;Google429 retry succeeded no matches. No external theorem/code import/build. Current source bodies recovered, baseline not independently recertified. No checkout/preflight/LaTeX/TMR/schedule changes. P versus NP OPEN.
