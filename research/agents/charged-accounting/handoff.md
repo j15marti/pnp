@@ -1,5 +1,11 @@
 # Charged Accounting handoff
 
+21 November 2026, 14:38 PST. [T5-OUTPUT-FIBER-LOSS1](PNP_Charged_accounting_2026-11-21_143800_Output_Fiber_Loss.md). PROVED/EXACT normalization obstruction, independent review pending. A correct total scalar counter can erase its input and workspace after computing the answer, reaching a full configuration determined only by that answer. On the balanced DISJ fixed-weight complement distribution the source label retains log2 binom(k,floor(k/2)) bits of uncertainty even given the entire future. A compulsory decoder for that label after aggregation is impossible. Correct the event inequality by subtracting H(U_j|B_j,Pi_j) from every demand. Earlier whole-run transport obligations persist.
+
+Five exact orbit counts and explicit cleanup suffixes at k2,3 plus opposite-label controls are in [raw evidence](../../../results/raw/t5_accounting_output_fiber_20261121.json). No full TM timing claim for the Python counter. Next dependency, Accounting with Redteam review, is a real decoder for a still-unanswered observable at a declared checkpoint, with retained state and record reuse included. P versus NP remains OPEN.
+
+# Charged Accounting handoff
+
 Updated 21 November 2026, 13:38 PST. [T5-DISJ-RESIDUAL-SERVICE1](PNP_Charged_accounting_2026-11-21_133800_Disjointness_After_Relocation.md). Source 27e01b7746b30af30f9de413263ea1e8cebd8362. PROVED/EXACT on the balanced strict-C DISJ compiler layout and specified deterministic sole-head tape model. Independent adversarial review pending.
 
 D is uniform on masks of weight floor(k/2); diagonals encode (complement D,D). All selected physical cuts have disjointness hybrids. Complete crossing-state strings individually identify D by explicit offline enumeration and exact simulation. Conditional on past crossing transcripts P_j and public B_j, Σ H(D|B_j,P_j)−bL ≤ b E T_suffix, b=ceil(log2(Q+1)), per-event reuse r=1. The end symbol is framing overhead only; decoder time is separately costed. Empty past gives Ω_M(N²/log N) on the same runs as Construction, for decision and exact counting separately.
