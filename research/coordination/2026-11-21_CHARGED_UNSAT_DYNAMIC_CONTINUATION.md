@@ -1,5 +1,26 @@
 # Charged UNSAT research: dynamic compulsory-work continuation
 
+## Current erasure clarification: independent static levels
+
+The user's 22 November 2026 clarification is controlling for the variable-removal study: each level is a separate fresh input containing the formula and the values still supplied. The purpose is to characterize the shortest sufficient evidence and possible simultaneous resources, not to propose an algorithm or to charge one machine across successive erasures. Earlier-stage caches are not inputs to this study. Do not add independently minimized execution costs across levels. Dynamic checkpoint work below remains a distinct model and must not be substituted for this clarified question.
+
+Read [Independent one- and two-unknown UNSAT levels](../main/Independent_One_Two_Unknown_UNSAT_Levels_2026-11-22.md). Named dependency: STATIC-RESTRICTION-FRONTIER1. This report was developed and internally reviewed with three collaborators. P versus NP remains OPEN.
+
+**PROVED/EXACT in scope.** Boolean one-unknown UNSAT is empty-row OR opposite-unit evidence. Two unknowns have twelve labeled minimal cores in five shapes, with minimum source core at most four. Minimum binary-resolution inference count is exactly mu minus one at these two levels, excluding acquisition/normalization. For actual strict symmetric C5, H_0=1,H_1=2,H_2=4. The two-unknown four-row theorem is symbolic. A globally UNSAT seven-variable nine-row source with a full assignment violating exactly one row realizes the separate minimum-core profile 1,2,4.
+
+**Information scope.** Exact source-free contextual supports have 4/16 states for one/two Boolean unknowns and 12/157 states for one/two C5 unknowns. Fixed summary lengths are 2/4 and 4/8 bits, conditional on identified slots, labels, and an exact contextual-interface contract. These are not unrestricted offline workspace bounds. The C5 count 157 is a complete finite intersection-closure result. Worst-case normalized-record acquisition can still require all m records despite a constant-size core.
+
+**Resource integration.** Fixed-domain explicit one/two-unknown levels have near-linear random-access feasible points with polylog auxiliary workspace under canonical indexed supplied values. The compact Q forbidden-region language already has one unknown but an input circuit and exponentially large domain; retain that encoding distinction. A quasilinear local, both-label-preserving SAT reduction to explicit residuals with choice weight h<=c log2N+o(logN) is excluded when c<2cos(pi/7)-1, with cheap target length/header setup and paid accesses. An auxiliary-CM upper exponent gamma<1.24 is forbidden only with strict exponent slack, small initial auxiliary state, bounded growth, and the established local model transfer. Input-inclusive physical CM is separate.
+
+**No extrapolated doubling.** Source-core size in fixed k-CNF is at most the number of residual clause types, O(r^k). For strict C5 it is at most 1+10r+5 binomial(r,2)+binomial(r,3), also bounded by m and 5^r. Thus 1,2,4 does not give an exponential source-core lower bound. Any stronger result must concern acquiring or establishing incompatibility.
+
+**Evidence.** Boolean audit: all 8 and 512 clause-type subsets, with 5 and 417 UNSAT cases. C5 template audit: 157 support relations and 315 nonempty minimal cores through size 4; no cores at sizes 5 or 6. Global C5 audit: all 78,125 assignments, zero models, ten anchor frames, one false reference row, exact profile 1,2,4 and four deletion witnesses. The one/two C5 proof and full code/raw records passed independent same-conversation review. No native tape or formal kernel was run; no complete checkout was available for repository preflight.
+
+Reports and review notes: [static_levels_20261122](../main/static_levels_20261122/). Code: [static_levels_20261122](../../experiments/static_levels_20261122/). Raw: [static_levels_20261122](../../results/raw/static_levels_20261122/).
+
+**Receiving task.** Characterize the fresh r=3 level and a cost-sound inference/acquisition measure once genuine ternary constraints remain. Bounds/Accounting should distinguish minimum source evidence, certificate acquisition, and same-execution resource exclusions. Synthesis/Redteam should audit any proposed transfer from a static characterization to an unrestricted solver bound. Preserve actual template definitions, both labels, full N, manuscript ownership, and existing scheduler settings.
+
+
 ## Restricted continuation: ERASURE-BLOCK-ACQUISITION1
 
 Read [Erasure interfaces and blockwise computation](../main/Erasure_Interfaces_and_Blockwise_Computation_2026-11-22.md), dated 22 November 2026. Three same-conversation collaborators reviewed the stated mathematics and cross-chat transfers. This is internal review, not external peer review or formal verification.
