@@ -1,3 +1,15 @@
+# Charged Accounting: current continuation
+
+21 November 2026, 20:46 PST. [DYNAMIC-CHECKPOINT-OVERLAP1](PNP_Charged_accounting_2026-11-21_204600_Checkpoint_Overlap.md). PROVED/EXACT restricted actual-event accounting; independent review requested, not obtained. Recovery/source head 7ad8794c9a6df14d47c85f9ba4efdc76518c46e5.
+
+Boolean permutation family, same N and single-tape scope as CHARGED-UNSAT-PREPAYMENT1. For obligation (checkpoint i, fixed cut c), U=pi, B=(A,r,c,consumed crossing prefix), Pi=remaining crossing states plus END. Full-string injection gives an explicit finite-enumeration decoder. Real E consists exactly of crossings after that checkpoint; b=ell=ceil(log2(Q+1)), h=ell. Across J checkpoints rho is the maximum number of suffix memberships of any actual crossing, not automatically one. Thus sum H(U|B)-J Delta ell <= ell rho E[T]. All retained history is conditioned, no original source oracle, no efficient decoding claim.
+
+On the prepayment good set, d_t=Psi(t-1)-Psi(t), m_t=sum_{i:tau_i<t}a_i gives exact identity sum_i a_i Psi(tau_i)=sum_t m_t d_t. Unit-overlap weights yield a same-run CM_min lower bound; unweighted nested suffixes require their true multiplicity. Disjoint intervals telescope. Repeating checkpoints cannot renew the initial budget. No reset or stronger exponent established. Symbolic proof only; original prepayment arithmetic experiment was inspected, not rerun.
+
+ONE next: DYNAMIC-POST-EXHAUSTION-VIEW1, Construction with Accounting, Bounds/Redteam review. Prove a nontrivial correctness-derived view after the initial cut potential is exhausted. Redteam should test any reset against paid equality comparison and a cached answer. Synthesis receives the exact overlap identity before composing claims. P versus NP OPEN; no ownership or schedule changes.
+
+## Prior handoff retained
+
 # Charged Accounting handoff
 
 21 November 2026, 14:38 PST. [T5-OUTPUT-FIBER-LOSS1](PNP_Charged_accounting_2026-11-21_143800_Output_Fiber_Loss.md). PROVED/EXACT normalization obstruction, independent review pending. A correct total scalar counter can erase its input and workspace after computing the answer, reaching a full configuration determined only by that answer. On the balanced DISJ fixed-weight complement distribution the source label retains log2 binom(k,floor(k/2)) bits of uncertainty even given the entire future. A compulsory decoder for that label after aggregation is impossible. Correct the event inequality by subtracting H(U_j|B_j,Pi_j) from every demand. Earlier whole-run transport obligations persist.
