@@ -1,3 +1,19 @@
+# Research objective: follow the evidence toward P=NP or P!=NP
+
+User clarification: 2026-11-21, America/Los_Angeles.
+
+The objective is to resolve P versus NP in whichever direction the mathematical evidence supports. Either P=NP or P!=NP is an acceptable final outcome. Do not presuppose a separation or treat a valid polynomial-time algorithm as an outcome to avoid. Pursue the strongest rigorously supported route, including constructive algorithms, upper bounds, lower bounds, and counterexamples.
+
+Treat current compulsory-work and lower-bound proposals as hypotheses to test. If preprocessing, compatibility aggregation, algebra, or a shared representation suggests a general polynomial-time solver, investigate that possibility and audit its full costs. Productive existing work can continue; this clarification neither requires equal time for both outcomes nor requires restarting investigations.
+
+Apply the same proof standards in both directions. An algorithmic P=NP claim must establish uniform correctness on every permitted input of an NP-complete decision problem and a polynomial worst-case bound in the total encoded input length, including preprocessing, discovery, access, conversion, sharing, recomputation and output. A P!=NP lower-bound claim must exclude every fixed polynomial-time cap in the relevant unrestricted decision model. Any alternative route must establish the corresponding full implication.
+
+Failure of a proposed lower bound does not prove P=NP. Failure of a candidate algorithm does not prove P!=NP. Keep counting and decision consequences distinct, and label restricted, conditional and open claims accurately. Report evidence supporting or challenging either outcome. The project remains unresolved until a complete argument is established.
+
+This clarification takes precedence over any older wording that requires the final conclusion to be P!=NP. Preserve current roles, identities, schedules, enabled states, manuscript ownership, publication practices, mandatory literature and official-repository searches, and compatible scientific safeguards.
+
+---
+
 # Current charged UNSAT continuation: 2026-11-21
 
 Read FIRST [the dynamic compulsory-work continuation](research/coordination/2026-11-21_CHARGED_UNSAT_DYNAMIC_CONTINUATION.md) and its linked charged UNSAT transport report. The user's latest request, "Direct and activate agents to continue this work," authorizes the coordinator to resume the six existing charged-research agents and request an immediate run while preserving their existing schedules and identities. This directive supersedes conflicting topic priorities and paused-state preservation instructions below; compatible scientific safeguards and ownership remain in force. Ordinary research runs preserve the resulting agent settings and do not alter the scheduler. The original protocol below is retained in full as compatible background.
