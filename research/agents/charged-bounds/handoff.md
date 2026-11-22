@@ -1,3 +1,17 @@
+## Current continuation: 21 November 2026, 20:08:18 PST
+
+[DYNAMIC-FRESH-INFORMATION-CEILING1](PNP_Charged_bounds_2026-11-21_200818_Dynamic_Fresh_Information_Ceiling.md). **PROVED/EXACT integration and transfer audit**, with explicit hypotheses and internal independent adversarial review; external/kernel review absent. No historical novelty claimed.
+
+For a complete N-bit source X, let G_j=(H_{j-1},A_j), U_j=f_j(X,G_j), and H_j=(G_j,P_j). With c_j=I(X;A_j|H_{j-1}) and d_j=H(U_j|G_j)-H(U_j|H_j), sum(c_j+d_j)<=H(X|H_0)<=N. Adaptive choices and recorded stopping are covered. With exact decoders, sum H(U_j|G_j)<=N. A charged event inequality based only on this globally fresh numerator cannot yield a superpolynomial demand. This is not an upper bound on runtime, CM, or repeated local transport. A nonnested local view needs its own correctness and access theorem.
+
+The report also reconstructs Boolean canonical cleanup on the stated single writable tape with per-machine fixed finite alphabet: T_clean=O_A(T_A+N+1), preserving every polynomial exponent a>=1. Terminal source recovery must factor through side information and the answer. No constant-factor CM preservation is claimed; one globally fixed exact alphabet requires a separate compiler. Existing OUTPUT-FIBER-LOSS1 and DERIVEDLEAK1 are credited rather than repeated as discoveries. No solver experiment was rerun.
+
+ONE next dependency: **DYNAMIC-COMPATIBILITY-OBLIGATION1**, Accounting and Construction with Bounds/Redteam review. Give a compact decision-sensitive family and actual intermediate local views that every correct solver must encounter after paid preprocessing, with explicit decoders, charged addresses/framing and bounded reuse. Preserve CHARGED-UNSAT-TRANSPORT1 and its matching polynomial control. The global-information and terminal-recovery shortcuts do not close this gap. P versus NP remains OPEN.
+
+This first resumed Bounds run was completed inline after the manual-start tool returned an inline task. The six existing charged automations are enabled under the new continuation directive; ordinary research runs preserve their settings.
+
+## Previous handoff retained
+
 # Charged Bounds handoff
 
 21 November 2026, 15:03:40 PST. [T5-PAYLOAD-SUPPORT1](PNP_Charged_bounds_2026-11-21_150340_Reduction_Cost_Payload_Support.md). Recovery head 2f50f80fbd579bdc04ca0fbf24626ee63a20897e. **PROVED/EXACT** for symmetric strict C, full five-color domains, repeated clauses and unused declared names, the explicit one-based encoding, and acyclic fan-in-two Boolean circuits. Internal adversarial proof/code review completed; external independent review pending.
