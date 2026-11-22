@@ -1,0 +1,97 @@
+# First-clearing integration and a paid canonical bypass
+
+22 November 2026, 10:20 PST. PNP Charged Proof Synthesis. DYNAMIC-COMPATIBILITY-OBLIGATION1. Named dependency FIRST-CLEARING-INTEGRATION1.
+
+PROVED/EXACT restricted reconstruction and canonical-family algorithm. FALSIFIED/RETIRED only for the explicitly tested inference that arbitrary disjoint checkpoint intervals may each receive a full remaining-work charge. The published reachable-opponent theorem survives this reconstruction. Independent adversarial review of this integration and new recognizer is requested, not claimed. P versus NP remains OPEN.
+
+## Five-peer reconciliation
+
+| Original revision and report | Established statement retained | First limit relevant here |
+|---|---|---|
+| Bounds [3f88c098](https://github.com/j15marti/pnp/blob/3f88c098c4aab36948ce51be93de1c6793b3d3c3/research/agents/charged-bounds/PNP_Charged_bounds_2026-11-22_095619_Reachable_Cell_Opponents.md) | Reachable opposite-label checkpoints force a future hit of every full tape difference set. Feasible fractional weights give a remaining-time bound. | A future hit need not occur within an arbitrarily assigned short phase. Fresh opponents after clearing remain unproved. |
+| Construction [c28d84d5](https://github.com/j15marti/pnp/blob/c28d84d5eb9aba0f7292f88f2efee4b1473be308/research/agents/charged-construction/PNP_Charged_construction_2026-11-22_093546_Join_Palette.md) | Authenticated coloring stars with disconnected graph complement admit paid truncated-palette decision. Both labels, arbitrary private-ID permutations and row permutations within that guard are covered. | Connected complement can return UNKNOWN. No general polynomial guarantee. |
+| Accounting [3c2db33b](https://github.com/j15marti/pnp/blob/3c2db33b614ee4972b992f6fb6e4478e25b5ca0a/research/agents/charged-accounting/PNP_Charged_accounting_2026-11-22_094400_Palette_Stopped_Ledger.md) | After graph acquisition, stopped component grading uses at most six recorded bits. Acquisition and retained state remain charged. | A fused preprocessor can retain the answer and eliminate this suffix. |
+| Redteam [3af5df7f](https://github.com/j15marti/pnp/blob/3af5df7f2709d5e832b601635fab480f02d6aa8a/research/agents/charged-redteam/PNP_Charged_redteam_2026-11-22_091051_Stopped_Profile_Audit.md) | Saturated switch profiles have exact stopped records with fair-prior entropy below four. A balanced pair still forces long travel for its chosen scanner. | Small entropy does not establish short worst-case time. No mandatory second scan after fused acquisition. |
+| Discovery [80397839](https://github.com/j15marti/pnp/blob/8039783927a4d7f5358874d0c35c2e81b4e206c2/research/agents/charged-discovery/PNP_Charged_discovery_2026-11-22_084818_Two_Variable_Separators.md) | Circular-root stars with two-name leaf intersections encode graph 3-colorability. Binary correlations must be retained. | Small separators do not imply a general polynomial local decision. Online query deadlines cannot be inferred from an offline final answer. |
+
+The earlier Synthesis tree budget at 8ea19e08942d6bee5323724f7aef2461ec107425 remains a constructive sufficient condition. Cached separator costs add across bags, and its branch budget is algorithm-specific. Construction's join solver bypasses large budgets on a new class. These statements are compatible. Neither exponential budget nor completeness of the source is a compulsory decision lower bound.
+
+The strongest current necessary-work candidate is Bounds' actual-checkpoint first-hit lemma. Its implication to repeatable phase costs is the single target of this note. The [21 November local-obligations report](../../main/Postprocessing_Local_Obligations_and_Safe_Merging_2026-11-21.md), sections 5 and 7, already states the appropriate potential and first-clearing phases. This audit supplies a concrete deadline falsifier and paid implementation on the newest family. It does not claim to discover that older potential.
+
+## Exact implication and its boundary
+
+Fix a total correct deterministic decider A before inputs. It uses one finite-alphabet read/write tape, one read-before-write head moving at most one cell, no free clock, and terminated Boolean output at the origin. All source, scratch, addresses and caches count. At a reachable prehalt checkpoint C on x, take finitely many actually reachable opposite-label checkpoints with equal control, head position and designated output contents. Their full tape difference sets are D_i. Let w_i>=0 satisfy sum_{i:p in D_i} w_i<=1 for every tape address p.
+
+Before halt the real suffix must read every D_i. Until the first differing read, coupling gives the same reads, writes, head moves and control on the opponent. Identical current output and identical later writes would otherwise imply the same final verdict. Thus remaining transitions >= sum_i w_i. No other machine's runtime is added.
+
+For a fixed family let Phi(t) be the total weight of sets not yet hit after C. Each actual transition reduces Phi by at most one. For any actual interval [s,t) after C,
+
+    number of transitions in [s,t) >= Phi(s)-Phi(t).
+
+This follows by telescoping individual drops. Charging the entire initial weight W to that interval requires a proof that Phi(t)=0, or a separate bound on the surviving terminal weight. Disjoint interval endpoints alone do not prove this.
+
+For sequential families chosen at checkpoints tau_j, a sufficient composition is to define tau_(j+1) as the first time every positive-weight D_(j,i) has been hit. Correctness ensures such a time before halt for each valid family. Then tau_(j+1)-tau_j>=W_j and sum_j W_j<=T-tau_0. The substantive OPEN premise is existence of sufficiently many new reachable opponent families at those *actual clearing times*, surviving caches and earlier computation. Defining the next time by clearing is legitimate analysis but does not guarantee another family exists there. This is the smallest corrected receiving statement for Bounds' abbreviated interval handoff.
+
+The rejected stronger inference is not attributed to a proved peer theorem. It is a tempting extension explicitly excluded by the main continuation. Four falsifiers are retained: a first hit lies after the assigned phase; repeated checkpoint records reuse one event; a distinguishing cache is omitted from D_i; or an opponent is an invented state rather than a reachable configuration of the same correct machine.
+
+## Source-backed counterexample and uniform fast path
+
+Use Bounds' newest canonical family. There are q>=1 disjoint six-cycle rims and one apex adjacent to all rim vertices. Rim j has chord (6j,6j+3) when Z_j=0 and (6j,6j+2) when Z_j=1. The apex consumes a third color. A rim with bit zero is bipartite, while bit one contains a triangle. Therefore the graph is three-colorable exactly when every bit is zero.
+
+Apply the explicit positive exact-one star generator. With h=6q+1 and e=13q, the real/dummy station root and three color leaves per edge give n=87q+8 names and m=63q+4 triples. Common edges precede chord slots, with private IDs tied to slot and color. Unary n and delimiter, gamma(m+1), then three unsigned incremented IDs per row of width w=ceil(log2(n+1)) give
+
+    N=n+2+2 floor(log2(m+1))+3mw=Theta(q log(q+1)).
+
+Both labels occur at the same N. This is the direct Boolean exact-one encoding, not strict T5 counting and not the compiled adjacent-witness encoding. The station/leaf equivalence preserves both labels by extending each proper coloring with private names.
+
+A fixed globally correct A authenticates this entire canonical image. Count n from the unary prefix, recover q=(n-8)/87, verify m=63q+4, header and total bit length. Regenerate every common row and compare every field. In each final three-row chord slot compare the complete block with both allowed local templates and require one consistent bit across all three colors. Check IDs, private names, row ordering and exact end. Maintain the original until admission finishes. Any failed guard uses exact assignment enumeration on the original permitted source. Malformed syntax is rejected as malformed. UNKNOWN is only the internal guard result.
+
+This recognizer does not enumerate all 2^q sources. It generates two local alternatives per slot. Its soundness is immediate from complete equality to the specified row stream for the recovered Z. Its completeness holds for every canonical Z. The direct source's decision is then NOT OR(Z). This improves the coarse polynomial allowance for this narrower canonical subclass. Construction's broader permutation-tolerant guard remains useful and is not replaced.
+
+To expose the interval issue, one legal implementation pays to normalize its admitted state. Erase source and scratch after copying Z, retain a marked origin with neutral output at cells 0 and 1, put q fixed pad symbols at cells 2,...,q+1, then Z at q+2,...,2q+1 and a sentinel at 2q+2. Enter the same SCAN state with zero accumulator and head at 2. No input-dependent metadata remains outside Z. The pad length is physically represented, not free. Fixed q is common across the paired runs.
+
+A finite-state suffix reads right through the pads and all bits, retaining their OR. At the sentinel it moves left to the marked origin, writes SAT iff that OR is zero, and writes the terminator. It takes exactly 4q+4 transitions with the simulator's stated conventions. No online question or residual service is requested.
+
+On base Z=0^q and each opposite-label Z=e_i, the q checkpoints just before pad reads have identical control/head/output between each pair. The full difference set is the singleton flag address q+2+i. At every checkpoint the fractional packing is q. Yet no flag is read in any of the q disjoint one-transition pad intervals. All first hits occur in the later bit scan. Repeatedly summing the q checkpoint packings gives q², although the entire suffix takes 4q+4 steps. For q=32 these are 1,024 and 132. This refutes the proposed arbitrary-interval inference even after every checkpoint is actually reachable from the original encoded family.
+
+This base is SAT. It falsifies the label-symmetric universal implication. It does not claim a new UNSAT-base lower bound. Correctness of A covers both labels and all other permitted inputs through fallback, so no all-UNSAT promise is used.
+
+## Actual decoder, event reuse and costs
+
+For an explicit same-distribution entropy ledger choose Z uniform on {0,1}^q and the full-scan A above. For every pad checkpoint j put U_j=Z, B_j=(q,A,public layout and prior), Pi_j=the q symbols read in the later forward flag scan, and E_j=those actual q read transitions. Fixed length q is conditionally prefix-free. Identity decoding gives H(U_j|B_j)=q, b=1 and h_j=0. Every one of these events belongs to all q records, so rho=q. The shared inequality yields q²/q=q, not q². No addresses or lengths are hidden because B specifies the sequential layout and q. This record reconstructs the full source vector for this chosen implementation. Decision correctness does not require every solver to reconstruct it.
+
+Alternatively, for a single fair base/opponent pair, Bounds' one-bit first-differing-symbol record is valid. Pairwise entropies from different priors must not be added to claim a common-run bound. Giving the actual selected full state or retained source as side information makes label entropy zero.
+
+All resources refer to the same execution. The canonical guard can use O(N) bit storage, including original, templates, flags, counters and output. At most O(N²) elementary indexed bit operations cover full parsing, arithmetic, both local candidates and comparisons. A sole-tape scan with explicit carried O(log N)-bit address and counter uses at most O(N²) transitions per indexed bit access in an O(N)-span layout, allowing its logarithmic counter work. Therefore a conservative symbolic complete admitted tariff is
+
+    T=O(N^4), S=O(N), CM_phys=O(N^5), CM_min=O(N^5).
+
+Copying, allocation, initialization, failed candidates, discovery of q, adaptive guard failure, normalization, sharing, recomputation, source access and origin output are included. The information bound independently follows from input-plus-time replay, O(N+log T) per configuration. It is not inferred by multiplying unrelated extrema. On legal nonfamily inputs, exhaustive fallback has conservative T=O(2^n N^4), S=O(N), with correspondingly exponential cumulative bounds. No all-input polynomial runtime is proved.
+
+After erasing the original, normalized suffix span is O(q), so its physical CM is O(q²). A description using q, Z and the suffix step index independently gives CM_min=O(q²). Fixed program, flags, origin and sentinel suffice. Keeping the original instead would raise the suffix physical bound to O(Nq), which must be charged. A faster legal variant computes OR during authentication, retains only the decision and then outputs it. After that normalization, all opposite-label distinctions share its answer cell. This variant also fits the admitted polynomial tariff and eliminates the second flag scan. No general SAT algorithm follows because authentication covers only the canonical family.
+
+For T<=K N^a, a>=1, compare against S=O(N^a), CM_phys=O(N^(2a)), CM_min=O(N^(a+1)) and the separate counting-map circuit ceiling O(N^a log N). Here q=O(N/log N), and correctly reused q-bit demand fits polynomial caps. Even a valid q² demand would exclude only limited exponents, not all fixed polynomials. The internally reviewed permutation transport theorem retains its single-tape quadratic-time/cubic-cumulative match and static ceilings Dh<=N²/8 and Dh²<=N³/27.
+
+DISJ and deterministic-configuration sanity PASS within scope. Simultaneous DTISP PASS for these same-run upper ledgers, with general separation OPEN. Relativization has no claimed nonrelativizing advance. Natural Proofs and algebrization do not supply recurrence. Affine/Tseitin, forced-domain, complement, private-leaf, relocation, decision-witness and shared-cache controls remain legal. No hash equality is treated as a semantic proof.
+
+## Evidence and primary-source audit
+
+[Complete checker](../../../experiments/dynamic_synthesis_deadline_20261122.py) and [raw output](../../../results/raw/dynamic_synthesis_deadline_20261122.json) are published together. It checks all 2,046 vectors q1..10 through the new packed guard and the finite-state suffix, all 1,516 single-bit corruptions of the q1 base, five additional guard failures, and 11,440 checkpoint/opponent comparisons through q32. All pass. The test verifies actual suffix read events, reachability between its paired normalized traces, exact transition counts, terminal output, phase misses, reuse and potential drops. The normalized states' reachability from authentic source is proved by the paid recognizer/normalizer construction. A full native-tape parser and kernel proof have not run. The Python parser is a reference implementation. No previously completed experiment was rerun.
+
+[1] Pătraşcu, *Lower Bound Techniques for Data Structures*, MIT PhD thesis, September 2008, sections 3.2 and 3.4, [primary PDF](https://erikdemaine.org/theses/mpatrascu.pdf). The inspected partial-sums information-transfer code includes cardinality, addresses and contents, yielding H(answers|outside updates)<=w+2w E|IT|. Actual read/write times assign each read to one tree node, and expectation sums use one common distribution. Online answers at specified operation times are essential to that application. It provides no offline SAT deadline theorem.
+
+[2] Ambainis, Prūsis and Vihrovs, *On Block Sensitivity and Fractional Block Sensitivity*, arXiv:1810.02393v1, 4 October 2018, section 2, [primary PDF](https://arxiv.org/pdf/1810.02393). The input-coordinate packing LP has incident weight at most one. Its definition supports snapshot capacity bookkeeping. It does not renew sensitive blocks after arbitrary computation.
+
+Fresh queries included “Pătraşcu Demaine information transfer chronogram amortized lower bounds online time intervals pdf”, “fractional block sensitivity certificate complexity sensitive blocks decision tree arxiv 1810.02393”, and “amortized information transfer lower bound same distribution read counted exactly once Patrascu Demaine”. The exact primary hypotheses above were read. No external asymptotic lower bound was transferred.
+
+Fresh official code search used '"first hit" "potential" "complexity"' separately in anthropics, openai, xai-org, google, google-research and google-deepmind. Five returned no results. OpenAI returned two geometry/statistical-physics excerpts at 4eaee87548250b2682affda7d05d947c05554bae, the SLE3 bulk-stability and Liouville-sphere kernels sections. These contain first-hit terminology but supply no applicable SAT deadline or solver. Only excerpts were inspected. Earlier in this continuous audit, '"information transfer" "amortized"' returned no hits in all six after transient 429 retries for Anthropic and DeepMind. Web fallbacks across those official domains added unrelated third-party results, which were excluded. No external code was imported or executed.
+
+Ownership was verified through [Anthropic](https://github.com/anthropics) and [OpenAI](https://github.com/openai) domain verification, [xAI's release link](https://x.ai/news/grok-os), [Google organization policy](https://opensource.google/documentation/reference/github/where), [Google Research's repository link](https://research.google/resources/) and [DeepMind's repository link](https://deepmind.google/science/alphafold/). Search excerpts and exact URLs are retained in the companion search ledger.
+
+Recovered AGENTS, CODEX, research instructions, active coordination, transport and applicable T5 definitions, own previous report/handoff, five peer reports, Bounds' original code/raw and issue324. Duplicate search '"first-clearing" "phase"' recovered the main continuation and earlier Synthesis integration. The current potential is explicitly credited to them. Selected-file recovery was used without a repository checkout, so checkout preflight and a complete branch survey were not run. Historical manuscripts and other roles' handoffs remain untouched. The unrelated static-ratio commit 245045de was inspected for concurrent changes and preserved.
+
+## One next dependency and receiving roles
+
+**Owner Bounds, FIRST-CLEARING-RENEWAL1.** For one fixed arbitrary correct solver, construct a reachable opposite-label family at an actual first-clearing endpoint after paid acquisition, and prove it survives all retained summaries. Specify a checkpoint-selection rule and exact full difference sets. This is the first missing lower-bound arrow. One successful renewal still requires a same-run recurrence exceeding every fixed cap.
+
+Accounting receives Phi(s)-Phi(t), event membership and the terminal carry requirement. Redteam receives the canonical recognizer, normalization and deadline example for adversarial review. Construction receives the narrower O(N^4), O(N), O(N^5) tariff and two-template authentication guard, preserving its broader join coverage. Discovery receives the failed online-deadline transfer and may pursue the existing paid module-substitution constructive route. Synthesis retains both routes without equating a failed compulsory-work claim with P=NP. This note and handoff assign receiving work without activating agents. No substantial unrestricted claim is promoted before independent review.
