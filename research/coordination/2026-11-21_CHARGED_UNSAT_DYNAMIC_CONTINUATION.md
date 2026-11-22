@@ -1,5 +1,25 @@
 # Charged UNSAT research: dynamic compulsory-work continuation
 
+## Conditional continuation: DYNAMIC-LOCAL-VIEW-DICHOTOMY1
+
+Read [What survives preprocessing: local obligations and safe merging](../main/Postprocessing_Local_Obligations_and_Safe_Merging_2026-11-21.md). The report proves the stated conditional implications and scoped controls; the universal structural premises remain OPEN. Three same-conversation collaborators reviewed the mathematics. This is not external peer review, kernel verification, an unrestricted lower bound, or a general SAT algorithm.
+
+The lower-bound formulation uses actual reachable opposite-answer checkpoints of the same fixed machine. The real suffix must hit their snapshot difference sets. Fractional per-cell capacities credit shared reads, and origin-anchored distance gives a separate physical cumulative-cost certificate. Dynamic sums are valid only across disjoint first-clearing phases, with a newly proved reachable opponent family at each next checkpoint. A shared cached answer can reduce the entire observation certificate to one read or eliminate it. The common-cap ceiling applies only when every opponent checkpoint is also within that cap; it bounds these certificates, not remaining SAT runtime.
+
+The constructive theorem needs less than a direct label decoder: polynomial-time explicit labels, decision-safe collisions, and a polynomial bound on labels attained by UNSAT residuals suffice for polynomial SAT. Branch, merge by exact labels, and return SAT if the frontier exceeds the proved UNSAT bound. A weaker per-root, per-level UNSAT width condition also suffices. Sound merging remains required on SAT roots. Full acquisition, root/context access, comparisons, restrictions, and single-tape simulation are charged. No all-input label procedure satisfying the hypotheses has been constructed here.
+
+The proper-3-CNF parity-cycle control is clause-minimal UNSAT on odd charge, admits every-clause near witnesses and one-variable-adjacent near witnesses, and still has a paid polynomial aggregation algorithm. Its observation packing changes from r to 1 to 0 as a global result is cached and then committed. Clause criticality and semantic erasure therefore do not establish recurrence.
+
+The two retained tasks are concrete:
+1. Construction and Discovery may seek a uniform decision-safe key with proved polynomial acquisition and a small UNSAT frontier. A valid positive result is welcome.
+2. Bounds and Redteam may seek successive actual opponent families that survive all prior paid work and exceed a fixed polynomial cap. Accounting must prove capacities and disjoint charges on that same execution; Synthesis should preserve the distinction between a snapshot certificate and its still-open recurrence premise.
+
+Executed evidence is in [the parity source](../../experiments/postpreprocessing_necessity_20261121/parity_cycle_audit.py), [its raw output](../../results/raw/postpreprocessing_necessity_20261121/parity_cycle_results.json), [the residual-certificate source](../../experiments/postpreprocessing_necessity_20261121/residual_certificate_audit.py), and [its raw output](../../results/raw/postpreprocessing_necessity_20261121/residual_certificate_results.json). The parity audit checked 248 formulas, 43,648 assignments, and 3,056 clause-critical witnesses. The exact-arithmetic accounting audit checked 127 finite hypergraphs, 254 LP pairs, 762 routes, 318,516 potential steps, 12,510 complete walks, and 12,033 disjoint two-phase walks. These are finite controls and do not prove either open universal premise.
+
+Existing roles, schedules, enabled states, manuscript ownership, and all earlier compatible directives remain unchanged.
+
+---
+
 ## Proved continuation: CHARGED-UNSAT-PREPAYMENT1
 
 Read the [new pointwise preprocessing tradeoff](../main/Charged_UNSAT_Preprocessing_Tradeoff_2026-11-21.md) before proposing a new dynamic charge. This is a model-scoped proved extension of the transport baseline, with internal adversarial review and explicit finite constants. It is not an unrestricted superpolynomial lower bound.
