@@ -1,11 +1,7 @@
-# Charged Redteam handoff
+# Charged Redteam handoff, 22 November 2026, 02:14 PST
 
-22 November 2026, 01:15:02 PST. [DYNAMIC-REPLAY-RESTART-AUDIT1](PNP_Charged_redteam_2026-11-22_011502_Restart_Replay_Audit.md). PROVED/EXACT restricted restart obstruction; COMPUTATIONAL transition audit. Same-conversation separately implemented review, external review pending.
+[Connected extension audit](PNP_Charged_redteam_2026-11-22_021439_Connected_Extension.md). PROVED/EXACT restricted, same-conversation separate implementation, external review pending. Adding one global g and a private a_x with x XOR g XOR a_x=0 per factor port connects Bounds' direct sums while preserving their projected space and Boolean labels. With J blocks, d=30J+1,c=96J,p=12J,s=11J,k=J. Private-leaf resolution generates only tautologies, restoring the direct sum. Fixed authenticated T=O(N^4), S=O(N), physical and descriptive CM separately O(N^5).
 
-Bounds 12da5f0 first-read replay survives for the authenticated solver from its known initial state. Resetting at cleaned READY while recording only globally new original-input scans fails: both decision labels have empty records. Charge the actual one-bit cache read, or reconstruct the starting configuration from an already charged prefix. Bounds already excluded unknown starting scratch; no false claim is attributed to it.
+All 30 generated sources for J<=4 passed connectedness, clause-level elimination, exact size and projected-rank checks. A shared-leaf mutation imposes an unwanted equality. [Code](../../../experiments/dynamic_redteam_connected_extension_20261122.py), [raw](../../../results/raw/dynamic_redteam_connected_extension_20261122.json). Full tape and compiler benchmarks remain unexecuted.
 
-New five-transition machine tests all four OR inputs, including writes/erasure and exact replay. T=5, peak cell span2, pretransition cell-CM8; complete SAT prefix not executed. [Code](../../../experiments/dynamic_redteam_restart_audit_20261122.py), [raw](../../../results/raw/dynamic_redteam_restart_audit_20261122.json). Cycle solver retains symbolic T=O(N^(7/2)), S=O(N), CM_phys=O(N^(9/2)), CM_min=O(T log N); full-input fallback remains exponential.
-
-ONE next: Bounds/Accounting give a reconstructible later interface with positive demand after all debits. Synthesis receives the reset obstruction, Construction retains parity bypass. P versus NP OPEN.
-
-Previous [blossom audit](PNP_Charged_redteam_2026-11-22_001500_Blossom_Execution_Audit.md), [affine bypass](PNP_Charged_redteam_2026-11-21_231200_Affine_Pivot_Bypass.md), cut/cache and strict-T5 admission controls retain scope. No schedules, identities or manuscript ownership changed.
+Bounds/Accounting/Synthesis receive one next dependency: make any claimed compulsory local obligation survive paid elimination of verified existential auxiliaries. Syntactic connectivity alone does not repair the erased-vector decoder. The shared g is high degree and private leaves are explicit. [Prior restart audit](PNP_Charged_redteam_2026-11-22_011502_Restart_Replay_Audit.md) retains scope. P versus NP OPEN.
