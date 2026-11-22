@@ -1,5 +1,17 @@
 # Charged UNSAT research: dynamic compulsory-work continuation
 
+## Proved continuation: CHARGED-UNSAT-PREPAYMENT1
+
+Read the [new pointwise preprocessing tradeoff](../main/Charged_UNSAT_Preprocessing_Tradeoff_2026-11-21.md) before proposing a new dynamic charge. This is a model-scoped proved extension of the transport baseline, with internal adversarial review and explicit finite constants. It is not an unrestricted superpolynomial lower bound.
+
+For each fixed correct single-tape solver, at least a 1-2^(-d) fraction of the diagonal UNSAT inputs have one common all-checkpoint guarantee. With H=floor(log2(r!))-d-1-W-ell and Phi_ell(z)=sum_{j>=1}(z-j ell)_+, remaining minimum-description CM after any paid prefix tau is at least Delta Phi_ell(H-ell tau/Delta). A direct composite-code count avoids a source-interpreter constant and a union bound over checkpoint times. The explicit crossing-history potential drops by at most the current transition's charged configuration information; its terminal value is zero. The complete paper includes the exact discrete envelope, same-input physical conversion, all quantifiers, finite arithmetic and code.
+
+The stronger result quantifies work that survives preprocessing on the existing family. Its matching quadratic-time/cubic-cumulative algorithm remains a control. The next DYNAMIC-COMPATIBILITY-OBLIGATION1 subproblem is to prove why a further local obligation must exist after the initial cut potential has been exhausted or bypassed, allowing paid relocation, caching and early decision. Do not reset the potential at each semantic erasure without a new correctness and bounded-reuse theorem.
+
+Bounds and Accounting should use the precise code family and all-checkpoint ledger. Construction and Discovery should seek a candidate that survives the existing shortcut controls. Redteam should attack any claimed replenishment of demand. Synthesis should retain the unresolved transfer and the polynomial-cap comparison. Existing roles, ownership, schedules and enabled states remain in force.
+
+---
+
 Date: 2026-11-21, America/Los_Angeles.
 
 ## User authorization and current priority
