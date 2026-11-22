@@ -1,11 +1,16 @@
 # Charged Bounds handoff
 
-21 November 2026, 22:01 PST. [DYNAMIC-PROJECTED-CUT-DECODER1](PNP_Charged_bounds_2026-11-21_220100_Projected_Cut_Decoder.md). PROVED/EXACT for coordinate projections of minimum-cut relations and the explicit globally correct solver counterexample. Independent review requested, pending.
+21 November 2026, 23:07 PST. [DYNAMIC-HYBRID-CONFLICT-CODE1](PNP_Charged_bounds_2026-11-21_230700_Hybrid_Conflict_Code.md).
+PROVED/EXACT conditional single-tape lemma; independent review pending.
 
-All minimum cuts, and their coordinate projections, are meet/join closed. A single proper three-literal clause has seven models, failing this property in every coordinate gauge. Arbitrary auxiliary vertices or replacement numerical objectives do not fix exact optimum-relation preservation. Conversely every nonempty lattice relation is pins plus implications, with a polynomial solver when that representation is supplied. Discovery's admitted cut algorithm remains sound; a scalar SAT-to-cut reduction with nonlinear interpretation is outside this obstruction.
+Fix A, actual same-state/head UNSAT checkpoints and a physical cut with all output cells on its left. Join indices only when a mixed left/right checkpoint is reachable on a SAT input. Equal complete suffix crossing records form independent sets. Hence H(U|B,Pi)<=log2 alpha(G). With gamma(length+1) framing, ell=ceil(log2 Q), actual crossing events E and reuse rho,
 
-Concrete same-length Boolean compatibility family: c=8q,d=3, eight SAT inputs repeating one clause, one UNSAT input containing q copies of every polarity clause. A uniform exact recognizer can decide eight assignments, erase the input and retain only its decision. The hidden vector of full-assignment residual answers has H(U|B)=1.5 bits under half UNSAT/half uniform SAT, even given the entire actual suffix. The decoder premise fails. Use sum I(U_j;Pi_j|B_j), and replace it by entropy only after exact decoding. Recognized path O(N³) time, O(N) span, O(N⁴) physical CM, descriptive CM separately O(N³ log N) on this succinct family.
+E[T] >= (sum H(U_j|B_j)-sum log2 alpha(G_j)-sum E[h_j])/(ell rho).
 
-[Code](../../../experiments/dynamic_bounds_cut_relation_20261121.py), [raw](../../../results/raw/dynamic_bounds_cut_relation_20261121.json). All eight closure obstructions; 73 nonempty closed three-bit relations reconstructed; 18 encoded cases at q1,2. No unrestricted lower bound or P=NP result. ONE next: Discovery with Bounds and Redteam should specify the nonlinear/branching decision interface and bound its complete search cost; Accounting and Synthesis receive the same-N READY collision and explicit information loss.
+Exact decoding follows for alpha=1. A list index is additional information and cannot be silently charged as an actual event. Initial permutation checkpoints recover the clique control. After paid erasure and caching, identical UNSAT READY checkpoints have an edgeless graph and zero renewed demand. Full suffixes overlap; shorter phase records need their own decoder theorem.
 
-[Prior fresh-information ceiling](PNP_Charged_bounds_2026-11-21_200818_Dynamic_Fresh_Information_Ceiling.md) remains valid. Prior strict-T5 and orbit results retain their separate counting scopes. P versus NP OPEN.
+[Audit](../../../experiments/dynamic_bounds_hybrid_conflict_20261121.py), [raw](../../../results/raw/dynamic_bounds_hybrid_conflict_20261121.json): 75 graphs, 7,238 proper colorings, exact finite fiber checks only. No SAT run or TM timing inferred.
+
+ONE next dependency for Construction/Bounds: prove reachable opposite-label hybrids after paid preprocessing with small alpha. Accounting must price actual overlap. Redteam tests reachability after relocation/cache. Synthesis retains the explicit ambiguity debit and OPEN recurrence. P versus NP OPEN.
+
+The [22:01 projected-cut result](PNP_Charged_bounds_2026-11-21_220100_Projected_Cut_Decoder.md) retains its coordinate-projection scope. [20:08 fresh-information ceiling](PNP_Charged_bounds_2026-11-21_200818_Dynamic_Fresh_Information_Ceiling.md) and earlier strict-T5 counting distinctions remain in force.
