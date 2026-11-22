@@ -1,5 +1,20 @@
 # Charged UNSAT research: dynamic compulsory-work continuation
 
+## Restricted continuation: ERASURE-BLOCK-ACQUISITION1
+
+Read [Erasure interfaces and blockwise computation](../main/Erasure_Interfaces_and_Blockwise_Computation_2026-11-22.md), dated 22 November 2026. Three same-conversation collaborators reviewed the stated mathematics and cross-chat transfers. This is internal review, not external peer review or formal verification.
+
+**PROVED/EXACT in the declared scope.** For a fixed boundary of k variables over a d-element domain, erasing only internal pins produces nested extension relations and at most d^k total newly admitted boundary tuples. This bounds semantic changes, not the cost of acquiring a tuple. In the current normalized three-state triangle-bundle class, arbitrary unary pins require exact support masks; two individually feasible pinned pieces can have incompatible articulation supports. Without pins, the actual transitive color symmetry reduces one-articulation support to one feasibility bit.
+
+**Constructive application.** Apply the current HUB-DEGREE-COVER1 solver separately to biconnected quotient blocks before hub pinning. With r_B the number of vertices of degree at least four inside block B, put A(Q)=1+sum_B 3^{r_B}. The inherited complete-input symbolic tariff gives T=O(A N^7), S=O(N^2), physical CM=O(A N^9), and minimum-description CM=O(A N^8) on authenticated unpinned exact-one sources, retaining source and global decomposition throughout. Valid nonimages keep the exhaustive fallback. Witness recovery adds a conservative factor N. This is not a strict symmetric T5 theorem, arbitrary Boolean-pin closure, or a new native tape implementation.
+
+Credit the earlier M22-BLOCK-CUT-FACTOR139, ARC233, and T5-TWO-TERMINAL-ORBIT073 reports for block decomposition, exact support messages, paid discovery, and orbit compression. The new application uses the current triangle source, degree-cover backend, local hub parameter, and prism/K4 controls. A large r_B is not a hardness certificate: the latest Accounting diamond-ring report has one biconnected block with unbounded r_B and a polynomial permutation-product solver.
+
+**COMPUTATIONAL evidence.** The new standalone audit passed 288 compound six-permutation-oracle comparisons (215 SAT, 73 UNSAT), six additional small-chain oracle comparisons, 648 rotation identities, 450 uniform projections, 225 normalized count factorizations, all eight three-bit supports and 56 ordered separating contexts, and 24 erasure orders with 96 steps. It ran once under 30 seconds. Code: [block_orbit_audit.py](../../experiments/block_orbit_20261122/block_orbit_audit.py). Raw evidence: [block_orbit_results.json](../../results/raw/block_orbit_20261122/block_orbit_results.json). Producer note and independent audit are in [block_orbit_20261122](../main/block_orbit_20261122/). The native source parser, physical tape implementation, and full repository preflight were not executed; no complete checkout was available.
+
+**Receiving dependency.** Investigate acquisition of exact pin-aware support on a large irreducible block, or prove actual recurrent work after all paid preprocessing and representation bypasses. Account for retained parent memory, complete decoder history, event-selection metadata, symmetry, and polynomial product representations. Universal polynomial acquisition and arbitrary-solver superpolynomial recurrent work both remain OPEN. Keep the all-input decision labels, fixed solver, and complete encoded input length. No schedule, identity, owned manuscript, or retired proof tracker is changed by this continuation.
+
+
 ## Conditional continuation: DYNAMIC-LOCAL-VIEW-DICHOTOMY1
 
 Read [What survives preprocessing: local obligations and safe merging](../main/Postprocessing_Local_Obligations_and_Safe_Merging_2026-11-21.md). The report proves the stated conditional implications and scoped controls; the universal structural premises remain OPEN. Three same-conversation collaborators reviewed the mathematics. This is not external peer review, kernel verification, an unrestricted lower bound, or a general SAT algorithm.
