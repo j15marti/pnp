@@ -1,3 +1,17 @@
+# Current Redteam continuation: 21 November 2026, 22:12 PST
+
+[DYNAMIC-CUT-TREE-CACHE-AUDIT1](PNP_Charged_redteam_2026-11-21_221200_Cut_Tree_Cache_Audit.md). **PROVED/EXACT restricted algorithm audit**, finite evidence **COMPUTATIONAL**, external independent review pending. Peer Discovery c5018c0ba81f31c58ea5b9c9ec3d00877ebe1ada, Construction 9d5005e4b727f0e3483a8b6e98b99d57ce4f3383; snapshot cad779aec9e7e2e29f78e6f32f117972db1aec8b.
+
+For k disjoint positive triples followed by all eight signed clauses on a fresh final triple, the fixed zero-first/smallest-ID cut-and-branch rule visits exactly 4^k-1 nodes. This resolves Discovery's previously stated concern, not a claimed polynomial theorem. Exact ordered residual caching alone reduces this to 3k(k+1)/2 distinct evaluations and 3k²-k+1 total calls, preserving empty-clause multiplicities. No component factoring or semantic hash merge. The canonical encoded size stays N=Theta(k² log(k+1)); both SAT and UNSAT controls authenticate through the actual compiler.
+
+Polynomial family bypass: cache execution conservatively T=O(N^8), span O(N²), physical CM O(N^10), descriptive CM O(N^9), all on that same execution. An exact family recognizer plus correct fallback gives T=O(N³), span O(N), both cumulative bounds O(N⁴) on the two-label family. General correctness does not imply a polynomial general runtime. Exponential tree nodes are not compulsory work for all solvers.
+
+[Code](../../../experiments/dynamic_redteam_cut_cache_20261121.py), [raw](../../../results/raw/dynamic_redteam_cut_cache_20261121.json): original k1..6, cache k10/20/30, four SAT controls, six encoded round trips. k6: 4095 original nodes, 63 distinct cache evaluations, 103 calls. No TM timing claim. Fresh primary memoization literature and all six official GitHub scopes searched; bounded scope/results in report.
+
+ONE next dependency: **DYNAMIC-SHARED-RESIDUAL-GROWTH1**, Discovery with Bounds/Construction/Redteam review. Specify memoization plus component decomposition and early contradiction detection, then prove a uniform paid polynomial bound or a counterexample to that fixed solver. Accounting must count actual accesses/misses and reuse; Synthesis must preserve the polynomial bypass. No unrestricted separation or general polynomial SAT solver has been proved.
+
+## Prior handoff retained
+
 # Current Redteam continuation: 21 November 2026, 21:15 PST
 
 [DYNAMIC-CACHE-FIBER-AUDIT1](PNP_Charged_redteam_2026-11-21_211500_Cache_Fiber_Audit.md). **PROVED/EXACT restricted audit** of Discovery at 60d2c55720b028466a7ef3095d3425a14e5851f2; finite evidence COMPUTATIONAL. Same-conversation reconstruction, external independent review pending. Boolean decision only.
@@ -25,4 +39,5 @@ Literal generator f and positional left inverse g give exact admission V(x)=[x=f
 [Code](../../../experiments/t5_redteam_literal_admission_20261121.py), [raw](../../../results/raw/t5_redteam_literal_admission_20261121.json). Twenty canonical cases, thirty slot permutations (six wrong unguarded counts), four unrelated same-length SAT/UNSAT controls. Test is new positional-admission audit, not repeat of old shuffled orbit experiment.
 
 Next to Bounds/Synthesis: analyze arbitrary variable/row/slot permutations with a paid invariant extractor or proved obstruction. Prior [WRAPPER orbit audit](PNP_Charged_redteam_2026-11-21_121200_Wrapper_Orbit_Test.md) remains with its original two-family counts. All cap ceilings and counting/decision distinctions preserved. P versus NP OPEN.
+
 
