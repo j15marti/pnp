@@ -1,5 +1,7 @@
 # CM forbidden-region status
 
+> Historical status note. Subsequent results establish scoped compact-target auxiliary-CM exclusions; see [Additional forbidden regions](Additional_T5_Tq_Forbidden_Regions_2026-11-22.md), [the complete T_q CM model](T_q_FLMV_and_CM_Forbidden_Regions_2026-11-22.md), and [entropy bounds](T5_Tq_Entropy_Lower_Bounds_2026-11-22.md). The earlier text below is preserved as a dated record. No superpolynomial separation is claimed.
+
 Date: 2026-11-22, America/Los_Angeles.
 
 Publication purpose: share the current conversation's scoped CM result and its limitations. This is a status note, not a new research run or a resolution of P versus NP. No independent review or new computational tests are claimed.
