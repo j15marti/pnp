@@ -1,0 +1,180 @@
+# Charged UNSAT research: dynamic compulsory-work continuation
+
+Date: 2026-11-21, America/Los_Angeles.
+
+## User authorization and current priority
+
+The user's latest instruction is: "Direct and activate agents to continue this work."
+
+This directive assigns the six existing PNP charged-research agents below to DYNAMIC-COMPATIBILITY-OBLIGATION1. It supersedes conflicting earlier topic priorities, including the primary assignments in the T5 resource-lower-bound directive. Compatible scientific safeguards, report ownership, publication rules, and the existing mathematical definitions remain in force.
+
+This request authorizes the coordinating assistant to resume these six existing automations and request one immediate run. Their existing hourly schedules, Pacific timezone, titles, identities, and ten-minute offsets are preserved. Other cohorts are outside this activation. Ordinary research runs preserve these settings and do not manage the scheduler.
+
+## Read first
+
+Read the [charged UNSAT transport report](../main/Charged_UNSAT_Transport_2026-11-21.md), including its model, ordered encoding, matching upper bound, static-method ceiling, and dynamic target. Recover the latest relevant peer reports and original evidence. Read AGENTS.md, CODEX.md, the repository PNP research skill, and the applicable definitions and scientific safeguards in the [T5 exhaustive handoff](../main/T5_Resource_Lower_Bounds_Exhaustive_Handoff_2026-11-21.md).
+
+The prior [T5 assignment directive](2026-11-21_T5_RESOURCE_LOWER_BOUNDS_AGENT_ASSIGNMENTS.md) remains useful for compatible reporting requirements and ownership, but the six primary tasks below take priority. Current peer coordination remains [issue 324](https://github.com/j15marti/pnp/issues/324); file-based handoffs remain authoritative when issue access fails.
+
+## Established baseline and its exact limitation
+
+CHARGED-UNSAT-TRANSPORT1 provides an explicit proper 3-CNF Boolean compatibility family with supplied local Horn and dual-Horn satisfying assignments at Hamming distance one. Every fixed correct solver in the stated deterministic single-tape model has UNSAT inputs in this family with, on the same execution,
+
+\[
+T=\Omega_A(N^2),\qquad CM_{\min}=\Omega_A(N^3),\qquad CM_{\mathrm{phys}}=\Omega_A(N^3).
+\]
+
+The constants and exceptional sets can depend on the fixed solver. This is an internally reviewed restricted theorem with its stated encoding and storage conventions, not an unrestricted superpolynomial SAT lower bound or an external/kernel certification.
+
+The family has a matching polynomial solver: authenticated multitape recognition takes O(N) time, and a faithful single-tape implementation takes O(N^2) time and O(N^3) cumulative cost. The static separated-input demand expressions are limited by \(\Delta h\le N^2/8\) and \(\Delta h^2\le N^3/27\). These are ceilings on that method's demand expressions, not universal runtime upper bounds.
+
+The last-release decision can be computed earlier and cached. Do not charge the same comparison again at every erasure without actual disjoint events or a proved overlap bound. Information counting does not show that an algorithm must count assignments.
+
+Keep this family as a calibration control. The present task concerns Boolean decision. The adjacent-witness compiler does not by itself establish the strict symmetric C or ordered R T5 counting claims.
+
+## Shared target: DYNAMIC-COMPATIBILITY-OBLIGATION1
+
+Find and prove, or falsify, a dynamic obligation that remains compulsory after the algorithm pays for preprocessing, joint computation, relocation, sharing, and caching.
+
+Fix the solver first, then establish hard inputs or a hard distribution. Specify decision-sensitive random variables \(U_j\), side information \(B_j\), conditionally prefix-free records \(\Pi_j\), actual machine event sets \(E_j\), per-event capacity \(b\), framing overhead \(h_j\), and maximum event reuse \(\rho\). A candidate accounting statement is
+
+\[
+H(U_j\mid B_j,\Pi_j)=0,\qquad
+|\Pi_j|\le b|E_j|+h_j,\qquad
+\mathbb E[T]\ge
+\frac{\sum_j H(U_j\mid B_j)-\sum_j\mathbb E[h_j]}{b\rho}.
+\]
+
+The entropy implication alone does not make its decoders or events compulsory. Prove those premises from correctness in the declared machine model. A solver is not required to answer virtual residual queries, use a selected proof system, or evaluate a preferred DAG. If full retained input makes the entropy vanish, a restriction on decoder access requires a separate justified and charged locality theorem.
+
+For a fixed cap \(T\le KN^a\), the numerator must exceed \(b\rho KN^a\) to contradict that cap. Under the handoff's stated conventions, maintain the separate ceilings \(S=O(N^a)\), \(CM_{\mathrm{phys}}=O(N^{2a})\), and \(CM_{\min}=O(N^{a+1})\). Keep constants, encodings, reduction overhead, and the same realization explicit. Excluding one exponent does not exclude every polynomial exponent.
+
+## Roster and separate assignments
+
+| Agent | Existing hourly Pacific offset | Report namespace |
+|---|---|---|
+| PNP Lower Bound Connections | :00 | research/agents/charged-bounds/ |
+| PNP Independent Counterexamples | :10 | research/agents/charged-redteam/ |
+| PNP Charged Proof Synthesis | :20 | research/agents/charged-synthesis/ |
+| PNP Charged Construction | :30 | research/agents/charged-construction/ |
+| PNP Charged Accounting | :40 | research/agents/charged-accounting/ |
+| PNP Proof Discovery | :50 | research/agents/charged-discovery/ |
+
+### 1. PNP Lower Bound Connections
+
+Automation ID: Automation_9baad3be82688191a8396c216f1f0449.
+
+**Named target:** DYNAMIC-COMPATIBILITY-OBLIGATION1: compulsory decoding.
+
+**Task:** Formulate and prove a dynamic obligation theorem extending the static crossing argument. Specify the exact machine model, obligations U_j, decoder side information B_j, conditionally prefix-free records Pi_j, actual charged event sets E_j, per-event capacity b, and maximum reuse rho. Determine which obligations follow from decision correctness after paid joint preprocessing and relocation. Work on one concrete candidate from Construction; if none is ready, prove or refute one precisely stated compulsory-decoding implication. Define obligations independently of the desired lower bound.
+
+**Acceptance:** A fully quantified proved restricted lemma, proved conditional implication with each open premise identified, or explicit counterexample. The decoder's information restrictions must follow from the declared machine model, and the obligation must concern an actual decision execution.
+
+**Falsifiers:** If the decoder receives the retained source or complete configuration freely, the entropy demand can vanish. Prove and charge any locality restriction. Reject virtual residual services, correctness restricted to an all-UNSAT promise, and any circular definition that makes compulsory decoding equivalent to the desired hardness assumption.
+
+**Handoff:** Send the exact decoder and compulsory-obligation statement to Accounting and the explicit falsification target to Redteam.
+
+### 2. PNP Independent Counterexamples
+
+Automation ID: Automation_382e669164348191b06ff9727f7928b0.
+
+**Named target:** DYNAMIC-COMPATIBILITY-OBLIGATION1: preprocessing and caching counterexamples.
+
+**Task:** Independently reconstruct the strongest new candidate dynamic family or obligation at a specific peer revision. Attack it with paid global preprocessing: copy and relocate the input, jointly compare or sort records, exploit algebra, retain intermediate results, and cache the decision. Seek a globally correct solver with an authenticated fast path and a correct fallback that defeats the proposed repeated-work claim.
+
+**Acceptance:** An explicit legal bypass with end-to-end T, peak storage, and applicable cumulative costs; or a narrowly scoped independent audit identifying the first genuinely unresolved premise. Distinguish a false claim from an unproved compulsory-execution argument.
+
+**Falsifiers:** Test repeated residual questions answered by one cached fact, syntactic stages mistaken for execution stages, an all-UNSAT promise, and online or streaming restrictions silently imposed on an unrestricted offline solver. Preserve relocation, affine/Tseitin, complement, forced-domain and shared-computation controls where relevant.
+
+**Handoff:** Return the smallest corrected statement and reproducible evidence to the originating role, Accounting, and Synthesis.
+
+### 3. PNP Charged Proof Synthesis
+
+Automation ID: Automation_f44e5d5c41a88191a516420e94441fb2.
+
+**Named target:** DYNAMIC-COMPATIBILITY-OBLIGATION1: dependency and cap integration.
+
+**Task:** Maintain the dependency structure connecting candidate constructions, compulsory obligations, actual decoders, event reuse, same-execution accounting, and fixed polynomial-cap comparisons. Reconcile the newest five peer reports, choose one strongest candidate, and work on its first unresolved implication. Keep the current permutation family as a calibrated polynomial control.
+
+**Acceptance:** An integration note giving exact model and encoding, established statements, conditional premises, rejected claims, source revisions, and one next mathematical task with an owner. Every composed theorem must preserve quantifier order, decision scope, and reduction costs. Seek independent adversarial review before promoting a substantial claim.
+
+**Falsifiers:** Reject circular dependence between necessity of the obligations and the hardness conclusion; mixing incompatible machine models; combining costs from different inputs or runs; and presenting a chain of conditional claims as an unconditional separation.
+
+**Handoff:** Give each role a concrete receiving dependency through the existing file-based handoffs and coordination issue. Ordinary research runs do not alter schedules or activate additional agents.
+
+### 4. PNP Charged Construction
+
+Automation ID: Automation_7bc6df2275ec8191889774f78f0b351f.
+
+**Named target:** DYNAMIC-COMPATIBILITY-OBLIGATION1: compact decision-sensitive families.
+
+**Task:** Develop one compact family with a proposed dynamic compatibility mechanism that goes beyond static map equality. Prove both SAT and UNSAT semantics. Where useful, preserve proper 3-CNF and adjacent local Horn/dual-Horn witnesses using the established compiler, but re-derive the physical input layout and encoded length. Supply an explicit generator, all parameter growth, reduction costs, a correct known upper bound, and the exact candidate compulsory obligation.
+
+**Acceptance:** A proved construction with both-label decision equivalence and a complete n, m, N ledger, plus a precisely stated downstream obligation; or a legal counterexample showing the proposed family collapses to a cheap scalar procedure. A completeness reduction or correct compiler alone is not a lower bound.
+
+**Falsifiers:** Reject exponential truth-table material hidden in a compact parameter, clause order treated as mandatory processing order, staged equalities that collapse to one comparison, and unverified layout preservation through the adjacent-witness compiler. Distinguish the current Boolean family from strict T5 exact-counting claims.
+
+**Handoff:** Send one explicit family and candidate obligation to Bounds, Accounting, and Redteam. Preserve easy variants as controls rather than repeating their tests.
+
+### 5. PNP Charged Accounting
+
+Automation ID: Automation_26237ca36b588191baa9dd71437bb92f.
+
+**Named target:** DYNAMIC-COMPATIBILITY-OBLIGATION1: actual-event ledger.
+
+**Task:** Instantiate the dynamic obligation theorem on the strongest concrete candidate using actual event sets on one execution. Include input retention, copies, caches, relocation, recomputation, source and address access, initialization, framing and length metadata, and output. Prove the decoder and event-reuse claims rather than assuming them. Separate bounds on physical storage from minimum-description information.
+
+**Acceptance:** A proved bound E[T] >= (sum_j H(U_j|B_j) - sum_j E[h_j])/(b rho), or an explicitly justified alternative, with concrete event membership, conditionally prefix-free records, capacity b, overhead h_j, and reuse rho. For fixed T <= K N^a, compare the actual demand to b rho K N^a and to the appropriate same-execution cumulative-cost ceilings.
+
+**Falsifiers:** Reject charging a transition repeatedly without raising rho, multiplying unrelated time and space maxima, assuming linear space from polynomial time, free retained source or free addresses, and recounting the same information merely because it appears in another residual description.
+
+**Handoff:** Return the exact ledger and its first open premise to Bounds and Synthesis; send a concrete bypass target to Redteam.
+
+### 6. PNP Proof Discovery
+
+Automation ID: Automation_936930946a1c8191bf95ce5046542aa5.
+
+**Named target:** DYNAMIC-COMPATIBILITY-OBLIGATION1: transferable lower-bound mechanisms.
+
+**Task:** Conduct a bounded primary-source search for dynamic information or recomputation lower bounds that establish compulsory work for a decision algorithm after initial input transport. Prioritize time-space tradeoffs, local computation, recomputation, information transfer, and the exact preprocessing or cache assumptions. Select one promising transfer and attempt a precise theorem application or falsification.
+
+**Acceptance:** Return at most three directly relevant primary results with exact hypotheses and conclusions, then advance or falsify one transfer to the offline SAT task. Identify the missing compulsory-execution theorem explicitly. A rigorous negative transfer or a proved restricted result is useful.
+
+**Falsifiers:** Reject importing pebbling without proving every solver respects the chosen computation graph; importing online lower bounds into an offline problem; and treating circuit evaluation, proof construction, model counting, or witness enumeration as mandatory for decision.
+
+**Handoff:** Send the best verified transfer statement, or its smallest obstruction, to Bounds, Construction, and Synthesis.
+
+
+## Working and reporting rules
+
+Advance or falsify one named dependency each run. Return a concrete theorem, construction, counterexample, or transfer audit rather than an unbounded survey. Record exact quantifiers, a fixed solver, input class, machine model, encoding, status, 2-4 concrete falsifiers, complete cost ledger, and one next dependency.
+
+Use KNOWN THEOREM, PROVED/EXACT, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, or FALSIFIED/RETIRED with scope and review status. Separate a proved restricted result, a conditional transfer, and an unresolved unrestricted claim. A correct reduction or finite verification is not an asymptotic lower bound.
+
+Preserve the four gates: DISJ/equality sanity, relativization scope, simultaneous DTISP accounting, and faithful deterministic-configuration reasoning. Apply other existing barriers and easy-family controls when relevant. Charge source authentication, discovery, failed candidates, all accesses and queries, addresses, conversions, adaptive switching, copies, caches, storage retention, recomputation, framing, output and verification. Prove a partition or bounded-overlap lemma before combining demands.
+
+Each run performs fresh task-specific primary literature searches and relevant official GitHub searches covering Anthropic, OpenAI, xAI, Google Research and Google DeepMind, with Google OR-Tools where applicable. Verify official ownership and exact theorem hypotheses. Record queries, primary links, inspected revisions, applicability, access failures, and the result of the proof attempt. Keep this research bounded so a named mathematical dependency advances during the same run.
+
+Use the role's own research/agents/charged-<role>/ namespace, timestamped PNP_Charged_<role>_ report, and compact handoff.md. Preserve historical TMR manuscript ownership and retired proof trackers. Keep code and immutable raw evidence separate. Each Python stage should finish within about 30 seconds. Do not rerun completed experiments without a concrete new reason.
+
+Recover complete current files and SHAs before overwriting; preserve concurrent work with current-head leases and exact readback. If an overwrite is blocked, publish a separate pending report and continue independent work. Ordinary research runs do not alter automations. P versus NP remains OPEN.
+
+## First cycle dependencies
+
+Construction supplies one explicit candidate and the proposed obligation. Bounds examines whether the decoder or obligation follows from decision correctness. Accounting establishes actual events, capacity, overhead, and overlap on that candidate. Redteam attacks the same candidate with a globally correct cached or preprocessed bypass. Discovery contributes one exact transferable theorem or a rigorous obstruction. Synthesis records the strongest surviving implication and its first open premise.
+
+A role can begin by auditing the current baseline or a recent peer candidate if its new dependency has not arrived. Do not wait idly, repeat a completed experiment, or invent peer results.
+
+## Published evidence and provenance
+
+- [Transport report](../main/Charged_UNSAT_Transport_2026-11-21.md).
+- [Complete audit script](../../experiments/charged_unsat_transport_20261121/charged_unsat_transport_audit.py).
+- [Immutable raw audit results](../../results/raw/charged_unsat_transport_20261121/charged_unsat_transport_results.json).
+
+Original report SHA-256: 154970e4b1cd35c318f99d2a93ee76cece328d4dcae90144178d9c29da43a27c.
+Code SHA-256: 98b46a013cabc3f969bcf58c08da2b1fd6937a26e1b46e75a06318e03d34d4f4.
+Raw-results SHA-256: 6a69225a6c95b9f1a35123fec8f7b9b66223c4d6778316b7f7b851be827c23c2.
+
+The repository report adds a publication provenance note and adjusts companion-file links. Its mathematical text and stated review status are preserved. The audit results record the already completed experiment; this coordination update does not claim an additional execution or a new proof.
+
+Publication and agent activation change research instructions, not mathematical proof status.

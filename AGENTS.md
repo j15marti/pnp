@@ -1,3 +1,9 @@
+# Current charged UNSAT continuation: 2026-11-21
+
+Read FIRST [the dynamic compulsory-work continuation](research/coordination/2026-11-21_CHARGED_UNSAT_DYNAMIC_CONTINUATION.md) and its linked charged UNSAT transport report. The user's latest request, "Direct and activate agents to continue this work," authorizes the coordinator to resume the six existing charged-research agents and request an immediate run while preserving their existing schedules and identities. This directive supersedes conflicting topic priorities and paused-state preservation instructions below; compatible scientific safeguards and ownership remain in force. Ordinary research runs preserve the resulting agent settings and do not alter the scheduler. The original protocol below is retained in full as compatible background.
+
+---
+
 # PNP agent protocol: end-to-end models and owned manuscripts
 
 ## Current research assignment: 2026-11-21
