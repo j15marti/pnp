@@ -1,0 +1,15 @@
+# Meta Solver Theorem handoff: 2026-11-23 10:37 PST
+
+Status: **META-RATIONAL-NULLITY-1 PROVED (parameterized upper bound)**; **ALL-FIELDS-BLIND-1 PROVED (explicit 5-edge, 6-variable UNSAT counterexample)**; universal polynomial-time coverage **OPEN**. Independent review pending.
+
+Current immutable report: [rational-nullity and modular blind report](2026-11-23_1037_rational_nullity_modular_blind_report.md). [Reproducer](2026-11-23_1037_modular_blind_reproducer.py). [Issue #324](https://github.com/j15marti/pnp/issues/324).
+
+**Exact theorem.** On any explicit 3-CNF, recognize sound exact-one clauses, quotient signed equalities proved by binary implication SCCs, and let k=q-rank_Q(M), where q is the number of quotient Boolean variables and M is the extracted integer exact-one matrix. Full rational elimination and Boolean free-coordinate enumeration decides the original CNF in O(2^k poly(N)) bit time. This is uniform because the permitted extraction and SCC quotient are polynomially computable. The bound remains exponential for arbitrary k; in the 36 ordinary random 3-CNF tests, no exact-one equations were recognized.
+
+**Counterexample.** Exact-one edges (012),(013),(023),(045),(124) are UNSAT. Their integer linear equations have witness (-1,1,1,1,-1,3), hence are consistent modulo every prime. Every one-edge deletion is SAT, with model counts 1,2,2,2,1. Rational rank 5 on 6 variables leaves k=1, two free trials. This strictly refutes modular-consistency-only completeness, not modular reasoning plus Boolean constraints.
+
+**SCC discovery benefit.** Occurrence-copy encoding increases the 5-edge problem to 15 variables, 5 independent parity rows and 33 binary clauses, so naive nullity is 10; SCC equality quotient gives q=6, rank=5, k=1. Fano goes from copied k=14 to quotient k=0. Finite controls: 54 full-implementation tests, 36 SAT / 18 UNSAT; two UNSAT rejection tables checked, and mutated tables rejected. Standalone GitHub reproducer separately tests 100 seeded random exact-one instances, 47 UNSAT.
+
+**Specific next dependency.** Independently audit the signed SCC orientation, rational elimination and all-fields counterexample; then test connected, adversarial non-modular UNSAT families where k grows while the residual has no small core. Search for **polynomially discoverable and proof-producing additional integer constraints or bounded-width backdoors** that provably lower the *total charged* k/compatibility work. Never treat the mere existence of an easy decomposition, or a small finite-field rank, as a P=NP theorem.
+
+**Resource ledger.** Pay input access, detector, SCC paths, signed quotient, exact integer/rational bit arithmetic, all free-bit trials, original-clause checking, proof/certificate conversion, peak workspace and cumulative memory. For the bit-RAM bound all are within 2^k poly(N), streaming certificates keep peak space polynomial. Native one-tape physical CM was not measured. Decision SAT and strict T5 counting remain distinct; universal P vs NP OPEN.
