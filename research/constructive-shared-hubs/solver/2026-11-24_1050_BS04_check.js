@@ -1,8 +1,9 @@
-function BS04(){
+function BS04(input){
   "use strict";
+  input=input??null;
   const A=(v,m)=>{if(!v)throw Error(m||"assertion");};
   const C={closureScans:0,rowTests:0,deletions:0,basisReductions:0,basisXors:0,components:0,localEdges:0,globalEdges:0,localStates:0,globalStates:0,peakLayer:0,flowCalls:0,flowEdgeVisits:0,flowMatchingCalls:0,countGroups:0,countAlternatives:0,affineCalls:0,wheelChecks:0,verifiedRows:0,referenceLeaves:0};
-  let seed=204110; const rnd=n=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed%n;};
+  let seed=204110; const rnd=n=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return Math.floor(seed/4294967296*n);};
   const xor=xs=>xs.reduce((a,b)=>a^b,0n), zero=n=>Array(n).fill(0n), add=(a,b)=>a.map((x,i)=>x+b[i]), sub=(a,b)=>a.map((x,i)=>x-b[i]), fits=(a,b)=>a.every((x,i)=>x<=b[i]), same=(a,b)=>a.every((x,i)=>x===b[i]), min=(a,b)=>a<b?a:b;
   const high=x=>x.toString(2).length-1;
   function basis(){
@@ -16,7 +17,7 @@ function BS04(){
   function verified(F,K,b,h,w){if(w===null)return false;A(w.length===F.length,"witness length");let c=zero(K.length),t=0n,g=0n;for(let i=0;i<F.length;i++){const r=F[i].find(r=>r.id===w[i]);A(r,"row missing");c=add(c,r.c);t^=r.t;g^=r.g;C.verifiedRows++;}A(fits(c,K)&&t===b&&g===h,"invalid witness");return true;}
   function closure(F,K,b,h,q){
     F=F.map(f=>f.slice());if(K.some(x=>x<0n))return null;
-    const packed=r=>(r.t<<BigInt(q))|r.g, target=(b<<BigInt(q))|h;
+    const packed=r=>h===null?r.t:(r.t<<BigInt(q))|r.g, target=h===null?b:(b<<BigInt(q))|h;
     while(true){
       C.closureScans++;if(F.some(f=>!f.length))return null;
       const minima=F.map(f=>K.map((_,j)=>f.reduce((v,r)=>min(v,r.c[j]),f[0].c[j])));
@@ -34,7 +35,7 @@ function BS04(){
     }
   }
   function normalize(F,K,b,h){
-    let cap=K.slice(),bt=b,gh=h;
+    let cap=K.slice(),bt=b,gh=h??0n;
     const G=F.map(f=>{const a=f[0],m=K.map((_,j)=>f.reduce((v,r)=>min(v,r.c[j]),a.c[j]));cap=sub(cap,m);bt^=a.t;gh^=a.g;return f.map(r=>({...r,t:r.t^a.t,g:r.g^a.g,c:sub(r.c,m)}));});
     return {G,cap,bt,gh};
   }
@@ -95,12 +96,12 @@ function BS04(){
     return [...out.values()];
   }
   function solve(F,K,b=0n,h=0n,q=0,publicOwners=[]){
-    const P=closure(F,K,b,h,q);if(P===null)return null;
+    const P=closure(F,K,b,h,q);if(P===null)return h===null?{}:null;
     const {G,cap,bt,gh}=normalize(P,K,b,h),pub=new Set(publicOwners);
-    const groups=partition(G,cap,bt,pub);if(groups===null)return null;
+    const groups=partition(G,cap,bt,pub);if(groups===null)return h===null?{}:null;
     let D=new Map([["0",{g:0n,c:zero(cap.length),w:[]}]]);
-    for(const group of groups){const ps=profiles(G,group,cap,pub),E=new Map();for(const x of D.values())for(const y of ps){C.globalEdges++;const g=x.g^y.g,c=add(x.c,y.c);if(!fits(c,cap))continue;const k=key(0n,g,c);if(!E.has(k)){E.set(k,{g,c,w:x.w.concat(y.w)});C.globalStates++;}}D=E;C.peakLayer=Math.max(C.peakLayer,D.size);if(!D.size)return null;}
-    const hit=[...D.values()].find(z=>z.g===gh);if(!hit)return null;const w=Array(F.length);for(const [i,id] of hit.w)w[i]=id;verified(F,K,b,h,w);return w;
+    for(const group of groups){const ps=profiles(G,group,cap,pub),E=new Map();for(const x of D.values())for(const y of ps){C.globalEdges++;const g=x.g^y.g,c=add(x.c,y.c);if(!fits(c,cap))continue;const k=key(0n,g,c);if(!E.has(k)){E.set(k,{g,c,w:x.w.concat(y.w)});C.globalStates++;}}D=E;C.peakLayer=Math.max(C.peakLayer,D.size);if(!D.size)return h===null?{}:null;}
+    if(h===null){const out={};for(const z of D.values()){const actual=z.g^gh,k=actual.toString();if(Object.hasOwn(out,k))continue;const w=Array(F.length);for(const [i,id] of z.w)w[i]=id;verified(F,K,b,actual,w);out[k]=w;}return out;}const hit=[...D.values()].find(z=>z.g===gh);if(!hit)return null;const w=Array(F.length);for(const [i,id] of hit.w)w[i]=id;verified(F,K,b,h,w);return w;
   }
   function brute(F,K,b,h){let w=[];function rec(i,c,t,g){if(!fits(c,K))return null;if(i===F.length){C.referenceLeaves++;return t===b&&g===h?w.slice():null;}for(const r of F[i]){w.push(r.id);const z=rec(i+1,add(c,r.c),t^r.t,g^r.g);w.pop();if(z!==null)return z;}return null;}return rec(0,zero(K.length),0n,0n);}
   function cnf(n,clauses,cap){const K=clauses.map((c,i)=>BigInt(cap?cap[i]:c.length-1));const F=Array.from({length:n},(_,i)=>[0,1].map(x=>row(0,0,clauses.map(c=>c.filter(l=>Math.abs(l)===i+1&&((l>0?x:1-x)===0)).length),x)));return {F,K};}
@@ -119,10 +120,26 @@ function BS04(){
     const roots=Array.from({length:n},(_,i)=>i).filter(i=>!privateR.has(i)&&!ports.has(i));const ix=new Map(roots.map((x,i)=>[x,i]));const out=kept.map(([u,v,s])=>[ix.get(u),ix.get(v),s]);
     return {roots,edges:out,lift(w){const x=Array(n);roots.forEach((r,i)=>x[r]=w[i]);for(const {h,b,rim,a} of gs){x[b]=x[h]^a;const colors=[0,1,2,3].filter(c=>c!==x[h]);rim.forEach((r,i)=>x[r]=colors[i]);}for(const [u,v,s] of es){C.wheelChecks++;A((x[u]^x[v])!==s,"wheel lift");}return x;}};
   }
-  let random={sat:0,unsat:0};for(let z=0;z<240;z++){const n=1+rnd(6),m=rnd(4),q=2,K=Array.from({length:m},()=>BigInt(rnd(8))),F=Array.from({length:n},()=>Array.from({length:1+rnd(4)},(_,i)=>row(rnd(8),rnd(4),Array.from({length:m},()=>rnd(3)),i))),b=BigInt(rnd(8)),h=BigInt(rnd(4)),pub=Array.from({length:m},(_,i)=>i).filter(()=>rnd(2));const a=solve(F,K,b,h,q,pub),r=brute(F,K,b,h);A((a!==null)===(r!==null),"random mismatch "+z);random[a===null?"unsat":"sat"]++;}
+  // User-facing JSON input. All numeric costs/tags may be decimal strings.
+  if(input!==null){
+    const q=input.q??0; A(Number.isSafeInteger(q)&&q>=0,"q");
+    let F,K; if(input.cnf!==undefined){
+      const {n,clauses}=input.cnf; A(Number.isSafeInteger(n)&&n>=0&&Array.isArray(clauses),"CNF");
+      A(clauses.every(c=>Array.isArray(c)&&c.length<=3&&c.every(l=>Number.isSafeInteger(l)&&l!==0&&Math.abs(l)<=n)),"CNF literals");
+      ({F,K}=cnf(n,clauses));
+    }else{
+      K=input.K.map(BigInt);
+      F=input.factors.map(f=>f.map((r,i)=>row(r.t??0,r.g??0,r.c??zero(K.length),i)));
+    }
+    A(F.every(f=>f.every(r=>r.t>=0n&&r.g>=0n&&r.g<(1n<<BigInt(q))&&r.c.length===K.length&&r.c.every(c=>c>=0n))),"row schema");
+    const b=BigInt(input.b??0),h=input.allGuards?null:BigInt(input.h??0),pub=input.publicOwners??[];
+    A(b>=0n&&(h===null||(h>=0n&&h<(1n<<BigInt(q))))&&pub.every(o=>Number.isSafeInteger(o)&&o>=0&&o<K.length),"target schema");
+    const result=solve(F,K,b,h,q,pub);return {result,counters:C};
+  }
+  let random={sat:0,unsat:0,allGuardComparisons:0};for(let z=0;z<240;z++){const n=1+rnd(6),m=rnd(4),q=2,K=Array.from({length:m},()=>BigInt(rnd(8))),F=Array.from({length:n},()=>Array.from({length:1+rnd(4)},(_,i)=>row(rnd(8),rnd(4),Array.from({length:m},()=>rnd(3)),i))),b0=BigInt(rnd(8)),h0=BigInt(rnd(4)),pub=Array.from({length:m},(_,i)=>i).filter(()=>rnd(2));let b=b0,h=h0;if(z%2===0){let c=zero(m);b=0n;h=0n;for(const f of F){const r=f[rnd(f.length)];b^=r.t;h^=r.g;c=add(c,r.c);}for(let j=0;j<m;j++)K[j]=c[j]+BigInt(rnd(3));}const a=solve(F,K,b,h,q,pub),r=brute(F,K,b,h);A((a!==null)===(r!==null),"random mismatch "+z);random[a===null?"unsat":"sat"]++;if(z<80){const all=solve(F,K,b,null,q,pub);for(let g=0;g<4;g++){const truth=brute(F,K,b,BigInt(g));A(Object.hasOwn(all,String(g))===(truth!==null),"all guards mismatch");random.allGuardComparisons++;}}}
   // Every subformula of the complete 3-cube.
   const cube=Array.from({length:8},(_,w)=>[1,2,3].map((i,j)=>w>>j&1?i:-i));let cubeCounts={sat:0,unsat:0};
-  for(let mask=0;mask<256;mask++){const cls=cube.filter((_,i)=>mask>>i&1),{F,K}=cnf(3,cls),w=solve(F,K),r=brute(F,K,0n,0n);A((w!==null)===(r!==null),"cube");cubeCounts[w===null?"unsat":"sat"]++;}
+  for(let mask=0;mask<256;mask++){const cls=cube.filter((_,i)=>mask>>i&1),{F,K}=cnf(3,cls),w=solve(F,K),r=brute(F,K,0n,0n);A((w!==null)===(r!==null),"cube");const direct=Array.from({length:8},(_,x)=>x).some(x=>cls.every(c=>c.some(l=>Boolean(x>>(Math.abs(l)-1)&1)===(l>0))));A((w!==null)===direct,"direct source cube");cubeCounts[w===null?"unsat":"sat"]++;}
   const lines=[[1,2,3],[1,4,5],[1,6,7],[2,4,6],[2,5,7],[3,4,7],[3,5,6]],fano=lines.flatMap(c=>[c,c.map(x=>-x)]),fanoResults=[];
   for(let r=-1;r<14;r++){const cap=fano.map((_,i)=>i===r?3:2),{F,K}=cnf(7,fano,cap),w=solve(F,K),ref=brute(F,K,0n,0n);A((w!==null)===(r>=0)&&(w!==null)===(ref!==null),"fano");let models=0;for(let s=0;s<128;s++)if(fano.every((c,i)=>c.filter(l=>((s>>(Math.abs(l)-1))&1)!==Number(l<0)).length>=3-cap[i]))models++;A(models===(r<0?0:5),"fano count");fanoResults.push({relaxed:r,models,sat:w!==null});}
   // Exact shifted-wheel projection for every offset and ordered boundary pair.
@@ -136,8 +153,8 @@ function BS04(){
     const v=j=>((1n<<BigInt(j+1))-1n); // invertible triangular dense basis
     const F=[];let target=0n;
     for(let copy=0;copy<2;copy++)for(let j=0;j<k;j++){const a=v(2*j),b=v(2*j+1);F.push([0,1,2,3].map(x=>row((x&1?a:0n)^(x&2?b:0n),x===0?1:0,[],x)));if(copy===0)target^=a;}
-    const before={...C};for(const h of [0n,1n])A(solve(F,[],target,h,1)!==null,"guard reset SAT");A(solve(F,[],0n,1n,1)===null,"guard reset UNSAT target zero");
-    scales.push({pairs:k,ambientBaseRank:2*k,oldGuardedCutAffineCapacity:(1n<<BigInt(2*k+1)).toString(),componentCountThreeQueries:C.components-before.components,localEdges:C.localEdges-before.localEdges,globalEdges:C.globalEdges-before.globalEdges});
+    const before={...C};const all=solve(F,[],target,null,1);A(Object.hasOwn(all,"0")&&Object.hasOwn(all,"1"),"guard reset SAT");const hostile=solve(F,[],0n,null,1);A(Object.hasOwn(hostile,"0")&&!Object.hasOwn(hostile,"1"),"guard reset UNSAT target zero");
+    scales.push({pairs:k,ambientBaseRank:2*k,oldGuardedCutAffineCapacity:(1n<<BigInt(2*k+1)).toString(),componentCountTwoAllGuardRuns:C.components-before.components,localEdges:C.localEdges-before.localEdges,globalEdges:C.globalEdges-before.globalEdges});
   }
   // Flow / matching / affine / shared owner guard and count controls.
   const terminal=[];
@@ -152,4 +169,5 @@ function BS04(){
   for(const h of [0n,1n])A((solve(countF,[24n,24n],0n,h,1,[0,1])!==null)===(h===0n),"public count guard");
   return {seed:204110,random,cubeCounts,fanoResults,graph,scales,terminal,counters:C,assertionFailures:0,limitations:"Finite controls, not general BS03 blossom, no strict E4/B4 source compiler, no full integrated closure; peakLayer is maximum individual map size, not peak memory."};
 }
-console.log(JSON.stringify(BS04(),null,2));
+if(typeof module!=="undefined")module.exports=BS04;
+if(typeof require!=="undefined"&&require.main===module){const fs=require("fs");const arg=process.argv[2];console.log(JSON.stringify(BS04(arg?JSON.parse(fs.readFileSync(arg,"utf8")):null),null,2));}
