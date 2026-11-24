@@ -1,0 +1,33 @@
+'use strict';
+function run(){
+const stats={cases:0,sat:0,unsat:0,bruteTuples:0,deleted:0,joins:0,groups:0,butterflies:0,naiveCandidates:0,convolutionSlots:0,witnesses:0,scaling:[],fano:[]};
+let seed=2080745;const rand=n=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed%n};
+const parity=x=>{let p=0;while(x){x&=x-1;p^=1}return p};
+function solve(eq,d){let rows=eq.map(x=>x.slice()),r=0,piv=[];for(let j=0;j<d;j++){let k=rows.findIndex((x,i)=>i>=r&&((x[0]>>>j)&1));if(k<0)continue;[rows[r],rows[k]]=[rows[k],rows[r]];for(let i=0;i<rows.length;i++)if(i!==r&&((rows[i][0]>>>j)&1)){rows[i][0]^=rows[r][0];rows[i][1]^=rows[r][1]}piv.push(j);r++}if(rows.some(x=>!x[0]&&x[1]))return null;let p=0;for(let i=0;i<r;i++)if(rows[i][1])p|=1<<piv[i];let basis=[];for(let j=0;j<d;j++)if(!piv.includes(j)){let v=1<<j;for(let i=0;i<r;i++)if((rows[i][0]>>>j)&1)v|=1<<piv[i];basis.push(v)}return {p,basis}}
+function basis(vs,d){let b=Array(d).fill(0);for(let v of vs){for(let j=d-1;j>=0;j--)if((v>>>j)&1){if(b[j])v^=b[j];else{b[j]=v;break}}}return b.filter(Boolean).reverse()}
+function span(b){let s=[0];for(const v of b)s=s.concat(s.map(x=>x^v));return s}
+function reduce(v,b){for(const x of b)if(v> (v^x))v^=x;return v}
+function aff(rs,d){let p=rs.reduce((a,r)=>a^r[0].tag,0),b=basis(rs.flatMap(r=>r.map(x=>x.tag^r[0].tag)),d);return {p,b,eq:solve(b.map(x=>[x,0]),d).basis.map(x=>[x,parity(x&p)])}}
+const shifted=(a,t)=>a.eq.map(([x,v])=>[x,v^parity(x&t)]);
+function close(rows,t,d){let changed=true;while(changed){changed=false;for(let i=0;i<rows.length;i++){if(!rows[i].length)return false;let a=aff(rows.filter((_,j)=>j!==i),d);let old=rows[i].length;rows[i]=rows[i].filter(r=>a.eq.every(([x,v])=>parity(x&(t^r.tag))===v));if(rows[i].length<old){stats.deleted+=old-rows[i].length;changed=true;if(!rows[i].length)return false;break}}}return true}
+function fw(a){for(let h=1;h<a.length;h*=2)for(let i=0;i<a.length;i+=2*h)for(let j=i;j<i+h;j++){let x=a[j],y=a[j+h];a[j]=x+y;a[j+h]=x-y;stats.butterflies++}}
+function tree(ids){if(ids.length===1)return {ids};let h=Math.floor(ids.length/2);return {ids,L:tree(ids.slice(0,h)),R:tree(ids.slice(h))}}
+function evaluate(input,t,d,root){let rows=input.map(r=>r.slice());if(!close(rows,t,d))return {count:0n,witness:null};function visit(n){let A=aff(n.ids.map(i=>rows[i]),d),C=aff(rows.filter((_,i)=>!n.ids.includes(i)),d),cs=solve(A.eq.concat(shifted(C,t)),d);let tab=new Map();if(!cs)return {...n,A,tab};let ps=span(cs.basis).map(v=>v^cs.p);
+if(!n.L){for(const r of rows[n.ids[0]])if(C.eq.every(([x,v])=>parity(x&(t^r.tag))===v))tab.set(r.tag,(tab.get(r.tag)||0n)+1n);return {...n,A,tab}}
+let L=visit(n.L),R=visit(n.R),I=solve(L.A.eq.map(([x])=>[x,0]).concat(R.A.eq.map(([x])=>[x,0])),d).basis;I=basis(I,d);let is=span(I),ix=new Map(is.map((x,i)=>[x,i]));let groups=new Map();for(let p of ps){let key=reduce(p,I);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(p)}
+stats.joins++;stats.groups+=groups.size;stats.naiveCandidates+=ps.length*is.length;stats.convolutionSlots+=groups.size*is.length;
+let h=solve(cs.basis.length?solve(cs.basis.map(x=>[x,0]),d).basis.map(x=>[x,0]).concat(solve(I.map(x=>[x,0]),d).basis.map(x=>[x,0])):Array.from({length:d},(_,i)=>[1<<i,0]),d).basis.length;
+if(groups.size!==2**(cs.basis.length-h))throw Error("group rank");
+for(let pp of groups.values()){let p=pp[0];let q=solve(L.A.eq.concat(shifted(R.A,p)),d);if(!q)throw Error("pair absent");let a=q.p,b=a^p;let u=is.map(i=>L.tab.get(a^i)||0n),v=is.map(i=>R.tab.get(b^i)||0n);fw(u);fw(v);u=u.map((x,i)=>x*v[i]);fw(u);for(let x of pp){let z=u[ix.get(x^p)];if(z%BigInt(is.length))throw Error("fraction");z/=BigInt(is.length);if(z<0n)throw Error("negative");if(z)tab.set(x,z)}}
+return {...n,A,tab,L,R,I:is}}
+let R=visit(root),count=R.tab.get(t)||0n;if(!count)return {count,witness:null};let witness=Array(rows.length);function lift(n,p){if(!n.L){let r=rows[n.ids[0]].find(x=>x.tag===p);if(!r)throw Error("lift leaf");witness[n.ids[0]]=r;return}let q=solve(n.L.A.eq.concat(shifted(n.R.A,p)),d);for(const i of n.I){let a=q.p^i,b=p^a;if(n.L.tab.has(a)&&n.R.tab.has(b)){lift(n.L,a);lift(n.R,b);return}}throw Error("lift join")}lift(R,t);if(witness.reduce((a,r)=>a^r.tag,0)!==t)throw Error("lift target");return {count,witness}}
+function wrap(a){return a.map((r,i)=>r.map((tag,j)=>({tag,id:j})))}
+function brute(rows,t){let n=0n;function f(i,s){if(i===rows.length){stats.bruteTuples++;if(s===t)n++;return}for(let r of rows[i])f(i+1,s^r.tag)}f(0,0);return n}
+function test(rows,t,d,expected,root=tree(rows.map((_,i)=>i))){let r=evaluate(rows,t,d,root),b=expected===undefined?brute(rows,t):BigInt(expected);if(r.count!==b)throw Error(`count ${r.count} != ${b}`);stats.cases++;if(b){stats.sat++;stats.witnesses++}else stats.unsat++;return r}
+for(let i=0;i<160;i++){let d=2+rand(5),n=2+rand(5),a=Array.from({length:n},()=>Array.from({length:1+rand(4)},()=>rand(1<<d)));test(wrap(a),rand(1<<d),d)}
+function nae(clauses,n,relax=-1,pol=0){let occ=Array.from({length:n},()=>[]);clauses.forEach((e,i)=>e.forEach((v,j)=>occ[v].push([i,j])));let tags=clauses.map(()=>[0,0,0]),d=0;for(const list of occ)for(let k=1;k<list.length;k++){let [i,j]=list[0],[u,v]=list[k];tags[i][j]^=1<<d;tags[u][v]^=1<<d;d++}let rows=clauses.map((e,i)=>{let a=[];for(let mask=0;mask<8;mask++){if(mask===0||mask===7){if(i!==relax||mask!==pol)continue}let tag=0;for(let j=0;j<3;j++)if(mask>>j&1)tag^=tags[i][j];a.push({tag,id:mask})}return a});let expected=0;for(let x=0;x<1<<n;x++)if(clauses.every((e,i)=>{let m=e.reduce((a,v,j)=>a|((x>>v&1)<<j),0);return m!==0&&m!==7||i===relax&&m===pol}))expected++;let r=test(rows,0,d,expected);if(r.witness){let bits=Array(n).fill(-1);clauses.forEach((e,i)=>e.forEach((v,j)=>{let b=r.witness[i].id>>j&1;if(bits[v]!==-1&&bits[v]!==b)throw Error("NAE lift");bits[v]=b}))}return expected}
+const fano=[[0,1,2],[0,3,4],[0,5,6],[1,3,5],[1,4,6],[2,3,6],[2,4,5]];stats.fano.push(nae(fano,7));for(let j=0;j<7;j++)for(let p of [0,7])stats.fano.push(nae(fano,7,j,p));
+for(let k of [2,4,6,8,10]){let a=wrap(Array.from({length:3*k},(_,i)=>[0,1<<(i%k)]));let A=tree(Array.from({length:k},(_,i)=>i)),B=tree(Array.from({length:k},(_,i)=>i+k)),C=tree(Array.from({length:k},(_,i)=>i+2*k));let AB={ids:A.ids.concat(B.ids),L:A,R:B},root={ids:AB.ids.concat(C.ids),L:AB,R:C};let before={...stats};test(a,0,k,1n<<BigInt(2*k),root);stats.scaling.push({k,centralDirect:2**(2*k),centralConvolution:2**k,allDirect:stats.naiveCandidates-before.naiveCandidates,allSlots:stats.convolutionSlots-before.convolutionSlots,butterflies:stats.butterflies-before.butterflies})}
+return stats;
+}
+console.log(JSON.stringify(run(),null,2));
