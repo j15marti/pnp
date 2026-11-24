@@ -67,6 +67,12 @@ function runGD02(){
   }
   for(let t=0;t<260;t++){const d=3+rand(5),m=1+rand(12),F=[];for(let j=0;j<m;j++){const q=1+rand(3),rows=[];for(let a=0;a<q;a++)rows.push(BigInt(rand(2**d)));F.push(forbid(rows,rand(2**q)))}check(d,F);agg.randomCases++}
   const controls=[];for(const d of [3,4,5,6]){const F=[forbid(Array.from({length:d},(_,j)=>bit(j)),0)];const ranks=[1,2,3].map(k=>dp(d,F,k).rank);controls.push({d,case:"OR",ranks,featureCounts:[1,2,3].map(k=>features(d,k).length)});check(d,F)}
+  const fano=[];const lines=[[0,1,2],[0,3,4],[0,5,6],[1,3,5],[1,4,6],[2,3,6],[2,4,5]];
+  for(let deleted=-1;deleted<7;deleted++){
+    const F=lines.filter((_,i)=>i!==deleted).map(line=>({rows:line.map(bit),ok:[false,true,true,true,true,true,true,false]}));
+    const c=closure(7,F),r=dp(7,F,1);if(c.contradiction||c.added!==0||((r.rank>0)!==(deleted>=0)))throw Error("Fano control");
+    fano.push({deleted,closureRejected:c.contradiction,closureEquations:c.added,dpWidth:r.width,rank:r.rank,peakStates:r.peak,transitions:r.trans});check(7,F)
+  }
   // Dense invertible linear transform of a chain of overlapping OR clauses.
   const scale=[];for(const d of [8,16,32,64,128]){
     const R=Array.from({length:d},(_,j)=>bit(j));for(let t=0;t<3*d;t++){const a=rand(d),b=rand(d);if(a!==b)R[a]^=R[b]}
@@ -74,6 +80,6 @@ function runGD02(){
     const cases=[["SAT",F],["UNSAT",[eqF(R[0],1),...F,eqF(R[d-1],0)]]];
     for(const [label,G] of cases){const c=closure(d,G),r=dp(d,G,1);if((r.rank>0)!==(label==="SAT"))throw Error("scale decision");scale.push({d,label,width:r.width,rank:r.rank,peakStates:r.peak,peakWitnesses:r.peakPoints,transitions:r.trans,featureInsertions:r.updates,closureRejected:c.contradiction})}
   }
-  return {seed:20261124,...agg,controls,scale,note:"Small exact affine and degree-2/3 monomial span comparisons; closure baseline independently verified; DP also run on closure-rejected controls as an audit, not a solver requirement. Scaling degree 1 only. No strict wheel compiler, matching oracle, decomposition discovery or physical CM benchmark."};
+  return {seed:20261124,...agg,controls,fano,scale,note:"Small exact affine and degree-2/3 monomial span comparisons; closure baseline independently verified; DP also run on closure-rejected controls as an audit, not a solver requirement. Scaling degree 1 only. No strict wheel compiler, matching oracle, decomposition discovery or physical CM benchmark."};
 }
 console.log(JSON.stringify(runGD02(),null,2));
