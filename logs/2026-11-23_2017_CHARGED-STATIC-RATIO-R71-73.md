@@ -1,0 +1,14 @@
+Hourly continuation 2026-11-23 20:17 PT.
+
+Test: CHARGED-STATIC-RATIO-R71-73
+
+r=71: ratio=0.019481511961131
+r=72: ratio=0.019569510968838
+r=73: ratio=0.019656280448180
+
+Still far below ~0.053 asymptotic static ceiling.
+
+DYNAMIC-COMPATIBILITY-OBLIGATION1 OPEN. P vs NP OPEN.
+
+HEAD before this commit: fcab3fdd12cd60823b14957dd75e95fb0e3364e4
+New HEAD: 7f4507ae14c268f521b5f4b5486d5093fa955efb
