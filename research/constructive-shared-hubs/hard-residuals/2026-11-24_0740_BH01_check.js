@@ -1,0 +1,51 @@
+function BH01(){
+const rng=(s)=>()=>{s^=s<<13;s^=s>>>17;s^=s<<5;return(s>>>0)/4294967296;};
+const assert=(p,msg)=>{if(!p)throw Error(msg);};
+const xor=(a,b)=>a^b;
+function dsu(n){const a=Array.from({length:n},(_,i)=>i);let c=n;function root(x){while(a[x]!==x){a[x]=a[a[x]];x=a[x];}return x;}return{root,join(x,y){x=root(x);y=root(y);if(x===y)return false;a[x]=y;c--;return true;},count:()=>c};}
+function comp(n,E,ids){const d=dsu(n);for(const i of ids){const [a,b,c]=E[i];d.join(a,b);d.join(a,c);}return d.count();}
+function basis(V){const B=new Map();for(let x of V){while(x){const k=x.toString(2).length-1;if(B.has(k))x^=B.get(k);else{B.set(k,x);break;}}}return B;}
+function member(B,x){while(x){const k=x.toString(2).length-1;if(!B.has(k))return false;x^=B.get(k);}return true;}
+function cycle(n,E,S){const edges=E.flatMap(([a,b,c])=>[[a,b],[a,c]]),d=dsu(n),adj=Array.from({length:n},()=>[]),other=[],tags=edges.map(()=>0n);
+edges.forEach(([a,b],i)=>{if(d.join(a,b)){adj[a].push([b,i]);adj[b].push([a,i]);}else other.push(i);});
+for(let j=0;j<other.length;j++){const i=other[j],[a,b]=edges[i],t=1n<<BigInt(j);tags[i]^=t;const stack=[[a,-1,[]]];let path=null;while(stack.length){const [v,p,q]=stack.pop();if(v===b){path=q;break;}for(const [w,k] of adj[v])if(w!==p)stack.push([w,v,[...q,k]]);}assert(path!==null,"tree path");for(const k of path)tags[k]^=t;}
+const rows=E.map((e,i)=>{const s=S[i]||0,forbid=(((s&1)^((s>>1)&1))|(((s&1)^((s>>2)&1))<<1));return [0,1,2,3].filter(a=>a!==forbid).map(a=>({a,v:((a&1)?tags[2*i]:0n)^((a&2)?tags[2*i+1]:0n)}));});
+return{tags,rows,r:other.length,c:d.count(),edges};}
+function affine(rows){let b=0n,V=[];for(const R of rows){if(!R.length)return null;b^=R[0].v;for(const a of R)V.push(a.v^R[0].v);}return{b,B:basis(V)};}
+function close(rows,ledger){let changed=true;while(changed){changed=false;for(let i=0;i<rows.length;i++){if(!rows[i].length)return false;const a=affine(rows.filter((_,j)=>i!==j));if(!a)return false;for(let j=0;j<rows[i].length;j++){ledger.closure++;if(!member(a.B,rows[i][j].v^a.b)){rows[i].splice(j,1);ledger.deleted++;changed=true;break;}}if(changed)break;}}return true;}
+function cutWidth(n,E,L){const set=new Set(L),R=E.map((_,i)=>i).filter(i=>!set.has(i));return n+comp(n,E,E.map((_,i)=>i))-comp(n,E,L)-comp(n,E,R);}
+function greedy(n,E){const L=[],U=E.map((_,i)=>i);let max=0;while(U.length){let k=0,b=Infinity;for(let i=0;i<U.length;i++){const w=cutWidth(n,E,[...L,U[i]]);if(w<b){b=w;k=i;}}L.push(U.splice(k,1)[0]);max=Math.max(max,b);}return {L,max};}
+function valid(E,S,x,omit=-1,allow=-1){for(let i=0;i<E.length;i++){const vals=E[i].map((v,j)=>x[v]^((S[i]>>j)&1));if(vals.every(v=>v===vals[0])){if(i!==omit||vals[0]!==allow)return false;}}return true;}
+function brute(n,E,S,omit=-1,allow=-1){let count=0,x=null;for(let k=0;k<2**n;k++){const a=Array.from({length:n},(_,i)=>(k>>i)&1);if(valid(E,S,a,omit,allow)){count++;x=a;}}return{count,x};}
+function lift(n,E,order,choices){const adj=Array.from({length:n},()=>[]);for(let j=0;j<order.length;j++){const [a,b,c]=E[order[j]],z=choices[j];adj[a].push([b,z&1],[c,(z>>1)&1]);adj[b].push([a,z&1]);adj[c].push([a,(z>>1)&1]);}const x=Array(n).fill(-1);for(let v=0;v<n;v++)if(x[v]<0){x[v]=0;const q=[v];while(q.length){const u=q.pop();for(const [w,z] of adj[u]){if(x[w]<0){x[w]=x[u]^z;q.push(w);}else assert(x[w]===(x[u]^z),"bad lift");}}}return x;}
+function solve(n,E,S,cap=65536){const G=cycle(n,E,S),rows=G.rows.map(r=>r.slice()),ledger={closure:0,deleted:0,transitions:0,peak:1,retained:1,width:0};
+if(!close(rows,ledger))return{answer:"UNSAT",ledger};const {L,max}=greedy(n,E);ledger.width=max;
+const suffix=L.map((_,i)=>affine(L.slice(i+1).map(j=>rows[j])));let states=new Map([[0n,[]]]);
+for(let i=0;i<L.length;i++){const next=new Map(),a=suffix[i];for(const [v,h] of states)for(const r of rows[L[i]]){ledger.transitions++;const k=v^r.v;if(!member(a.B,k^a.b))continue;if(!next.has(k))next.set(k,[...h,r.a]);if(next.size>cap)return{answer:"UNKNOWN",ledger};}states=next;ledger.peak=Math.max(ledger.peak,states.size);ledger.retained+=states.size;assert(states.size<=2**cutWidth(n,E,L.slice(0,i+1)),"width bound");if(!states.size)return{answer:"UNSAT",ledger};}
+const x=lift(n,E,L,states.get(0n));assert(valid(E,S,x),"invalid reconstruction");return{answer:"SAT",x,ledger};}
+function pairAudit(n,E,S){const G=cycle(n,E,S);let trials=0,periods=0,rankCases=[0,0,0],sizes={};for(let i=0;i<E.length;i++)for(let j=i+1;j<E.length;j++){trials++;const A=G.rows[i],B=G.rows[j],U=[...new Set(A.flatMap(a=>B.map(b=>a.v^b.v)))],T=new Set(U);sizes[U.length]=(sizes[U.length]||0)+1;
+const s=4-basis([G.tags[2*i],G.tags[2*i+1],G.tags[2*j],G.tags[2*j+1]]).size;if(s>=0&&s<=2)rankCases[s]++;if(U.some(a=>a!==U[0]&&U.every(b=>T.has(b^a^U[0]))))periods++;}
+return{trials,periods,rankCases,sizes};}
+function rankCheck(n,E,S,ids){const G=cycle(n,E,S),set=new Set(ids),R=E.map((_,i)=>i).filter(i=>!set.has(i));const V=ids.flatMap(i=>G.tags.slice(2*i,2*i+2));assert(basis(V).size===2*ids.length-comp(n,E,R)+G.c,"rank identity");const U=R.flatMap(i=>G.tags.slice(2*i,2*i+2));assert(basis(V).size+basis(U).size-G.r===cutWidth(n,E,ids),"cut identity");}
+const F=[[0,1,2],[0,3,4],[0,5,6],[1,3,5],[1,4,6],[2,3,6],[2,4,5]],z=F.map(()=>0);
+let fano={base:solve(7,F,z),pairs:pairAudit(7,F,z),neighbors:[],rankChecks:0};
+assert(fano.base.answer==="UNSAT"&&fano.pairs.periods===0,"Fano base");
+for(let m=0;m<128;m++){rankCheck(7,F,z,F.map((_,i)=>i).filter(i=>m>>i&1));fano.rankChecks++;}
+for(let i=0;i<7;i++)for(let b=0;b<2;b++){const E=F.filter((_,j)=>i!==j),S=E.map(()=>0),R=solve(7,E,S);assert(R.answer==="SAT","neighbor");let x=R.x;if(!valid(F,z,x,i,b))x=x.map(v=>v^1);assert(valid(F,z,x,i,b),"neighbor orientation");const N=brute(7,F,z,i,b).count;assert(N===5,"neighbor count");fano.neighbors.push({edge:i,allow:b,count:N,x,ledger:R.ledger});}
+let random={cases:0,sat:0,unsat:0,rankChecks:0,critical:0,criticalPairTrials:0,criticalPeriods:0,criticalSizes:{},transitions:0,peak:0};const R=rng(208040);
+for(let k=0;k<120;k++){const n=3+Math.floor(R()*6),m=2+Math.floor(R()*13),E=[],S=[];for(let j=0;j<m;j++){const a=[];while(a.length<3){const v=Math.floor(R()*n);if(!a.includes(v))a.push(v);}E.push(a);S.push(Math.floor(R()*8));}const ref=brute(n,E,S),ans=solve(n,E,S);assert((ref.count>0)===(ans.answer==="SAT"),"random decision");random.cases++;random[ref.count?"sat":"unsat"]++;random.transitions+=ans.ledger.transitions;random.peak=Math.max(random.peak,ans.ledger.peak);for(let j=0;j<5;j++){rankCheck(n,E,S,E.map((_,i)=>i).filter(()=>R()<.5));random.rankChecks++;}
+if(!ref.count){const A=E.slice(),B=S.slice();for(let i=A.length-1;i>=0;i--){const C=A.filter((_,j)=>j!==i),D=B.filter((_,j)=>j!==i);if(!brute(n,C,D).count){A.splice(i,1);B.splice(i,1);}}for(let i=0;i<A.length;i++)assert(brute(n,A.filter((_,j)=>j!==i),B.filter((_,j)=>j!==i)).count>0,"critical");const p=pairAudit(n,A,B);assert(p.periods===0,"critical pair period");random.critical++;random.criticalPairTrials+=p.trials;random.criticalPeriods+=p.periods;for(const [k,v] of Object.entries(p.sizes))random.criticalSizes[k]=(random.criticalSizes[k]||0)+v;}}
+function gen(n,seed,stop=20000){const R=rng(seed),A=Array(n).fill(0n),E=[];let fail=0;while(fail<stop){let a=Math.floor(R()*n),b=Math.floor(R()*n),c=Math.floor(R()*n);if(a===b||a===c||b===c){fail++;continue;}const aa=1n<<BigInt(a),bb=1n<<BigInt(b),cc=1n<<BigInt(c);if((A[a]&bb)||(A[a]&cc)||(A[b]&cc)||(A[a]&A[b])||(A[a]&A[c])||(A[b]&A[c])){fail++;continue;}A[a]|=bb|cc;A[b]|=aa|cc;A[c]|=aa|bb;E.push([a,b,c].sort((x,y)=>x-y));fail=0;}return E;}
+function girthCheck(n,E){const A=Array(n).fill(0n),seen=new Set();for(const e of E)for(let i=0;i<3;i++)for(let j=i+1;j<3;j++){const a=e[i],b=e[j],key=a*n+b;assert(!seen.has(key),"nonlinear");seen.add(key);A[a]|=1n<<BigInt(b);A[b]|=1n<<BigInt(a);}for(const e of E)for(let i=0;i<3;i++)for(let j=i+1;j<3;j++)assert((A[e[i]]&A[e[j]])===(1n<<BigInt(e[3-i-j])),"Berge triangle");return seen.size;}
+function spectral(n,E,K=200000){const M=Array.from({length:n},()=>new Float64Array(n));for(const e of E){for(const i of e){M[i][i]+=2;for(const j of e)if(i!==j)M[i][j]+=3;}}
+const L=Array.from({length:n},()=>new Float64Array(n));let minPivot=Infinity;for(let i=0;i<n;i++)for(let j=0;j<=i;j++){let v=M[i][j]-(i===j?.25:0);for(let k=0;k<j;k++)v-=L[i][k]*L[j][k];if(i===j){if(v<=0)return{status:"UNKNOWN",failedPivot:i};minPivot=Math.min(minPivot,v);L[i][j]=Math.sqrt(v);}else L[i][j]=v/L[j][j];}
+const C=L.map(row=>Array.from(row,v=>Math.round(v*K)));let max=0,diagMax=0;for(let i=0;i<n;i++){diagMax=Math.max(diagMax,Math.abs(M[i][i]));for(let j=0;j<=i;j++)max=Math.max(max,Math.abs(C[i][j]));}
+const bound=n*max*max+diagMax*K*K;assert(bound<Number.MAX_SAFE_INTEGER,"integer safety");
+const diag=Array(n).fill(0),off=Array(n).fill(0);for(let i=0;i<n;i++)for(let j=0;j<=i;j++){let v=M[i][j]*K*K;for(let k=0;k<=j;k++)v-=C[i][k]*C[j][k];assert(Number.isSafeInteger(v),"exact residual");if(i===j)diag[i]=v;else{off[i]+=Math.abs(v);off[j]+=Math.abs(v);}}assert(off.every(Number.isSafeInteger),"offsum integer safety");
+const margin=Math.min(...diag.map((d,i)=>d-off[i]));return{status:margin>0?"UNSAT_CERTIFIED":"UNKNOWN",K,maxAbsC:max,integerBound:bound,minNumericalPivot:minPivot,minExactMargin:margin,certificate:margin>0?C:undefined};}
+const H=gen(600,1234567),pairs=girthCheck(600,H),spec=spectral(600,H);const high={n:600,m:H.length,pairs,midpointWidth:cutWidth(600,H,H.map((_,i)=>i).slice(0,Math.floor(H.length/2))),spectral:{...spec,certificate:undefined},edges:H};
+const planted=H.filter(e=>e.some(v=>v%2!==e[0]%2)),px=Array.from({length:600},(_,i)=>i%2);assert(valid(planted,planted.map(()=>0),px),"planted");high.planted={m:planted.length,pairs:girthCheck(600,planted),witness:px,spectral:{...spectral(600,planted),certificate:undefined}};
+const fSpec=spectral(7,F);assert(fSpec.status==="UNSAT_CERTIFIED","Fano spectral");fano.spectral={...fSpec,certificate:undefined};
+return{fano,random,high,certificate:spec.certificate,seed:1234567,randomSeed:208040,notes:"Exact integer DD certificate; floating Cholesky only proposes C. No full strict compiler or all-channel closure. High-girth precursor not claimed critical."};
+}
+console.log(JSON.stringify(BH01()));
