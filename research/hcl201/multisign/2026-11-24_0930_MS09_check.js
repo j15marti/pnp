@@ -64,6 +64,8 @@ function experiment(){
   }
   // False converse: capacity-one owner choice, group 5, support {0,1,2}, lattice full.
   {let E=[[0,1],[0,1],[0,1]],u=[1,1,1],f=[1,0,0],g=[0,1,2],c=certify(2,E,u,f,g,5),R=reference(2,E,u,f,g,5);if(c.W!==5||c.H!==1||R.has(3)||!R.has(2))throw Error("thin");out.thin={W:c.W,H:c.H,actual:[...R].sort(),unknownTargets:[1,2,3,4]}}
+  // A baseline-certified lower subgroup need not be a translation symmetry of full support.
+  {let E=[[0,1],[0,1],[0,1]],u=[2,2,2],f=[1,1,0],g=[0,3,1],c=certify(2,E,u,f,g,6),R=reference(2,E,u,f,g,6);if(c.W!==3||c.H!==1||!R.has(2)||R.has(5))throw Error("invalid absorption control");out.nonInvariant={W:c.W,H:c.H,actual:[...R].sort(),missingTranslate:[2,5]};}
   return {...out,...stats};
 }
 console.log(JSON.stringify(experiment(), null, 2));
