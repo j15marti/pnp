@@ -60,7 +60,7 @@ function experiment(){
     let E=Array.from({length:2*h+2},()=>[0,1]),f=[3,...Array(h).fill(2),...Array(h).fill(1),0],u=[6,...Array(h).fill(4),...Array(h).fill(2),1],g=[0,...Array(h).fill(4),...Array(h).fill(6),2];
     let c=certify(2,E,u,f,g,12);if(c.H!==2||c.W!==2||c.Ls.length!==2||!c.variable.at(-1))throw Error("structured");
     let sat=0,unsat=0;for(let x=0;x<12;x++){if(x%2===0){if(!c.lift(x))throw Error("missing");sat++}else{if(mod(x-c.baseline,12)%c.H===0)throw Error("bad bound");unsat++}}
-    out.structured.push({h,arcs:E.length,cycleRank:E.length-1,layerExponents:c.Ls.map(z=>z.L),sat,unsat,fullUniformMargin:5,commonEdgeMargin:3,chosenFundamentalCenteredMargin:3*h+2,thinArcVariable:true});
+    out.structured.push({h,arcs:E.length,cycleRank:E.length-1,layerExponents:c.Ls.map(z=>z.L),sat,unsat,fullUniformMargin:5,commonEdgeMargin:3,chosenFundamentalCenteredMargin:2*h+3,thinArcVariable:true});
   }
   // False converse: capacity-one owner choice, group 5, support {0,1,2}, lattice full.
   {let E=[[0,1],[0,1],[0,1]],u=[1,1,1],f=[1,0,0],g=[0,1,2],c=certify(2,E,u,f,g,5),R=reference(2,E,u,f,g,5);if(c.W!==5||c.H!==1||R.has(3)||!R.has(2))throw Error("thin");out.thin={W:c.W,H:c.H,actual:[...R].sort(),unknownTargets:[1,2,3,4]}}
