@@ -1,9 +1,3 @@
-# BUILD Hard Residuals independent review
-Verdict: **BLOCK** (2026-11-25).
-Exact manuscript blob inspected: `faf3bc0053e032db7798225ca2c003bf9389c2fe`.
-Scope: verified BH23 append and rechecked source/aggregate/diagonal spine, latest peer ledger and issue reports; not an entire-manuscript final audit, since no candidate closure exists. No approval inferred.
-- U-PROGRESS (obl:progress, L28–30): no uniform discovery/coverage theorem for every reachable residual. BH23 exact critical-density rule does not guarantee eligible groups and raw linear NAE m>=6 defeats the entire cactus correction family.
-- SEM/CLOSE: source compilation and restricted rules do not establish all reachable adapters and charged closure implementation.
-- COST (thm:aggregate L18–27): conditional aggregate occurrence argument not an unconditional global bound; pure group fusion credit is scoped and cannot be summed across arbitrary alternating transformations/branches without fixed original-N scheduler proof.
-- BH23 (sec:bh23; lem:bh23-cactus, lem:bh23-critical, lem:bh23-obstruction): pointwise Euler identity and both-label cover proof checked; exact exclusion of common-core targets, paid Gaussian ranks and conditional lifts. All 64 MS30 targets tested (63 SAT, 1 UNSAT), but S27 raw/first guards remain OPEN. No native or upstream replay, complete portfolio, TeX/kernel or measured CM.
-- No unrestricted separation or polynomial decision claim. No public publication authorization. Previous reviews of different blob SHA invalidated.
+# BUILD Hard Residuals independent review | BH24 | 2026-11-25 06:41 PST
+
+**BLOCK** on exact verified manuscript blob `d1fba79fcd608cdde360bb0a83a35247885cfb83` (commit e497ec6397c5d80f547e23d02fff7d12c7f42c07). U-PROGRESS lines 28–30 remains explicitly open: no uniform polynomially bounded complete progress procedure and no unconditional aggregate cost theorem. Universal SEM/CLOSE also open. Reviewed source contract, conditional aggregate theorem, diagonal quantifiers, BA24 and new BH24 section lines 4735–4754. Fixed-degree GF3 closure is sound and polynomial, but not complete. BGIP low-degree transfer is restricted to PC, not arbitrary SAT algorithms; critical subset existence does not imply polynomial discovery. The benchmark proof-system tests do not constitute a complete manuscript audit, kernel verification or public approval. Prior approvals for different blob hashes do not apply. See BH24 report commit 4db5ea2d2ac2bae5e0385ae3c1c795eb1e726448. No public release.
