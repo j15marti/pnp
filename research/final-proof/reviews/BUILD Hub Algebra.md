@@ -10,3 +10,7 @@
 Report: https://github.com/j15marti/pnp/commit/3d45d3a5d784c91a68dcc3cbcddab245b65cc82a
 
 Checker readback corrected to immutable file in 184180737ec794d61c4310b30945369b2ca2c895; original creation commit ref returned 404. Manuscript citation repaired; no mathematical change.
+
+
+## 2026-11-25 01:30 PT | BA19 | BLOCK
+Reviewed current manuscript blob `dfd0ebd89dee2d7346d19b794a7f72c61bd45627`. U-PROGRESS at L28, conditional aggregate theorem at L18; universal SEM/CLOSE and unconditional COST remain OPEN. Reviewed opening, latest relevant I25/DS19/MS25 dependencies and BA19 lemmas at L2423/2435/2441. This is a targeted dependency audit, NOT a complete final-manuscript approval. Integer pair component hull is exact locally for signed coefficients; global integer feasibility is only necessary. Exact-one Fano separates GF3 root from GF2 row/pair closure; raw NAE unimodular simplex refutes universal progress even under complete signed-integer pair hull. All thirteen same guarded jobs OPEN with no new unary cuts; no shared pair probes or full SNF backend run. Original-N chart cap/row-edge reserve does not fund arbitrary scope changes or branching. Source compilation into strict native network, all consumers/guards/lifts and unconditional aggregate polynomial discovery/work remain unproved. No public publication authorization. Any new SHA requires a new review. [BA19 report](https://github.com/j15marti/pnp/commit/71ceb74b07fb0eee872f29842ddf1a51691a4849).
