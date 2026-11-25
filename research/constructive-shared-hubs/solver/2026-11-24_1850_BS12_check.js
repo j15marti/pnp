@@ -55,6 +55,12 @@ for(let e of [0,1,2,3,4]){let n=e+3,F=overlay(e),R=Array.from({length:e},(_,i)=>
 for(let e of [8,32,64,128]){let n=e+3,F=overlay(e),R=Array.from({length:e},(_,i)=>[bit(i),0]),v=cert(n,F,R);ck(v.accepted,"large cert");let G=R.map(([a],i)=>[a,i%2]),x=lift(n,F,G,v.tree);ck(sat(F,G,x),"large lift");results.scaling.push({e,n,raw:Number(v.raw)/2**n,bound:Number(v.bound)/2**n,edges:v.tree.length})}
 let O=overlay(0).map(P=>P.map(([a,b])=>[a<<7n,b]));test("Fano with overlap overlay",10,[...cnf(fc),...O]);test("Fano neighbor with overlap overlay",10,[...cnf(fc.slice(1)),...O]);
 let P=[[[1n,0]],[[3n,0]]],v=cert(2,P,[[2n,0]]);ck(v.tree.length===0&&!v.accepted,"conditional overlap falsely subtracted");results.firewall={raw:Number(v.raw)/4,bound:Number(v.bound)/4,edges:v.tree.length};
+// Even certified pair overlaps do not justify subtracting all of them on every exterior.
+let star=[[[4n,0],[1n,0],[2n,0]]];for(let a=0;a<2;a++)for(let b=0;b<2;b++)star.push([[1n^(a?4n:0n),0],[2n^(b?4n:0n),0]]);
+let st=cert(3,star,[[4n,0]]),naive=st.raw-st.tree.reduce((s,e)=>s+e[2],0n);
+ck(naive<8n&&st.bound>=8n&&!st.accepted,"unsafe all-active subtraction");
+let z0=ref(3,star,[[4n,0]]),z1=ref(3,star,[[4n,1]]);ck(z0===3&&z1===0,"star neighbor labels");
+results.firewall.activePattern={raw:Number(st.raw)/8,naive:Number(naive)/8,robust:Number(st.bound)/8,edges:st.tree.length,modelsZ0:z0,modelsZ1:z1};
 for(let t=0;t<100;t++){let F=[];for(let i=0;i<5;i++){let P=[];for(let j=0;j<2;j++)P.push([BigInt(1+rand(31)),rand(2)]);F.push(P)}let R=[[1n,0],[2n,0]],v=cert(5,F,R);for(let z=0;z<4;z++){let G=[[1n,z&1],[2n,z>>1]],bad=0;for(let x=0n;x<32n;x++)if(hit(G,x)&&F.some(P=>hit(P,x)))bad++;ck(BigInt(bad)*4n<=v.bound,"uniform bound");if(v.accepted){let x=lift(5,F,G,v.tree);ck(sat(F,G,x),"random fiber lift")}}}
 results.totals={decisions:results.decisions.length,SAT:results.decisions.filter(x=>x.models>0).length,UNSAT:results.decisions.filter(x=>x.models===0).length};return results
 }
