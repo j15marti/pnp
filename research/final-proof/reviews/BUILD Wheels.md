@@ -1,10 +1,11 @@
-# BUILD Wheels independent review
-2026-11-25 01:12 PST | **BLOCK**
-Exact reviewed manuscript blob: `4fdbfd46317079e8c202bd6ac73a21249696d1ee` ([commit de9e88f62b0cdc513652fd761e4ae120c9051a0d](https://github.com/j15marti/pnp/commit/de9e88f62b0cdc513652fd761e4ae120c9051a0d)). Focused review, not a full manuscript PASS: no candidate universal closure exists.
-
-- thm:aggregate L18–27 remains a sufficient conditional argument; obl:progress L28–30 unresolved. Universal SEM/CLOSE, discovery and unconditional COST are not proved. No publication authorized.
-- BW19 L2229: threshold hull implications necessary; SCC conflict sound, decoded SAT requires all masks and source lift. AC and actual guards retained. Every accepted fixed-span deletion pays same-span reserve; no free alternate-order search.
-- BW19 L2241: odd wheel solved under paid hub guards; all-orders root linear NAE hull feasible, does not imply actual SAT or lower bound on unrestricted algorithms.
-- GD25 L2208–2224 and BW19 fixed-code discovery L2255 onward: exact eligible block test by directed closure; valid only for supplied codes, exact internal relations and pin fibers. All ten shared jobs have no eligible fixed-order block and no row progress; code discovery and scope-changing escape open. No independent upstream certificate replay or source lift on these shared charts.
-- Seven small controls and 240 abstract graphs verified; no full solver, native replay, formal kernel, LaTeX build or measured physical CM. Substantive edits invalidate prior approvals; no agents/schedules changed.
-- [Report](https://github.com/j15marti/pnp/commit/93d0590e62fd87f516009c059c016364242f0920).
+# BUILD Wheels independent review | BW20 | BLOCK
+2026-11-25 02:10 PT
+Manuscript blob reviewed: 17cf72e2cdf085e54fe272ff345dd998e9fafe69
+Immutable manuscript: https://github.com/j15marti/pnp/blob/364049addd8928934e5e40471cdd0da938679013/research/final-proof/main.tex
+- Lines 18–27, thm:aggregate: conditional telescoping remains valid under stated fixed original-input polynomial per-occurrence premises, not established by current native compilation.
+- Lines 28–30, obl:progress: OPEN; no universal deterministic dispatch guarantees a paid terminal or contracting children on every residual.
+- I21, lines 225–250: source adapter is exact within signed E4/B4. BW20 lines 2752 onward removes artificial tags but explicitly loses unique physical multiplicity; decision projection retained.
+- BW20 lines 2759 onward: matching switches give an actual synchronization resource lower bound, not a runtime bound. No free rank compression or target acquisition.
+- BW20 lines 2768 onward: exact local reference gate adapter and source lift. Fixed current-volume polynomial cost does not imply fixed original-volume bound for repeated elimination; affine guards remain actual consumers. Complete semantic closure not assumed. No global tagged matching acquisition proved. Full manuscript approval is blocked without further theorem; this is a targeted audit, not a completed whole-manuscript kernel review.
+- Same-serial T/S/CM conditional only; no measured physical CM. Source controls and native witness replay are finite evidence. No new global witness.
+Review disposition: BLOCK U-PROGRESS / universal SEM-CLOSE / unconditional COST. No public release authorization. Prior approvals on other SHAs do not apply. No agents changed.
