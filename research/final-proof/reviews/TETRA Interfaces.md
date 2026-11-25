@@ -1,9 +1,9 @@
 # TETRA Interfaces independent review
 
-2026-11-25 03:17 PT | **BLOCK**
+2026-11-25 04:19 PT | **BLOCK**
 
-Exact reviewed manuscript blob: `ecd8d694382f49263d372746d0dd9da7337b4e3d` (commit [5f80ce7c2fba5fbdf3f5b5700a96b06c1e2463be](https://github.com/j15marti/pnp/commit/5f80ce7c2fba5fbdf3f5b5700a96b06c1e2463be)).
+Exact reviewed manuscript blob: `22903ee1a1b93e2592a16d3d259074b0c2ad8d89` ([commit 2edc53080df71a2050bc5f9e77cde2a3b18d4eab](https://github.com/j15marti/pnp/commit/2edc53080df71a2050bc5f9e77cde2a3b18d4eab)).
 
-Audit scope: conditional aggregate theorem thm:aggregate and U-PROGRESS obl:progress, DA21/BW21/M27, I27 L3329 onward. Not an entire candidate-closure audit: the universal candidate is still missing. Conditional aggregate accounting remains sound under stated caps; the new exact defect representation gives a verified zero-offset certificate on the actual RT26 n9 quotient, but B<0 and noncographic cases can remain unresolved, and there is no uniformly polynomial universal successful dispatch. Complete semantic forced closure is not assumed; finite reference checks are not universal proofs. Source-compilation, guard provenance, discovery and reconstruction remain charged; no global polynomial bound for arbitrary branching. U-PROGRESS, universal SEM/CLOSE, unconditional COST OPEN. No publication authorization. This review applies only to the immutable blob above, not concurrent edits. Prior approvals do not transfer.
+Scope: aggregate theorem L18–27 and U-PROGRESS L28–30, DA22/GD29/M28/DR22/BW22 current sections and new I28 L3691 onward. Full body recovered through blob and predecessor prefix preserved; no claim of full candidate-closure audit because no universal candidate exists. Exact two-component matching consumer is proved for its explicit incidence/guard premises; no universal footprint reduction or charged successful dispatch. Footprint-three arbitrary tables encode SAT, and actual BW22 raw parity completions fail even exchange. No inference of unrestricted lower bound. Complete semantic closure, arbitrary source/guard coverage and unconditional aggregate time/peak/cumulative bounds remain OPEN. Tests reference-only, no general blossom execution or raw forest replay. This BLOCK applies to the immutable blob above and is not an approval of concurrent edits. No public authorization.
 
-Report [I27](https://github.com/j15marti/pnp/commit/ec26bf8f2a6c5d3403ba6c508cf49cb2e0a713a6).
+[Report](https://github.com/j15marti/pnp/commit/17da1ed0e04c322268ef552b916fe1913dfd5fe4).
