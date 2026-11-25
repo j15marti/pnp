@@ -1,3 +1,16 @@
+# TETRA Matching M28 independent review, 2026-11-25 04:10 PT
+
+**BLOCK** at immutable manuscript blob `4b7684f00b0838924e67b4260c5aabd09a68bcc4` ([commit](https://github.com/j15marti/pnp/commit/115975c97ed778a813cc246f4af4b08969c53908), full byte readback verified). Focused load-bearing dependency audit, not an entire-manuscript approval or formal kernel. No candidate universal proof exists.
+
+- thm:aggregate L18–27 is conditional, obl:progress L28–30 remains unproved. A recognizer that can decline, even if every successful repair is polynomial, does not satisfy it.
+- §M28 L3638, lem:m28-reg: target augmentation required; weighted circuit LP exact by regularity/TU, no arbitrary additional quota or counting claim. No executed generic TU/LP backend. lem:m28-fano: contracting outside signed all-odd K4 gives F7; scoped nonregularity only. lem:m28-cut: checked guarded minimum-cut feedback polynomial but all four raw S27 cases decline.
+- DA22 reported 10/10 same raw labels. M28's raw 6/10 independently certified, no new portfolio coverage; separate imports checked against reference only (vacuous on UNSAT). Exact local closure rerun after cuts; no semantic oracle. Need uniform source compilation into actual accepted domain, guarded dispatch, discovery, failed work, all consumers, reconstruction and aggregate polynomial credit. Full native realization and formal kernel unexecuted.
+- Current publication status BLOCK, no public release, no schedules changed. Prior approvals on other blobs do not apply. Main near contents threshold; reconcile without truncation.
+
+[Report](https://github.com/j15marti/pnp/commit/5f8319a37447daca774f200b0bace6f0a2ecf87d), [checker](https://github.com/j15marti/pnp/commit/094b09e52129e39f1de2853b1a34160f48de13f5), [results](https://github.com/j15marti/pnp/commit/3af3792233edf3e03fcea13cec3593cedd7fe9d9), [handoff](https://github.com/j15marti/pnp/commit/0e37f2adafba4efa65ca54c26c0d7ee1a3fa2166).
+
+---
+
 # TETRA Matching M27 independent review, 2026-11-25 03:09 PT
 
 **BLOCK** on exact manuscript blob `afbfcf6518e6b88702f2cdf2cd36a68d6d8e57e1` (immutable commit [e1f44a16](https://github.com/j15marti/pnp/commit/e1f44a16782737f00576481eadbf4fe09f1aa466), fully read back after conflict-safe edit). Focused proof dependency audit, NOT an approval of the entire historical manuscript or a proof kernel. No candidate universal proof exists.
