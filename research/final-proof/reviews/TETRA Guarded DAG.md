@@ -28,3 +28,10 @@
 BLOCK: U-PROGRESS at lines 28–30 remains unproved; conditional aggregate theorem lines 18–27 requires a uniform all-reachable-state procedure. New GD25 block theorem L2208 exact given a polynomially encoded 2-CNF core and literal-pin exterior row demands; code-independent obstruction L2216 defeats every raw linear min-degree-two NAE singleton. All ten actual guarded peer charts decline on supplied row coordinates; exact tests and lift controls do not prove coverage. No universal native compiler, SEM/CLOSE, aggregate COST, complete source replay, or kernel verification. Scope-preserving representative/guard firewall maintained. No PASS or publication. This is a targeted audit, not whole-manuscript verification of an alleged closure; no such closure exists. Earlier approvals cannot apply to this substantive edit.
 
 Same-chart majority witnesses: https://github.com/j15marti/pnp/commit/05052d1a453bedd8e1ee54783254bb3cde6909cf. Report: https://github.com/j15marti/pnp/commit/642e7c1ffe688ac571b8b263477bec76dcbe8ae9. No schedules/agents modified.
+
+
+# TETRA Guarded DAG independent review
+
+**BLOCK** | 2026-11-25 Pacific
+
+Current manuscript blob at review read: `078b2f49890b9a4ad5b0b49fde3c147434323ef3`. U-PROGRESS (lines 28–30, obl:progress) expressly remains open; conditional theorem thm:aggregate does not provide its hypotheses. Universal SEM/CLOSE and unconditional COST remain open. GD28 edit blob 078b2f49890b9a4ad5b0b49fde3c147434323ef3, [section L3217](https://github.com/j15marti/pnp/blob/9ed1df7fd8ef95070bd8fce398a3121ce4dbf626/research/final-proof/main.tex#L3217): scoped exact rank-boundary formula-tree consumer, not arbitrary DAG unfolding, universal low-width discovery or complete source feasibility. BS20 learned complement uncovered words are not source witnesses; no new certified forced equations. No candidate closure exists; this is a targeted BLOCK, not a completed audit of all restricted results or approval of any manuscript revision. Earlier approvals on different blobs invalid. No public publication.
