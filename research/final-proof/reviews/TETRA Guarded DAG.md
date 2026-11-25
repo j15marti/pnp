@@ -1,19 +1,13 @@
-# TETRA Guarded DAG independent review
-2026-11-24 22:00 PST
-Verdict: **BLOCK**
-Manuscript blob: 2eccf78f6efe9b1a9f928e3c398287c18cdcd788
-Manuscript commit: 3416d81bdb5b2bc669595f996bcd42c625f7551b
-Focused dependency audit of the current manuscript and new GD22 proof. No candidate universal closure exists, so not a final whole-manuscript certification.
+# TETRA Guarded DAG — independent BLOCK review
+Date: 2026-11-24 23:04 PT
+Manuscript blob SHA: `3ee07bd8733a8a7e84f370ebdf25268423b131ae`
+Immutable manuscript: https://github.com/j15marti/pnp/blob/81cd22b348ea9ffb2137679d5bc320acae13db75/research/final-proof/main.tex
+Verdict: **BLOCK** (not PASS; not a full-manuscript approval).
 
-- sec:source (14–16), sec:i21 (222 onward): direct packet compilation and separately scoped signed E4/B4 adapter. Any repair terminal must preserve actual dictionary and prove its own domain.
-- thm:aggregate (18–27): conditional occurrence-credit proof valid under its stated uniform polynomial per-occurrence bit-cost and size assumptions. No universal reserve established.
-- obl:progress (28–30): BLOCK; no uniformly polynomial acquisition procedure covering all residuals or all genuine four-partition repairs.
-- lem:diagonal (32–38): correct conditional quantifier direction, no identification of the hypothetical sequence with BS15 or GD22 family.
-- sec:s21 (531–558): Hamming potential bounds verified successful repairs, not the search for a repair. Positive-promise uniform cap is sufficient; complete support coverage unnecessary. General synchronized circulation hardness does not prove single-query hardness on four perfect partitions.
-- sec:bs15 (608–638): genuine one-mismatch ring gives a long exchange; this is not a runtime lower bound. GD22 uses exact unchanged source registry.
-- lem:gd22-cover (644–665): proved scoped by six explicit block words with fixed actual seams, projected NAE product, and lattice cardinality bound. Different polarities and private auxiliary bits allowed. A flat union of projected global minimizers is ruled out, NOT arbitrary sublevel sets, affine decoding, arbitrary decision-only min-cut procedures, or factored representations. Independent peer review pending.
-- lem:gd22-seam (667–672): exact supplied block-plan DP, including seam guards, failed local queries, composition and lift. No generic discovery guarantee. Same serial realization polynomial only on this domain.
-- 13,805 assertions and verified fixed-size DP, affine-plane negative control, no general repair, actual cycle extraction, full portfolio, formal kernel, measured physical CM or complete semantic closure. No unrestricted separation or nonrelativizing claim.
-- Universal SEM/CLOSE and COST not closed. No approvals or publication gate passed. Earlier approvals do not apply to this substantive revision.
+- Theorem thm:aggregate lines 18–27 is conditional on the existence of a single uniform scheduler, bounded states and all-child contraction.
+- Obligation obl:progress lines 28–30 remains open. S21/DS16 target-free common-witness acquisition not proved; no uniform source-to-strict-native adapter, semantic closure guarantee or unconditional aggregate resource bound established.
+- GD23 sec:gd23 lines 1213 onward: proved exact parity selector reachability and the no-aux flat conflict-CNF obstruction (lem:gd23-graph, lem:gd23-flat). Neither is a universal decision theorem. Arbitrary affine guards need a separate adapter; source and selector quantifiers differ. Local closure is paid; branching/probing can still be superpolynomial. Prior BS16 discovery and DO17 fixed-interface rules restricted.
+- Actual same-source checks: 50 jobs, both coordinate and parity searches agreed with all expected labels; full failed-parity probe schedule declined nine larger jobs despite reduced node count. All returned source witnesses checked. Diamond proof checked finite k=1..4. No full portfolio/native/compiler/kernel/physical CM execution. No claimed P=NP or P!=NP.
+- Specific required next step: prove a uniform aggregate bound on target-only acquisition including failed probes, branch occurrences and factored guard consumers, or derive a different total polynomial exact decision procedure. Request complementary tracks in ledger/#327. No earlier approval applies after this edit. No public release.
 
-Report https://github.com/j15marti/pnp/commit/1ebb1494d28732b6657a3990c262ca3e899c8d1f
+Report: https://github.com/j15marti/pnp/commit/e901930852a8e9a1726735544d209ea3346a4bc4
