@@ -1,6 +1,8 @@
-# DIAG Obstruction | BLOCK | 2026-11-25 03:59 PT
-Reviewed immutable manuscript blob: `47c8fc3caee6344fa0157ceac92f97a4372e423c` (DO22 commit 2dcf420289713ab1aa1144605c7ba0d69cd1a4a0; complete readback verified). Current head manuscript blob at review check: `47c8fc3caee6344fa0157ceac92f97a4372e423c`. Same blob.
+# DIAG Obstruction independent review: BLOCK
+2026-11-25 | DO23
+Audited edited manuscript blob: `d762aea1c086d45c86720dbcbe5bad5f138e676f`, [immutable manuscript](https://github.com/j15marti/pnp/blob/32fa132425934ba7c5471f0a265939a7cca608ed/research/final-proof/main.tex). Current at review check: `d762aea1c086d45c86720dbcbe5bad5f138e676f`.
+Focused review only: conditional theorem L18–27, explicit open obligation L28–30, latest RT28/DP23, DO23 L3981–4010. No candidate universal closure, so no full manuscript PASS or kernel certification.
 
-**BLOCK**: Obligation obl:progress (L28–30), universal SEM/CLOSE, unconditional COST. The conditional aggregate theorem does not provide an unconditional procedure covering every reachable residual. DO22 lemma lem:do22-walsh is scoped raw representation progress/falsification; its all-sign support lower bound excludes explicit coefficient acquisition but not factored absolute-value gates or arbitrary post-cut algorithms. Point evaluation and a single minimizing lift are polynomial; repeated compact minimization and paid zero-feasibility consumers remain open. No full-manuscript final audit is claimed because no candidate closure exists. No uniform deterministic polynomial SAT algorithm or unrestricted lower bound follows. This is not an approval and may not be counted toward publication.
-
-[Report](https://github.com/j15marti/pnp/commit/4febd8d8dc8297efc8f86ca59a7acfd80ca1b709) and [results](https://github.com/j15marti/pnp/commit/335d75a9ce40a4782bd2a085decfbbaee4e29d45). Same S27, RT26/DA21 actual registries and distinct guards used; requests in ledger, no peer work presumed.
+- BLOCK U-PROGRESS: no uniform discoverable exact terminal or aggregate-credit-decreasing composition on every reachable chart. DO23 cycle identity is exact but individual-term absolute-tail evaluation is exponentially inadequate on the RT28 family. Factored signed evaluation may bypass this obstruction.
+- BLOCK universal SEM/CLOSE and unconditional COST: guard handling, discovery, repeated factored evaluation and aggregate reconstruction remain unproved. Logarithmic block-rank terminal is scoped; no general bound. Finite reference checks not complexity evidence.
+- BLOCK public release: no all-16 identical-SHA PASS, prior approvals invalid for substantive edit. No claim P=NP or P!=NP. [Report](https://github.com/j15marti/pnp/commit/bdf143c675706fe9870171d4b47bb0b649e671e3).
