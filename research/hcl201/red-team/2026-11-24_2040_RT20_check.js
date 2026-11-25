@@ -1,0 +1,22 @@
+function checker(){
+const R={assertions:0,graph_targets:0,graph_sat:0,graph_unsat:0,cycle_targets:0,cycle_sat:0,cycle_unsat:0,proper_batches:0,closure_probes:0,closure_rounds:0,closure_deletions:0,gaussian_xors:0,dp_transitions:0,brute_words:0,lifts:0,scaling:[]};
+function ck(x){R.assertions++;if(!x)throw Error("assert "+R.assertions)}
+const bit=i=>1n<<BigInt(i);
+function basis(xs){let B=new Map();for(let x of xs)while(x){let k=x.toString(2).length-1;if(B.has(k)){x^=B.get(k);R.gaussian_xors++}else{B.set(k,x);break}}return B}
+function has(B,x){while(x){let k=x.toString(2).length-1;if(!B.has(k))return false;x^=B.get(k);R.gaussian_xors++}return true}
+function sumsets(P){let S=new Map([[0n,1n]]);for(let p of P){let T=new Map();for(let [s,c] of S)for(let a of p){R.brute_words++;let k=s^a;T.set(k,(T.get(k)||0n)+c)}S=T}return S}
+function tags(n,E,mark=0n){return E.map(([u,v],i)=>{let w=(mark&bit(i))?bit(n):0n;return [0n,bit(u)^w,bit(v)^w]})}
+function verify(P,choices,target){let s=0n;for(let i=0;i<P.length;i++){ck(choices[i]>=0&&choices[i]<P[i].length);s^=P[i][choices[i]]}ck(s===target);R.lifts++}
+function incidence(E,n,t){let owner=Array(E.length).fill(-1);function aug(v,seen){for(let i=0;i<E.length;i++)if(E[i].includes(v)&&!seen.has(i)){seen.add(i);if(owner[i]<0||aug(owner[i],seen)){owner[i]=v;return true}}return false}for(let v=0;v<n;v++)if((t&bit(v))&&!aug(v,new Set()))return null;return owner.map((v,i)=>v<0?0:1+E[i].indexOf(v))}
+function closure(P,t){let D=P.map(p=>p.slice());while(true){R.closure_rounds++;if(D.some(p=>!p.length))return null;let a=D.reduce((s,p)=>s^p[0],0n),B=basis(D.flatMap(p=>p.map(x=>x^p[0])));if(!has(B,t^a))return null;let changed=false;for(let i=0;i<D.length;i++){let other=D.filter((_,j)=>j!==i),u=other.reduce((s,p)=>s^p[0],0n),C=basis(other.flatMap(p=>p.map(x=>x^p[0])));let p=D[i].filter(x=>{R.closure_probes++;return has(C,t^u^x)});if(p.length!==D[i].length){R.closure_deletions+=D[i].length-p.length;D[i]=p;changed=true;break}}if(!changed)return D}}
+function cycle(n){return Array.from({length:n},(_,i)=>[i,(i+1)%n])}
+function trellis(n,mark,t,b){let count=0n,witness=null;for(let start=0;start<2;start++){let S=new Map([[2*start,{count:1n,w:""}]]);for(let i=0;i<n;i++){let T=new Map();for(let [key,p] of S)for(let next=0;next<2;next++){R.dp_transitions++;if(i===n-1&&next!==start)continue;let x=key>>1,y=Number((t>>BigInt((i+1)%n))&1n)^next;if(x&&y)continue;let par=(key&1)^((mark&bit(i))?(x^y):0),k=2*next+par,old=T.get(k);T.set(k,{count:(old?.count||0n)+p.count,w:old?.w??(p.w+String(x?1:y?2:0))})}S=T}let a=S.get(2*start+b);if(a){count+=a.count;witness??=Array.from(a.w,Number)}}return {count,witness}}
+for(let n=1;n<=4;n++){let all=[];for(let i=0;i<n;i++)for(let j=i+1;j<n;j++)all.push([i,j]);for(let mask=0;mask<2**all.length;mask++){let E=all.filter((_,i)=>mask>>i&1),P=tags(n,E),S=sumsets(P);for(let t=0n;t<bit(n);t++){R.graph_targets++;let w=incidence(E,n,t);ck(Boolean(w)===S.has(t));if(w){R.graph_sat++;verify(P,w,t)}else R.graph_unsat++}}}
+for(let n=3;n<=6;n++){let E=cycle(n);for(let m=0n;m<bit(n);m++){let P=tags(n,E,m),S=sumsets(P);for(let t=0n;t<bit(n);t++)for(let b=0;b<2;b++){let target=t^(b?bit(n):0n),d=trellis(n,m,t,b);R.cycle_targets++;ck(d.count===(S.get(target)||0n));if(d.count){R.cycle_sat++;verify(P,d.witness,target)}else R.cycle_unsat++}}}
+for(let n=3;n<=9;n++){let P=tags(n,cycle(n));for(let mask=1;mask<2**n;mask++){let Q=P.filter((_,i)=>mask>>i&1),S=sumsets(Q),r=basis(Q.flat()).size;ck((S.size===2**r)===(mask===2**n-1));if(mask!==2**n-1)R.proper_batches++}}
+let I20=[[0n,1n,2n],[0n,4n,8n],[0n,5n,10n]];ck(sumsets(I20).size===16);for(let i=0;i<3;i++)ck(sumsets(I20.filter((_,j)=>i!==j)).size<16);
+const K4=[[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]],PM=[];for(let i=0;i<6;i++)for(let j=i+1;j<6;j++)if(new Set([...K4[i],...K4[j]]).size===4)PM.push([i,j]);ck(PM.length===3);ck(PM.every(p=>p.filter(i=>i<3).length===1));ck(new Set(PM.map(p=>p[0])).size===3);
+for(let n of [4,8,16,32,64,128]){let E=cycle(n),P=tags(n,E,3n),t=bit(n)-1n;for(let b=0;b<2;b++){let target=t^(b?bit(n):0n),D=closure(P,target);ck(D&&D.every(p=>p.length===3));let d=trellis(n,3n,t,b);ck(d.count===(b?0n:2n));if(d.witness)verify(P,d.witness,target);R.scaling.push({n,marked_parity:b,count:String(d.count),retained_choices:D.reduce((s,p)=>s+p.length,0),batch_cap_example:n-1})}let Q=tags(n,E),D=closure(Q,t);ck(D&&D.every(p=>p.length===3));let w=incidence(E,n,t);ck(w!==null);verify(Q,w,t);let d=trellis(n,0n,t,0);ck(d.count===2n)}
+return R
+}
+console.log(JSON.stringify(checker(), null, 2));
