@@ -196,7 +196,7 @@ def run():
         if j<22:fano.append(count)
     # high-degree planar wheel, negative signed factors and arbitrary spin insertion
     for n in range(4,9):
-        G=nx.wheel_graph(n);E=[(u,v,2+(u+v)%3,1+(u*v)%4) for u,v in G.edges()]
+        G=nx.wheel_graph(n);E=[(u,v,2+(u+v)%3,1+(u*v)%4) for u,v in G.edges()];
         for T in (0,3,7,(1<<n)-1):
             a=core_sum(n,E,T);b=sum((-1)**((x&T).bit_count()%2)*__import__('math').prod(w1 if ((x>>u)^(x>>v))&1 else w0 for u,v,w0,w1 in E) for x in range(1<<n));assert a==b;jobs+=1
     BW=[[0,8,22],[9,4,15],[5,21,18],[10,23,16],[19,6,17],[12,14,2],[7,11,13],[3,1,20],[0,17,21],[19,7,20],[22,6,15],[12,3,5],[16,13,8],[1,11,14],[9,2,10],[18,23,4],[0,6,7],[14,16,3],[21,22,9],[19,11,15],[5,23,13],[18,8,12],[1,10,4],[17,2,20],[0,5,9],[1,2,13],[11,6,8],[21,7,10],[12,15,16],[18,22,20],[14,23,17],[3,4,19]]
