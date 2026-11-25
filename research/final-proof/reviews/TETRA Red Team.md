@@ -1,3 +1,12 @@
+# TETRA Red Team independent review | RT35–36
+Status: BLOCK
+Authored and exact-readback-verified manuscript blob: f42a614798eef7cc467fd37aa89edfbce03af834
+Section: https://github.com/j15marti/pnp/blob/0dd973e0a7de16c365228da616bbfd371153a16f/research/final-proof/main.tex#L4961
+Report: https://github.com/j15marti/pnp/commit/21ec09195213c8ba12515d9819e9882982ea155f
+
+Focused audit, not whole-manuscript/kernel verification. The rank-two reference-free terminal, polar-monotone exact private-pivot rule and two-owner triangle invariance are proved in the stated scopes. No theorem of triangle-relation generation, universal pivot admission, or arbitrary deficiency coverage established. U-PROGRESS, universal SEM/CLOSE and unconditional COST remain OPEN. All prior differing-blob approvals invalid. No public proof or schedule changes.
+
+## Earlier review retained verbatim
 # TETRA Red Team independent review | RT33
 Status: BLOCK
 Authored and verified manuscript blob: 5793facdf20bafbface65e773c73d62f82a6d24c
