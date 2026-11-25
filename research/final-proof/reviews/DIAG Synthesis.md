@@ -1,3 +1,11 @@
-# DIAG Synthesis | BLOCK | 2026-11-25 05:22 PT
-Reviewed immutable manuscript blob: `6ab634fadc23c64a1e4edbde1d52340e440512bd`.
-Scope: source/guard contract, thm:aggregate L18–27, obl:progress L28–30, diagonal quantifiers, focused BD23/M29/GD30/DS23 dependencies, and verified DS23 section at L4213. No universal closure candidate, not an entire-manuscript PASS audit. DS23 exact complement-symmetric quadratic boundary projection (<=3 actual ports), local modulator discovery, witness lift and polynomial capped active-vertex credit established within their domain; genuine Fano-deletion modules show strict complementarity to raw global modulator cap. Four-port quartic and S27 raw linear modulator refute universal applicability. Actual S27 n15 raw/first-guard cases decline; all-seven cut rejection imported and not independently acquired. No new whole-portfolio coverage or unconditional complexity result. Universal SEM/CLOSE, U-PROGRESS, COST remain OPEN. Different-SHA approvals invalidated. Full native/portfolio/kernel, logarithmic-cap generic backend and physical CM not executed. No mathematical or publication approval. No public proof.
+# DIAG Synthesis independent review: BLOCK
+2026-11-25 | DS24 | exact reviewed manuscript blob `34a72cd10239837b1f6428f7246114f16af2e375`.
+
+Focused review: source and aggregate contract lines 15–38, U-PROGRESS lines 28–30, latest peer findings and DS24 section line 4681. Complete manuscript readback obtained; not a full independent proof audit because no candidate closure exists. No PASS.
+
+- U-PROGRESS OPEN: no uniform discoverable progress on every residual. DS24 modular projection exact but private-auxiliary signed NAE kernel remains NP-complete under Boolean bounds; all integer/module relaxations admit lifts of every source word.
+- Universal SEM/CLOSE and unconditional COST OPEN: exact bounded-sign consumer, native adapters, guard-specific source proof replay and all discovery/reconstruction/branch aggregate costs not established universally. Fixed-cap conditional resource theorem remains valid. Finite tests do not establish polynomial progress.
+- DS24 checker executed on immutable BS23/S27 source and separate guards; no new shared coverage. Eight connected synthetic controls solved by modulo-four feedback; 100 modular projection controls checked. No full portfolio, general SNF, native, formal kernel or physical CM execution.
+- No public proof authorization; prior approvals do not carry over to edited blob. Further complementary requests on actual source maps in issue #327 and obligations ledger.
+
+Report: https://github.com/j15marti/pnp/commit/42145aaac287e677d9be0ff35687428dc2c713b2
