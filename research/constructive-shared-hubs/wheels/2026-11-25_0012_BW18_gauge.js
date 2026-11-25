@@ -1,0 +1,11 @@
+'use strict';
+const fs=require('fs');
+function gaugeRun(gd,bs,src){
+let count=0;
+function check(v){if(!v)throw Error("failed "+count);count++}
+function solve(t,p,L){L.nodes++;p=p.slice();while(true){L.scans++;let change=false;for(const o of t){const a=o.a.filter(w=>{L.rows++;return o.v.every((v,i)=>p[v]<0||p[v]===+w[i])});if(!a.length)return null;for(let i=0;i<o.v.length;i++)if(p[o.v[i]]<0&&a.every(w=>w[i]===a[0][i])){p[o.v[i]]=+a[0][i];change=true}}if(!change)break}let v=t.flatMap(o=>o.v).find(v=>p[v]<0);if(v===undefined)return p;for(let b=0;b<2;b++){let q=p.slice();q[v]=b;let z=solve(t,q,L);if(z)return z}return null}
+function lift(i,w){let j=gd.jobs[i],s=bs.snapshots[i],x=w.slice();check(j.final.every(o=>o.a.includes(o.v.map(v=>x[v]).join(""))));check(j.guard.every(([v,b])=>x[v]===b));for(let m of [...j.merges].reverse()){let z=m.rows.find(a=>a[0]===m.scope.map(v=>x[v]).join(""));check(!!z);m.private.forEach((v,i)=>x[v]=+z[1][i])}for(let e of [...s.eliminations].reverse()){let k=e.u.reduce((a,v,i)=>a+(x[v]<<i),0),z=e.lift.find(a=>a[0]===k);check(!!z);x[e.v]=z[1]}check(src.find(s=>s.id===j.id).O.every(o=>!(o.bad||[0,7]).includes(o.t.reduce((a,v,i)=>a+(x[v]<<i),0))));check(j.guard.every(([v,b])=>x[v]===b));return x.join("")}
+let out=[],pinnedWord;
+for(let i=0;i<gd.jobs.length;i++){let j=gd.jobs[i],L={nodes:0,scans:0,rows:0},w=solve(j.final,j.p,L);check(!!w);let a={id:j.id,guard:j.guard,direct:L,directWitness:lift(i,w)};if(i<3){check(j.p.every(x=>x<0));check(j.final.every(o=>{let set=new Set(o.a);return o.a.every(w=>set.has(w.replace(/[01]/g,c=>c==="0"?"1":"0")))}));let p=j.p.slice(),v=Math.min(...j.final.flatMap(o=>o.v));p[v]=0;let M={nodes:0,scans:0,rows:0},w2=solve(j.final,p,M);check(!!w2);a.gauge={v,b:0,ledger:M,witness:lift(i,w2)};let c=w2.map(x=>x<0?-1:1-x);check(j.final.every(o=>o.a.includes(o.v.map(v=>c[v]).join(""))));}if(i===3)pinnedWord=w;out.push(a)}
+let d=[1,1,0,1,0,1,0,1,1,1,1,1,1,1,0,1,1,0,0,0,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1],x=pinnedWord.map((x,i)=>x<0?-1:x^d[i]),transport=lift(4,x);return {jobs:out,transportWitness:transport,assertions:count}}
+console.log(JSON.stringify(gaugeRun(...process.argv.slice(2).map(p=>JSON.parse(fs.readFileSync(p,'utf8')))),null,2));
