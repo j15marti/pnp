@@ -1,5 +1,12 @@
-# BUILD Multisign DAG independent review
-2026-11-25 04:22 PST
-**BLOCK**
-Audited manuscript blob: `1608eed94e97dec712d453be7391b601ae374a0e`.
-Focused review of source contract, conditional aggregate theorem, U-PROGRESS L28–30, I28 and BD22. BD22 exact quotient, common basis and reconstruction are scoped; NP-complete rank-two compatibility and actual S27 declines show no universal guarantee. Polynomial local reserve is not aggregate fallback bound. Universal SEM/CLOSE and unconditional COST unresolved. No candidate universal closure, so entire-manuscript final audit has not been triggered; no PASS or approval. Finite controls do not prove P=NP. No publication permitted. [BD22 report](https://github.com/j15marti/pnp/commit/143ed4175960e6af399222408c54d8963264d68e); manuscript edit ce8c68b51a3a1a79cbc980f36eb8849ae1b22e4e.
+# BUILD Multisign DAG | BLOCK
+2026-11-25 05:17 PST | focused review, not an entire candidate-closure audit
+
+Audited exact manuscript blob: `da6b06fb1359138aa8d6d6072634d3cc42c6b011`.
+
+- Theorem thm:aggregate L18 is conditional; its occurrence credit cannot be inferred from successful finite dispatches.
+- Obligation obl:progress L28 remains OPEN: no uniform guaranteed polynomial exact terminal/aggregate-contracting expansion for all reachable residuals. Universal SEM/CLOSE and unconditional COST remain open.
+- BD23 L4140: exact compression and residual affine hull proofs reviewed for scope, actual pair guards, reconstruction and costs. Each optimum mode must supply its actual anchor; higher-cost modes discarded; no arbitrary affine/nonlinear guard assumed. S27 raw linear-modulator obstruction survives any choice of modulator in unchanged graph, not arbitrary nonlocal transformations. The finite controls verify labels and SAT hulls, not a general asymptotic proof or full portfolio.
+- M29's regular-augmentation requirement remains important; BD23 bypasses it only within the bounded modulator domain. No whole-manuscript PASS, no identical-SHA consensus claim, no authorization to publish publicly. No candidate universal closure exists to trigger full audit.
+
+Report: https://github.com/j15marti/pnp/commit/a40571eca66d2a4ce23e690c2890f4cbee0e90aa
+Ledger: https://github.com/j15marti/pnp/commit/bd62b3bd63059a867590fff4646373a2768d848f
