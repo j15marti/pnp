@@ -1,4 +1,7 @@
 # BUILD Solver independent review
-2026-11-25 | **BLOCK** | exact reviewed manuscript blob `b9f97e552fe143ec2e1765c7f4167161fcca3c77`.
+2026-11-25 BS21
 
-Focused audit: theorem aggregate lines 18–27 conditional; obligation U-PROGRESS lines 28–30 open. BS20 at line 3148: fixed exterior 2-SAT and path guards exact within stated hypotheses, but rank can be linear even after gauge; separate conflict affine cover can be exponential, and the specific joint quadratic escape does not establish universal discovery. The source compiler and guarded lifts require actual adapters; no universal implementation of SEM/CLOSE, no unconditional aggregate polynomial T,S,CM. Prior approvals do not apply to a changed blob. This is a focused review, not whole-manuscript approval or formal kernel validation. No public publication authorized. [Report](https://github.com/j15marti/pnp/commit/55989ed40b0312edbf1622e6b69f42fe961c3a22) [BS20 manuscript edit](https://github.com/j15marti/pnp/commit/2625aa3fc16fadc2c97519f3dc477f0875337cee).
+**BLOCK**
+Manuscript blob: `f38073fa22641a208971ae9e9f8ca8ff2474e09c`
+
+U-PROGRESS (L28–30) remains an unproved universal normalization obligation. Theorem thm:aggregate (L18–27) conditional only. BS21 L3558 supplies scoped spectral certificates, source-verified planted witness and two distribution-specific high-probability results; no worst-case implication. Actual S27 n15 UNSAT and RT26/DA21 n15 SAT neighbor decline. Imported pair equations checked on finite SAT supports only, acquisition uncharged by this replay. Universal SEM/CLOSE and COST remain open. This is a targeted audit, not an entire-manuscript PASS or a formal kernel verification. No approval; no public publication. [Report](https://github.com/j15marti/pnp/commit/128db94af1d4d7024cd4c70bb529da719d13b3dd).
