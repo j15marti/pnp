@@ -1,11 +1,14 @@
-# BUILD Solver independent review
-2026-11-24 22:00 PST | **BLOCK**
-Audited manuscript blob: `afc054ce4a79a04d61aaf663b12aa25d5937cd9d` (1181 lines). This is a dependency audit, not a complete kernel verification or full candidate-closure audit; no candidate universal closure exists.
+# BUILD Solver independent focused review
 
-- thm:aggregate line 18: conditional occurrence bound is valid under its fixed uniform constants and polynomial descriptor assumptions.
-- obl:progress line 28: missing universal discoverable transformation and unconditional polynomial time/space. S21/DS16 acquisition remains open; target-only zero-face optimization is not free.
-- lem:diagonal line 32: fixed-portfolio quantifiers do not constitute a proof of universal coverage or separation.
-- sec:bs16 line 1168, lem:bs16-discover line 1169: exact on scope-verified cyclic plan; fixed 39-variable cap pays all local calls, not unrestricted source. Both labels for common benchmark, hostile planted genuine SAT decline. No arbitrary affine guard transport, no full portfolio/native replay, no completed residual-cycle replay supplement or measured CM.
-- Universal SEM/CLOSE and unconditional COST remain open. No PASS or public publication; earlier SHA approvals invalidated. Full independent manuscript review required only after proposed closure, and all 16 approvals must match that exact blob.
+**BLOCK**
 
-[BS16 report](https://github.com/j15marti/pnp/commit/e0440704d03611a222bc93301f99b3b86d0cf427); [results](https://github.com/j15marti/pnp/commit/3d408f496ef04f94fe38b4a248d2c77b27c8dcc1).
+Exact manuscript blob: `b43d033317928ed70457b63669d20aaa57b3fb66` (read from current main before ledger update). [BS17 section](https://github.com/j15marti/pnp/blob/e46577a819a7b72e6cbdd98b4c9be660611eb464/research/final-proof/main.tex#L1658). No full audit or PASS claimed because no candidate closure exists.
+
+- `thm:aggregate` L18: conditional, not unconditional. Credit must cover all occurrences and all preflight and lift costs, not merely successful steps.
+- `obl:progress` L28: OPEN. No uniform bound on availability of affordable next move after fill-in; cap-based trials decline. DS17 makes compulsory common-word acquisition NP-complete. S23's span credit remains conditional.
+- `lem:bs17-bucket` L1661: exact existential replacement and reverse reconstruction, fixed width cap, unary closure in checker. Additional affine guards must be represented; no oracle.
+- `lem:bs17-cover` L1672: nondegenerate polar form forces dimension <= k for any monochromatic affine packet, yielding exterior-only exponential size. Does not exclude factored auxiliary representations or polynomial decisions.
+- `lem:bs17-quadratic` L1684: exact polynomial terminal for ONE equation on affine guard; not for arbitrary systems. Empirical guards tested with explicit parameter generators, not general compiler replay.
+- SEM/CLOSE and COST remain unresolved globally. No full portfolio execution, full affine closure, native replay, kernel verification or physical memory instrumenting. No public publication; no changes to schedules. All earlier approvals invalid for substantive manuscript edit; the review refers only to the recorded SHA.
+
+[Shared exact residuals](https://github.com/j15marti/pnp/commit/d0957c4e012049409c644b915f52c3483e7bee6d) | [Report](https://github.com/j15marti/pnp/commit/6705bf08ba70de2b07d61453bd92e0560fa3731f)
