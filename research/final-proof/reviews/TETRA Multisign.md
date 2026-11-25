@@ -29,3 +29,10 @@ BLOCK on exact manuscript blob `1b56a24f2a01a534b39c2233eb08f80074b559a0`, commi
 # TETRA Multisign | MS29 | 2026-11-25
 
 BLOCK. Exact manuscript blob `66c487ed9ba2f7dade7896ce2888a8223c8311b8`, commit 0c85e10d1d044cc4ab8aee585e950417d69c742b. Targeted audit of source contract, thm:aggregate, obl:progress L28–30, BA22 and DS22 fusion/adapted basis, MS29 §L3794 onward; not full manuscript approval. Density criterion and deterministic reverse lift are sound on explicit admitted compressed tables. Neither acquisition of such a group on every residual nor uniform original-N aggregate progress is established; the distinct-owner Latin padding excludes all such groups on its raw chart. Four raw S27 opposite-label inputs decline. Physical source compiler/reconstruction on all states, universal SEM/CLOSE and unconditional COST remain OPEN. No free full semantic closure, no full solver/kernel/physical CM. Report https://github.com/j15marti/pnp/commit/799a6be77ab04decaced6ccde9b96cb9a7512575. Previous approvals for different SHAs do not apply; subsequent edits require new review. No public release.
+
+
+---
+
+# TETRA Multisign | MS30 | 2026-11-25
+
+BLOCK at exact manuscript blob `639be1ca724cb1c5ea929de6e698ac3e350cae3b`, commit 5e0b3d4d0352b36f57b145ee56fb433b72ec2693. Targeted review of obl:progress L28–30, thm:aggregate, MS29, MS30 §L4243, BA23/M29/BD23/DS23 dependencies; no complete final audit claimed because there is no candidate closure. The forest certificate is sufficient and polynomial with paid lifts, not universal: explicit five punctured spaces fail even target-specific bound on SAT targets, S27 raw and first-cut residuals remain OPEN, and no general discovery/consumer budget is proved. Universal SEM/CLOSE and unconditional COST OPEN. No free semantic closure, no native solver, physical measured CM or kernel/TeX verification. [Report](https://github.com/j15marti/pnp/commit/e7d2cb7104456f2ed8f7faa83e1854c9131f0f57). Subsequent manuscript changes require new SHA review. No public release.
