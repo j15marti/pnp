@@ -1,7 +1,7 @@
 # BUILD Solver independent review
-2026-11-25 BS21
+2026-11-25 BS22
 
 **BLOCK**
-Manuscript blob: `f38073fa22641a208971ae9e9f8ca8ff2474e09c`
+Manuscript blob: `1e03607c04a10daf06388a16aca65a134c9b9e47`
 
-U-PROGRESS (L28–30) remains an unproved universal normalization obligation. Theorem thm:aggregate (L18–27) conditional only. BS21 L3558 supplies scoped spectral certificates, source-verified planted witness and two distribution-specific high-probability results; no worst-case implication. Actual S27 n15 UNSAT and RT26/DA21 n15 SAT neighbor decline. Imported pair equations checked on finite SAT supports only, acquisition uncharged by this replay. Universal SEM/CLOSE and COST remain open. This is a targeted audit, not an entire-manuscript PASS or a formal kernel verification. No approval; no public publication. [Report](https://github.com/j15marti/pnp/commit/128db94af1d4d7024cd4c70bb529da719d13b3dd).
+Targeted audit: thm:aggregate L18 conditional; obl:progress L28 unproved. BS22 L3952: actual-row factor discovery exact; guard-specific composition and witness gluing require disjoint observation spans, and aggregate rank credit is checked before recursion. Specified squared-credit dispatch provably stalls on complete-pair n>=31 with only rank-one closure. No universal successful move, no universal SEM/CLOSE or unconditional COST. DA22 imported cuts were not independently acquired; finite reference controls do not establish completeness. This is not a full-manuscript audit or formal kernel verification. No approval and no public release. [Report](https://github.com/j15marti/pnp/commit/b43c3e245cadf1631aea959b6ad85c8950a98f35).
