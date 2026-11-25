@@ -1,0 +1,213 @@
+"use strict";
+function main(){
+const S={gauss:0,xors:0,match:0,edgeVisits:0,closure:0,pins:0,eliminationTests:0,eliminations:0,weightRankQueries:0,liftQueries:0,hyperplanes:0,dagEdges:0,dagMerges:0,peakKeys:0,cap:0,searchNodes:0,verified:0,referenceWords:0};
+const bit=i=>1n<<BigInt(i), range=n=>Array.from({length:n},(_,i)=>i);
+const parity=x=>{let p=0;while(x){x&=x-1n;p^=1}return p};
+const sat=(E,z)=>E.every(([m,b])=>parity(m&z)===b);
+const key=G=>G.map(([m,b])=>m.toString(16)+":"+b).join(",");
+function norm(rows){S.gauss++;let B=new Map();for(let [m,b] of rows){for(const [p,[v,c]] of [...B].sort((a,b)=>b[0]-a[0]))if(m&bit(p)){m^=v;b^=c;S.xors++}if(!m){if(b)return null;continue}let p=m.toString(2).length-1;for(const [q,[v,c]] of B)if(v&bit(p)){B.set(q,[v^m,c^b]);S.xors++}B.set(p,[m,b])}return [...B].sort((a,b)=>b[0]-a[0]).map(x=>x[1])}
+function size(n,G){const b=norm(G);return b===null?0n:bit(n-b.length)}
+function point(G){let z=0n;for(const [m,b] of G)if(b)z|=bit(m.toString(2).length-1);return z}
+function matching(R,owners){S.match++;let map=new Map();function aug(v,seen){for(const j of R.adj[v]){S.edgeVisits++;if(seen.has(j))continue;seen.add(j);if(!map.has(j)||aug(map.get(j),seen)){map.set(j,v);return true}}return false}for(const v of owners)aug(v,new Set());return map}
+function legalR(R,z){const need=range(R.fail.length).filter(i=>sat(R.fail[i],z));return matching(R,need).size===need.length}
+function closure(n,G,E,Rs){G=norm(G);if(!G)return null;for(;;){S.closure++;let changed=false;for(const e of E){const h=norm([...G,...e]);if(!h)continue;const d=h.length-G.length;if(d===0)return null;if(d===1){for(const [m,b] of e){const t=norm([...G,[m,b]]);if(t&&t.length>G.length){G=norm([...G,[m,b^1]]);S.pins++;changed=true;break}}if(changed)break}}if(changed)continue;for(const R of Rs){const must=range(R.fail.length).filter(i=>{const h=norm([...G,...R.fail[i]]);return h&&h.length===G.length});if(matching(R,must).size!==must.length)return null;const B=bundles(R,G),forced=range(B.groups.length).filter(i=>{let t=B.groups[i].reduce((v,j)=>v+size(n,[...G,...R.fail[j]]),0n);return t===bit(n-G.length)});S.bundleClosure++;if(matching(B,forced).size!==forced.length){S.bundleReject++;return null}}return G}}
+function singletonCertificate(n,G,E,Rs,j){S.eliminationTests++;const R=Rs[j];const rows=[...G,...E.flat(),...Rs.filter((_,i)=>i!==j).flatMap(r=>r.fail.flat())];const W=norm(rows.map(([m])=>[m,0]));const weights=R.fail.map(e=>{S.weightRankQueries++;if(!norm([...G,...e]))return 0n;const X=norm([...W,...e.map(([m])=>[m,0])]);return bit(n-(X.length-W.length))});let B=[];for(const v of range(weights.length).sort((a,b)=>weights[a]===weights[b]?a-b:weights[a]>weights[b]?-1:1)){let t=[...B,v];if(matching(R,t).size===t.length)B=t}const un=range(weights.length).filter(i=>!B.includes(i));const w=un.reduce((s,i)=>s+weights[i],0n);return w<bit(n)?{R,G,W,B,un,w}:null}
+
+Object.assign(S,{bundlePairTests:0,bundlePairs:0,bundleClosure:0,bundleReject:0,bundleCertTests:0,bundleCertSuccess:0,bundleWeightQueries:0});
+function bundles(R,G){
+  // Equal neighborhoods are essential for the necessary (UNSAT) closure test.
+  const ids=range(R.fail.length), used=new Set(), groups=[],adj=[];
+  const neighborhoods=R.adj.map(a=>[...new Set(a)].sort((x,y)=>x-y));
+  const keys=neighborhoods.map(a=>a.join(","));
+  for(const i of ids){if(used.has(i))continue;used.add(i);let group=[i];
+    for(const j of ids){if(j<=i||used.has(j)||keys[i]!==keys[j])continue;S.bundlePairTests++;
+      if(norm([...G,...R.fail[i],...R.fail[j]])===null){group.push(j);used.add(j);S.bundlePairs++;break}}
+    groups.push(group);adj.push(neighborhoods[i]);
+  }return {groups,adj};
+}
+function bundleCertificate(n,G,E,Rs,j){
+  S.bundleCertTests++;const R=Rs[j],B=bundles(R,G);
+  const W=norm([...G,...E.flat(),...Rs.filter((_,i)=>i!==j).flatMap(r=>r.fail.flat())].map(([m])=>[m,0]));
+  const weights=R.fail.map(e=>{S.bundleWeightQueries++;if(!norm([...G,...e]))return 0n;return bit(n-(norm([...W,...e.map(([m])=>[m,0])]).length-W.length))});
+  const w=B.groups.map(g=>{let x=g.reduce((s,i)=>s+weights[i],0n);return x<bit(n)?x:bit(n)});
+  let M=[];for(const i of range(w.length).sort((a,b)=>w[a]===w[b]?a-b:w[a]>w[b]?-1:1)){
+    const t=[...M,i];if(matching(B,t).size===t.length)M=t}
+  const u=range(w.length).filter(i=>!M.includes(i));
+  const credit=u.reduce((s,i)=>s+w[i],0n);if(credit>=bit(n))return null;
+  S.bundleCertSuccess++;return {R,G,W,B:M,un:u.flatMap(i=>B.groups[i]),w:credit,groups:B.groups};
+}
+function certificate(n,G,E,Rs,j){return singletonCertificate(n,G,E,Rs,j)||bundleCertificate(n,G,E,Rs,j)}
+
+function restore(n,C,z){const Q=[...C.G,...C.W.map(([m])=>[m,parity(m&z)])];const E=C.un.map(i=>C.R.fail[i]);const credit=g=>{S.liftQueries++;return size(n,g)-E.reduce((s,e)=>s+size(n,[...g,...e]),0n)};if(credit(Q)<=0n)throw Error("nonpositive lift");let G=norm(Q);for(const i of range(n)){if(G.length===n)break;const g=norm([...G,[bit(i),0]]);if(g&&credit(g)>0n)G=g;else{G=norm([...G,[bit(i),1]]);if(!G)throw Error("lift inconsistent")}}const w=point(G);if(!sat(Q,w)||!legalR(C.R,w))throw Error("bad lift");return w}
+function hyperplanes(R){const m=R.fail.length,A=range(m),r=matching(R,A).size,d=m-r;if(d===0)return [];if(d>2)return null;const dual=T=>T.length-r+matching(R,A.filter(i=>!T.includes(i))).size;const seeds=d===1?[[]]:A.filter(i=>dual([i])===1).map(i=>[i]);const out=new Map();for(const T of seeds){const H=A.filter(i=>dual([...new Set([...T,i])])===d-1);const e=norm(A.filter(i=>!H.includes(i)).flatMap(i=>R.fail[i]));S.hyperplanes++;if(e)out.set(key(e),e)}return [...out.values()]}
+function count(n,G,E,cap=4096){let D=new Map([[key(G),[G,1n]]]);for(const e of E){let F=new Map();const add=(g,c)=>{const k=key(g),old=F.get(k);if(old)S.dagMerges++;const v=(old?old[1]:0n)+c;if(v)F.set(k,[g,v]);else F.delete(k)};for(const [g,c] of D.values()){S.dagEdges+=2;add(g,c);const h=norm([...g,...e]);if(h)add(h,-c);if(F.size>cap){S.cap++;return null}}D=F;S.peakKeys=Math.max(S.peakKeys,D.size)}return [...D.values()].reduce((s,[g,c])=>s+c*bit(n-g.length),0n)}
+function solve(n,E,Rs,G=[],allowDelete=true,cap=4096){let saved=[];E=E.slice();Rs=Rs.slice();G=closure(n,G,E,Rs);if(!G)return {z:null,deleted:0};if(allowDelete){for(;;){let found=false;for(let j=0;j<Rs.length;j++){const c=certificate(n,G,E,Rs,j);if(c){saved.push(c);Rs.splice(j,1);S.eliminations++;G=closure(n,G,E,Rs);if(!G)return {z:null,deleted:saved.length};found=true;break}}if(!found)break}}let leftover=[];for(const R of Rs){const h=hyperplanes(R);if(h===null)leftover.push(R);else{E.push(...h);G=closure(n,G,E,Rs);if(!G)return {z:null,deleted:saved.length}}}Rs=leftover;
+function search(G){S.searchNodes++;G=closure(n,G,E,Rs);if(!G)return null;if(G.length===n){const z=point(G);return E.every(e=>!sat(e,z))&&Rs.every(r=>legalR(r,z))?z:null}if(!Rs.length){let c=count(n,G,E,cap);if(c===0n)return null;if(c!==null){if(!E.length)return point(G);let H=G,ok=true;for(const i of range(n)){if(H.length===n)break;const g=closure(n,[...H,[bit(i),0]],E,[]);const q=g?count(n,g,E,cap):0n;if(q===null){ok=false;break}if(q>0n)H=g;else{H=closure(n,[...H,[bit(i),1]],E,[]);if(!H)throw Error("positive count missing")}}if(ok)return point(H)}}// Closure has reached stagnation; branch on an unfixed coordinate.
+for(const i of range(n)){const g=norm([...G,[bit(i),0]]);if(g&&g.length>G.length){const a=search(g);return a!==null?a:search([...G,[bit(i),1]])}}throw Error("no free bit")}
+let z=search(G);if(z!==null)for(const c of saved.reverse())z=restore(n,c,z);return {z,deleted:saved.length}}
+const xor=(a,b)=>[a[0]^b[0],a[1]^b[1]];
+const constColor=v=>[[0n,v&1],[0n,(v>>1)&1]];
+const eqColor=(a,b,d)=>a.map((x,i)=>[x[0]^b[i][0],x[1]^b[i][1]^((d>>i)&1)]);
+function wheel(E){let a=[constColor(0),...E.map(([m,b])=>[[0n,0],[m,b]])];while(a.length<3||a.length%2===0)a.push(constColor(0));return {a,b:a.map(c=>[xor(c[0],[0n,1]),c[1]]),s:a.map(()=>0)}}
+function wheelEvents(W){let H=W.s.reduce((a,b)=>a^b,0),out=[];for(let d=1;d<4;d++){if(H!==((W.a.length%2===1)?0:d))continue;let E=[];for(let i=0;i<W.a.length;i++){let j=(i+1)%W.a.length;E.push(...eqColor(W.a[i],W.b[i],d));let c=d===1?2:d===2?1:3;let rows=eqColor(W.a[i],W.a[j],W.s[i]);let m=0n,b=0;for(let k=0;k<2;k++)if(c&(1<<k)){m^=rows[k][0];b^=rows[k][1]}E.push([m,b])}const e=norm(E);if(e)out.push(e)}return out}
+function color(a,z){return (parity(a[0][0]&z)^a[0][1])|((parity(a[1][0]&z)^a[1][1])<<1)}
+function rimLift(W,z){const lists=W.a.map((a,i)=>range(4).filter(v=>v!==color(a,z)&&v!==color(W.b[i],z)));for(const f of lists[0]){let D=new Map([[f,[f]]]);for(let i=1;i<lists.length;i++){let T=new Map();for(const [v,p] of D)for(const w of lists[i])if((v^w)!==W.s[i-1])T.set(w,[...p,w]);D=T}for(const [v,p] of D)if((v^f)!==W.s.at(-1))return p}return null}
+function sourceLegal(Ws,Rs,G,z){return sat(G,z)&&Ws.every(w=>rimLift(w,z)!==null)&&Rs.every(r=>legalR(r,z))}
+let cases=0,labels={SAT:0,UNSAT:0},by={},deletions=0,checks=0;const check=(p)=>{checks++;if(!p)throw Error("assertion "+checks)};
+function run(name,n,Ws,Rs,G=[],expected=undefined,cap=4096){let E=Ws.flatMap(wheelEvents);const r=solve(n,E,Rs,G,true,cap);let ref=expected;if(ref===undefined){ref=0;for(let i=0;i<2**n;i++){S.referenceWords++;const z=BigInt(i);const original=sourceLegal(Ws,Rs,G,z);check(Ws.every(w=>rimLift(w,z)!==null)===E.every(e=>!sat(e,z)));if(original)ref++}}const yes=r.z!==null;check(yes===(ref>0));if(yes){check(sourceLegal(Ws,Rs,G,r.z));S.verified++}cases++;labels[yes?"SAT":"UNSAT"]++;by[name]??={SAT:0,UNSAT:0,deleted:0};by[name][yes?"SAT":"UNSAT"]++;by[name].deleted+=r.deleted;deletions+=r.deleted;return r}
+const clauseR=e=>({fail:[e,[]],adj:[[0],[0]]});
+function formula(name,n,clauses){let Ws=[],Rs=[];clauses.forEach((e,i)=>i%2===0?Ws.push(wheel(e)):Rs.push(clauseR(e)));return run(name,n,Ws,Rs)}
+const cube=range(8).map(a=>range(3).map(i=>[bit(i),(a>>i)&1]));for(const m of range(256))formula("cube",3,cube.filter((_,i)=>m&(1<<i)));
+const triples=[[0,1,2],[0,3,4],[0,5,6],[1,3,5],[1,4,6],[2,3,6],[2,4,5]];const fano=triples.flatMap(t=>[0,1].map(b=>t.map(i=>[bit(i),b])));formula("Fano",7,fano);for(const j of range(14))formula("Fano",7,fano.filter((_,i)=>i!==j));
+let seed=812037;function rnd(n){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed%n}
+for(let k=0;k<80;k++){let n=5,Ws=range(1+rnd(3)).map(()=>wheel(range(1+rnd(3)).map(()=>[BigInt(1+rnd(31)),rnd(2)])));let Rs=range(1+rnd(3)).map(()=>{let m=2+rnd(4),p=1+rnd(3);return {fail:range(m).map(()=>range(rnd(4)).map(()=>[BigInt(1+rnd(31)),rnd(2)])),adj:range(m).map(()=>range(p).filter(()=>rnd(3)!==0))}});let G=k%3===0?[[BigInt(1+rnd(31)),rnd(2)]]:[];run("mixed",n,Ws,Rs,G)}
+// Sharp boundary: weights sum=1, one pair of complementary failures vs identical.
+run("boundary",1,[],[{fail:[[[1n,0]],[[1n,1]]],adj:[[],[]]}]);run("boundary",1,[],[{fail:[[[1n,0]],[[1n,0]]],adj:[[],[]]}]);
+// Force real fallback with a high-deficiency region whose exterior owners are not jointly satisfiable.
+run("fallback",3,[],[{fail:[[[1n,0]],[[1n,1]],[[2n,0]],[[4n,0]]],adj:[[],[],[],[]]}],[],0,1);
+run("fallback",3,[],[{fail:[[[1n,0]],[[1n,0]],[[2n,0]],[[4n,0]]],adj:[[],[],[],[]]}],[],1,1);
+// Large deficiency AND exterior rank: cover d owners of weight one using d resources;
+// remaining d owners have shared r private bits and individual exterior variables.
+const scale=[];for(const d of [4,16,32,64]){const r=Math.ceil(Math.log2(d))+1,n=d+r;let Rs=[{fail:[...range(d).map(()=>[]),...range(d).map(i=>[[bit(i),0],...range(r).map(j=>[bit(d+j),0])])],adj:range(2*d).map(()=>range(d))}];let Ws=range(d).map(i=>wheel([[bit(i),1]]));const a=run("scaleSAT",n,Ws,Rs,[],1);check(a.deleted===1);check((a.z>>BigInt(d))!==0n);run("scaleUNSAT",n,[...Ws,wheel([[bit(0),0]])],Rs,[],0);scale.push({d,exteriorRank:d,privateRank:r,deleted:a.deleted,creditNumerator:d,creditDenominator:2**r})}
+// Count-only audit using original event products (no existential deletion).
+let countCases=0;for(const m of range(256)){const E=cube.filter((_,i)=>m&(1<<i));const c=count(3,[],E);check(c===BigInt(8-E.length));countCases++}
+
+
+const bundleAudit={scales:[],randomPointwise:0,randomForced:0,randomFiberLifts:0,randomCertificates:0,nonaffineControls:0,hostile:0};
+for(const d of [2,4,8,16,32,64]){
+  const n=d,R={fail:range(d).flatMap(i=>[[[bit(i),0]],[[bit(i),1]]]),adj:range(2*d).map(()=>range(d))};
+  const e=range(d).map(i=>[bit(i),1]),Ws=[wheel(e)], E=Ws.flatMap(wheelEvents),G=closure(n,[],E,[R]);
+  check(G!==null&&G.length===0);check(singletonCertificate(n,G,E,[R],0)===null);
+  const C=bundleCertificate(n,G,E,[R],0);check(C!==null&&C.W.length===d&&C.w===0n);
+  const yes=run("bundleScaleSAT",n,Ws,[R],[],1);check(yes.deleted===1);
+  const Rbad={fail:R.fail,adj:range(2*d).map(()=>range(d-1))};
+  const no=run("bundleScaleUNSAT",n,Ws,[Rbad],[],0);check(no.deleted===0);
+  check(closure(n,[],E,[Rbad])===null);
+  bundleAudit.scales.push({d,exteriorRank:C.W.length,ownerCount:2*d,staticDeficiency:d,bundles:C.groups.length,uncoveredCredit:0,SAT:yes.z!==null,UNSAT:no.z===null});
+}
+// Nonaffine demand union; exterior rank 3, no private chart dimensions.
+const NR={fail:[[[1n,0],[2n,0]],[[1n,1],[4n,0]]],adj:[[0],[0]]};
+const NE=[[[1n,0],[2n,0],[4n,0]]];let NG=closure(3,[],NE,[NR]);
+check(singletonCertificate(3,NG,NE,[NR],0)===null);
+let NC=bundleCertificate(3,NG,NE,[NR],0);check(NC!==null&&NC.W.length===3);
+for(let z=0;z<8;z++){let w=restore(3,NC,BigInt(z));check(w===BigInt(z)&&legalR(NR,w));bundleAudit.nonaffineControls++}
+// Unsound pairing without mutual exclusion, and unsound identical-neighborhood assumption.
+for(const R of [{fail:[[],[]],adj:[[0],[0]]},{fail:[[[1n,0]],[[1n,1]]],adj:[[0],[]]}]){
+  check(bundleCertificate(1,[],[[[1n,0]]],[R],0)===null);bundleAudit.hostile++;
+}
+let seedB=901833;function rb(n){seedB=(Math.imul(seedB,1664525)+1013904223)>>>0;return (seedB>>>8)%n}
+for(let t=0;t<100;t++){
+ const n=5,m=2+rb(7),p=1+rb(4),R={fail:range(m).map(()=>range(rb(4)).map(()=>[BigInt(1+rb(31)),rb(2)])),adj:range(m).map(()=>range(p).filter(()=>rb(3)!==0))};
+ const G=norm(t%3===0?[[BigInt(1+rb(31)),rb(2)]]:[]),E=[[[BigInt(1+rb(31)),rb(2)]]],B=bundles(R,G);
+ const W=norm([...G,...E.flat()].map(([m])=>[m,0]));
+ const C=bundleCertificate(n,G,E,[R],0);if(C)bundleAudit.randomCertificates++;
+ let any=false;for(let j=0;j<2**n;j++){const z=BigInt(j);if(!sat(G,z))continue;
+   const active=B.groups.map(g=>g.filter(i=>sat(R.fail[i],z)));
+   check(active.every(a=>a.length<=1));const need=range(active.length).filter(i=>active[i].length);
+   check(legalR(R,z)===(matching(B,need).size===need.length));bundleAudit.randomPointwise++;
+   any ||= legalR(R,z);
+   if(C){const w=restore(n,C,z);check(legalR(R,w)&&sat(G,w)&&W.every(([m])=>parity(m&w)===parity(m&z)));bundleAudit.randomFiberLifts++}
+ }
+ if(closure(n,G,[],[R])===null){check(!any);bundleAudit.randomForced++}
+ run("bundleRandom",n,[],[R],G);
+}
+function cycleAudit(){
+  const L={oracle:0,cycleEdges:0,cycleEquations:0,affineSamples:0,projectedEvents:0,sccTests:0,pivotScans:0,sourceChecks:0,referenceWords:0,lifts:0,checks:0,labels:{SAT:0,UNSAT:0},by:{},scaling:[]};
+  const ck=x=>{L.checks++;if(!x)throw Error("BS10 check "+L.checks)};
+  const val=([m,b],z)=>parity(m&z)^b;
+  const ev=(e,z)=>val([e[2],e[3]],z);
+  let seed=105327;function rand(n){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return (seed>>>8)%n}
+  function sinks(g){
+    const reach=range(g.n).map(i=>range(g.n).map(j=>i===j));
+    for(const [u,v] of g.edges)if(v<g.n)reach[u][v]=true;
+    for(let k=0;k<g.n;k++)for(let i=0;i<g.n;i++)for(let j=0;j<g.n;j++){L.sccTests++;reach[i][j] ||= reach[i][k]&&reach[k][j]}
+    let seen=new Set(),out=[];
+    for(const u of range(g.n)){if(seen.has(u))continue;const c=range(g.n).filter(v=>reach[u][v]&&reach[v][u]);const set=new Set(c);c.forEach(v=>seen.add(v));if(c.some(v=>g.free.includes(v)))continue;if(!g.edges.some(e=>set.has(e[0])&&!set.has(e[1])))out.push(c)}
+    return out;
+  }
+  function cycle(g,c,z,cap=2000000){
+    L.oracle++;let scans=0;const C=new Set(c),A=range(g.n).map(()=>[]);
+    for(const e of g.edges)if(C.has(e[0])&&C.has(e[1]))A[e[0]].push(e);
+    for(const s of c){const seen=new Set([s]),path=[];
+      function dfs(u,p){for(const e of A[u]){L.cycleEdges++;if(++scans>cap)throw Error("cycle backend cap");const v=e[1],q=p^ev(e,z);if(v===s){if(!q)return [...path,e];continue}if(v<s||seen.has(v))continue;seen.add(v);path.push(e);const f=dfs(v,q);if(f)return f;path.pop();seen.delete(v)}return null}
+      const a=dfs(s,0);if(a)return a;
+    }return null;
+  }
+  function samples(d,G){const origin=point(G),piv=new Set(G.map(([m])=>m.toString(2).length-1)),out=[origin];
+    for(const i of range(d))if(!piv.has(i)){let z=origin^bit(i);for(const [m] of G)if(m&bit(i))z^=bit(m.toString(2).length-1);out.push(z)}
+    return out;
+  }
+  function project(d,g,G){
+    let E=[];for(const c of sinks(g)){
+      let H=norm(G);
+      while(H!==null){let found=null;
+        for(const z of samples(d,H)){L.affineSamples++;ck(sat(H,z));const p=cycle(g,c,z);if(p){found=p;break}}
+        if(found===null){E.push(H);L.projectedEvents++;break}
+        const row=found.reduce(([m,b],e)=>[m^e[2],b^e[3]],[0n,1]);const next=norm([...H,row]);ck(next===null||next.length===H.length+1);L.cycleEquations++;H=next;
+      }
+    }return E;
+  }
+  function legal(g,z,x){return range(g.n).every(u=>g.free.includes(u)||g.edges.some(e=>e[0]===u&&(((x>>BigInt(u))&1n)===BigInt((e[1]<g.n?Number((x>>BigInt(e[1]))&1n):val(g.exits[e[1]-g.n],z))^ev(e,z)))))}
+  function lift(g,z){const a=Array(g.n).fill(null);for(const v of g.free)a[v]=0;
+    for(const c of sinks(g)){const p=cycle(g,c,z);if(!p)return null;a[p[0][0]]=0;for(const e of p){const t=a[e[0]]^ev(e,z);if(a[e[1]]!==null)ck(a[e[1]]===t);a[e[1]]=t}}
+    let change=true;while(change){change=false;for(const e of g.edges){const [u,v]=e;if(a[u]!==null)continue;const t=v<g.n?a[v]:val(g.exits[v-g.n],z);if(t!==null){a[u]=t^ev(e,z);change=true}}}
+    ck(a.every(x=>x!==null));const x=a.reduce((q,b,i)=>q|(BigInt(b)<<BigInt(i)),0n);L.sourceChecks++;ck(legal(g,z,x));L.lifts++;return x;
+  }
+  function compile(n,fs,exits){
+    const owner=new Map(),piv=Array(fs.length).fill(-1);
+    function aug(i,seen){for(const [v] of fs[i]){L.pivotScans++;if(v>=n||seen.has(v))continue;seen.add(v);if(!owner.has(v)||aug(owner.get(v),seen)){owner.set(v,i);piv[i]=v;return true}}return false}
+    for(const i of range(fs.length))if(!aug(i,new Set()))return null;
+    const edges=[];for(const i of range(fs.length)){const a=fs[i].findIndex(t=>t[0]===piv[i]),[u,m,b]=fs[i][a];for(const j of range(fs[i].length))if(j!==a){const [v,p,q]=fs[i][j];edges.push([u,v,m^p,1^b^q])}}
+    return {n,edges,exits,free:range(n).filter(v=>!owner.has(v))};
+  }
+  function ref(g,z){for(let x=0n;x<bit(g.n);x++){L.referenceWords++;if(legal(g,z,x))return x}return null}
+  function coop(d,g,Ws,Rs,G,cap=4096){
+    const E=Ws.flatMap(wheelEvents);let H=closure(d,G,E,Rs);if(H===null)return null;
+    const A=project(d,g,H);
+    for(const e of A){E.push(e);H=closure(d,H,E,Rs);if(H===null)return null}
+    const q=solve(d,E,Rs,H,true,cap);if(q.z===null)return null;
+    ck(sourceLegal(Ws,Rs,G,q.z));const x=lift(g,q.z);ck(x!==null);return {z:q.z,x};
+  }
+  function addLabel(name,yes){const s=yes?"SAT":"UNSAT";L.labels[s]++;if(!L.by[name])L.by[name]={SAT:0,UNSAT:0};L.by[name][s]++}
+  function audit(name,d,g,Ws=[],Rs=[],G=[],cap=4096){
+    const H=norm(G),A=H===null?[]:project(d,g,H);let expected=false;
+    if(H!==null)for(let z=0n;z<bit(d);z++){if(!sat(H,z))continue;const x=ref(g,z),okay=!A.some(e=>sat(e,z));ck(okay===(x!==null));if(okay){ck(lift(g,z)!==null);expected ||= sourceLegal(Ws,Rs,G,z)}}
+    const q=coop(d,g,Ws,Rs,G,cap);ck((q!==null)===expected);addLabel(name,expected);return q;
+  }
+  // Common Fano, single-owner relaxation with actual shared reference bit.
+  const T=[[0,1,2],[0,3,4],[0,5,6],[1,3,5],[1,4,6],[2,3,6],[2,4,5]];
+  for(let relax=-1;relax<14;relax++){
+    const fs=T.map((t,i)=>[...t.map(v=>[v,0n,0]),...(i===Math.floor(relax/2)?[[7,0n,1-(relax%2)]]:[])]);
+    const g=compile(7,fs,[[1n,0]]);ck(g!==null);
+    const q=audit("Fano",1,g);ck((q!==null)===(relax>=0));
+    if(q){const decoded=q.x^(q.z&1n?127n:0n);const raw=T.flatMap(t=>[0,1].map(b=>t.map(v=>[bit(v),b]))).filter((_,i)=>i!==relax);ck(raw.every(e=>!sat(e,decoded)))}
+  }
+  // Opposite-label same-signature joint correlation controls.
+  const g1={n:1,free:[],exits:[],edges:[[0,0,1n,0],[0,0,1n,1]]};
+  const g2={n:2,free:[],exits:[],edges:[[0,0,1n,0],[1,1,1n,1]]};
+  ck(audit("correlation",1,g1)!==null);ck(audit("correlation",1,g2)===null);
+  // Mixed fixed-topology graph + actual wheel and private unit-flow region.
+  for(let t=0;t<120;t++){
+    const d=1+rand(4),n=1+rand(5),exits=[[BigInt(rand(2**d)),rand(2)]],free=range(n).filter(()=>rand(7)===0),edges=[];
+    for(const u of range(n))if(!free.includes(u))for(const j of range(1+rand(3)))edges.push([u,rand(n+1),BigInt(rand(2**d)),rand(2)]);
+    const g={n,exits,free,edges};const W=t%2?[wheel([[BigInt(1+rand(2**d-1)),rand(2)]])]:[];
+    const Rs=t%3?[{fail:range(2+rand(3)).map(()=>[[BigInt(1+rand(2**d-1)),rand(2)]]),adj:[]}]:[];
+    if(Rs.length)Rs[0].adj=Rs[0].fail.map(()=>range(1+rand(3)).filter(()=>rand(3)!==0));
+    const G=t%4===0?[[BigInt(1+rand(2**d-1)),rand(2)]]:[];
+    audit("mixed",d,g,W,Rs,G,t%10===0?1:4096);
+  }
+  // Diamond cycle family: 2^k simple cycles, compact single bad event z=0.
+  for(const k of [2,4,8,12]){
+    const edges=[];for(let i=0;i<k;i++){const a=k+1+2*i,b=a+1;edges.push([i,a,0n,0],[i,b,bit(i),0],[a,i+1,0n,0],[b,i+1,0n,0])}edges.push([k,0,0n,1]);
+    const g={n:3*k+1,edges,free:[],exits:[]},before=L.oracle,scans=L.cycleEdges,A=project(k,g,[]);
+    ck(A.length===1&&A[0].length===k&&sat(A[0],0n));for(const i of range(k)){ck(!sat(A[0],bit(i)));ck(lift(g,bit(i))!==null)}
+    ck(coop(k,g,[],[],[])!==null);ck(coop(k,g,[],[],range(k).map(i=>[bit(i),0]))===null);
+    L.scaling.push({k,vertices:g.n,edges:edges.length,cycles:2**k,rejectionRank:A[0].length,oracleCalls:L.oracle-before,cycleEdgeScans:L.cycleEdges-scans});
+    addLabel("diamonds",true);addLabel("diamonds",false);
+  }
+  return L;
+}
+const cycleExtension=cycleAudit();
+return {cases,labels,by,deletions,checks,countCases,scale,ledger:S,bundleAudit,cycleExtension};
+}
+console.log(JSON.stringify(main(),null,2));
