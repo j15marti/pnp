@@ -107,7 +107,17 @@ function runI26(data) {
  // Actual K16 owner slices, relabel locally and compare the real dual contraction.
  const slices=[];
  for(const row of C.slice(0,5)){const sc=[...new Set(row.map(Math.abs))],c=row.map(l=>Math.sign(l)*(sc.indexOf(Math.abs(l))+1));const d=dual(circuit(sc.length,[c]),10),r=ref(sc.length,[c],true);check(d.status==="COUNT"&&Number(d.count)===r.count);slices.push({sourceRow:row,...d,ref:r.count})}
- return {assertions,controls,controlSAT:controls.filter(x=>x.ref>0).length,controlUNSAT:controls.filter(x=>!x.ref).length,
+
+ // Private gate cancellation: direct independent transform of every actual wide signed NAE owner.
+ let collapsedChecks=0,collapsedModes=0,collapsedNonzero=0,rawModes=0,rawNonzero=0;
+ function collapse(rows,isRaw){for(const row of rows){const k=row.length,sz=1<<k;let neg=0;row.forEach((l,i)=>{if(l<0)neg|=1<<i});
+   for(let a=0;a<sz;a++){let sum=0;for(let x=0;x<sz;x++){let y=x^neg;if(y!==0&&y!==sz-1)sum+=parity(BigInt(x&a))?-1:1}
+     const formula=(a===0?sz:0)-(parity(BigInt(a&neg))?-1:1)*(1+(parity(BigInt(a))?-1:1));check(sum===formula);collapsedChecks++;if(isRaw){rawModes++;if(sum)rawNonzero++}else{collapsedModes++;if(sum)collapsedNonzero++}
+   }
+ }}
+ collapse(C,false);collapse(raw,true);
+
+ return {assertions,collapsedChecks,collapsedModes,collapsedNonzero,rawModes,rawNonzero,controls,controlSAT:controls.filter(x=>x.ref>0).length,controlUNSAT:controls.filter(x=>!x.ref).length,
   sameSource:{ids,K,BW,kClosure,rawClosure,reference:R,lifts,firstLift,slices},limitations:"Actual full gate mode contractions decline cap 10; exact source reference enumerates 2^14 words. No global matching execution, native lift, full portfolio, kernel or measured CM."};
 }
 if(typeof module!=="undefined"){module.exports=runI26;if(require.main===module){const fs=require("fs");console.log(JSON.stringify(runI26(JSON.parse(fs.readFileSync(process.argv[2],"utf8"))),null,2))}}
