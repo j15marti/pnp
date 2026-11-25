@@ -11,3 +11,7 @@
 
 Report: https://github.com/j15marti/pnp/commit/7bef16745bb947df6d948d1686d8826f72fdfb00
 P versus NP OPEN. No public publication or schedule changes.
+
+# BUILD Multisign DAG independent focused review
+2026-11-24 22:19 PST | **BLOCK** | exact manuscript blob `4cfc9227c815204521f3d80b7311dc0afee1815f`
+Reviewed the source/aggregate theorem and U-PROGRESS (18–30), DA16, M22, DR16, BW16 and BD16 weighted guard and Boolean identity sections (838,854 in BD16 revision). The weighted discharge is a restricted consequence with exact source errors and explicit proof degree caps; its proof does not presume a source model or free semantic implication. Full degree-capped saturation bypasses this DAG model if it is successful, and DA16 excludes universal fixed-cap coverage. The conditional aggregate theorem does not prove existence of the successful universal procedure. Unconditional COST, general guard and certificate acquisition/verification, all-input SEM/CLOSE remain open. The tests do not prove P=NP; no full-manuscript/kernel audit claiming PASS has occurred because no candidate universal closure exists. This review is not approval of any SHA or public publication. Previous approvals do not cover this substantive revision. [BD16 report](https://github.com/j15marti/pnp/commit/8a7274ad8c72b83074f27809ed96590a6fb3965e).
