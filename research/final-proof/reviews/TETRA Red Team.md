@@ -1,3 +1,12 @@
+# TETRA Red Team independent review | RT39
+Status: BLOCK
+Authored and exact-readback-verified manuscript blob: c7df30dadc89c09313fe517d1934b3cf4d281a89
+Section: https://github.com/j15marti/pnp/blob/d9fade1aabc9230e12ffab6892dc87a82ea3335f/research/final-proof/main.tex#L5101
+Report: https://github.com/j15marti/pnp/commit/52cd08ddb63d947656e805254a659ac8158f761a
+
+Focused audit, not a whole-manuscript or formal kernel review. RT39 proves complete exact strict-deficiency-one orientation classification with at most two smaller recursive jobs and source witness lifts, fixed-selector dependency span acquisition, and conditional strong double-Hall triangle gluing. The naive recursion can have exponential allowance; a universal polynomial geometry-job bound or deterministic identity alternative is not proved. Arbitrary deficiency is not covered. U-PROGRESS, universal SEM/CLOSE and unconditional COST remain OPEN. All prior differing-blob approvals invalid. No public proof or schedule changes.
+
+## Earlier review retained verbatim
 # TETRA Red Team independent review | RT38
 Status: BLOCK
 Authored and exact-readback-verified manuscript blob: bd76448af143a345fc19860913b0233a6a62b986
