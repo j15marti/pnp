@@ -156,15 +156,23 @@ function runI26(data) {
   let gram=B.map(v=>[B.reduce((s,w,i)=>parity(v&w)?s^bit(i):s,0n),0]);
   function q(v){let p=0;for(const r of or)if(r&v)p^=1;return p}
   for(let i=0;i<B.length;i++)for(let j=0;j<B.length;j++)check((q(B[i]^B[j])^q(B[i])^q(B[j]))===parity(B[i]&B[j]));
-  return {cycleDimension:B.length,polarRank:system(gram,B.length).rank}
+  
+  const pr=system(gram,B.length).rank,M=Array(n).fill(0n);
+  for(const c of C)for(let i=0;i<3;i++)for(let j=i+1;j<3;j++){let a=Math.abs(c[i])-1,b=Math.abs(c[j])-1;M[a]^=bit(b);M[b]^=bit(a)}
+  const mr=system(M.map(v=>[v,0]),n).rank,delta=B.length-C.length;
+  check(pr===2*delta+mr);return {cycleDimension:B.length,polarRank:pr,cooccurrencePolarRank:mr,fullOwnerDeficiency:delta}
  }
  const polarFano=polarRank(7,fano),polarBW=polarRank(data.source.n,raw);
  const K4=[[1,2,3],[1,4,5],[2,4,6],[3,5,6]],polarK4=polarRank(6,K4);check(polarK4.polarRank===0);
- let minK4=64,maxK4=0;
+ let minK4=64,maxK4=0,forestLifts=0;
  for(let s=0;s<4096;s++){let C=K4.map((r,i)=>r.map((v,j)=>((s>>(i*3+j))&1)?-v:v));let r=ref(6,C,true);
-  check(r.count>0);minK4=Math.min(minK4,r.count);maxK4=Math.max(maxK4,r.count)}
+  check(r.count>0);
+  const pairs=[[0,1],[0,1],[0,2],[0,1]];
+  const equations=C.map((row,i)=>{const [a,b]=pairs[i].map(j=>row[j]);return [bit(Math.abs(a)-1)^bit(Math.abs(b)-1),1^(a<0?1:0)^(b<0?1:0)]});
+  const sol=system(equations,6,true);check(!sol.bad&&sol.rank===4);check(ok(Number(sol.point),C,true));forestLifts++;
+  minK4=Math.min(minK4,r.count);maxK4=Math.max(maxK4,r.count)}
 
- return {assertions,polarFano,polarBW,polarK4,K4AllSignings:{count:4096,min:minK4,max:maxK4},fanoControls,cycleK,cycleBW,collapsedChecks,collapsedModes,collapsedNonzero,rawModes,rawNonzero,controls,controlSAT:controls.filter(x=>x.ref>0).length,controlUNSAT:controls.filter(x=>!x.ref).length,
+ return {assertions,polarFano,polarBW,polarK4,K4AllSignings:{count:4096,min:minK4,max:maxK4,forestLifts},fanoControls,cycleK,cycleBW,collapsedChecks,collapsedModes,collapsedNonzero,rawModes,rawNonzero,controls,controlSAT:controls.filter(x=>x.ref>0).length,controlUNSAT:controls.filter(x=>!x.ref).length,
   sameSource:{ids,K,BW,kClosure,rawClosure,reference:R,lifts,firstLift,slices},limitations:"Actual full gate mode contractions decline cap 10; exact source reference enumerates 2^14 words. No global matching execution, native lift, full portfolio, kernel or measured CM."};
 }
 if(typeof module!=="undefined"){module.exports=runI26;if(require.main===module){const fs=require("fs");console.log(JSON.stringify(runI26(JSON.parse(fs.readFileSync(process.argv[2],"utf8"))),null,2))}}
