@@ -117,7 +117,36 @@ function runI26(data) {
  }}
  collapse(C,false);collapse(raw,true);
 
- return {assertions,collapsedChecks,collapsedModes,collapsedNonzero,rawModes,rawNonzero,controls,controlSAT:controls.filter(x=>x.ref>0).length,controlUNSAT:controls.filter(x=>!x.ref).length,
+
+ // Exact native NAE dual support: the binary incidence-graph cycle space.
+ function cycleDual(n,rows,cap=12){
+  let d=0,vr=Array(n).fill(0n),owners=[];
+  for(const c of rows){if(c.length<2||new Set(c.map(Math.abs)).size!==c.length)throw Error("noncanonical owner");
+   let mask=0n,neg=0n;
+   for(const l of c){const b=bit(d++);mask^=b;vr[Math.abs(l)-1]^=b;if(l<0)neg^=b}
+   owners.push({mask,neg,k:c.length})}
+  const constraints=vr.concat(owners.map(o=>o.mask)).map(v=>[v,0]);
+  const rank=system(constraints,d).rank,dim=d-rank;
+  const out={vars:n,owners:rows.length,incidences:d,incidenceRank:rank,cycleDimension:dim,cap};
+  if(dim>cap)return {...out,status:"DECLINE"};
+  const basis=system(constraints,d,true).free;check(basis.length===dim);
+  let states=[0n];for(const b of basis)states=states.concat(states.map(s=>s^b));
+  let total=0n,positive=0,negative=0,absolute=0n;
+  for(const s of states){let weight=1n;for(const o of owners){let a=s&o.mask;
+    check(parity(a)===0);if(!a)weight*=bit(o.k)-2n;else weight*=parity(s&o.neg)?2n:-2n}
+    check(weight!==0n);if(weight>0n){positive++;absolute+=weight}else{negative++;absolute-=weight}total+=weight
+  }
+  let divisor=bit(Math.max(0,d-n)),numerator=total*bit(Math.max(0,n-d));check(numerator%divisor===0n);
+  return {...out,status:"COUNT",modes:states.length,positive,negative,signedNumerator:String(total),absoluteNumerator:String(absolute),count:String(numerator/divisor)};
+ }
+ const fano=[[1,2,3],[1,4,5],[1,6,7],[2,4,6],[2,5,7],[3,4,7],[3,5,6]];
+ let fanoControls=[];
+ function testCycle(name,rows,expected){let c=cycleDual(7,rows);check(c.status==="COUNT"&&Number(c.count)===expected);check(ref(7,rows,true).count===expected);fanoControls.push({name,...c})}
+ testCycle("Fano root",fano,0);
+ for(let i=0;i<7;i++)for(let j=0;j<3;j++){let C=fano.map(c=>c.slice());C[i][j]*=-1;testCycle("Fano sign "+i+":"+j,C,10)}
+ const cycleK=cycleDual(ids.length,local),cycleBW=cycleDual(data.source.n,raw);
+
+ return {assertions,fanoControls,cycleK,cycleBW,collapsedChecks,collapsedModes,collapsedNonzero,rawModes,rawNonzero,controls,controlSAT:controls.filter(x=>x.ref>0).length,controlUNSAT:controls.filter(x=>!x.ref).length,
   sameSource:{ids,K,BW,kClosure,rawClosure,reference:R,lifts,firstLift,slices},limitations:"Actual full gate mode contractions decline cap 10; exact source reference enumerates 2^14 words. No global matching execution, native lift, full portfolio, kernel or measured CM."};
 }
 if(typeof module!=="undefined"){module.exports=runI26;if(require.main===module){const fs=require("fs");console.log(JSON.stringify(runI26(JSON.parse(fs.readFileSync(process.argv[2],"utf8"))),null,2))}}
