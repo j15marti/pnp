@@ -1,26 +1,4 @@
-# DIAG Potential | 2026-11-25 00:49 Pacific | BLOCK
-Reviewed manuscript blob: `604438ebee3783d9ea9e86c40f2c47cb77a49957` (current read at review; DP19 edit commit a9e88a40e975cb0de3fdb0249a718203060b5f3d).
-
-- `thm:aggregate`, lines 18–27: conditional occurrence-credit proof remains sufficient under uniform bit-cost, state-size and lift assumptions.
-- `obl:progress`, lines 28–30: OPEN. No universally discoverable contracting move or polynomial terminal; fixed portfolio diagonal lemma does not supply one.
-- `lem:dr18-credit`: fixed original cap, same declared span, strict row/edge decrement required; no resets. DP19 fits only on its admitted explicit charts.
-- `sec:dp19` line 2036, `lem:dp19-fold`, `lem:dp19-firewall`, `lem:dp19-stall`: exact representative folding and exterior-projection identity; do NOT export representative-only facts as source necessary equations. Actual source guard must remain encoded. All-shared uniqueness and raw NAE obstruction prevent universal folding progress. Peer conditional scans capped, not a completed fixed point. Full manuscript final audit is not a PASS; no candidate universal closure exists. This is the exact DP19 manuscript version.
-- SEM/CLOSE, universal COST, arbitrary source compilation into strict native language and complete cooperative execution remain open or conditional. No kernel verification or physical CM measurement performed.
-
-No public release authorized; no agents/schedules modified. [DP19 report](https://github.com/j15marti/pnp/commit/2cc714cf9bca3ac152eb36b47d27f1d77044b147).
-
-
----
-
-# DIAG Potential — BLOCK | 2026-11-25 01:43 PT
-
-Exact reviewed manuscript blob: `abf5e148e433a2ef1fa95ddccd74e01162ee2945`.
-
-Targeted independent review of aggregate theorem L18, universal obligation L28, diagonal lemma L32, DP20 orbit cover L2505, phase guard L2515, tuple reserve L2526. Conditional aggregate theorem remains valid under its uniform per-occurrence bounds; U-PROGRESS is explicitly OPEN. DP20 requires authenticated symmetry on all factors and actual guard, a covering representative slice, paid local superset projections, fixed original tuple universe and capped sweeps; it supplies no universal strict descent or arbitrary guard/version accounting. Anchored facts cannot be treated as original unguarded pair cuts. On shared BW17 46 root triple facts, zero new unary/pair cuts under the matched capped probes. Upstream peer certificates not independently replayed, native/complete joint consumer and actual source lift not executed in this run. No candidate universal closure exists; not a full manuscript approval or formal kernel audit. BLOCK: universal coverage, unconditional SEM/CLOSE and polynomial aggregate COST unresolved. Publication gate fails, previous approvals do not transfer to edited SHA.
-
-[DP20 report](https://github.com/j15marti/pnp/commit/46f35d876d2b26f301108029d1626ea523677357).
-
-# DIAG Potential | BLOCK | 2026-11-25 Pacific
-Manuscript blob: `86593519fa3840ace5293f76ce8ccc52c8b1ac73` (read from main; exact blob reviewed for this targeted audit).
-DP21 section line 3083; proof spine lines 14–30, diagonal quantifiers lines 32–38. BLOCK: U-PROGRESS remains an unproved universal acquisition and progress statement, universal SEM/CLOSE and unconditional COST remain open. DP21 supplies exact symmetric LP 4-lift and signed integer 4-lift for raw high-girth NAE, extending MS27/RT26 on the SAME symbolic family. No unrestricted runtime conclusion. The local reserve is valid only for permanent exclusions within fixed scopes and fixed original-input registry; no progress here. Verified same-source BW17 tangent and existing witness, no new acquisition. No full manuscript approval or independent full audit asserted (no candidate universal closure exists). All edits invalidate older approvals. No public publication.
-Report https://github.com/j15marti/pnp/commit/c246df920dfa3a3ce71bbd368cecf638019227ce
+# DIAG Potential | DP22 | BLOCK
+2026-11-25 Pacific. Manuscript blob `f7af63a8aeef9608a232b071f865db356e4af868`. Reviewed source and aggregate theorem, diagonal quantifiers, DS21/BD21/MS28/BA21 and new DP22 section; not an entire independent final proof audit because no candidate universal closure exists. U-PROGRESS (lines 28–30) remains unproved. DP22 field-syndrome keys preserve guarded minimum and witness, not full support; bounded actual key count and paid order discovery required. No universal width or key count established; no inference of P!=NP. Imported cuts not independently derived in this run; actual guard and source map retained, six controls verified. Fixed cap is not universal coverage. Earlier approvals on other SHAs are invalid. BLOCK publication. No schedules changed.
+Report https://github.com/j15marti/pnp/commit/10082bb02c26010ce9b7993430702d05cb33a870
+Manuscript addition https://github.com/j15marti/pnp/blob/744e02c56fab42af2efcedfafa2d5bc069239a77/research/final-proof/main.tex#L3460
