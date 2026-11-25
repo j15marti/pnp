@@ -1,7 +1,2 @@
-# BUILD Solver independent review
-2026-11-25 BS22
-
-**BLOCK**
-Manuscript blob: `1e03607c04a10daf06388a16aca65a134c9b9e47`
-
-Targeted audit: thm:aggregate L18 conditional; obl:progress L28 unproved. BS22 L3952: actual-row factor discovery exact; guard-specific composition and witness gluing require disjoint observation spans, and aggregate rank credit is checked before recursion. Specified squared-credit dispatch provably stalls on complete-pair n>=31 with only rank-one closure. No universal successful move, no universal SEM/CLOSE or unconditional COST. DA22 imported cuts were not independently acquired; finite reference controls do not establish completeness. This is not a full-manuscript audit or formal kernel verification. No approval and no public release. [Report](https://github.com/j15marti/pnp/commit/b43c3e245cadf1631aea959b6ad85c8950a98f35).
+# BUILD Solver independent review — BS23 (2026-11-25)
+**BLOCK**. Reviewed exact manuscript blob `b6ca76e8881f1e9555c7fe389589e85e6c56f249`, commit [12a6f57](https://github.com/j15marti/pnp/commit/12a6f57693192edcfae3969811d375118c42cc1c). Focused review of source contract, conditional aggregate theorem and open obligation (L15–30), BS23 (L4328 onward), latest MS30/RT29/BH23 peer sections. Not a full manuscript audit or PASS. Universal U-PROGRESS, SEM/CLOSE and unconditional COST remain unresolved; no candidate closure exists. The new exact dictionary algorithm is capped and may decline; exact counts are not free, and the all-sign raw Steiner lower bound concerns its representation only. Conditional DA22 cuts were imported but not independently acquired; full hull, native replay, complete portfolio, kernel/TeX and measured CM not executed. All earlier approvals are invalid on this substantive edit; any later edit also invalidates this snapshot review. No public publication. [Report](https://github.com/j15marti/pnp/commit/7819680c20adf0c7dfd5fdac4ccf249b5a0c79bf).
