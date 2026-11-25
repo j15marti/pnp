@@ -50,9 +50,50 @@ function makeChart(domains, allowed){let rowMap=domains.flatMap((d,i)=>d.map(s=>
 function controls(){let out=[]; // K_n equality owners: block first half of edges; all rows distinct; actual shared bits explicit.
 for(const n of [4,6,10,16]){let e=[];for(let i=0;i<n;i++)for(let j=i+1;j<n;j++)e.push([i,j]);let c=makeChart(e.map(()=>["00","01","10","11"]),(a,x,b,y)=>e[a].every((v,i)=>!e[b].includes(v)||x[i]===y[e[b].indexOf(v)]));let B=e.map((_,i)=>i).slice(0,Math.floor(e.length/2));let z=run(c,B);out.push({n,block:B.length,status:z.status,rows:z.deletedRows?.length,pairs:z.deletedPairs?.length,stats:z.stats});}
  // Chain of equalities with exterior endpoints; opposite pins become pair nogood.
-for(const odd of [false,true]){let c=makeChart([["0","1"],["0","1"],["0","1"],["0","1"],["0","1"]],(a,x,b,y)=>{if(a>b)return arguments;return true;}); // replaced below
- c=makeChart(Array.from({length:5},()=>["0","1"]),(a,x,b,y)=>{let i=Math.min(a,b),j=Math.max(a,b);return j-i!==1||((x===y)!==(odd&&i===2));});
+for(const odd of [false,true]){let c=makeChart(Array.from({length:5},()=>["0","1"]),(a,x,b,y)=>{let i=Math.min(a,b),j=Math.max(a,b);return j-i!==1||((x===y)!==(odd&&i===2));});
  let z=run(c,[1,2,3]);out.push({chain:odd,status:z.status,deletedPairs:z.deletedPairs,stats:z.stats});}
  // Odd parity triangle internal, arc consistent yet UNSAT.
 let c=makeChart(Array.from({length:3},()=>["0","1"]),(a,x,b,y)=>x!==y);let z=run(c,[0,1,2]);out.push({oddTriangle:z.status,stats:z.stats});return out;}
-module.exports={run,importDeltas,makeChart,controls};
+
+
+function lift(chart,z,ext){
+ if(!["REDUCED","SAT-BLOCK"].includes(z.status))throw Error("not a projected chart");
+ const n=2*z.w,reach=Array.from({length:n},(_,i)=>1n<<BigInt(i));
+ for(const [a,b=a] of z.clauses){reach[a^1]|=1n<<BigInt(b);reach[b^1]|=1n<<BigInt(a);}
+ for(let k=0;k<n;k++)for(let i=0;i<n;i++)if(reach[i]&(1n<<BigInt(k)))reach[i]|=reach[k];
+ const u=new Map(z.units);let a=0n;
+ const consistent=m=>{for(let j=0;j<n;j+=2)if(((m>>BigInt(j))&3n)===3n)return false;return true;};
+ for(const r of ext){if(!u.has(r))throw Error("inactive exterior");for(const l of u.get(r))a|=reach[l];}
+ if(!consistent(a))throw Error("inconsistent exterior");
+ for(let j=0;j<n;j+=2){if(a&(3n<<BigInt(j)))continue;let v=a|reach[j];if(!consistent(v))v=a|reach[j+1];if(!consistent(v))throw Error("no extension");a=v;}
+ const ans=ext.slice();
+ for(const b of z.B){let d=chart.rowMap.findIndex(([i,s],r)=>i===b&&chart.live[r]&&[...s].every((v,j)=>a&(1n<<BigInt(2*(z.offsets[b]+j)+Number(v)))));if(d<0)throw Error("missing lift row");ans.push(d);}
+ if(ans.length!==chart.ownerIDs.length||new Set(ans.map(r=>chart.rowMap[r][0])).size!==ans.length)throw Error("invalid lift length");
+ for(const r of ans)for(const s of ans)if(r!==s&&!(BigInt("0x"+chart.pairHex[r])&(1n<<BigInt(s))))throw Error("bad original pair");
+ return ans;
+}
+function exhaustiveControls(makeChart,run){
+ let seed=0x47543235;const rand=()=>{seed=(Math.imul(1664525,seed)+1013904223)>>>0;return seed/4294967296;};
+ let counts={controls:0,sat:0,unsat:0,declines:0,projectionWords:0,lifts:0,assertions:0};let details=[];
+ for(let t=0;t<100;t++){let domains=[["0","1"],["0","1"],["0","1"],["00","01","10"],["00","01","10"]];let allowed=new Map();
+ for(let i=0;i<5;i++)for(let j=i+1;j<5;j++){let m=new Set();for(const x of domains[i])for(const y of domains[j])if(rand()<.76)m.add(x+"/"+y);allowed.set(i+","+j,m);}
+ const c=makeChart(domains,(i,x,j,y)=>i<j?allowed.get(i+","+j).has(x+"/"+y):allowed.get(j+","+i).has(y+"/"+x));
+ const z=run(c,[0,1,2]);let D=domains.map((d,i)=>c.rowMap.map((r,k)=>r[0]===i?k:-1).filter(k=>k>=0));let ok=(r,s)=>!!(BigInt("0x"+c.pairHex[r])&(1n<<BigInt(s)));
+ let expected=new Set(),actual=new Set(),sat=false;for(const a of D[0])for(const b of D[1])for(const d of D[2])for(const e of D[3])for(const f of D[4]){let v=[a,b,d,e,f];if(v.every((r,i)=>v.slice(i+1).every(s=>ok(r,s)))){expected.add(e+","+f);sat=true;}}
+ counts.controls++;counts[sat?"sat":"unsat"]++;
+ if(z.status==="DECLINE"){counts.declines++;continue;}
+ if(z.status==="REDUCED"){let q=new Map(z.postPair);for(const e of D[3])for(const f of D[4])if(q.has(e)&&q.has(f)&&(BigInt("0x"+q.get(e))&(1n<<BigInt(f)))){actual.add(e+","+f);lift(c,z,[e,f]);counts.lifts++;}}
+ if(actual.size!==expected.size||[...expected].some(x=>!actual.has(x)))throw Error("projection mismatch "+t+" "+z.status);
+ counts.projectionWords+=expected.size;counts.assertions++;details.push({t,expected:expected.size,status:z.status});
+ }
+ return {seed:"0x47543235",counts,details};
+}
+function codeObstruction(){
+ const rows=Array.from({length:8},(_,i)=>i),nae=[1,2,3,4,5,6];let domains=0,bijections=0,passes=0;
+ const majority=(a,b,c)=>(a&b)|(a&c)|(b&c);
+ const pin=(D,S)=>{let both=7,any=0;for(const x of S){both&=x;any|=x;}return D.filter(x=>(x&both)===both&&((x&(~any&7))===0)).length===S.length;};
+ function perm(a,p=[]){if(!a.length){bijections++;if([0,1,2].every(j=>[0,1].every(b=>pin(D,p.filter((_,i)=>((nae[i]>>j)&1)===b)))))passes++;return;}for(let i=0;i<a.length;i++)perm(a.filter((_,j)=>i!==j),[...p,a[i]]);}
+ let D=[];for(let i=0;i<8;i++)for(let j=i+1;j<8;j++){D=rows.filter(k=>k!==i&&k!==j);if(D.every(a=>D.every(b=>D.every(c=>D.includes(majority(a,b,c)))))){domains++;perm(D);}}
+ return {domains,bijections,passes};
+}
+module.exports={run,importDeltas,makeChart,controls,lift,exhaustiveControls,codeObstruction};
