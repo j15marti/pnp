@@ -88,8 +88,9 @@ const main = function(){
     report.dag.push({name,n,g,rootWords:root,rootAtLeafDegree:low,leafDegree:D,guardRank:1,uniqueNodes:5,uniqueLeaves:2,unfoldedLeaves:4,rootAtLiftedDegree:true});
   }
   const F=fano.map(t=>nae(t,0,7)), A=ap.map(t=>nae(t,0,9));
+  closure(7,F,[]);
   let g=0;
-  for(let m=1;m<128;m++)if(parity(m)===0&&[0,1].every(b=>calc(7,F,2,[[m,b]]).unsat)){g=m;break}
+  for(let m=1;m<128;m++)if(parity(m)===0&&[0,1].every(b=>{closure(7,F,[[m,b]]);return calc(7,F,2,[[m,b]]).unsat})){g=m;break}
   check(g!==0,"Fano split exists");
   dag(7,F,g,2,"Fano");dag(9,A,3,3,"affine plane F3^2");
   for(let i=0;i<7;i++)for(let s=1;s<=3;s++){
