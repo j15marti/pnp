@@ -26,9 +26,11 @@ def even_sum(G):
         ns=list(emb.neighbors_cw_order(v)); d=len(ns)
         if not d:continue
         groups=[ns] if d<=3 else [ns[:2]]+[[a] for a in ns[2:-2]]+[ns[-2:]]
+        local=[]
         for i,grp in enumerate(groups):
             P=[]
             for w in grp:
+                p=len(ports)+len(pairs)*0 # actual label is a tuple
                 p=('p',v,w);ports[v,w]=p;P.append(p)
             if i:P.append(('a',v,i-1,1))
             if i+1<len(groups):P.append(('a',v,i,0))
@@ -88,6 +90,7 @@ def core_sum(n,edges,T):
     return int(ans)
 
 def weighted(n,edges,guards):
+    # Deterministic greedy planar core; all removed pair factors share a row span with guards.
     G=nx.Graph();G.add_nodes_from(range(n));core=[];rest=[]
     for u,v,w0,w1 in edges:
         G.add_edge(u,v)
@@ -145,6 +148,7 @@ def brute(n,edges,guards):
     return z
 
 def closure(owners,guards):
+    # Exact affine support of each actual ternary owner under current necessary equations.
     piv={}; added=0; scans=0
     def reduce(a,b,P):
         while a:
@@ -190,6 +194,7 @@ def run():
         edges,base=edge_registry(n,owners);a,k,r=weighted(n,edges,guards);b=brute(n,edges,guards);assert a==b
         count=(a//base**(2*len(owners)))%base;assert live or count==0;labels[bool(count)]+=1;jobs+=1;maxrank=max(maxrank,r);maxdeleted=max(maxdeleted,k)
         if j<22:fano.append(count)
+    # high-degree planar wheel, negative signed factors and arbitrary spin insertion
     for n in range(4,9):
         G=nx.wheel_graph(n);E=[(u,v,2+(u+v)%3,1+(u*v)%4) for u,v in G.edges()]
         for T in (0,3,7,(1<<n)-1):
