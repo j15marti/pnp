@@ -1,17 +1,12 @@
-# DIAG Red Team independent review
-2026-11-24 21:12 PST | **BLOCK**
-Audited manuscript blob: `7686647cda4fab0fcd21adb64498eba20b4fa623` (current read after concurrent BW15 addition; DR15 edit blob f781faffa3533706f859e46730ccf921d3123b10 remains immutable).
-- sec:source (14-16): direct packet compiler polynomial; physical adapter unresolved. BW15 (170-186) adds a specific pure-exclusion subclass and compiler obstruction, not a universal adapter.
-- thm:aggregate (18-27): conditional occurrence-credit proof sound given explicit uniform bounded procedure, polynomial intermediate bit lengths, exact children and lift. GD21's unique children are explicit inputs of one Boolean composition; charge all fanout edges. No proof of polynomial global distinct-state count.
-- obl:progress (28-30): BLOCK; no universal eligibility/discovery or fallback contraction, fixed exponent not established.
-- lem:diagonal (32-38): fixed total exact implementation only; no universal hard family from finite restricted barriers. Relativization and unrestricted lower-bound transfer not established.
-- DO15/GD21 (47-102): restricted Cartesian and sparse-hole rule, paid caps/credit and guard restrictions; no connected arbitrary chart coverage.
-- DA15 (104-138): raw rank-mass branching obstruction; does not preclude another measure or representation.
-- DR15 (141-167): coNP-complete semantic merge and forced-bit tests; implicit projection equality Pi2^P-complete, both with known witness and stagnant singleton closure (full hull where specified). Complete semantic key/closure cannot be treated as already polynomial. Syntactic identity is sufficient and safe with source and guards, not a complete semantic equivalence test. Tests are finite, not universal proof.
-- BW15 (170-186): read concurrent addition; scope explicitly degree-feasible pure exclusion, not arbitrary affine/balance guards. External DP-coloring theorem not independently reverified in this run; no need to rely on it for BLOCK.
-- No entire candidate closure exists to certify. No formal kernel verification or complete solver execution. U-PROGRESS and unconditional COST remain open. Any subsequent edit invalidates this review for publication.
-Report: https://github.com/j15marti/pnp/blob/d6ec3634f969a74124fd41dff5caf6591c032ddd/research/hcl208/red-team/2026-11-24_2112_DR15.md
+# DIAG Red Team — BLOCK
+2026-11-24 23:13 PT
+Manuscript blob SHA: `1015d2304e75abae9b0b13811bcb7f8a289fb935`
+Reviewed conditional spine, M23, DR17 and linked peer findings; this is not full final approval.
+label{thm:aggregate}: 18
+label{obl:progress}: 28
+label{lem:diagonal}: 32
+label{lem:m23-joint}: 1264
+label{lem:dr17-cycle}: 1285
+label{lem:dr17-mask}: 1292
 
-
-## DR16 focused independent review, 2026-11-24 22:11 Pacific
-**BLOCK**. Audited immutable manuscript blob `e6140d1862ba4693a6451b21fe0e043d86176b37`, commit 7cee580c34b138594e6127f34157e4313f6e86e0. Targeted audit of thm:aggregate (18–27), obl:progress (28–30), lem:diagonal (32–38), DP16 shared keys, DA16 degree lift (680 onward), M22 paired-flow, new lem:dr16-dag (759). Conditional aggregate argument is valid when all per-occurrence costs and state sizes meet the fixed bounds; it supplies no successful universal dispatcher. Diagonal sequence is portfolio-specific unless P!=NP is assumed and domain reduction proved. DR16 exact source-independent guard implication supports sound reuse; degree-hard source rules out fixed/low rank and low degree in this specific DAG, not unrestricted algorithms. Growing degree is not automatically cheap; semantic weakening modulo source requires separate certificates. Universal source adapter coverage, SEM/CLOSE, signed-basis/joint repair acquisition, aggregate polynomial work and reconstruction remain OPEN. No candidate closure; this is not full manuscript PASS or a kernel audit. Code and results pinned in report. No publication authorization. This blob was current at review read.
+BLOCK: U-PROGRESS is explicitly open; no uniform discoverable normalization and no unconditional aggregate polynomial bound. Conditional aggregate theorem is sound under its stated polynomial original-N size, per-occurrence and all-child credit assumptions. Diagonal lemma applies only to fixed total exact portfolio with paid scheduling. M23 capped search is sound but cannot guarantee success: DR17 supplies authenticated SAT source isolated under its unilateral/common-single neighborhood, even common masks up to size 3. New mask adapter is exact only for specified two-stage moves. Four-jump plus M23 and finite reference mask queries acquire verified witnesses, not universal coverage. Fixed-k enumeration polynomial; growing cap, joint mask acquisition, full native adapter and complete portfolio remain unproved. Guard provenance, exact state identity, duplicate work and consumers must be charged. No relativization or P!=NP inference. Source map and raw test links in DR17 section and obligations. No formal kernel or full manuscript final audit claimed, as no candidate closure exists. No publication authorization. Any substantive edit changes review SHA.
