@@ -25,8 +25,24 @@ function adapter(st){let g=treeGauge(st),gw=g.reduce((s,b,i)=>s|(b<<i),0),bad=st
  for(let k=0;k<st.edges.length;k++){count.cutTests++;let E=st.edges.map((e,i)=>[e[0],e[1],e[2]^(i===k?1:0),e[3]]),h=treeGauge({...st,edges:E});if(E.some(([a,b,v])=>h[a]^h[b]^v))continue;let [a,b,v,w]=st.edges[k],q=mincut(st.d,st.edges.filter((_,i)=>i!==k),a,b),hw=h.reduce((s,b,i)=>s|(b<<i),0);let min=st.base+Math.min(w,q.value),witness=w<=q.value?hw:hw^q.x;check(cost(st,witness)===min);return {min,witness,kind:"one-column",edge:k}}
  return {kind:"OPEN",treeExceptions:bad.length}
 }
+
+function feedback(j,initial=[]){
+ let rows=[],trace=[],probes=0;
+ // Closure after every imported deduction. Imports are conditional on original chart.
+ for(const row of initial){rows.push(row);if(!state(j.n,j.reg,rows))return {label:"UNSAT",trace,probes,reason:"imported-closure"}}
+ function decide(st){if(!st)return {label:"UNSAT",reason:"closure"};if(st.base>j.reg.length)return {label:"UNSAT",reason:"base"};let a=adapter(st);if(a.min===undefined)return {label:"OPEN"};if(a.min>j.reg.length)return {label:"UNSAT",reason:a.kind};check(a.min===j.reg.length);let witness=lift(st,a.witness);check(!evalW(j.reg,witness));return {label:"SAT",reason:a.kind,witness}}
+ for(let round=0;round<=j.n;round++){
+  let st=state(j.n,j.reg,rows),a=decide(st);if(a.label!=="OPEN")return {...a,trace,probes};
+  let rep=Array(st.d).fill(-1);st.map.forEach(([k,b],i)=>{if(rep[k]<0)rep[k]=i});
+  let changed=false;
+  for(let i=0;i<st.d&&!changed;i++)for(let k=i+1;k<st.d&&!changed;k++)for(let b=0;b<2;b++){probes++;let guard=[rep[i],rep[k],b],z=decide(state(j.n,j.reg,[...rows,guard]));if(z.label==="SAT")return {...z,guard,trace,probes};if(z.label==="UNSAT"){let cut=[...guard];cut[2]^=1;trace.push({cut,reason:z.reason,rejected:guard});rows.push(cut);changed=true;break}}
+  if(!changed)return {label:"OPEN",trace,probes}
+ }
+ throw Error("feedback bound")
+}
+
 let out=[];for(const j of jobs){let models=[],min=Infinity;for(let x=0;x<2**j.n;x++){count.reference++;let e=evalW(j.reg,x);min=Math.min(min,e);if(!e)models.push(x)}
- let runs=[];for(const [mode,rows] of [["raw",[]],["DA21",j.imported],["DA22",j.cuts]]){if(mode!=="raw"&&!rows.length)continue;for(const [a,b,v] of rows)check(models.every(x=>((x>>a^x>>b)&1)===v));let st=state(j.n,j.reg,rows);if(!st){check(!models.length);runs.push({mode,kind:"closure"});continue}let ref=Infinity;for(let x=0;x<2**st.d;x++){count.reference++;let e=evalW(j.reg,lift(st,x));check(cost(st,x)===j.reg.length+2*e);ref=Math.min(ref,cost(st,x))}let cert=adapter(st),minor=k4(st);if(cert.min!==undefined){check(cert.min===ref);check(cost(st,cert.witness)===ref);check(evalW(j.reg,lift(st,cert.witness))===(ref-j.reg.length)/2)}if(minor.hits)check(cert.kind==="OPEN");runs.push({mode,d:st.d,edges:st.edges.length,base:st.base,minimum:ref,minor,cert})}out.push({id:j.id,n:j.n,m:j.reg.length,models:models.length,min,runs})}
+ let runs=[];for(const [mode,rows] of [["raw",[]],["DA21",j.imported],["DA22",j.cuts]]){if(mode!=="raw"&&!rows.length)continue;for(const [a,b,v] of rows)check(models.every(x=>((x>>a^x>>b)&1)===v));let st=state(j.n,j.reg,rows);if(!st){check(!models.length);runs.push({mode,kind:"closure"});continue}let ref=Infinity;for(let x=0;x<2**st.d;x++){count.reference++;let e=evalW(j.reg,lift(st,x));check(cost(st,x)===j.reg.length+2*e);ref=Math.min(ref,cost(st,x))}let cert=adapter(st),minor=k4(st);if(cert.min!==undefined){check(cert.min===ref);check(cost(st,cert.witness)===ref);check(evalW(j.reg,lift(st,cert.witness))===(ref-j.reg.length)/2)}if(minor.hits)check(cert.kind==="OPEN");runs.push({mode,d:st.d,edges:st.edges.length,base:st.base,minimum:ref,minor,cert})}let feedbackRuns=[];for(const [mode,rows] of [["raw",[]],["DA21",j.imported],["DA22",j.cuts]]){if(mode!=="raw"&&!rows.length)continue;let b=feedback(j,rows);if(b.label==="SAT")check(models.includes(b.witness));if(b.label==="UNSAT")check(!models.length);for(const {cut:[a,c,v]} of b.trace)check(models.every(x=>((x>>a^x>>c)&1)===v));feedbackRuns.push({mode,...b})}out.push({id:j.id,n:j.n,m:j.reg.length,models:models.length,min,runs,feedbackRuns})}
  // General signed-graph controls: balanced, one-exception, and odd K4.
  let controls=[];for(let mask=0;mask<64;mask++){let E=[],k=0;for(let i=0;i<4;i++)for(let j=i+1;j<4;j++)E.push([i,j,(mask>>k++)&1,1+(k%3)]);let st={d:4,base:0,edges:E},a=adapter(st),b=k4(st),ref=Math.min(...Array.from({length:16},(_,x)=>cost(st,x)));if(a.min!==undefined)check(a.min===ref);if(b.hits)check(a.kind==="OPEN");controls.push({mask,ref,kind:a.kind,F7:!!b.hits})}
  return {count,out,controls};
