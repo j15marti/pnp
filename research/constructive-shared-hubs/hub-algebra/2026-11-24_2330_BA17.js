@@ -1541,7 +1541,7 @@ function run(f){
  function word(a,o){return o.t.reduce((s,v,i)=>s+Number((a>>BigInt(v))&1n)*(1<<i),0)}
  function legal(a,O){return O.every(o=>!(o.bad||[0,7]).includes(word(a,o)))}
  function brute(O,n,pin=-1){let count=0;for(let a=0n;a<bit(n);a++){if(pin>=0&&Number(a&1n)!==pin)continue;stats.referenceWords++;if(legal(a,O))count++}return count}
- function cut(O,n){let S=new Set();for(let o of O)for(let i=0;i<3;i++)for(let j=i+1;j<3;j++){let [a,b]=[o.t[i],o.t[j]].sort((x,y)=>x-y);S.add(a+","+b)}return S.size===n*(n-1)/2&&O.length*2>Math.floor(n*n/4)}
+ function cut(O,n){if(O.some(o=>o.bad&&(o.bad.length!==2||!o.bad.includes(0)||!o.bad.includes(7))))return false;let S=new Set();for(let o of O)for(let i=0;i<3;i++)for(let j=i+1;j<3;j++){let [a,b]=[o.t[i],o.t[j]].sort((x,y)=>x-y);S.add(a+","+b)}return S.size===n*(n-1)/2&&O.length*2>Math.floor(n*n/4)}
  function coreCheck(O,n,name,pin=-1){stats.closureScans++;let P=planes(O).map(x=>x.map(a=>pin<0?a:a&~1n));for(let [a,b] of P)ck(a&&b&&a!==b,"singleton closure");let ph=phase(P,n),C=pack(O,n);ck(ph.ok===(C.length===0),"cycle equivalence");return {name,pin,n,m:O.length,phase:ph,cycles:C.map(c=>({length:c.length,vertices:c.vertices,owners:c.owners.map(o=>o.t)})),cutReject:cut(O,n)}}
  // Signed neighbors and budget neighbors: only the rank-two subregistry is checked for budget neighbors.
  for(let [name,O,n] of [["Fano",fano,7],["M22",plane,9]])for(let pin of [-1,0,1]){let r=coreCheck(O,n,name,pin);r.models=brute(O,n,pin);ck(r.models===0&&r.cutReject,"joint cut");rows.push(r)}
