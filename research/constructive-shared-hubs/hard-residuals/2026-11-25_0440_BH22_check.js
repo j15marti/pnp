@@ -15,13 +15,28 @@ ck(valid(x,E,G));return {label:"SAT",bound,witness:String(x),edges:edges.length}
 function solve(n,E,G,tree){let c=close(n,E,G);if(!c)return {label:"UNSAT"};let a=cert(n,c.E,c.G,tree);if(a.label==="SAT")ck(valid(BigInt(a.witness),E,G));return a}
 function ref(n,E,G){let s=0;for(let x=0n;x<pow(n);x++){refs++;if(valid(x,E,G))s++}return s}
 function source(O){return O.map(({t,bad})=>{let f=bad[0];return [[bit(t[0])^bit(t[1]),(f^(f>>1))&1],[bit(t[0])^bit(t[2]),(f^(f>>2))&1]]})}
-let same=[];for(let z of inputs.s27.filter(z=>z.root)){for(let mode of ["root","sat"]){let E=source(mode==="root"?z.root:z.satRegistry),id="S27-"+z.n+"-"+(mode==="root"?"UNSAT":"SAT");let g=inputs.cuts.find(x=>x.id===id).runs.find(r=>r.mode===2&&!r.use).cuts.map(r=>[bit(r.cut[0])^bit(r.cut[1]),r.cut[2]]);let model=ref(z.n,E,[]);for(let [tag,G] of [["raw",[]],["DA22",g]]){let a=solve(z.n,E,G,false),b=solve(z.n,E,G,true);for(let q of [a,b])ck(q.label==="OPEN"||(q.label==="SAT")===(model>0));if(tag==="DA22"&&g.length)ck(ref(z.n,E,G)===model);same.push({id,tag,models:model,union:a.label,tree:b.label,bound:b.bound??null,guardRank:g.length,witness:b.witness??null})}}}
+let same=[];for(let z of inputs.s27.filter(z=>z.root||z.neighbor?.root)){for(let mode of ["root","sat"]){let E=source(mode==="root"?(z.root||z.neighbor.root):(z.satRegistry||z.neighbor.satRegistry)),id="S27-"+z.n+"-"+(mode==="root"?"UNSAT":"SAT");let g=inputs.cuts.find(x=>x.id===id).runs.find(r=>r.mode===2&&!r.use).cuts.map(r=>[bit(r.cut[0])^bit(r.cut[1]),r.cut[2]]);let model=ref(z.n,E,[]);for(let [tag,G] of [["raw",[]],["DA22",g]]){let a=solve(z.n,E,G,false),b=solve(z.n,E,G,true);for(let q of [a,b])ck(q.label==="OPEN"||(q.label==="SAT")===(model>0));if(tag==="DA22"&&g.length)ck(ref(z.n,E,G)===model);same.push({id,tag,models:model,union:a.label,tree:b.label,bound:b.bound??null,guardRank:g.length,witness:b.witness??null})}}}
 let bw=[];for(let z of inputs.bw){let r=z.nonlinearSupport.map(r=>[...new Set(r.map(x=>(x^(x>>1)^(x>>2))&1))]);let ok=r.length?r[0].includes(z.projectedParity[0].rhs):z.projectedParity[0].rhs===0;ck(ok===z.SAT);bw.push({m:z.m,mode:z.mode,label:ok?"SAT":"UNSAT",boundary:z.projectedParity[0].boundary})}
 let seed=20261125;function rnd(n){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return (seed>>>8)%n}
 let hist={union:{SAT:0,UNSAT:0,OPEN:0},tree:{SAT:0,UNSAT:0,OPEN:0}},gain=0,examples=[];
 for(let t=0;t<240;t++){let n=3+rnd(5),m=2+rnd(9),E=[];for(let j=0;j<m;j++){let r=2+rnd(2);E.push(Array.from({length:r},()=>[BigInt(1+rnd((1<<n)-1)),rnd(2)]))}let G=t%3===0?[[bit(rnd(n)),rnd(2)]]:[];let a=solve(n,E,G,false),b=solve(n,E,G,true),models=ref(n,E,G);for(let [k,q] of [["union",a],["tree",b]]){hist[k][q.label]++;ck(q.label==="OPEN"||(q.label==="SAT")===(models>0))}if(a.label==="OPEN"&&b.label==="SAT"){gain++;if(examples.length<3)examples.push({n,E:E.map(e=>e.map(([r,b])=>[String(r),b])),G:G.map(([r,b])=>[String(r),b]),models,union:a.bound,tree:b.bound,witness:b.witness})}}
 function mult(a,b,r){let x=0,p=r===2?7:11;while(b){if(b&1)x^=a;b>>=1;a<<=1;if(a&(1<<r))a^=p}return x}
 let field=[];for(let r of [2,3]){let q=1<<r,n=2*r;let base=Array.from({length:q},(_,lambda)=>Array.from({length:r},(_,j)=>{let row=bit(j);for(let k=0;k<r;k++)if((mult(lambda,1<<k,r)>>j)&1)row^=bit(r+k);return row}));let worst=0,least=Infinity,loops=r===2?256:512;for(let t=0;t<loops;t++){let offsets=Array.from({length:q},(_,i)=>r===2?(t>>(r*i))&(q-1):rnd(q));let E=base.map((rs,i)=>rs.map((a,j)=>[a,(offsets[i]>>j)&1]));let a=solve(n,E,[],false),b=solve(n,E,[],true),model=ref(n,E,[]);ck(a.label==="OPEN"&&b.label==="SAT"&&model>0);worst=Math.max(worst,b.bound);least=Math.min(least,model)}field.push({r,events:q,dimension:n,offsetsTested:loops,leastModels:least,unionBound:1,treeBound:worst})}
-return {checks,gauss,scans,decisions,refs,pairTests,hist,gain,examples,field,same,bw}
+
+let momentChecks=0,fano=[];
+const z=inputs.s27.find(z=>z.n===7),O=z.root||z.neighbor.root;
+const root=source(O);
+for(let i=0;i<root.length;i++){
+ for(let q=1;q<4;q++){let E=root.map(e=>e.map(r=>r.slice()));E[i][0][1]^=q&1;E[i][1][1]^=(q>>1)&1;
+ let models=ref(7,E,[]);ck(models===10);
+ for(let j=0;j<E.length;j++){ck(count(7,[],E[j])===32n);momentChecks++;
+  for(let k=j+1;k<E.length;k++){ck(count(7,[],E[j].concat(E[k]))===8n);momentChecks++}}
+ fano.push({owner:i,shift:q,models,tree:solve(7,E,[],true).label});
+ }
+ for(let w of O[i].bad){let E=root.map(e=>e.map(r=>r.slice()));let other=O[i].bad.find(v=>v!==w);E[i]=O[i].t.map((v,j)=>[bit(v),(other>>j)&1]);let models=ref(7,E,[]);ck(models===5);fano.push({owner:i,relax:w,models,tree:solve(7,E,[],true).label})}
+}
+for(let L of [5,7,9]){let E=Array.from({length:L},(_,i)=>[[bit(i)^bit((i+1)%L),i%2],[bit(i)^bit(L+i),(i+1)%2]]);for(let i=0;i<L;i++)for(let j=i+1;j<L;j++)for(let k=j+1;k<L;k++){ck(count(2*L,[],E[i].concat(E[j],E[k]))===pow(2*L-6));momentChecks++}}
+
+return {checks,gauss,scans,decisions,refs,pairTests,hist,gain,examples,field,same,bw,momentChecks,fano}
 };
 console.log(JSON.stringify(run(inputs),null,2));
