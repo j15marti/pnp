@@ -1,15 +1,11 @@
-# TETRA Matching independent review
-Date: 2026-11-24 21:13 PST
-Status: **BLOCK**
-Audited manuscript blob SHA: `c898aebfdc3c7779b364e47de1aa18f2fb58b8ee`
-Immutable manuscript commit: [03c7a5645f52d62b89ec520624709309f13264dc](https://github.com/j15marti/pnp/blob/03c7a5645f52d62b89ec520624709309f13264dc/research/final-proof/main.tex)
- 
-- U-PROGRESS (obl:progress, lines 28–30) is expressly unproved. No uniform all-input dispatch and aggregate-decreasing child credit are established.
-- COST (thm:aggregate, lines 18–27) is conditional. M21 lines 189–220 shows the specified convex and signed-integer lattice closures do not supply missing progress; the nominal M19 quota-defect state bound remains exponential for connected linear NAE in this representation even after basis changes. This does not establish an algorithmic lower bound.
-- SRC (sec:source), physical strict four-valent compilation is not proved for the M21 wheel hub (six spokes); BW15 excludes one narrower pure-exclusion target. The direct packet source compiler is distinct.
-- CLOSE/SEM: exact local certificates retain guards; neither complete backbone nor semantic state equivalence can be assumed free (DR15). Full global affine closure only from an actual paid terminal.
-- M21 supplies an exact alternative XOR matching transfer, but a supplied logarithmic-width tree is a premise, not a universally acquired object. DA15 raw-width and DR15 merge obstructions do not exclude other representations.
- 
-Reviewed the manuscript state and relevant peer claims for this blocking dependency, not a final whole-manuscript correctness approval (no candidate closure exists). Independent review of M21 requested. Executed 406 finite charts, 12,936 local lattice pin certificates and 2,884 actual-edge cut rank controls; no general solver or formal kernel verification. [M21 report](https://github.com/j15marti/pnp/blob/34857d1c2cfb7cdac96698d295b74a50a8f2a2fa/research/hcl201/matching/2026-11-24_2113_M21.md).
- 
-No approval or public release. Earlier approvals, if any, are invalidated by the substantive edit. This review applies only to the exact SHA above. No agents changed.
+# TETRA Matching independent review | M22 | 2026-11-24 22:10 Pacific
+
+**BLOCK**. Reviewed manuscript blob `c8a9b26673c8a1d12a971b70d34dd3ae810d7617` (commit 222111a9fc82992611bc69d29cab49378a2f4935). Current blob at review check: `c8a9b26673c8a1d12a971b70d34dd3ae810d7617`. This is not a PASS, and applies only to the named audited snapshot. No candidate universal closure exists; this is a focused dependency audit, not full independent kernel or all-section proof certification.
+
+- Theorem thm:aggregate (18–27) remains conditional, U-PROGRESS (28–30) open. Exact source/repair mapping in sec:s21 is not a target-free polynomial move finder. S21 existence with common target does not acquire it; Hamming credit pays calls only once acquisition is bounded.
+- sec:bs15 and sec:gd22 preserve actual source provenance and distinguish large moves/flat coverage from one-witness decision. M22 sec:m22 (728 onward), lem:m22-hull and lem:m22-defect: exact paired-side integral hull, common interior and constructive unit-difference basis survive both seed guards even on UNSAT. All-six LP/signed-affine filtering cannot guarantee a strict deduction; flat defect parameter is large in any injective quota basis, not a lower bound on alternative algorithms. No inference from LP feasibility to integer compatibility.
+- SEM/CLOSE: bounded paid marginal and affine closure verified for declared side model only, not full joint semantic closure. Conditional pin scope retained. All arbitrary discovery, nonlinear coupling, intermediate guards, reconstruction and aggregate COST unresolved. No arbitrary runtime bound, no implication P!=NP.
+- Tests: 90 guard scans, 9,822 unit pairs, 20,568 rational numerator checks, 120,667 assertions; F3 plane exhaustive UNSAT, BS15 rings SAT with explicit witnesses. No LP backend, general repair, native replay, kernel, physical CM measurement. Same serial certificate calculation polynomial, CM <= (T+1)S only for that realization.
+- Parallel collaborative stagnation protocol recorded in obligations and M22 report; request existing peers on identical guarded residuals, no schedule changes. Publication gate BLOCK, no public action. All earlier approvals invalid after substantive edits.
+
+[Report](https://github.com/j15marti/pnp/commit/2471b7d365f9f9f77f893e722b553b4f6a06464a); [checker](https://github.com/j15marti/pnp/commit/2163b8eec088a28dab4ff368f5b49465b71cc006); [results](https://github.com/j15marti/pnp/commit/a18db5a4183c3a4674a213ebc927bf237c1d396c).
