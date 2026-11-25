@@ -1,3 +1,12 @@
+# TETRA Red Team independent review | RT33
+Status: BLOCK
+Authored and verified manuscript blob: 5793facdf20bafbface65e773c73d62f82a6d24c
+Section: https://github.com/j15marti/pnp/blob/9e4ddb76335040f1144b6a0edc7075cd9611add7/research/final-proof/main.tex#L4896
+Report: https://github.com/j15marti/pnp/commit/d86417012f8922a97cf35ebe03d4d16c557df1c2
+
+Focused audit, not complete manuscript or kernel verification. The degree-band PIT proof is exact on the stated authenticated Hall chart and supplied order with paid band coordinates. The all-order raw barrier refutes universal explicit polynomial K even at deficiency one; determinant support inclusion is a precise unresolved alternative, not solved by ordinary determinant equality. U-PROGRESS, universal SEM/CLOSE and unconditional COST remain OPEN. No public release. All differing-blob approvals invalid. No changes to agents or schedules.
+
+## Earlier review retained verbatim
 # TETRA Red Team independent review | RT32
 Status: BLOCK
 Authored and readback-verified manuscript blob: 738e423603f829b83a3d84e61fa0cdce267d4f47
