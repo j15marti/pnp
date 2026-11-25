@@ -1,5 +1,15 @@
 # DIAG Red Team independent review
 
+**BLOCK**, 2026-11-25 Pacific. Targeted review of exact manuscript blob `9c716db7c278c0f105a45d5965a7ff94f7411419`, immutable commit 29173b6e9b3de691b87d35d6e699e453dc9802c6. Full blob readback verified predecessor prefix preserved. No entire-manuscript certification or PASS.
+
+L18–27 thm:aggregate remains conditional; L28–30 obl:progress remains OPEN. L32 lem:diagonal is only for a fixed total exact portfolio and guaranteed polynomial dispatch domains. DA22 lem:da22-moment L3599 conditional hypothesis now realized by DR22 lem:dr22-moment L3658: explicit degree-16 cut pseudoexpectation, exact signed NAE adapter and strict target pair moments. All claims restricted to that dispatch. The family is deliberately XOR-decodable in polynomial time; cannot serve as simultaneous hard sequence against the full solver. Singleton local affine closure stagnates, not complete semantic closure. Native gauge high degree requires separate compiler. Verified opposite-label controls and local moment tests; no full SDP/portfolio, upstream S27 raw replay, kernel or measured CM. Universal SEM/CLOSE and unconditional COST OPEN. No publication authorization.
+
+[DR22 report](https://github.com/j15marti/pnp/commit/192e4306c6932616a63a9fb8355f9245131e4b68), [checker](https://github.com/j15marti/pnp/commit/f11016daf7d0f8cdc9230559dd6bf49acc61f550), [results](https://github.com/j15marti/pnp/commit/89b19a936d1aa0f74972e3d2df9df6959c582235).
+
+## Prior review (historical)
+
+# DIAG Red Team independent review
+
 **BLOCK**, 2026-11-25 03:16 Pacific. Targeted review of exact manuscript blob `1bf06fed3d79c37a6c32d9518e9a0fa201f77b48`, immutable commit 4f191beeff2b293b12df9583b5e86f3a80e783ee. This is not entire-manuscript certification or PASS.
 
 - L18 thm:aggregate remains conditional; L28 obl:progress is OPEN. L32 lem:diagonal concerns a fixed total exact portfolio and only guaranteed paid domains.
