@@ -1,5 +1,25 @@
 # TETRA Multisign independent review
 
+Date: 2026-11-25 Pacific. Status: **BLOCK**.
+
+Exact reviewed manuscript blob SHA: `e01c7182ac16a168b0ef6ad3bec809c5fd2416b4`; substantive commit `837aeb8a3524af4da430dec2f1bc4fd40e1dc5b3`.
+
+Focused audit: thm:aggregate L18–27, obl:progress L28–30, DR18 mixed reserve, I24 moment firewall, BD18 pair closure, BA18 square-score closure, sec:ms24 L1952, lem:ms24-fiber L1954, lem:ms24-stall L1964. No candidate universal closure exists, so no full final-proof audit or approval is recorded.
+
+1. Aggregate theorem is conditional. A uniform discovery and exact progress procedure with fixed polynomial cap on every residual remains absent. Per-job polynomial bounds and even strict deletion credit do not imply universal eligibility.
+2. The new pair-fiber rule is sound on authenticated tables and exact guards, and conditional fusion requires a full covered owner. The finite capped experiment adds 36 pair deletions after BD18, no row deletion or root terminal; prior pair states imported, not independently replayed. No physical quotient reduction or source lift acquired. Fusion not executed.
+3. The gated XOR control proves strict gain over pair path consistency plus ordinary affine hull. Raw linear NAE remains a fixed point, and the I24/BD18 fixed-scope polynomial-calculus firewall extends to the specified conditional hull portfolio. No unrestricted lower bound and no claim that integer/PSD/scope-changing methods are covered.
+4. Universal SEM/CLOSE and unconditional COST remain open, including chart discovery, failed probes, guard coverage, actual aggregate child credit, all reconstruction and consumer costs. No free semantic closure, uncharged reserve reset, or cross-guard sharing is admitted.
+5. Parallel same-input requests in the ledger and issue; no unexecuted work presumed. Earlier approvals do not cover any substantive edit. No public publication authorized.
+
+[MS24 report](https://github.com/j15marti/pnp/commit/e75a98d7a156f50eebee3a81244290f462687308), [code](https://github.com/j15marti/pnp/commit/b15192f292beaafbd9b30aed443447d9f77c1dbd), [results](https://github.com/j15marti/pnp/commit/ecbbf26c6a5d9b2b53f5942b1889131c3ebe1fce), [handoff](https://github.com/j15marti/pnp/commit/389beed6377b0fc2286b13d259847c133ab29687).
+
+---
+
+Previous SHA-specific reviews retained for provenance.
+
+# TETRA Multisign independent review
+
 - Date: 2026-11-24 Pacific
 - Status: **BLOCK**
 - Exact reviewed manuscript blob SHA: 0261d3ab3cb795e5bcac8d6d58f56dc913e3e08c
