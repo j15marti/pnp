@@ -1,0 +1,11 @@
+function least(v,rules,positive,negative=[]){const x=new Set(positive);let changed;do{changed=false;for(const [body,head] of rules)if(body.every(i=>x.has(i))){if(head===-1)return null;if(!x.has(head)){x.add(head);changed=true}}}while(changed);return negative.some(i=>x.has(i))?null:x}
+
+function run(){const results=[];for(let k=1;k<=8;k++){const rules=[];for(let i=0;i<k;i++){rules.push([[2*i],2*k+i],[[2*i+1],2*k+i]);}let p=2*k;for(let i=1;i<k;i++){rules.push([[p,2*k+i],3*k+i-1]);p=3*k+i-1}rules.push([[p],-1]);let count=0,minimal=0;for(let m=0;m<2**(2*k);m++){const pins=Array.from({length:2*k},(_,i)=>i).filter(i=>m&(1<<i)),fail=least(4*k-1,rules,pins)===null;let expected=true;for(let i=0;i<k;i++)if(!(m&(3<<(2*i))))expected=false;if(fail!==expected)throw Error("bad Horn circuit");if(fail){count++;if(pins.every(p=>least(4*k-1,rules,pins.filter(q=>q!==p))!==null))minimal++;}}results.push({k,count,minimal,rules:rules.length});}
+let state=123,counts={sources:0,sat:0,unsat:0,assignments:0,lifts:0};function next(){state=(Math.imul(state,1664525)+1013904223)>>>0;return state}
+for(let t=0;t<64;t++){const n=4+(t%3),m=2+(t%22),clauses=Array.from({length:m},()=>Array.from({length:3},()=>[next()%n,(next()>>>25)&1]));if(t%8===0)clauses.push([[0,0]],[[0,1]]);
+const rules=Array.from({length:n},(_,i)=>[[2*i,2*i+1],-1]);for(const cl of clauses)rules.push([cl.map(([i,v])=>2*i+(1-v)),-1]);
+let models=0;for(let x=0;x<2**n;x++){const pins=Array.from({length:n},(_,i)=>2*i+((x>>i)&1)),expected=clauses.every(cl=>cl.some(([i,v])=>((x>>i)&1)===v)),z=least(2*n,rules,pins);if((z!==null)!==expected)throw Error("bad source compilation");counts.assignments++;if(z){models++;if(pins.some(p=>!z.has(p)))throw Error("lift");counts.lifts++}}counts.sources++;counts[models?"sat":"unsat"]++;}
+return {horn:results,dualRail:counts}}
+console.log(JSON.stringify(run(),null,2));
+// Executed result:
+// {"horn":[{"k":1,"count":3,"minimal":2,"rules":3},{"k":2,"count":9,"minimal":4,"rules":6},{"k":3,"count":27,"minimal":8,"rules":9},{"k":4,"count":81,"minimal":16,"rules":12},{"k":5,"count":243,"minimal":32,"rules":15},{"k":6,"count":729,"minimal":64,"rules":18},{"k":7,"count":2187,"minimal":128,"rules":21},{"k":8,"count":6561,"minimal":256,"rules":24}],"dualRail":{"sources":64,"sat":40,"unsat":24,"assignments":2368,"lifts":506}}
