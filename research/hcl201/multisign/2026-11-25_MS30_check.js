@@ -1,0 +1,72 @@
+const fs=require('fs');
+const inputs={"bw":[{"m":5,"mode":"root","owners":160,"sourceVariables":111,"edgeVariables":30,"affineRows":20,"nonlinearRows":0,"nonlinearSupport":[],"components":1,"projectedParity":[{"boundary":[],"rhs":1}],"boundaryTrials":1,"acceptedBoundaryWords":0,"SAT":false},{"m":5,"mode":"delete","owners":159,"sourceVariables":111,"edgeVariables":30,"affineRows":19,"nonlinearRows":1,"nonlinearSupport":[[0,1,2,4,7]],"components":1,"projectedParity":[{"boundary":[0,3,20],"rhs":0}],"boundaryTrials":8,"acceptedBoundaryWords":1,"SAT":true},{"m":5,"mode":"flip","owners":160,"sourceVariables":111,"edgeVariables":30,"affineRows":19,"nonlinearRows":1,"nonlinearSupport":[[0,1,2,7]],"components":1,"projectedParity":[{"boundary":[0,3,20],"rhs":0}],"boundaryTrials":8,"acceptedBoundaryWords":1,"SAT":true},{"m":40,"mode":"root","owners":12480,"sourceVariables":8581,"edgeVariables":2340,"affineRows":1560,"nonlinearRows":0,"nonlinearSupport":[],"components":1,"projectedParity":[{"boundary":[],"rhs":1}],"boundaryTrials":1,"acceptedBoundaryWords":0,"SAT":false},{"m":40,"mode":"delete","owners":12479,"sourceVariables":8581,"edgeVariables":2340,"affineRows":1559,"nonlinearRows":1,"nonlinearSupport":[[0,1,2,4,7]],"components":1,"projectedParity":[{"boundary":[0,1560,38],"rhs":0}],"boundaryTrials":8,"acceptedBoundaryWords":1,"SAT":true},{"m":40,"mode":"flip","owners":12480,"sourceVariables":8581,"edgeVariables":2340,"affineRows":1559,"nonlinearRows":1,"nonlinearSupport":[[0,1,2,7]],"components":1,"projectedParity":[{"boundary":[0,1560,38],"rhs":0}],"boundaryTrials":8,"acceptedBoundaryWords":1,"SAT":true}],"s27":[{"n":7,"owners":7,"planted":{"sampledCuts":64,"minRank":1,"minActualKeys":4},"plantedWitness":0,"neighbor":{"changedOwner":0,"unsat":{"min":4,"models":0,"witness":null},"sat":{"min":0,"models":10,"witness":120},"unsatCuts":{"sampledCuts":64,"minRank":1,"minActualKeys":4},"satCuts":{"sampledCuts":64,"minRank":1,"minActualKeys":4},"root":[{"t":[0,1,2],"bad":[0,7]},{"t":[0,3,4],"bad":[0,7]},{"t":[0,5,6],"bad":[0,7]},{"t":[1,3,5],"bad":[0,7]},{"t":[1,4,6],"bad":[0,7]},{"t":[2,3,6],"bad":[0,7]},{"t":[2,4,5],"bad":[0,7]}],"satRegistry":[{"t":[0,1,2],"bad":[2,5]},{"t":[0,3,4],"bad":[0,7]},{"t":[0,5,6],"bad":[0,7]},{"t":[1,3,5],"bad":[0,7]},{"t":[1,4,6],"bad":[0,7]},{"t":[2,3,6],"bad":[0,7]},{"t":[2,4,5],"bad":[0,7]}]}},{"n":15,"owners":35,"planted":{"sampledCuts":64,"minRank":6,"minActualKeys":96},"plantedWitness":0,"neighbor":{"changedOwner":34,"unsat":{"min":4,"models":0,"witness":null},"sat":{"min":0,"models":4,"witness":32767},"unsatCuts":{"sampledCuts":64,"minRank":5,"minActualKeys":90},"satCuts":{"sampledCuts":64,"minRank":5,"minActualKeys":88},"root":[{"t":[0,1,2],"bad":[2,5]},{"t":[0,3,4],"bad":[1,6]},{"t":[0,5,6],"bad":[3,4]},{"t":[0,7,8],"bad":[2,5]},{"t":[0,9,10],"bad":[3,4]},{"t":[0,11,12],"bad":[3,4]},{"t":[0,13,14],"bad":[1,6]},{"t":[1,3,5],"bad":[2,5]},{"t":[1,4,6],"bad":[3,4]},{"t":[1,7,9],"bad":[1,6]},{"t":[1,8,10],"bad":[3,4]},{"t":[1,11,13],"bad":[1,6]},{"t":[1,12,14],"bad":[2,5]},{"t":[2,3,6],"bad":[1,6]},{"t":[2,4,5],"bad":[2,5]},{"t":[2,7,10],"bad":[3,4]},{"t":[2,8,9],"bad":[2,5]},{"t":[2,11,14],"bad":[1,6]},{"t":[2,12,13],"bad":[1,6]},{"t":[3,7,11],"bad":[3,4]},{"t":[3,8,12],"bad":[3,4]},{"t":[3,9,13],"bad":[3,4]},{"t":[3,10,14],"bad":[3,4]},{"t":[4,7,12],"bad":[1,6]},{"t":[4,8,11],"bad":[2,5]},{"t":[4,9,14],"bad":[2,5]},{"t":[4,10,13],"bad":[1,6]},{"t":[5,7,13],"bad":[1,6]},{"t":[5,8,14],"bad":[3,4]},{"t":[5,9,11],"bad":[2,5]},{"t":[5,10,12],"bad":[2,5]},{"t":[6,7,14],"bad":[3,4]},{"t":[6,8,13],"bad":[2,5]},{"t":[6,9,12],"bad":[2,5]},{"t":[6,10,11],"bad":[0,7]}],"satRegistry":[{"t":[0,1,2],"bad":[2,5]},{"t":[0,3,4],"bad":[1,6]},{"t":[0,5,6],"bad":[3,4]},{"t":[0,7,8],"bad":[2,5]},{"t":[0,9,10],"bad":[3,4]},{"t":[0,11,12],"bad":[3,4]},{"t":[0,13,14],"bad":[1,6]},{"t":[1,3,5],"bad":[2,5]},{"t":[1,4,6],"bad":[3,4]},{"t":[1,7,9],"bad":[1,6]},{"t":[1,8,10],"bad":[3,4]},{"t":[1,11,13],"bad":[1,6]},{"t":[1,12,14],"bad":[2,5]},{"t":[2,3,6],"bad":[1,6]},{"t":[2,4,5],"bad":[2,5]},{"t":[2,7,10],"bad":[3,4]},{"t":[2,8,9],"bad":[2,5]},{"t":[2,11,14],"bad":[1,6]},{"t":[2,12,13],"bad":[1,6]},{"t":[3,7,11],"bad":[3,4]},{"t":[3,8,12],"bad":[3,4]},{"t":[3,9,13],"bad":[3,4]},{"t":[3,10,14],"bad":[3,4]},{"t":[4,7,12],"bad":[1,6]},{"t":[4,8,11],"bad":[2,5]},{"t":[4,9,14],"bad":[2,5]},{"t":[4,10,13],"bad":[1,6]},{"t":[5,7,13],"bad":[1,6]},{"t":[5,8,14],"bad":[3,4]},{"t":[5,9,11],"bad":[2,5]},{"t":[5,10,12],"bad":[2,5]},{"t":[6,7,14],"bad":[3,4]},{"t":[6,8,13],"bad":[2,5]},{"t":[6,9,12],"bad":[2,5]},{"t":[6,10,11],"bad":[2,5]}]}},{"n":31,"owners":155,"planted":{"sampledCuts":24,"minRank":15,"minActualKeys":null},"plantedWitness":0},{"n":63,"owners":651,"planted":{"sampledCuts":24,"minRank":31,"minActualKeys":null},"plantedWitness":0}],"cuts":[{"id":"S27-7-UNSAT","n":7,"models":0,"imported":[],"runs":[{"mode":0,"use":false,"label":"UNSAT","kind":"PD","cuts":[]},{"mode":1,"use":false,"label":"UNSAT","kind":"PD","cuts":[]},{"mode":2,"use":false,"label":"UNSAT","kind":"PD","cuts":[]}]},{"id":"S27-7-SAT","n":7,"models":10,"imported":[],"runs":[{"mode":0,"use":false,"label":"OPEN","cuts":[]},{"mode":1,"use":false,"label":"SAT","witness":7,"kind":"descent","cuts":[]},{"mode":2,"use":false,"label":"SAT","witness":7,"kind":"descent","cuts":[]}]},{"id":"S27-15-UNSAT","n":15,"models":0,"imported":[],"runs":[{"mode":0,"use":false,"label":"OPEN","cuts":[]},{"mode":1,"use":false,"label":"OPEN","cuts":[]},{"mode":2,"use":false,"label":"UNSAT","kind":"closure","cuts":[{"cut":[4,6,0],"reason":"PD"},{"cut":[6,8,0],"reason":"closure"},{"cut":[0,3,0],"reason":"closure"},{"cut":[1,2,0],"reason":"closure"},{"cut":[2,3,0],"reason":"closure"},{"cut":[3,5,1],"reason":"closure"},{"cut":[5,7,1],"reason":"closure"}]}]},{"id":"S27-15-SAT","n":15,"models":4,"imported":[],"runs":[{"mode":0,"use":false,"label":"SAT","witness":0,"kind":"seed","cuts":[]},{"mode":1,"use":false,"label":"SAT","witness":0,"kind":"seed","cuts":[]},{"mode":2,"use":false,"label":"SAT","witness":0,"kind":"seed","cuts":[]}]}]};
+function run(inputs){
+const bit=i=>1n<<BigInt(i),xor=a=>a.reduce((v,w)=>v^w,0n),hi=v=>v.toString(2).length-1,sel=(a,c)=>xor(a.filter((_,i)=>c&bit(i)));let stats={gauss:0,rankTests:0,checks:0,treeTests:0,liftBits:0,sourceWords:0};
+function ck(v,msg){stats.checks++;if(!v)throw Error(msg||"assert "+stats.checks)}
+function lin(cols){stats.gauss++;let B=new Map(),K=[];cols.forEach((v,i)=>{let c=bit(i);while(v){let h=hi(v),p=B.get(h);if(!p){B.set(h,[v,c]);break}v^=p[0];c^=p[1]}if(!v)K.push(c)});return {B,K,keys:[...B.keys()].sort((a,b)=>b-a)}}
+function red(v,L){let c=0n;for(let h of L.keys)if(v&bit(h)){let p=L.B.get(h);v^=p[0];c^=p[1]}return [v,c]}
+const basis=a=>[...lin(a).B.values()].map(p=>p[0]), all=a=>a.reduce((s,v)=>s.concat(s.map(x=>x^v)),[0n]);
+function norm(a,U,h=null){U=basis(U);if(h!==null&&U.length===0)return null;if(h!==null&&U.length===1)return {a:h^U[0],U:[],h:null};return {a,U,h}}
+function table(v){v=[...new Set(v)];let a=v[0],U=basis(v.map(w=>w^a));if(BigInt(v.length)===bit(U.length))return norm(a,U);ck(BigInt(v.length)===bit(U.length)-1n,"table shape");return norm(a,U,all(U).map(w=>w^a).find(w=>!v.includes(w)))}
+function rows(q){return all(q.U).map(w=>w^q.a).filter(w=>w!==q.h)}
+function valid(q,v){return v!==q.h&&red(v^q.a,lin(q.U))[0]===0n}
+function graph(R){let cols=R.flatMap(q=>q.U),L=lin(cols),a=xor(R.map(q=>q.a)),off=[],p=0;for(let q of R){off.push(p);p+=q.U.length}let holes=R.flatMap((q,i)=>q.h===null?[]:[i]),project=(c,i)=>(c>>BigInt(off[i]))&(bit(R[i].U.length)-1n),hc=R.map(q=>q.h===null?null:red(q.h^q.a,lin(q.U))[1]);return {R,cols,L,a,off,holes,project,hc,k:L.K.length}}
+function counts(g,ids,c=0n,j=0){
+let d=g.k-j,dim=ids.reduce((n,i)=>n+g.R[i].U.length,0),shift=0,target=0n;
+for(let i of ids){target|=(g.hc[i]^g.project(c,i))<<BigInt(shift);shift+=g.R[i].U.length}
+let pr=v=>{let z=0n,s=0;for(let i of ids){z|=g.project(v,i)<<BigInt(s);s+=g.R[i].U.length}return z};
+let L=lin(g.L.K.slice(j).map(pr));stats.rankTests++;
+return {count:red(target,L)[0]?0n:bit(d-L.B.size),rank:L.B.size,dim}
+}
+function tree(g,t,uniform){
+ stats.treeTests++;
+ let [r,c]=red(t^g.a,g.L);if(r)return {status:"OUTSIDE",g};
+ let D=bit(g.k),vs=g.holes,weights=[],sum=0n;
+ for(let i of vs){let h=counts(g,[i],c);sum+=uniform?bit(g.k-h.rank):h.count}
+ for(let x=0;x<vs.length;x++)for(let y=x+1;y<vs.length;y++){
+ let i=vs[x],j=vs[y],h=counts(g,[i,j],c),w=h.count;
+ if(uniform){let rest=g.R.flatMap((q,k)=>k===i||k===j?[]:q.U);w=lin(rest).B.size===g.L.B.size?bit(g.k-h.rank):0n}
+ weights.push({i,j,w});
+ }
+ weights.sort((a,b)=>a.w>b.w?-1:a.w<b.w?1:0);let par=g.R.map((_,i)=>i),root=i=>{while(i!==par[i])i=par[i];return i},F=[],saving=0n;
+ for(let {i,j,w} of weights)if(w&&root(i)!==root(j)){par[root(i)]=root(j);saving+=w;F.push([i,j])}
+ return {status:sum-saving<D?"FULL_OR_WITNESS":"OPEN",sum,saving,D,F,c,g};
+}
+function lift(cert,t){
+ let {g,F,c}=cert;
+ function Q(c,j){let v=0n;for(let i of g.holes)v+=counts(g,[i],c,j).count;for(let e of F)v-=counts(g,e,c,j).count;return v}
+ ck(Q(c,0)<bit(g.k),"initial expected Q");
+ for(let j=0;j<g.k;j++){stats.liftBits++;let b=c^g.L.K[j],u=Q(c,j+1),v=Q(b,j+1);if(v<u)c=b;ck((u<v?u:v)<bit(g.k-j-1),"conditional expectation")}
+ let v=g.R.map((q,i)=>q.a^sel(q.U,g.project(c,i)));ck(v.every((w,i)=>valid(g.R[i],w)),"valid local");ck(xor(v)===t,"target");return v
+}
+function report(c){return c.status==="OUTSIDE"?{status:c.status}:{status:c.status,union:String(c.sum),saving:String(c.saving),den:String(c.D),forest:c.F}}
+function restrict(q,a,U){let L=lin([...q.U,...U]),[r,c]=red(q.a^a,L);if(r)return null;let b=q.a^sel(q.U,c),W=basis(L.K.map(v=>sel(q.U,v))),h=q.h!==null&&!red(q.h^b,lin(W))[0]?q.h:null;return norm(b,W,h)}
+function close(R,t){R=R.slice();let changes=0;for(;;){let g=graph(R);if(red(t^g.a,g.L)[0])return {R,changes,reject:true};let changed=false;for(let i=0;i<R.length;i++){let other=R.filter((_,j)=>i!==j),q=restrict(R[i],t^xor(other.map(q=>q.a)),basis(other.flatMap(q=>q.U)));if(!q)return {R,changes,reject:true};if(q.U.length<R[i].U.length){R[i]=q;changes++;changed=true;break}}if(!changed)return {R,changes,reject:false}}}
+function source(n,O,guards){let A=Array(n).fill(0n),T=0n;O.forEach(({t},i)=>{A[t[0]]^=bit(2*i)|bit(2*i+1);A[t[1]]^=bit(2*i);A[t[2]]^=bit(2*i+1)});guards.forEach(([u,v,b],j)=>{let p=bit(2*O.length+j);A[u]^=p;A[v]^=p;if(b)T^=p});let L=lin(A),R=O.map(({bad},i)=>{let f=bad[0],q=((f^(f>>1))&1)|(((f^(f>>2))&1)<<1);return table([0,1,2,3].filter(x=>x!==q).map(x=>red((x&1?bit(2*i):0n)^(x&2?bit(2*i+1):0n),L)[0]))});
+ function recover(vals){let local=0n;for(let i=0;i<O.length;i++){let f=O[i].bad[0],q=((f^(f>>1))&1)|(((f^(f>>2))&1)<<1);let v=[0,1,2,3].filter(x=>x!==q).find(x=>red((x&1?bit(2*i):0n)^(x&2?bit(2*i+1):0n),L)[0]===vals[i]);ck(v!==undefined,"source local");local^=(v&1?bit(2*i):0n)^(v&2?bit(2*i+1):0n)}let [r,c]=red(T^local,L);ck(!r&&sourceOK(c,O,guards),"source lift");return String(c)}
+ return {R,t:red(T,L)[0],recover}}
+function sourceOK(x,O,g=[]){return O.every(({t,bad})=>!bad.includes(t.reduce((v,k,j)=>v|(x&bit(k)?1<<j:0),0)))&&g.every(([u,v,b])=>((x&bit(u)?1:0)^(x&bit(v)?1:0))===b)}
+function mul(a,b,r,poly){let z=0;while(b){if(b&1)z^=a;b>>=1;a<<=1;if(a&(1<<r))a^=poly}return z}
+function fieldTables(r,poly,inf=false){let q=1<<r,ts=Array.from({length:q},(_,t)=>norm(0n,Array.from({length:r},(_,j)=>{let x=1<<j;return BigInt(x|(mul(t,x,r,poly)<<r)|(mul(mul(t,t,r,poly),x,r,poly)<<(2*r)))}),0n));if(inf)ts.push(norm(0n,Array.from({length:r},(_,j)=>bit(2*r+j)),0n));return ts}
+function dp(R){let v=[0n];for(let q of R)v=[...new Set(v.flatMap(x=>rows(q).map(y=>x^y)))];return v}
+let controls=[];
+for(let [r,poly,inf] of [[3,11,false],[2,7,true]]){
+ let R=fieldTables(r,poly,inf),g=graph(R),uniform=tree(g,0n,true),support=dp(R),small={tests:0,ms29:0,forest:0};
+ for(let i=0;i<R.length;i++)for(let j=i+1;j<R.length;j++)for(let k=j+1;k<R.length;k++){let a=graph([R[i],R[j],R[k]]),c=tree(a,0n,true);small.tests++;ck(a.L.B.size===3*r,"triple independent");if(c.sum<c.D)small.ms29++;if(c.status==="FULL_OR_WITNESS")small.forest++}
+ let subsets=[];if(inf){for(let omit=0;omit<R.length;omit++){let c=tree(graph(R.filter((_,j)=>j!==omit)),0n,true);ck(c.status==="OPEN","4 subgroups");subsets.push(report(c))}}
+ let lifts=[];if(!inf){ck(uniform.sum===uniform.D&&uniform.status==="FULL_OR_WITNESS","strict gain");ck(support.length===1<<(3*r),"full support");for(let x of [0,1,7,8,37,63,100,128,255,511]){let t=BigInt(x),c=tree(g,t,true);lifts.push({target:x,values:lift(c,t).map(String)})}}
+ else{ck(uniform.sum-uniform.saving===uniform.D,"equality obstruction");ck(support.length>0&&support.length<1<<(3*r),"strict partial support");let t=support[0],c=tree(g,t,false);ck(c.status==="OPEN","target-specific forest decline");lifts.push({knownSATTarget:String(t),bound:report(c),zeroIsSAT:support.includes(0n)})}
+ controls.push({r,inf,tables:R.length,rank:g.L.B.size,k:g.k,uniform:report(uniform),small,subsets,support:support.length,lifts});
+}
+let cases=[];
+for(let z of inputs.s27.filter(z=>z.root||z.neighbor?.root)){for(let mode of ["root","sat"]){let O=mode==="root"?(z.root||z.neighbor.root):(z.satRegistry||z.neighbor.satRegistry),key="S27-"+z.n+"-"+(mode==="root"?"UNSAT":"SAT"),cuts=inputs.cuts.find(x=>x.id===key).runs.find(r=>r.mode===2&&!r.use).cuts.map(r=>r.cut),m=0;for(let x=0n;x<bit(z.n);x++){stats.sourceWords++;if(sourceOK(x,O)){m++;ck(sourceOK(x,O,cuts),"imported guard")}}
+ for(let [tag,guard] of (cuts.length?[["raw",[]],["first",cuts.slice(0,1)],["all",cuts]]:[["raw",[]]])){let src=source(z.n,O,guard),cl=close(src.R,src.t);if(cl.reject){ck(m===0,"closure false UNSAT");cases.push({n:z.n,mode,tag,guard,models:m,closure:"UNSAT",changes:cl.changes});continue}
+ let g=graph(cl.R),a=tree(g,src.t,true),b=tree(g,src.t,false),witness=null;
+ if(b.status==="FULL_OR_WITNESS"){ck(m>0,"false SAT");witness=src.recover(lift(b,src.t))}
+ let small={tests:0,union:0,forest:0};for(let i=0;i<cl.R.length;i++)for(let j=i+1;j<cl.R.length;j++)for(let k=j+1;k<cl.R.length;k++){let c=tree(graph([cl.R[i],cl.R[j],cl.R[k]]),xor([cl.R[i].a,cl.R[j].a,cl.R[k].a]),true);small.tests++;if(c.sum<c.D)small.union++;if(c.status==="FULL_OR_WITNESS")small.forest++}
+ cases.push({n:z.n,mode,tag,guard,models:m,changes:cl.changes,uniform:report(a),target:report(b),small,witness});
+ }
+}}
+return {controls,cases,stats};
+}
+console.log(JSON.stringify(run(inputs),null,2));
