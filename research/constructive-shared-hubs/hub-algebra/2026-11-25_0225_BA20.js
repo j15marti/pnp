@@ -12,7 +12,7 @@ function run(data,source){
   function parity(x){x^=x>>>16;x^=x>>>8;x^=x>>>4;return (0x6996>>>(x&15))&1;}
   function hull(L){let span=[],a=point(L[0]);for(let A of L){st.hullScans++;span=add(span,point(A)^a);for(let v of nullbasis(A)){span=add(span,v);if(span.length===n)return [];}if(span.length===n)return [];}let H=[];for(let v of nullbasis(span))H=add(H,v|(parity(v&a)?R:0));return H;}
   function close(H){for(;;){let old=H.length;for(let P of packets){st.closureScans++;let C=H,last=null;for(let e of P){let D=add(C,e);if(D===null){C=null;break;}if(D!==C)last=e;C=D;}if(C===null)continue;if(C.length===H.length)return null;if(C.length===H.length+1){H=add(H,last^R);if(!H)return null;st.deductions++;}}if(old===H.length)return H;}}
-  let H=close(combine([],guard)??[R]);if(!H)return {status:'UNSAT',count:0,st,cover:[]};
+  let H=combine([],guard);if(H)H=close(H);if(!H)return {status:'UNSAT',count:0,st,cover:[]};
   let L=[H];
   for(let P of packets){let next=[];for(let A of L)next.push(...subtract(A,P));st.rawPeak=Math.max(st.rawPeak,next.length);L=mergeAll(next);st.steps++;st.peak=Math.max(st.peak,L.length);
    if(!L.length)return {status:'UNSAT',count:0,st,cover:[]};
@@ -28,6 +28,9 @@ function run(data,source){
  results.fano=[control(F,ids)];for(let i=0;i<7;i++)for(let j=0;j<3;j++){let C=F.map(a=>a.slice());C[i][j]*=-1;results.fano.push(control(C,ids));}
  let seed=98123;function rng(m){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed%m;}
  results.random=[];for(let t=0;t<40;t++){let n=4+rng(4),C=[];for(let j=0;j<4+rng(8);j++){let s=new Set;while(s.size<3)s.add(1+rng(n));C.push([...s].map(x=>rng(2)?x:-x));}let G=t%2?[3|((t%4===1)?1<<n:0)]:[];results.random.push(control(C,Array.from({length:n},(_,i)=>i+1),G));}
+ results.guarded=[]; for(let i=0;i<7;i++){let C=F.map(a=>a.slice());C[i][0]*=-1;for(let b=0;b<2;b++)results.guarded.push(control(C,ids,[1|(b?128:0),6|128]));}
+ results.guarded.push(control(F,ids,[1,129]));
+ results.stars=[];for(let k=1;k<=5;k++){let C=Array.from({length:k},(_,i)=>[1,2*i+2,2*i+3]),v=control(C,Array.from({length:2*k+1},(_,i)=>i+1));assert(v.ref===2*3**k,'star count');assert(v.a.pieces>=Math.ceil((3/2)**k),'cover bound');results.stars.push(v);}
  const orig=source.O.map(o=>o.t.map(x=>x+1)),r=data.common.find(x=>x.K===16).residual;
  const idsK=[...new Set(r.C.flat().map(Math.abs))].sort((a,b)=>a-b);
  results.k16=control(r.C,idsK,[],4096);
