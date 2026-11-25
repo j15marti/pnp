@@ -1,3 +1,16 @@
+# TETRA Matching M26 independent review, 2026-11-25 02:05 PST
+
+**BLOCK** on exact manuscript blob `9c5e53e3061ee09a344d24133e1d35b50918fb5a` (commit [301c1618](https://github.com/j15marti/pnp/commit/301c1618b8c344ee3d37533c69a353654ba52c6e), current when rechecked). Focused dependency audit, NOT full independent review of all historical sections or kernel certification. No candidate universal closure exists.
+
+- thm:aggregate lines 18–27 conditional; obl:progress 28–30 explicitly open. Compiler and matching witnesses do not acquire an exact tagged solution under a fixed polynomial cap. Arbitrary circuit SAT reduction shows the tagged class itself is NP-complete; this is equivalence, not an unconditional separation. No circular claim of a free matching oracle.
+- sec:bs19/GD26/DA20 (2632 onward) distinguish raw occurrence caps and factored representation from consumer costs. M26 sec:m26 L2729, lem:m26-selector proves ordinary subcubic exact selector, not native E4/B4 compiler. lem:m26-rail structural one-hot condition essential: untagged alternating paths are independently switchable; q-bit label kernel bound not runtime, not applicable to external filters or unrestricted decoders. Equality has polynomial Gaussian escape.
+- Actual K16 8192 words, 2622 gate/200 full; source lift of 12130883 checked, same as GD26; no new witness. Paid initial domain closure no exterior pin; full fixed-point semantic closure not claimed. Benchmark exponential enumeration explicitly charged as diagnostic only. No global tagged solver, physical native replay, proof kernel or measured CM. Local bit costs polynomial and CM bound same execution; universal dispatch discovery, branching, verification, guards, representation/DAG growth, sharing and reconstruction remain OPEN.
+- Joint same-source requests in ledger/report/issue, not presumed executed. No public approval or agent/schedule change. Earlier reviews cannot approve this changed SHA.
+
+[Report](https://github.com/j15marti/pnp/commit/a5c0200e603a2d3628d3b843481fd6774224c5b8), [checker](https://github.com/j15marti/pnp/commit/60f53bc87cd4e8d1cb773aedc4daf96b48e22c2d), [results](https://github.com/j15marti/pnp/commit/f437e9aba91947efe7a05036b9cede65cb3121b7).
+
+---
+
 # TETRA Matching independent review | M25 | 2026-11-25 01:10 Pacific
 
 **BLOCK**, reviewed exact manuscript blob `a0bd01f58d49ae8923e5184c7be7137dd7027f96`, immutable commit 5492727c0a31737f64adce71ba5b1a0eb7b8af7d. Focused review of thm:aggregate (18–27), obl:progress (28–30), DA19 and M25 sec:m25 at L2184. No full manuscript PASS, no candidate universal proof to approve. Certified Hall deficiency gives necessary source-row exclusion on an authenticated guard, not an exact positive source test. The all-partitions uniform fractional witness proves no raw linear NAE root Hall or bucket-pin row progress, even for UNSAT; not a lower bound on alternative representations. Five charts before/after peer deltas remain OPEN; no additional deductions. Universal acquisition and aggregate time/space/guard/branching/reconstruction bounds still missing, semantic closure not free, strict native compilation not supplied here. Fixed polynomial chart cap only. Same execution CM bound, not measured. No independent upstream proof replay or kernel. All edits invalidate prior approvals. No public action, no changes to agents.
