@@ -56,7 +56,7 @@ function run(rt,ms){
   let n=2**d-1,reg=[];for(let x=1;x<=n;x++)for(let y=x+1;y<=n;y++){let z=x^y;if(z<=y)continue;let t=[x-1,y-1,z-1],bad=0;if(signed){let top=t.map(v=>Math.floor(Math.log2(v+1)));let i=top.findIndex((a,i)=>top.filter(b=>a===b).length===1);ck(i>=0);bad=1<<i}reg.push({t,bad:[bad,7^bad]})}
   let E=energy(n,reg),Q=quotient(n,reg),z=solve(Q);ck(z!==null);ck(src(reg,Q.lift(z.s))===z.best);ck(signed?z.best===0:z.best>0);if(d<=4)ck(ref(n,reg).best===z.best);
   let minSpectrum=null;
-  if(d===3){minSpectrum=Infinity;for(let q=1;q<2**(n-1);q++){let mags=new Set();for(let x=0;x<2**(n-1);x++){let s=Array.from({length:n},(_,i)=>x>>i&1?-1:1),t=s.map((v,i)=>q>>i&1?-v:v);mags.add(Math.abs(val(E,s)-val(E,t)))}minSpectrum=Math.min(minSpectrum,mags.size);ck(mags.size>=Math.ceil((Math.ceil(Math.max(par(0),Array.from({length:n},(_,i)=>q>>i&1).filter(Boolean).length)/1))/100))}}
+  if(d===3){minSpectrum=Infinity;for(let q=1;q<2**(n-1);q++){let mags=new Set();for(let x=0;x<2**(n-1);x++){let s=Array.from({length:n},(_,i)=>x>>i&1?-1:1),t=s.map((v,i)=>q>>i&1?-v:v);mags.add(Math.abs(val(E,s)-val(E,t)))}minSpectrum=Math.min(minSpectrum,mags.size);let a=Array.from({length:n},(_,i)=>q>>i&1).filter(Boolean).length;ck(mags.size>=Math.ceil((Math.ceil(Math.max(a,n-a)/2)+1)/2))}}
   steiner.push({d,n,owners:reg.length,signed,best:z.best,beta:z.beta,groups:z.groups,minSpectrum})
  }
  return {checks,dpTransitions,referenceWords,scans,joins,packChecks,rtout,steiner}
