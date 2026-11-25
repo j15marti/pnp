@@ -1,3 +1,17 @@
+# TETRA Matching M27 independent review, 2026-11-25 03:09 PT
+
+**BLOCK** on exact manuscript blob `afbfcf6518e6b88702f2cdf2cd36a68d6d8e57e1` (immutable commit [e1f44a16](https://github.com/j15marti/pnp/commit/e1f44a16782737f00576481eadbf4fe09f1aa466), fully read back after conflict-safe edit). Focused proof dependency audit, NOT an approval of the entire historical manuscript or a proof kernel. No candidate universal proof exists.
+
+- thm:aggregate L18–27 is conditional; obl:progress L28–30 still demands a single uniform successful dispatch with fixed polynomial aggregate time, peak/cumulative space, guards, branching, discovery, verification, reconstruction and representation growth. No existential reweighting or supplied graph proves acquisition on arbitrary inputs.
+- BS20 L3148 onward and GD28 L3217 onward: learned exclusions verified independently on the SAME BW17/K16 gauge words. Compact coverage alone does not certify a source witness. Preserve separate actual guards and source maps. Reclose after accepted deductions, no semantic oracle.
+- sec:m27 L3284, lem:m27-fourier: Fourier uniqueness on same coordinates; positive mandatory penalties preserve zero set under authenticated guard; rational LP and ordinary weighted matching only on supplied planar allowed graph and charged expansion cap. Neither universal success nor favorable graph discovery proved. lem:m27-genus: surface parity codimension is a representation bound, not runtime. lem:m27-cross: requires planar primal/field-free energy, not arbitrary planar incidence with four-ary nodes or external syndrome labels. No unrestricted separation.
+- Exact checks on same sources and RT26 controls, no new cuts or source witness; generic LP/blossom, full native lift, full semantic closure, full solver, formal kernel, measured CM not executed. All reference enumeration charged diagnostic only. Complete universal source-to-output acquisition and cost gates remain OPEN.
+- Collaborative requests in ledger and issue; no claimed peer completion. No public release, no schedule changes. Previous approvals on different blobs cannot approve this edit.
+
+[Report](https://github.com/j15marti/pnp/commit/35548df576abfa7ceb0f4363b9d9ed101418757f), [checker](https://github.com/j15marti/pnp/commit/60fc941b8ae6e94fe3d0876d190ca173060197d7), [results](https://github.com/j15marti/pnp/commit/dfbb305e0333a061c68575630ba612479904aaae).
+
+---
+
 # TETRA Matching M26 independent review, 2026-11-25 02:05 PST
 
 **BLOCK** on exact manuscript blob `9c5e53e3061ee09a344d24133e1d35b50918fb5a` (commit [301c1618](https://github.com/j15marti/pnp/commit/301c1618b8c344ee3d37533c69a353654ba52c6e), current when rechecked). Focused dependency audit, NOT full independent review of all historical sections or kernel certification. No candidate universal closure exists.
