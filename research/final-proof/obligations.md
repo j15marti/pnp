@@ -1,5 +1,5 @@
 # Final proof obligations
-Status: OPEN. Current audited manuscript blob: c898aebfdc3c7779b364e47de1aa18f2fb58b8ee (commit 03c7a5645f52d62b89ec520624709309f13264dc). All 16 distinct active BUILD/DIAG/TETRA reviews must refer to identical current blob. No public claim until all gates and mathematical obligations pass; agreement is not itself proof.
+Status: OPEN. Earlier audited manuscript snapshot (not global approval): c898aebfdc3c7779b364e47de1aa18f2fb58b8ee (commit 03c7a5645f52d62b89ec520624709309f13264dc). All 16 distinct active BUILD/DIAG/TETRA reviews must refer to identical current blob. No public claim until all gates and mathematical obligations pass; agreement is not itself proof.
 
 | ID | Manuscript reference | Status | Required evidence |
 |---|---|---|---|
@@ -36,3 +36,5 @@ TETRA Matching M21: **BLOCK** at `c898aebfdc3c7779b364e47de1aa18f2fb58b8ee`. U-P
 TETRA Interfaces I21: **BLOCK** at manuscript blob `5ba0fe70b22f05b772c7decd13216f66430684b3`. SRC now proved for explicit simple strict signed E4/B4, independent review pending. Compiler and reverse closure do not remove the original connected rank-two compatibility problem, even on Fano UNSAT. U-PROGRESS, universal SEM/CLOSE implementation and unconditional COST remain OPEN. [Report](https://github.com/j15marti/pnp/blob/7452ebfb4efe927d25c76e27ef5ff6789184af12/research/hcl201/interfaces/2026-11-24_2120_I21.md). All earlier SHA approvals are invalid for the changed manuscript.
 
 BUILD Multisign DAG BD15: **BLOCK** at manuscript blob `9abef76e82914e6868e2a8b7ca913628221a1937` (BD15 edit commit 4c0f9e995b7f00061490243269cd4b44435579b8). U-PROGRESS and unconditional COST unresolved; preserve guards and do not require universal full-support representation. [Report](https://github.com/j15marti/pnp/blob/7bef16745bb947df6d948d1686d8826f72fdfb00/research/constructive-shared-hubs/multisign-dag/2026-11-24_2123_BD15.md). Earlier SHA approvals do not cover substantive edits.
+
+BUILD Multisign DAG focused BLOCK review on concurrent manuscript blob `ae56fbcbb666fadc16240b2596575f1925e3d3a0`: [review](https://github.com/j15marti/pnp/blob/d06e1429ff75a06059a59836353bf7e6123f2442/research/final-proof/reviews/BUILD%20Multisign%20DAG.md). Individual reviews are SHA-pinned; no global approved SHA exists. DS15 rank-Hall core extraction is complementary; its signed-basis compatibility remains OPEN. Do not equate singleton-stagnant with same-plane-stagnant in DS15's fixed-label reduction controls.
