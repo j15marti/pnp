@@ -1,0 +1,35 @@
+const inputs = [{"n":7,"root":[{"t":[0,1,2],"bad":[0,7]},{"t":[0,3,4],"bad":[0,7]},{"t":[0,5,6],"bad":[0,7]},{"t":[1,3,5],"bad":[0,7]},{"t":[1,4,6],"bad":[0,7]},{"t":[2,3,6],"bad":[0,7]},{"t":[2,4,5],"bad":[0,7]}],"sat":[{"t":[0,1,2],"bad":[2,5]},{"t":[0,3,4],"bad":[0,7]},{"t":[0,5,6],"bad":[0,7]},{"t":[1,3,5],"bad":[0,7]},{"t":[1,4,6],"bad":[0,7]},{"t":[2,3,6],"bad":[0,7]},{"t":[2,4,5],"bad":[0,7]}],"guards":[]},{"n":15,"root":[{"t":[0,1,2],"bad":[2,5]},{"t":[0,3,4],"bad":[1,6]},{"t":[0,5,6],"bad":[3,4]},{"t":[0,7,8],"bad":[2,5]},{"t":[0,9,10],"bad":[3,4]},{"t":[0,11,12],"bad":[3,4]},{"t":[0,13,14],"bad":[1,6]},{"t":[1,3,5],"bad":[2,5]},{"t":[1,4,6],"bad":[3,4]},{"t":[1,7,9],"bad":[1,6]},{"t":[1,8,10],"bad":[3,4]},{"t":[1,11,13],"bad":[1,6]},{"t":[1,12,14],"bad":[2,5]},{"t":[2,3,6],"bad":[1,6]},{"t":[2,4,5],"bad":[2,5]},{"t":[2,7,10],"bad":[3,4]},{"t":[2,8,9],"bad":[2,5]},{"t":[2,11,14],"bad":[1,6]},{"t":[2,12,13],"bad":[1,6]},{"t":[3,7,11],"bad":[3,4]},{"t":[3,8,12],"bad":[3,4]},{"t":[3,9,13],"bad":[3,4]},{"t":[3,10,14],"bad":[3,4]},{"t":[4,7,12],"bad":[1,6]},{"t":[4,8,11],"bad":[2,5]},{"t":[4,9,14],"bad":[2,5]},{"t":[4,10,13],"bad":[1,6]},{"t":[5,7,13],"bad":[1,6]},{"t":[5,8,14],"bad":[3,4]},{"t":[5,9,11],"bad":[2,5]},{"t":[5,10,12],"bad":[2,5]},{"t":[6,7,14],"bad":[3,4]},{"t":[6,8,13],"bad":[2,5]},{"t":[6,9,12],"bad":[2,5]},{"t":[6,10,11],"bad":[0,7]}],"sat":[{"t":[0,1,2],"bad":[2,5]},{"t":[0,3,4],"bad":[1,6]},{"t":[0,5,6],"bad":[3,4]},{"t":[0,7,8],"bad":[2,5]},{"t":[0,9,10],"bad":[3,4]},{"t":[0,11,12],"bad":[3,4]},{"t":[0,13,14],"bad":[1,6]},{"t":[1,3,5],"bad":[2,5]},{"t":[1,4,6],"bad":[3,4]},{"t":[1,7,9],"bad":[1,6]},{"t":[1,8,10],"bad":[3,4]},{"t":[1,11,13],"bad":[1,6]},{"t":[1,12,14],"bad":[2,5]},{"t":[2,3,6],"bad":[1,6]},{"t":[2,4,5],"bad":[2,5]},{"t":[2,7,10],"bad":[3,4]},{"t":[2,8,9],"bad":[2,5]},{"t":[2,11,14],"bad":[1,6]},{"t":[2,12,13],"bad":[1,6]},{"t":[3,7,11],"bad":[3,4]},{"t":[3,8,12],"bad":[3,4]},{"t":[3,9,13],"bad":[3,4]},{"t":[3,10,14],"bad":[3,4]},{"t":[4,7,12],"bad":[1,6]},{"t":[4,8,11],"bad":[2,5]},{"t":[4,9,14],"bad":[2,5]},{"t":[4,10,13],"bad":[1,6]},{"t":[5,7,13],"bad":[1,6]},{"t":[5,8,14],"bad":[3,4]},{"t":[5,9,11],"bad":[2,5]},{"t":[5,10,12],"bad":[2,5]},{"t":[6,7,14],"bad":[3,4]},{"t":[6,8,13],"bad":[2,5]},{"t":[6,9,12],"bad":[2,5]},{"t":[6,10,11],"bad":[2,5]}],"guards":[[4,6,0],[6,8,0],[0,3,0],[1,2,0],[2,3,0],[3,5,1],[5,7,1]]}];
+const run = function run(inputs){
+ const mod=(a,p)=>(a%p+p)%p;
+ function reduce(v,B,p){v=v.slice();for(let j=0;j<v.length;j++)if(v[j]&&B[j]){let a=v[j];for(let k=j;k<v.length;k++)v[k]=mod(v[k]-a*B[j][k],p)}return v}
+ function add(v,B,p){v=reduce(v,B,p);let j=v.findIndex(x=>x);if(j<0)return false;let a=v[j];B[j]=v.map(x=>mod(x*a,p));return true}
+ function basis(rows,p){let B=[];for(let r of rows)add(r,B,p);return B}
+ function parity(rows,n,use4){let M=rows.map(r=>r.map(x=>mod(x,use4?4:2))),j=0;
+ if(use4){for(let k=0;k<n;k++){let i=M.findIndex((r,h)=>h>=j&&(r[k]&1));if(i<0)continue;[M[i],M[j]]=[M[j],M[i]];let u=M[j][k];M[j]=M[j].map(x=>mod(x*u,4));for(let h=0;h<M.length;h++)if(h!==j){let z=M[h][k];M[h]=M[h].map((x,l)=>mod(x-z*M[j][l],4))}j++}
+ for(let i=j;i<M.length;i++){if(M[i][n]&1)return null;M[i]=M[i].map(x=>x/2)}}
+ return M.map(r=>r.map(x=>mod(x,2)))}
+ function close(n,O,G,mode){let rows=O.map(o=>o.row.slice()),binary=[],scans=0,joins=0;for(let [i,j,b] of G){let r=Array(n+1).fill(0);r[i]=1;r[j]=b?1:-1;r[n]=b;rows.push(r)}
+ for(;;){let P=parity(rows,n,mode);if(!P)return {bad:true,scans,joins};let B=basis(P.concat(binary),2);if(B[n])return {bad:true,scans,joins};let change=false;
+ for(let o of O){scans++;let words=[];for(let w=0;w<16;w++){let z=o.s.reduce((a,s,i)=>a+s*(1-2*((w>>i)&1)),0);if(z)continue;
+ let ok=true;for(let k=1;k<16;k++){let r=Array(n+1).fill(0),p=0;o.t.forEach((v,i)=>{if((k>>i)&1){r[v]=1;p^=(w>>i)&1}});r[n]=p;let q=reduce(r,B,2);if(q.slice(0,n).every(v=>v===0)&&q[n]){ok=false;break}}
+ if(ok)words.push(w)}
+ if(!words.length)return {bad:true,scans,joins};
+ for(let k=1;k<16;k++){let p=wpar(words[0]&k);if(!words.every(w=>wpar(w&k)===p))continue;let r=Array(n+1).fill(0);o.t.forEach((v,i)=>{if((k>>i)&1)r[v]=1});r[n]=p;if(add(r,B,2)){binary.push(r);joins++;change=true;if(B[n])return {bad:true,scans,joins};if(wpar(k)===0&&k.toString(2).split("1").length===3){let [i,j]=o.t.filter((_,h)=>(k>>h)&1);let q=Array(n+1).fill(0);q[i]=1;q[j]=p?1:-1;q[n]=p;rows.push(q)}break}}
+ if(change)break}
+ if(!change)return {bad:false,scans,joins,B:B.filter(Boolean)}
+ }}
+ function wpar(w){let z=0;while(w){z^=1;w&=w-1}return z}
+ function solve(u,E,G,mode,cap){let n=u.n+E.length,O=E.map((e,i)=>{let t=[...e.t,u.n+i],s=[...e.t.map((_,j)=>(e.bad[0]>>j)&1?-1:1),-1],row=Array(n+1).fill(0);t.forEach((v,j)=>row[v]=s[j]);row[n]=s.reduce((a,b)=>a+b,0)/2;return {t,s,row}});
+ let C=close(n,O,G,mode);if(C.bad)return {status:"UNSAT",count:0,peak:0,trans:0,scans:C.scans,joins:C.joins};let R=O.map(o=>o.row),P=C.B;let order=[];for(let i=0;i<u.n;i++){order.push(i);E.forEach((e,j)=>{if(Math.max(...e.t)===i)order.push(u.n+j)})}
+ let A=order.map(i=>R.map(r=>mod(r[i],3))),D=order.map(i=>P.map(r=>r[i])),b=R.map(r=>mod(r[n],3)),g=P.map(r=>r[n]);
+ let S=Array(n+1),T=Array(n+1);S[n]=[];T[n]=[];for(let i=n-1;i>=0;i--){S[i]=S[i+1].slice();T[i]=T[i+1].slice();add(A[i],S[i],3);add(D[i],T[i],2)}
+ const key=(x,y)=>x.join("")+"/"+y.join("");
+ let x=b.map(()=>0),y=g.map(()=>0),M=new Map([[key(x,y),{x,y,c:1,w:0n}]]),peak=1,trans=0,pruned=0;
+ for(let i=0;i<n;i++){let Z=new Map();for(let v of M.values())for(let a=0;a<=1;a++){trans++;let x=v.x.map((z,j)=>mod(z+a*A[i][j],3)),y=v.y.map((z,j)=>z^(a*D[i][j]));if(reduce(b.map((z,j)=>mod(z-x[j],3)),S[i+1],3).some(Boolean)||reduce(g.map((z,j)=>z^y[j]),T[i+1],2).some(Boolean)){pruned++;continue}let k=key(x,y),old=Z.get(k);if(old)old.c+=v.c;else Z.set(k,{x,y,c:v.c,w:v.w|(BigInt(a)<<BigInt(order[i]))});if(Z.size>cap)return {status:"DECLINE",peak:Z.size,trans,pruned,scans:C.scans,joins:C.joins}}
+ M=Z;peak=Math.max(peak,M.size);if(!M.size)break}
+ let count=0,w=null;for(let v of M.values()){count+=v.c;w=v.w}if(w!==null){for(let o of O){let z=o.s.reduce((a,s,i)=>a+s*(1-2*Number((w>>BigInt(o.t[i]))&1n)),0);if(z)throw Error("bad lift")}for(let [i,j,b] of G)if(Number(((w>>BigInt(i))^(w>>BigInt(j)))&1n)!==b)throw Error("bad guard")}
+ return {status:count?"SAT":"UNSAT",count,peak,trans,pruned,scans:C.scans,joins:C.joins,witness:w===null?null:(w&((1n<<BigInt(u.n))-1n)).toString()}}
+ let out=[];for(let u of inputs){let jobs=[["root","raw",[]],["sat","raw",[]]];if(u.guards.length)jobs.push(["root","first",u.guards.slice(0,1)],["root","seven",u.guards]);for(let [label,guard,G] of jobs){let E=u[label],count=0;for(let w=0;w<(1<<u.n);w++){if(G.some(([i,j,b])=>(((w>>i)^(w>>j))&1)!==b))continue;if(E.every(e=>!e.bad.includes(e.t.reduce((a,v,j)=>a+(((w>>v)&1)<<j),0))))count++}let a=solve(u,E,G,false,4096),b=solve(u,E,G,true,4096);for(let c of [a,b])if(c.status!=="DECLINE"&&c.count!==count)throw Error(JSON.stringify({u:u.n,label,guard,count,c}));out.push({n:u.n,label,guard,count,baseline:a,combined:b})}}
+ return out
+};
+console.log(JSON.stringify(run(inputs),null,2));
