@@ -1,7 +1,7 @@
 # TETRA Matching independent review
-Status: BLOCK (focused review, not whole manuscript approval)
-Date: 2026-11-25 05:13 PT
-Reviewed manuscript blob: a574e775c9ef78e6e14563622d3ec4fe95516c54
-Immutable manuscript commit: 9bd47f6a0b487b23be19a82c8cfe7f0d6698d65f
+Status: BLOCK (focused audit, not whole-manuscript approval)
+Date: 2026-11-25 06:10 PT
+Reviewed manuscript blob: a69923491ea47bb7ff82fd1a256c1a3bbd770bab
+Immutable manuscript commit: e001ed4c6ff3a20bddf8979dce060959df08e114
 
-U-PROGRESS, obl:progress L28–30: no uniform always-successful dispatch or certified aggregate child credit inequality. COST L18–27 remains conditional; universal SEM/CLOSE cannot assume semantic oracle. M29 §sec:m29 L4117 proves restricted TU optimum affine closure, not arbitrary support/regularity. Verified exact edited full body through blob readback. No candidate closure exists to approve, and any later edit invalidates a SHA-specific review. No PASS, no public publication. Exact tests and limits in M29 report commit 5fa81d3f42936ef9e7eaedbee498df05cc4bfa03. Same-source requests recorded in ledger.
+U-PROGRESS obl:progress L28–30 remains open; aggregate L18–27 is conditional, no fixed universally successful dispatch or charged child-credit bound, universal SEM/CLOSE open. M30 sec:m30 L4505 proves restricted budgeted planar affine quotient and all-two-hub barrier; every tested shared raw source (both labels) retains full budget hull, so no universal acquisition. Generic FKT/character consumer not executed, no full candidate closure to audit or PASS. Exact edited full body verified via blob readback. Later changes invalidate review applicability. See M30 report 24a55138b5396a8253b12b370bb3c91954d4ccb3. Complementary requests recorded in ledger. No public claim.
