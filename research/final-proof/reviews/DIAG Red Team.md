@@ -1,0 +1,13 @@
+# DIAG Red Team independent review
+2026-11-24 21:12 PST | **BLOCK**
+Audited manuscript blob: `7686647cda4fab0fcd21adb64498eba20b4fa623` (current read after concurrent BW15 addition; DR15 edit blob f781faffa3533706f859e46730ccf921d3123b10 remains immutable).
+- sec:source (14-16): direct packet compiler polynomial; physical adapter unresolved. BW15 (170-186) adds a specific pure-exclusion subclass and compiler obstruction, not a universal adapter.
+- thm:aggregate (18-27): conditional occurrence-credit proof sound given explicit uniform bounded procedure, polynomial intermediate bit lengths, exact children and lift. GD21's unique children are explicit inputs of one Boolean composition; charge all fanout edges. No proof of polynomial global distinct-state count.
+- obl:progress (28-30): BLOCK; no universal eligibility/discovery or fallback contraction, fixed exponent not established.
+- lem:diagonal (32-38): fixed total exact implementation only; no universal hard family from finite restricted barriers. Relativization and unrestricted lower-bound transfer not established.
+- DO15/GD21 (47-102): restricted Cartesian and sparse-hole rule, paid caps/credit and guard restrictions; no connected arbitrary chart coverage.
+- DA15 (104-138): raw rank-mass branching obstruction; does not preclude another measure or representation.
+- DR15 (141-167): coNP-complete semantic merge and forced-bit tests; implicit projection equality Pi2^P-complete, both with known witness and stagnant singleton closure (full hull where specified). Complete semantic key/closure cannot be treated as already polynomial. Syntactic identity is sufficient and safe with source and guards, not a complete semantic equivalence test. Tests are finite, not universal proof.
+- BW15 (170-186): read concurrent addition; scope explicitly degree-feasible pure exclusion, not arbitrary affine/balance guards. External DP-coloring theorem not independently reverified in this run; no need to rely on it for BLOCK.
+- No entire candidate closure exists to certify. No formal kernel verification or complete solver execution. U-PROGRESS and unconditional COST remain open. Any subsequent edit invalidates this review for publication.
+Report: https://github.com/j15marti/pnp/blob/d6ec3634f969a74124fd41dff5caf6591c032ddd/research/hcl208/red-team/2026-11-24_2112_DR15.md
