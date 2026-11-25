@@ -1,3 +1,12 @@
+# TETRA Red Team independent review | RT32
+Status: BLOCK
+Authored and readback-verified manuscript blob: 738e423603f829b83a3d84e61fa0cdce267d4f47
+Section: https://github.com/j15marti/pnp/blob/778bdf68ac827fff916e1bdbebf02329acb8891a/research/final-proof/main.tex#L4861
+Report: https://github.com/j15marti/pnp/commit/bcc0b36d34d9c5413cb33f7a1eeb26d2b3095fb6
+
+Focused audit of RT31 and the new RT32 lemmas, not a whole-manuscript PASS or kernel verification. The strict deficiency-one reference-UNSAT terminal and outside-coset SAT witnesses are exact under stated hypotheses. The exceptional reference-free class can be SAT. Top-order multisign cancellation does not acquire the other refutations. Private local exact substitution cannot reduce maximum rank-Hall deficiency in its specified scope. U-PROGRESS, universal SEM/CLOSE and unconditional COST remain OPEN; no public publication. Earlier differing-blob approvals invalid. All costs and guards remain charged. No changes to agents or schedules.
+
+## Earlier review retained verbatim
 # TETRA Red Team independent review | RT31
 Status: BLOCK
 Authored and readback-verified manuscript blob: e2e410ecde692a2d8aaaf15b79934c6c1666aebf
