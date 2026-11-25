@@ -53,7 +53,7 @@ def even_sum(G):
         faces=[]; lookup={}; seen=set()
         for a,b in em.edges():
             if (a,b) in seen:continue
-            f=em.traverse_face(a,b,seen); e=list(zip(f,f[1:]+f[:1]))
+            f=em.traverse_face(a,b,seen); e=list(zip(f,f[1:]+f[:1]));
             for edge in e:lookup[edge]=len(faces)
             faces.append(e)
         D=nx.Graph();D.add_nodes_from(range(len(faces)))
