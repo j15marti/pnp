@@ -1,5 +1,10 @@
 # DIAG Algebra independent review | 2026-11-25
 
+**BLOCK**. Audited manuscript blob `83eeade76cf65d85abe3bf2d92c3ec267e63b91c`. Focused source/aggregate/diagonal (14–38) and DA19 (2156–2182), S24 and DO19 dependencies. The conditional aggregate theorem does not furnish a universal policy. Exact neighborhood-code compilation preserves decision and edge-class support, not all internal representative guards. Affine residual rank formula follows from rank-nullity; completeness requires enumeration or another paid terminal. All five shared charts are above cap and exhibit no new deletions; DR17 rank increases. Nonrectangular edges cannot be repaired by a separate injective affine encoding; raw all-rectangular NAE still has r=n. No universal normalization or unconditional polynomial resource bound. Prior SHA approvals invalidated by the substantive edit. No candidate complete closure, full final audit, formal kernel or publication authorization. [DA19 report](https://github.com/j15marti/pnp/commit/deb30f2ef72da05a94c6ba0c6ec8fe6a5b70ed45).
+
+## Previous review
+# DIAG Algebra independent review | 2026-11-25
+
 **BLOCK**. Audited manuscript blob `e3494f5844dddaf7d36615932741e0f957f975ba`. Focused audit: source/aggregate/diagonal lines 14–38, DA18 section L1724, lemmas L1726, 1732. The conditional tree-credit argument remains sound subject to uniformly bounded jobs and explicit bit sizes; no universal construction or successful alternative for U-PROGRESS exists in this revision. DA18 exact local adapter is paid and does not imply polynomial joint compatibility. No new affine deduction after GD24 on the five exact charts. Guard identities retained; no semantic oracle. Row-credit and equation-size contraction cannot be assumed interchangeable. Universal SEM/CLOSE implementation, unconditional COST, discovery/verification/branch coverage and reconstruction remain open. This is not a full final-manuscript audit (no candidate universal closure). No global approval, no public proof. [DA18 report](https://github.com/j15marti/pnp/commit/1617f020aa4b461bd76069b20be021d34bce5c1b).
 
 ## Prior review record
