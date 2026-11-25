@@ -1,16 +1,16 @@
 # TETRA Multisign independent review
 
-- Date: 2026-11-24 PST
-- Manuscript: research/final-proof/main.tex
-- Exact reviewed blob SHA: cb3f7f4905f94757a37bfbf8d711c250ddee5243
-- Manuscript commit: b519274840e3a906e417710fe8cd02c3ff161ecf
+- Date: 2026-11-24 Pacific
 - Status: **BLOCK**
+- Exact reviewed manuscript blob SHA: d925ef7f3d270ddd35c927c0bb09b51b56289195
+- MS22 substantive manuscript commit: 11ae2225ae41685ffe72c45044b0aa3d27301411
 
-## Reasons
-1. Theorem thm:aggregate (line 18) is conditional on U-PROGRESS (lines 28–30); the required uniform normalization with a fixed polynomial aggregate credit has not been established.
-2. The new MS21 section (lines 362–404, lem:ms21-gram and lem:ms21-guards) demonstrates a simultaneous obstruction to specified Fourier/PSD, convex/lattice, rank-Hall and quadratic-polar filters on strict high-girth UNSAT cores, including both outcomes of many genuine relative guards. This falsifies a universal progress claim for those filters, not every possible algorithm. The source chart restriction is essential; no native-edge SDP gap or physical quotient reduction is claimed.
-3. All reachable residual coverage, higher-order compatibility, unrestricted branching/discovery cost, and physical reconstruction remain unresolved. Paid certified unconditional closure is required; it cannot be assumed to return every semantic consequence. Guarded deductions are not global facts.
-4. Per-job polynomial arithmetic and simultaneous T,S,CM bounds do not bound an exponentially branching execution. Neither finite tests nor the existential high-girth construction establish a universal solver or a universal lower bound.
-5. Focused MS21 audit and cross-check of related BA15/DS15/M21/I21 dependencies performed; whole-proof approval withheld, since no candidate universal closure exists. No formal kernel build executed.
+Focused audit: thm:aggregate, obl:progress (28–30), S21 positive-promise repair, M22, GD22, MS21 and MS22 (section at line 935, lem:ms22-round and lem:ms22-cycles). Current shared manuscript has 981 lines. No candidate unconditional closure: full final-proof approval not performed.
 
-Evidence: [MS21 report](https://github.com/j15marti/pnp/commit/bfd8f032c81711d09fc4d3926dc731815b4ff578); [manuscript](https://github.com/j15marti/pnp/blob/b519274840e3a906e417710fe8cd02c3ff161ecf/research/final-proof/main.tex#L362). This review applies only to the exact blob above, not future edits. Public publication prohibited until all mathematical obligations and identical-SHA independent review gates pass.
+1. A low-error rational Gram certificate would supply exact parity repair; its universal polynomial-time acquisition is unproved. Fixed-cap concave minimization cannot be assumed to be an ordinary SDP.
+2. Exact integral selector-cycle formulation and polynomial fractional separation are proved; simultaneous fractional feasibility on the same MS21 guarded UNSAT cores and strict independent-minimum rounding counterexample on the actual BS15 SAT ring invalidate proposed shortcuts.
+3. A supplied or existential target does not imply a polynomial target acquisition; aggregate cost, guard coverage, exact universal source reconstruction, semantic rule verification and actual closure scheduling are open. No physical defect reduction measured. Per-certificate time/space bounds do not pay all failed learning rounds or branches.
+4. 1539 exact assertions across two checkers support only the specified controls; no general optimizer, full native solver, physical cumulative-memory measurement or formal kernel build executed. No unrestricted lower bound or P=NP claim.
+5. Requested complementary tracks on identical authenticated plane/ring and separately MS21/DA16 charts; no unexecuted peer work claimed. Any edit invalidates this SHA-specific review. Public publication not authorized.
+
+[MS22 section](https://github.com/j15marti/pnp/blob/11ae2225ae41685ffe72c45044b0aa3d27301411/research/final-proof/main.tex#L935), [report](https://github.com/j15marti/pnp/commit/13420b3f88b26a210740095e8f44fd839c71e2ea).
