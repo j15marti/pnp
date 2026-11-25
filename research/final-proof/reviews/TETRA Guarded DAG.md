@@ -1,8 +1,7 @@
-# TETRA Guarded DAG | independent BLOCK review
-Date 2026-11-25 00:01 PT
-Manuscript blob SHA: `b0235fb0f10701740a5a052546efeac980cc1f05`
-Immutable manuscript: https://github.com/j15marti/pnp/blob/e04ce977a3c1771b53d5109762bc1b6caaf74829/research/final-proof/main.tex
+# TETRA Guarded DAG | BLOCK
 
-**BLOCK**, not a full-manuscript approval. thm:aggregate L18–27 is conditional, obl:progress L28–30 open. GD24 lem:gd24-row and lem:gd24-stall prove exact local row contraction and its universal failure. Row/span/rank-mass credits cannot be interchanged without a unified bound. BS17 width cap is not universal; DO18 output-size barrier prohibits assuming a small explicit projection. Five authenticated residuals still need capped branching despite exact row deductions; additional scans outweigh node reduction. No unrestricted discovery, complete semantic closure, strict physical adapter, or aggregate all-input polynomial bound. No full candidate proof exists; no whole-manuscript PASS issued. No formal kernel or physical CM executed. Exact provenance and parallel requests in ledger and report. Substantive edit invalidates earlier approvals. No public release.
+2026-11-25 01:04 PST, GD25. Audited manuscript blob `86f462175c52afea51e70ffe6b8d72500f1fdb7b`, immutable commit ecb78436871765d8490d837dc80792bf7a4f343d. Current manuscript at check: `86f462175c52afea51e70ffe6b8d72500f1fdb7b`.
 
-Report: https://github.com/j15marti/pnp/commit/3518a75faa99f52956f6caeb0119c666ea5282e5
+BLOCK: U-PROGRESS at lines 28–30 remains unproved; conditional aggregate theorem lines 18–27 requires a uniform all-reachable-state procedure. New GD25 block theorem L2208 exact given a polynomially encoded 2-CNF core and literal-pin exterior row demands; code-independent obstruction L2216 defeats every raw linear min-degree-two NAE singleton. All ten actual guarded peer charts decline on supplied row coordinates; exact tests and lift controls do not prove coverage. No universal native compiler, SEM/CLOSE, aggregate COST, complete source replay, or kernel verification. Scope-preserving representative/guard firewall maintained. No PASS or publication. This is a targeted audit, not whole-manuscript verification of an alleged closure; no such closure exists. Earlier approvals cannot apply to this substantive edit.
+
+Same-chart majority witnesses: https://github.com/j15marti/pnp/commit/05052d1a453bedd8e1ee54783254bb3cde6909cf. Report: https://github.com/j15marti/pnp/commit/642e7c1ffe688ac571b8b263477bec76dcbe8ae9. No schedules/agents modified.
