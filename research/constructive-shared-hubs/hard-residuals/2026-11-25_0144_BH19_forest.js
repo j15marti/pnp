@@ -1,0 +1,11 @@
+function experiment(){
+const assert=(v,m)=>{if(!v)throw Error(m)};
+function make(h){let n=0,owners=[],leaves=[],roots=[];function tree(d){let v=n++;if(d===0)leaves.push(v);else owners.push([v,tree(d-1),tree(d-1)]);return v}for(let j=0;j<3;j++)roots.push(tree(h));owners.push(roots);return {n,owners,leaves,roots,h}}
+function gate(q,pins){let adj=Array.from({length:q.n},()=>[]);q.owners.forEach((e,i)=>e.forEach(v=>adj[v].push(i)));let count=0;const memo=new Map();function vmsg(v,parent,b){count++;let key=`v:${v}:${parent}:${b}`;if(memo.has(key))return memo.get(key);let z=Boolean(pins.get(v)?.has(1-b))||adj[v].some(i=>i!==parent&&emsg(i,v,b));memo.set(key,z);return z}function emsg(i,v,b){count++;let [x,y]=q.owners[i].filter(a=>a!==v);let z=true;for(let a=0;a<2;a++)for(let c=0;c<2;c++){if(a===b&&c===b)continue;if(!vmsg(x,i,a)&&!vmsg(y,i,c))z=false}return z}let reject=vmsg(q.roots[0],-1,0)&&vmsg(q.roots[0],-1,1);return {reject,count}}
+function exhaustive(q,pins){for(let w=0;w<2**q.n;w++){let val=v=>Math.floor(w/2**v)%2;if([...pins].some(([v,b])=>b.has(1-val(v))))continue;if(q.owners.every(e=>{let a=e.map(val);return a.some(b=>b!==a[0])}))return true}return false}
+let out=[];for(let h of [0,1,2,3,4,5,6]){let q=make(h),L=q.leaves.length,queries=0,calls=0,small=0;function test(flags,expected,ex=false){let p=new Map();q.leaves.forEach((v,i)=>{if(flags[2*i]||flags[2*i+1])p.set(v,new Set([0]))});let z=gate(q,p);queries++;calls+=z.count;assert(z.reject===expected,"gate");if(ex){assert(exhaustive(q,p)!==z.reject,"exhaustive");small++}}
+let all=Array(2*L).fill(true);test(all,true,h<=1);
+for(let i=0;i<L;i++){let p=all.slice();p[2*i]=p[2*i+1]=false;test(p,false,h<=1)}
+if(h<=1){for(let z=0;z<2**(2*L);z++){let f=all.map((_,i)=>Boolean(z>>i&1));test(f,q.leaves.every((_,i)=>f[2*i]||f[2*i+1]),true)}}else{let seed=713;for(let z=0;z<64;z++){let f=all.map(()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return !!(seed>>>31)});test(f,q.leaves.every((_,i)=>f[2*i]||f[2*i+1]))}}
+out.push({h,variables:q.n,owners:q.owners.length,leaves:L,minimalVetoCount:(2n**BigInt(L)).toString(),queries,calls,exhaustiveChecks:small})}return out}
+console.log(JSON.stringify(experiment(),null,2));
