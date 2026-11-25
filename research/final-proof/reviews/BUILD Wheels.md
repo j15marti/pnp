@@ -1,3 +1,9 @@
+# BUILD Wheels independent review
+
+**BLOCK** on exact manuscript blob `afbfcf6518e6b88702f2cdf2cd36a68d6d8e57e1` (2026-11-25). Reviewed `thm:aggregate` and `obl:progress` at L28, BW21 at L3261, including signed path switches, pinned matching adapter, partition parity converse, pair quotient and actual DA21 RT26 comparison. The aggregate theorem is conditional; no uniform universal dispatcher, fixed original-input reserve or complete semantic closure is established. BW21 proves a scoped affine-boundary classification and actual pair quotient with polynomial per-pass costs; it does not guarantee further cuts at arbitrary fixed points. Root n=9 still open under native quotient, though DA21's separate span pass resolved it. No unrestricted lower bound. No full manuscript approval or full independent audit asserted for this still-open candidate; peer additions require separate review. All earlier approvals invalid on substantive edits. Publication not authorized. [Report](https://github.com/j15marti/pnp/commit/b362842be187cf3a77fc87152ce45f4cefbe2b41).
+
+## Previous review record
+
 # BUILD Wheels independent review | BW20 | BLOCK
 2026-11-25 02:10 PT
 Manuscript blob reviewed: 17cf72e2cdf085e54fe272ff345dd998e9fafe69
