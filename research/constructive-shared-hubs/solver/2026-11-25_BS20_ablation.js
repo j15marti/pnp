@@ -1,0 +1,12 @@
+function ablation(raw,bs,prior){
+ let checks=0;const assert=(x,m)=>{checks++;if(!x)throw Error(m)},v=Math.abs,s=l=>+(l<0);
+ function is2sat(k,clauses){const G=Array.from({length:2*k},()=>[]);for(const f of clauses){if(f.length===0)return false;G[f[0]].push((f[1]??f[0])^1);if(f.length===2)G[f[1]].push(f[0]^1)}function reach(a,b){let S=new Set([a]),q=[a];for(let i=0;i<q.length;i++){if(q[i]===b)return true;for(const j of G[q[i]])if(!S.has(j)){S.add(j);q.push(j)}}return false}for(let i=0;i<k;i++)if(reach(2*i,2*i+1)&&reach(2*i+1,2*i))return false;return true}
+ function plain(C,g){let X=g.private,Y=g.exterior,idx=new Map(X.map((x,i)=>[x,i])),scans=0;for(let w=0;w<2**g.rank;w++){let A=new Map(Y.map((x,i)=>[x,i===0?0:(w>>>(i-1))&1])),F=[];for(let c of C){scans++;let out=c.filter(l=>A.has(v(l))),a=A.get(v(out[0]))^s(out[0]);if(out.some(l=>(A.get(v(l))^s(l))!==a))continue;F.push(c.filter(l=>!A.has(v(l))).map(l=>2*idx.get(v(l))+(a^s(l))))}if(is2sat(X.length,F))return {jobs:w+1,ownerScans:scans,firstWord:w}}return {jobs:2**g.rank,ownerScans:scans}}
+ let a=plain(raw.O.map(o=>o.t.map(x=>x+1)),prior.raw.gauge),b=plain(bs.common.find(x=>x.K===16).residual.C,prior.wide.gauge);assert(a.jobs===prior.raw.gauge.jobs+prior.raw.gauge.skipped,"raw ablation");assert(b.jobs===prior.wide.gauge.jobs+prior.wide.gauge.skipped,"wide ablation");
+ let quadratic=[];for(let k=1;k<=8;k++){let counts=[0,0],jointOpp=0,jointSame=0;
+  function clauses(w,target,offset){let C=[[2*offset+1],[2*(offset+k)+(target^1)]];for(let i=0;i<k;i++){let p=((w>>>i)&1)&((w>>>(k+i))&1);for(let z=0;z<2;z++)C.push([2*(offset+i)+z,2*(offset+i+1)+(z^p^1)])}return C}
+  for(let w=0;w<2**(2*k);w++){let x=w&((1<<k)-1),y=w>>>k,q=0;for(let i=0;i<k;i++)q^=((x>>>i)&1)&((y>>>i)&1);let C0=clauses(w,0,0),C1=clauses(w,1,0);let z0=is2sat(k+1,C0),z1=is2sat(k+1,C1);assert(z0===(q===0)&&z1===(q===1),"quadratic conditional");counts[q]++;let A=is2sat(2*(k+1),C0.concat(clauses(w,1,k+1))),B=is2sat(2*(k+1),C0.concat(clauses(w,0,k+1)));assert(!A&&B===z0,"opposite/same chain");jointOpp+=+A;jointSame+=+B}
+  assert(counts[0]===2**(2*k-1)+2**(k-1),"level count");quadratic.push({k,counts,jointOpp,jointSame,minimumSeparateConflictPackets:2**k+1})}
+ return {checks,raw:a,wide:b,quadratic}
+}
+if(typeof require!=='undefined'&&require.main===module){const fs=require('fs');console.log(JSON.stringify(ablation(...process.argv.slice(2).map(p=>JSON.parse(fs.readFileSync(p)))),null,2));}
