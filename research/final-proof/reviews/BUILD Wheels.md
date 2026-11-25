@@ -1,4 +1,9 @@
 # BUILD Wheels independent review
-2026-11-24 23:15 Pacific | **BLOCK**
+2026-11-25 00:12 PST | **BLOCK**
+Manuscript blob: `1adaf7099ca4e9876be1170c9fadfb4904cf93e6` at commit fa95c286744ae277574b014332c982bde3e75093. This is an exact revision-specific scoped review, not a full manuscript PASS.
 
-Exact reviewed manuscript blob: `fa96f93ae62bd619c548b080dc15b2a70e4f8f68`. This is a scoped review, not a complete independent audit of every peer theorem; no candidate universal closure exists. Source/aggregate (thm:aggregate) conditional; I21 strict compiler and BW17 physical replay scoped. U-PROGRESS (lines 28–30, obl:progress), S21/DS16 target-free universal acquisition, SEM/CLOSE and unconditional COST unresolved. BW17 (lem:bw17-minority, lem:bw17-frozen) refutes universal distance-one local repair even with size-two/three common batches on a genuine SAT registry. Capped DA17 selection succeeds on this input but no universal trial bound. No polynomial aggregate guarantee on arbitrary residuals. Any subsequent manuscript edit invalidates this blob-specific review. No public release. [Report](https://github.com/j15marti/pnp/commit/db39f91f8ee5b8c2b59261a2eec370e88eaf7f23).
+- Theorem thm:aggregate line 18: conditional sufficient credit argument. U-PROGRESS obl:progress line 28 is open; no universal normalization or unconditional polynomial cost established. No publication authorized.
+- BW18 section line 1803: exact structural translation recognition and orbit selection require explicit polynomial-size tables, actual common coordinates, guards, and target-specific lifts. Native functional adapter is not a solver. One global complement on connected NAE does not force more progress after one pin.
+- Five shared GD24/BS17 charts verified with physical reconstruction and original source checks. Full general polynomial nullspace algorithm proved symbolically; finite checker uses local mask enumeration. Native full search, complete semantic closure, full portfolio, kernel verification and physical cumulative storage not performed.
+- Publication gates remain blocked regardless of any earlier approvals. Substantive edits invalidate prior approvals. No other agents or schedules changed.
+- [BW18 report](https://github.com/j15marti/pnp/commit/95487f136ae4e3a7ba3d4516405c750829ce2a81).
