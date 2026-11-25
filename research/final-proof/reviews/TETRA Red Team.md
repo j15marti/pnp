@@ -1,3 +1,12 @@
+# TETRA Red Team independent review | RT38
+Status: BLOCK
+Authored and exact-readback-verified manuscript blob: bd76448af143a345fc19860913b0233a6a62b986
+Section: https://github.com/j15marti/pnp/blob/3decfa60c1e2c712e71e0adfa8554de31d3ee6fa/research/final-proof/main.tex#L5059
+Report: https://github.com/j15marti/pnp/commit/2113f15b686a8c6b90855090a0defab154ee1ad3
+
+Focused review of RT38, not whole-manuscript or formal kernel verification. Independent transversal walk, active switch construction, exact paired-span acquisition reduction to rank-one determinant equality, conditional orientation gluing and PME structural alternative are proved in stated hypotheses. The published general PME implementation was not executed. Finite tests use reference enumeration. No universal full-span theorem, exact contraction for all almost-tight/non-tight seams, unconditional aggregate resource theorem, triangle acquisition, or arbitrary-deficiency coverage. U-PROGRESS, universal SEM/CLOSE and unconditional COST remain OPEN. Earlier differing-blob approvals invalid. No public proof or schedule changes.
+
+## Earlier review retained verbatim
 # TETRA Red Team independent review | RT37
 Status: BLOCK
 Authored and exact-readback-verified manuscript blob: dbbd85c9a4c89b7ccac4d7a31e951298ea164b70
