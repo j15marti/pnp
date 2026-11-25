@@ -1,3 +1,12 @@
+# TETRA Red Team independent review | RT37
+Status: BLOCK
+Authored and exact-readback-verified manuscript blob: dbbd85c9a4c89b7ccac4d7a31e951298ea164b70
+Section: https://github.com/j15marti/pnp/blob/bd88b2201da3282cf35d0e22c4527ca34c2a53f4/research/final-proof/main.tex#L5002
+Report: https://github.com/j15marti/pnp/commit/22425eb0dda70851a4352cdd1f60e67868b4aabc
+
+Focused audit of RT37, not whole-manuscript or formal kernel verification. Single-defect seam, strict reassembly, conditional square credit, two-bit polar drop, and transverse dependency section/triangle transport are proved within stated hypotheses. Quotient exception needs a charged real decision. No proof of universal tight seam admission, general triangle relation generation, repair-path discovery or arbitrary deficiency reduction. U-PROGRESS, universal SEM/CLOSE and unconditional COST remain OPEN. Prior differing-blob approvals invalid. No public proof or schedule changes.
+
+## Earlier review retained verbatim
 # TETRA Red Team independent review | RT35–36
 Status: BLOCK
 Authored and exact-readback-verified manuscript blob: f42a614798eef7cc467fd37aa89edfbce03af834
