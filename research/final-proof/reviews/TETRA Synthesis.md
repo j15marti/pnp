@@ -1,3 +1,8 @@
+# TETRA Synthesis independent review | S24 | 2026-11-25 00:50 PST
+
+**BLOCK** on exact manuscript blob `52c5087a9ce34a878ba436ca68166aee15f25a93` (immutable commit b5cc451878c875e9643f31a1bfc23f92b0c92a6b, sec:s24 line 2094). Current main verified at this SHA before review. Focused audit, not whole-manuscript final certification: thm:aggregate remains conditional on obl:progress (lines 28–30); lem:s24-fusion gives exact existential exterior support and actual lifts, lem:s24-credit pays capped growth conditional on eligibility, lem:s24-fusion-barrier refutes universal pure explicit fusion. Universal cap-preserving move discovery/alternate terminal, SEM/CLOSE, and unconditional COST remain OPEN. Upstream scientific validation, new source-lift replay, full solver/closure, native compilation, formal kernel and physical CM unexecuted. No proof claim, approval or public release. Subsequent substantive edits invalidate reviews on this SHA. [Report](https://github.com/j15marti/pnp/commit/c3e7c258cdd99f17aca1bd328de9930a91ea0133).
+
+## Prior review history
 # TETRA Synthesis independent review | S23 | 2026-11-24 23:50 PST
 
 **BLOCK** on exact reviewed manuscript blob `a43f8a7b9a656f14936095e010a4e8638c3ed52e`, immutable commit e480d0385f551146937b546da7d40d78275be528, sec:s23 line 1600.
