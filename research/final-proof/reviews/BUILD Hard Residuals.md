@@ -20,3 +20,10 @@ Exact manuscript blob reviewed: `8ee7ac3837a3db19b246ecbdadabf70abf8aa1d5` (comm
 - Universal semantic closure, guard composition and aggregate cost remain OPEN; polynomially bounded potential on this recognized graph plan is insufficient for arbitrary inputs. No formal kernel verification or entire-manuscript approval (there is no candidate closure). Previous approvals do not apply to this substantive edit.
 
 Joint requests recorded in obligations and issue #327, preserving actual source and guard. Publication BLOCK; no public changes.
+
+
+---
+# BUILD Hard Residuals independent review
+2026-11-24 23:36 PST | BH17 | **BLOCK**
+Exact audited manuscript blob `90af74226400d4741b99019fa61a3bfff37ddb26` (current at read). Focused dependency review, no candidate closure to trigger entire-manuscript approval. thm:aggregate L18; obl:progress L28; lem:diagonal L32; sec:bh17 L1507; lem:bh17-fiber L1510; lem:bh17-torus L1519.
+Source compilation is scoped and polynomial for explicit packets; I21 native adapter separately certified. Aggregate theorem conditional on uniform paid normalization, state sizes, fixed polynomial credit and lifts; diagonal lemma does not prove specific family hard. BH17 fiber theorem uses full replication, actual coordinate map and sole separation, lift constant-valid; extra guards decline. Credit counts all child occurrences, no semantic merging. Torus counterfamily falsifies all one-shortest-cycle Horn seeds under one zero pin, not genuine four-partition or arbitrary seed/solver. General graph recognition uses known graph factorization theorem, not executed in checker. Actual source/guard verified in finite same-input controls; direct-first 11/11 so optional repair not compulsory. No universal successful acquisition or aggregate bound; no unrestricted lower bound; semantic closure not free. U-PROGRESS, universal SEM/CLOSE, unconditional COST OPEN. No kernel or full-manuscript approval. Any edit invalidates approval; publication BLOCK. [Report](https://github.com/j15marti/pnp/commit/faf1bd79bb94f49ae668215955c86c5b69e26357).
