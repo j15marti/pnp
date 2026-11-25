@@ -1,6 +1,6 @@
 "use strict";
 function run(){
-const L={gauss:0,xor:0,closure:0,pins:0,fusions:0,drops:0,pairs:0,forest:0,raw:0,matchAttempts:0,matchSuccess:0,augment:0,regions:0,branches:0,nodes:0,counts:0,probes:0,reference:0,assertions:0};
+const L={gauss:0,xor:0,closure:0,pins:0,fusions:0,drops:0,pairs:0,forest:0,raw:0,matchAttempts:0,matchSuccess:0,countTerminals:0,augment:0,regions:0,branches:0,nodes:0,counts:0,probes:0,reference:0,assertions:0};
 const ck=(v,msg)=>{L.assertions++;if(!v)throw Error(msg)},bit=i=>1n<<BigInt(i),pv=a=>a.toString(2).length-1;
 function basis(E){L.gauss++;const B=new Map();let bad=false;for(let [a,b] of E){while(a){let p=pv(a),v=B.get(p);if(!v){B.set(p,[a,b]);break}a^=v[0];b^=v[1];L.xor++}if(!a&&b)bad=true}return {B,bad}}
 function red([a,b],B){for(const p of [...B.keys()].sort((x,y)=>y-x))if(a&bit(p)){const v=B.get(p);a^=v[0];b^=v[1];L.xor++}return [a,b]}
@@ -30,7 +30,7 @@ function lift(n,F,G,tree){G=G.slice();let b=basis(G);ck(!b.bad&&cost(n,F,tree,G)
 function matching(F,G){L.matchAttempts++;let edges=F.map(P=>P.filter(([a])=>a&&(a&(a-1n))===0n).map(([a,b])=>[pv(a),b^1])),owner=new Map();function aug(i,seen){for(let [j,v] of edges[i]){if(seen.has(j))continue;seen.add(j);if(!owner.has(j)||aug(owner.get(j)[0],seen)){owner.set(j,[i,v]);L.augment++;return true}}return false}
 for(let i=0;i<F.length;i++)if(!aug(i,new Set()))return null;let b=basis([...G,...[...owner].map(([j,[i,v]])=>[bit(j),v])]);ck(!b.bad,"match guard");let x=model(b.B);ck(sat(F,G,x),"match witness");L.matchSuccess++;return x}
 function ie(n,F,G){let z=0n;function rec(i,E,s){if(i===F.length){z+=BigInt(s)*count(n,E);return}rec(i+1,E,s);rec(i+1,[...E,...F[i]],-s)}rec(0,G,1);return z}
-function countLift(n,F,G){if(!ie(n,F,G))return null;G=G.slice();for(let i=0;i<n;i++){let a=bit(i);if(!red([a,0],basis(G).B)[0])continue;L.probes++;let H=[...G,[a,0]];G=ie(n,F,H)>0n?H:[...G,[a,1]]}return model(basis(G).B)}
+function countLift(n,F,G){L.countTerminals++;if(!ie(n,F,G))return null;G=G.slice();for(let i=0;i<n;i++){let a=bit(i);if(!red([a,0],basis(G).B)[0])continue;L.probes++;let H=[...G,[a,0]];G=ie(n,F,H)>0n?H:[...G,[a,1]]}return model(basis(G).B)}
 const support=P=>P.reduce((s,[a])=>s|a,0n);
 function solve(n,F,G=[]){L.nodes++;let c=close(F,G);if(!c)return null;F=c.F;G=c.G;if(!F.length)return model(basis(G).B);let all=cert(n,F,G);
 if(all.accepted){L.forest++;if(all.raw<bit(n))L.raw++;return lift(n,F,G,all.tree)}
@@ -44,7 +44,7 @@ const lines=[[0,1,2],[0,3,4],[0,5,6],[1,3,5],[1,4,6],[2,3,6],[2,4,5]],fc=lines.f
 const results={ledger:L,decisions:[],fibers:[],scaling:[],firewall:{}};
 function ref(n,F,G=[]){let k=0;for(let x=0n;x<bit(n);x++){L.reference++;if(sat(F,G,x))k++}return k}
 function test(name,n,F,G=[]){let k=ref(n,F,G),x=solve(n,F,G);ck((x!==null)===(k>0),name+" label");if(x!==null)ck(sat(F,G,x),name+" source witness");results.decisions.push({name,n,m:F.length,models:k,solver:x===null?"UNSAT":"SAT"})}
-test("Fano NAE",7,lines.map(C=>nae(...C)));test("Fano CNF",7,cnf(fc));for(let i=0;i<14;i++)test("Fano neighbor "+i,7,cnf(fc.filter((_,j)=>j!==i)));
+test("six independent rank-two clauses",12,cnf(Array.from({length:6},(_,i)=>[2*i+1,2*i+2])));test("Fano NAE",7,lines.map(C=>nae(...C)));test("Fano CNF",7,cnf(fc));for(let i=0;i<14;i++)test("Fano neighbor "+i,7,cnf(fc.filter((_,j)=>j!==i)));
 for(let n of [3,5,9]){let cs=[];for(let i=0;i<n;i++){let a=i+1,b=(i+1)%n+1;cs.push([a,b],[-a,-b])}test("odd parity rim "+n,n,cnf(cs));test("rim neighbor "+n,n,cnf(cs.slice(1)))}
 const edge=(u,v,s)=>[[bit(2*u)^bit(2*v),s&1],[bit(2*u+1)^bit(2*v+1),s>>1]];
 let K5=[];for(let u=0;u<5;u++)for(let v=u+1;v<5;v++)K5.push(edge(u,v,0));test("tetra K5",10,K5);test("tetra K5 edge deletion",10,K5.slice(1));
