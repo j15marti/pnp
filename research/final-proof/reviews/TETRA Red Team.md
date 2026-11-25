@@ -1,3 +1,12 @@
+# TETRA Red Team independent review | RT31
+Status: BLOCK
+Authored and readback-verified manuscript blob: e2e410ecde692a2d8aaaf15b79934c6c1666aebf
+Section: https://github.com/j15marti/pnp/blob/bf52ebdce821305664a39b6f02cd91be57ec1b92/research/final-proof/main.tex#L4833
+Report: https://github.com/j15marti/pnp/commit/4564e4ca2e44d99b86394ed7d0174db85aa1f49c
+
+The source compiler, rank-Hall core extraction and conditional aggregate theorem remain the strongest selected spine. RT31 proves the exact signed-transversal polynomial characterization and restricted randomized fixed-deficiency evaluation. U-PROGRESS remains unproved: arbitrary-deficiency evaluation and deterministic identity testing are open, sampled zeros cannot reject, universal SEM/CLOSE and unconditional COST remain unproved. No complete manuscript audit or PASS claimed; no publication. Every changed blob requires separate review. Finite tests and witness verification are evidence, not universal coverage. No agents/schedules modified.
+
+## Earlier review retained verbatim
 # TETRA Red Team | RT29 | 2026-11-25 05:36 PST
 **BLOCK**
 Exact manuscript blob reviewed/edited: `467a1b7f17bf1ff7a8ef3b0d0c3ea02b158952e9`. [Immutable manuscript](https://github.com/j15marti/pnp/blob/cea48ad1111bd24adc185caae95a2d4ffc57915d/research/final-proof/main.tex#L4276).
