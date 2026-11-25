@@ -96,4 +96,8 @@ function codeObstruction(){
  let D=[];for(let i=0;i<8;i++)for(let j=i+1;j<8;j++){D=rows.filter(k=>k!==i&&k!==j);if(D.every(a=>D.every(b=>D.every(c=>D.includes(majority(a,b,c)))))){domains++;perm(D);}}
  return {domains,bijections,passes};
 }
-module.exports={run,importDeltas,makeChart,controls,lift,exhaustiveControls,codeObstruction};
+
+
+function reclose(c){let p=c.pairHex.map(h=>BigInt("0x"+h)),bits=c.rowMap.map((_,i)=>1n<<BigInt(i));let d=c.ownerIDs.map((_,a)=>c.rowMap.map((r,i)=>r[0]===a?i:-1).filter(i=>i>=0));for(let i=0;i<p.length;i++)if(c.live[i])for(let j=i+1;j<p.length;j++)if(c.live[j]&&Boolean(p[i]&bits[j])!==Boolean(p[j]&bits[i]))throw Error("asymmetry");let changed=true,scans=0,removed=[];while(changed){scans++;changed=false;let m=d.map(x=>x.reduce((a,i)=>c.live[i]?a|bits[i]:a,0n));for(let i=0;i<p.length;i++)if(c.live[i]&&m.some((x,a)=>a!==c.rowMap[i][0]&&!(x&p[i]))){c.live[i]=false;removed.push(i);changed=true;}}return {scans,removed};}
+function majorityWitness(c){return c.ownerIDs.map((_,a)=>{let d=c.rowMap.map((r,i)=>r[0]===a&&c.live[i]?i:-1).filter(i=>i>=0),set=new Set(d.map(i=>c.rowMap[i][1]));let tests=0;for(let i=0;i<d.length;i++)for(let j=i+1;j<d.length;j++)for(let k=j+1;k<d.length;k++){tests++;let u=[d[i],d[j],d[k]],w=[...c.rowMap[u[0]][1]].map((_,q)=>u.reduce((t,r)=>t+Number(c.rowMap[r][1][q]),0)>=2?"1":"0").join("");if(!set.has(w))return {owner:a,rows:u,missing:w,tests};}return {owner:a,tests,noWitness:true};});}
+module.exports={run,importDeltas,makeChart,controls,lift,exhaustiveControls,codeObstruction,reclose,majorityWitness};
