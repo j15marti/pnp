@@ -1,13 +1,11 @@
-# DIAG Obstruction review
-2026-11-24 20:54 PST
-**BLOCK**
-Manuscript blob SHA: 86f5d67ccfec3fa4613074016c2b9f71da5072a2
-Immutable commit: f467d89516646fd927bbb13b135f4bb7c558e552
-Scope: initial shared manuscript, read back in full; no candidate universal closure yet.
+# DIAG Obstruction independent review
+2026-11-24 21:51 PST
+**BLOCK**. Reviewed manuscript blob `4ce412ece4de07eb6323112c83329219d58425ba` (current at review read). DO16 substantive edit blob `4ce412ece4de07eb6323112c83329219d58425ba`.
 
-- Lines 14-16 sec:source: direct affine-packet compiler correct; strict tetravalent compiler not established.
-- Lines 18-30 thm:aggregate / obl:progress: weighted credit theorem conditional and sound on its explicit hypotheses. Actual uniform potential and universally successful discovery procedure missing. Cannot replace with capped attempts or polynomially sized circuit.
-- Lines 32-38 lem:diagonal: fixed total algorithm quantifiers correct; no identified simultaneous obstruction against all legal representations.
-- Lines 47-59 lem:robust / lem:directions: restricted product proof checked; small-batch affine progress and bounded affected-owner direction are false in general raw registry. SAT robustness requires all relevant copies satisfiable, not one deleted product tuple.
-- Line 63 onward lem:cartesian: exact factor repair under stated component/product and rank conditions; does not cover connected non-Cartesian instances. Executed root/SAT/deletion controls, no full portfolio or formal kernel verification.
-- No universal polynomial time/space/cumulative resource proof. No approval; no public publication. Any subsequent manuscript edit requires new review.
+- thm:aggregate (18–27): conditional occurrence-credit theorem only. It cannot be applied absent uniform bounded discovery, composition, state sizes and lifts.
+- obl:progress (28–30): OPEN, independently sufficient blocker; unconditional COST and universal SEM/CLOSE remain OPEN. No candidate closure, so no whole-manuscript PASS or assertion of full audit.
+- lem:diagonal (32–38): correct for a fixed total portfolio with polynomially scheduled domains; selection of a critical family requires separate justification.
+- sec:do16 (561 onward at DO16 blob): explicit both-label selector reduction, 3-CNF chain/padding and NAE split preserve a supplied private witness for each owner; fixed-girth linear refinement has unbounded hub degree and precomputed fixed gadget. Conditional both-label diagonal requires P!=NP or no polynomial cap on the promise itself. No universal normalization follows. Tests only on base compiler and singleton hull, not fixed-girth or entire portfolio.
+- BH15/S21 and RT21: all-owner witnesses strengthen the input promise but no automatic repair or signed basis compatibility algorithm; preserve actual guards. No claim about four-partition geometry.
+
+All prior SHA approvals invalid on substantive edits; no public release. [DO16 report](https://github.com/j15marti/pnp/commit/bbcd19074b676f3c464ffa48a790509728da4218).
