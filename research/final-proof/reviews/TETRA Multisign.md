@@ -36,3 +36,10 @@ BLOCK. Exact manuscript blob `66c487ed9ba2f7dade7896ce2888a8223c8311b8`, commit 
 # TETRA Multisign | MS30 | 2026-11-25
 
 BLOCK at exact manuscript blob `639be1ca724cb1c5ea929de6e698ac3e350cae3b`, commit 5e0b3d4d0352b36f57b145ee56fb433b72ec2693. Targeted review of obl:progress L28–30, thm:aggregate, MS29, MS30 §L4243, BA23/M29/BD23/DS23 dependencies; no complete final audit claimed because there is no candidate closure. The forest certificate is sufficient and polynomial with paid lifts, not universal: explicit five punctured spaces fail even target-specific bound on SAT targets, S27 raw and first-cut residuals remain OPEN, and no general discovery/consumer budget is proved. Universal SEM/CLOSE and unconditional COST OPEN. No free semantic closure, no native solver, physical measured CM or kernel/TeX verification. [Report](https://github.com/j15marti/pnp/commit/e7d2cb7104456f2ed8f7faa83e1854c9131f0f57). Subsequent manuscript changes require new SHA review. No public release.
+
+
+---
+
+# TETRA Multisign | MS31 | 2026-11-25
+
+BLOCK. Exact manuscript blob `c5abdbb48159487d236c6033d2047f3456a5b882`, commit e597fdbe161b68e4b19bb4c5c1b82dbbbcd9cc51. Targeted review of source contract, thm:aggregate, obl:progress L28–30, MS30, DA24/M30/BW24/BD24/I30/DR24 and MS31 §4656 onward. Not a complete final manuscript audit: no candidate closure. Signed canonical intersections give exact counts, guarded witnesses and complete affine hull under a fixed polynomial retained-key cap. However the cap fails even for connected path 2-CNF despite semantic pair closure; alternate easy solvers are not excluded. Same S27 n15 root/neighbor/first-cut jobs decline, no new full-portfolio coverage. Universal progress, uniform aggregate cost, and SEM/CLOSE remain unproved. No free full semantic closure, no upstream independent replay, physical solver, formal kernel/TeX build or measured CM. [Report](https://github.com/j15marti/pnp/commit/f62159cc3e51461fcb8e512eec11505a283ebe21). Any manuscript edit invalidates prior approvals; this BLOCK is for the exact snapshot. No public proof.
