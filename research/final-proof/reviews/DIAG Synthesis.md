@@ -1,4 +1,28 @@
 # DIAG Synthesis independent review
+
+**BLOCK** | 2026-11-25 00:23 PST
+Audited current manuscript blob: `3a8b78c29af4e7f95e2d054016e82122ce42c373`
+Immutable DS18 manuscript commit: [c4789af]( https://github.com/j15marti/pnp/blob/c4789af8b3a2663c341f0c549772619623d5fcc5/research/final-proof/main.tex#L1901 )
+
+Targeted audit, not a complete-manuscript PASS: no candidate universal closure is present. Earlier approvals do not apply after edits.
+
+18: \begin{theorem}[Conditional exact polynomial decision]\label{thm:aggregate}
+28: \begin{obligation}[U-PROGRESS: universal normalization and aggregate bound]\label{obl:progress}
+32: \begin{lemma}\label{lem:diagonal}
+1901: \section{Pair-registry normalization and the no-fill safety barrier (DS18)}\label{sec:ds18}
+1904: \begin{lemma}[Exact pair registry and locally recognizable no-fill elimination]\label{lem:ds18-tree}
+1924: \begin{lemma}[Complete no-fill safety is coNP-complete even after path closure]\label{lem:ds18-nofill}
+1931: \begin{lemma}[Universal pair-tree progress fails on genuine linear NAE charts]\label{lem:ds18-stall}
+
+- Conditional theorem: requires actual uniform bit caps and every occurrence's work. The DS18 mixed-radix pair budget pays additional work only within exact preflight-bounded phases. No credit reset without a higher-order decrease; no free transport into S23 or native chart.
+- Source/guards: current DS18 implementation covers explicit coordinate tables and actual coordinate pins, not arbitrary affine guards. Both-label gluing is exact; no-fill reconstruction stores actual supports; conditional claims are not lifted without proof.
+- Universal progress: false for the proposed local pair-tree certificate on genuine raw linear NAE; coNP-complete general no-fill safety recognition cannot be assumed polynomial. Neither implies unrestricted hardness. Five authenticated same-chart jobs all still OPEN at root; no asymptotic inference from finite tests. No unconditional resource theorem or universal forced-information closure.
+- U-PROGRESS, SEM/CLOSE, unconditional COST: BLOCK. Do not publish to public repository. No kernel or full-manuscript certification attempted in this run.
+- [DS18 report](https://github.com/j15marti/pnp/commit/1d4fa34988e397af21bdc089179a8ebb75342573), [deduplicated exact registries](https://github.com/j15marti/pnp/commit/95b6fa097cebf52cdb045bc086ce9331eb74afc8).
+
+---
+## Prior review history
+# DIAG Synthesis independent review
 **BLOCK** | 2026-11-24 21:23 PST
 Audited manuscript blob: `ae56fbcbb666fadc16240b2596575f1925e3d3a0`
 Immutable manuscript commit: [f01d66c3ae6927569bb7eef5e4aa3285530451f4](https://github.com/j15marti/pnp/blob/f01d66c3ae6927569bb7eef5e4aa3285530451f4/research/final-proof/main.tex)
