@@ -145,7 +145,25 @@ const run = function run(inputs) {
     for(let i=0;i<h;i++){let C=Array.from({length:4},(_,j)=>h+1+4*i+j);for(let a=0;a<4;a++){for(let b=a+1;b<4;b++)E.push([C[a],C[b],1,1]);for(let v of [i,i+1])E.push([C[a],v,0,1]);}}
     let G=normalize(V,E),a=solve(G,2,false),c=solve(G,2,true);check(c.cost===5*h,"module expected optimum");check(a.open,"global cap fails");synthetic.push({modules:h,n:V.length,edges:E.length,baseline:"OPEN",combined:c.cost,stages:c.stages,thresholdSAT:5*h,thresholdUNSAT:5*h-1})
   }
+
+  const genuine=[];
+  for(let q of [3,4])for(let flip of [false,true]){
+    let n=q,O=[];
+    for(let u=0;u<q;u++)for(let v=u+1;v<q;v++){
+      let map=[u,v,...Array.from({length:5},()=>n++)];
+      for(let z of inputs[0].root.slice(1)){
+        let mask=0;if(flip&&u===0&&v===1){let i=z.t.indexOf(1);if(i>=0)mask=2**i}
+        O.push({t:z.t.map(i=>map[i]),bad:[mask,mask^7]});
+      }
+    }
+    let S=source(n,O,[]);check(!!S,"genuine source closure");
+    let a=solve(S.G,3,false),c=solve(S.G,3,true);
+    check(a.open,"genuine raw global modulator cap");check(!c.open,"genuine contraction");
+    let w=verifySource(n,O,[],c,S.L);
+    check((w.violated===0)===!flip,"genuine source label");
+    genuine.push({q,n,owners:O.length,flip,baseline:"OPEN",combined:c.cost,stages:c.stages,lift:w});
+  }
   let f=Array.from({length:16},(_,a)=>{let k=[0,1,2,3].reduce((s,i)=>s+b(a,i),0);return Math.min(k,4-k)}),quartic=f.reduce((s,v,a)=>s+v*(([0,1,2,3].reduce((p,i)=>p^b(a,i),0))?-1:1),0)/16;check(quartic!==0,"four-port obstruction");
-  return {pin:"0100a1421a264b657dc9b7f3a257dbd07dc06a44",actual,localTests,synthetic,quartic,stats};
+  return {pin:"0100a1421a264b657dc9b7f3a257dbd07dc06a44",actual,localTests,synthetic,genuine,quartic,stats};
 };
 console.log(JSON.stringify(run(inputs),null,2));
