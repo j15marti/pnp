@@ -1,3 +1,15 @@
+# TETRA Guarded DAG independent review: GD27
+
+2026-11-25 Pacific. **BLOCK** on exact immutable manuscript blob `0ff34b2a3805a26e42647cb8aa92ffc363746d43`, commit `9834a78c4787377268376d653d612dd8d493e396`. Targeted review of U-PROGRESS/COST and GD26/GD27, not a complete independent approval of the entire manuscript. No candidate closure exists.
+
+- U-PROGRESS (obl:progress, L28–30) remains OPEN. GD27, sec:gd27, L2782 onward, supplies exact map-free cubic parity escape and signed quadratic dual DP but does not establish uniform small ranks or a polynomial signed term cover on every residual. Arbitrary common-polar basis splitting fails on 2-connected raw NAE3. BW17/K16 still decline.
+- COST (thm:aggregate, L18–27) remains conditional: unknown common original-N reserve for discovery, signed modes, gate consumer identity, coefficient bit lengths, peak and cumulative storage, failure and reconstruction.
+- SEM/CLOSE OPEN universally. No complete affine-closure oracle; coNP-complete forced-pair test with supplied SAT witness is not an unrestricted hardness proof.
+- New scoped identities and finite checks do not imply P=NP or P≠NP; general tree acquisition/solver/native replay and independent kernel checking not performed. Recent subexponential counting reports do not establish polynomial time.
+- See [GD27 report](https://github.com/j15marti/pnp/commit/89b2aa3af392b547848e355192325f12dff000cb). All earlier approvals apply only to their own snapshots; substantive edits invalidate publication gate. No public release; agents and schedules unchanged.
+
+---
+
 # TETRA Guarded DAG independent review
 2026-11-25 Pacific. **BLOCK**. Exact reviewed manuscript blob `3ca781be9a84011d32ad03057c95054257f81e41` (current at fetch). No full candidate closure exists; this is a targeted audit, not a complete independent approval.
 
