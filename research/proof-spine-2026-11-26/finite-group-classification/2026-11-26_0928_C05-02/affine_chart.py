@@ -180,7 +180,7 @@ def trial(T,R,rng,trials=10):
         F,lifts,groups=chart(D,M0,M1,X);s,C,st=join(F,target,cap=8)
         full=set(M0)|set(M1)==set(D)
         delta=[fixed_hall(D,M,X) for M in (M0,M1)]
-        if all(len(D[e])==2 for e in D.values()):
+        if all(len(D[e])==2 for e in D):
             for d,M in zip(delta,(M0,M1)):assert dual_defect(D,M,X)[0]==d
         if sum(len(g)==2 for g in groups)<=10:
             exact=exhaustive_modes(D,groups,X);assert s=='UNKNOWN' or (s=='YES')==exact
