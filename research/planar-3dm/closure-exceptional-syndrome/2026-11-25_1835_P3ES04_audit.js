@@ -1,0 +1,46 @@
+/* P3ES04 small-instance audit. Run: node <filename>.js. Exact BigInt determinants. Enumerative TU test and LP basis oracle are AUDIT ONLY; production theorem imports polynomial TU recognition and exact LP. */
+function audit(){
+const assert=(b,msg)=>{if(!b)throw Error(msg); R.assertions++};
+const R={seed:20261125,assertions:0,small:{jobs:0,sat:0,no:0,parityNo:0,regular:0,regularYes:0,regularNo:0,nonregular:0,augmentationOnly:0,closureNo:0,closureSolved:0,closureRegular:0,closureNonregular:0},guard:{jobs:0,regular:0,nonregular:0},examples:{},scale:[]};
+let seed=R.seed;const rnd=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
+function* choose(n,k,s=0,p=[]){if(k===0){yield p;return}for(let i=s;i<=n-k;i++)yield*choose(n,k-1,i+1,[...p,i])}
+const bits=n=>[...Array(n).keys()];
+function rank(cols){const B=new Map();for(let x of cols){while(x){let k=x.toString(2).length-1;if(B.has(k))x^=B.get(k);else{B.set(k,x);break}}}return B.size}
+function standard(cols){let rows=[];const d=cols.reduce((m,x)=>Math.max(m,x.toString(2).length),0);for(let i=0;i<d;i++){let r=0n;cols.forEach((x,j)=>{if((x>>BigInt(i))&1n)r|=1n<<BigInt(j)});rows.push(r)}let p=[];for(let j=0;j<cols.length;j++){let k=rows.findIndex((x,i)=>i>=p.length&&((x>>BigInt(j))&1n));if(k<0)continue;[rows[p.length],rows[k]]=[rows[k],rows[p.length]];for(let i=0;i<rows.length;i++)if(i!==p.length&&((rows[i]>>BigInt(j))&1n))rows[i]^=rows[p.length];p.push(j)}return {p,M:rows.slice(0,p.length).map(x=>cols.map((_,j)=>Number((x>>BigInt(j))&1n)))}}
+function det(A){let a=A.map(x=>x.map(BigInt)),s=1n,q=1n;const n=a.length;if(!n)return 1n;for(let k=0;k<n-1;k++){let i=k;while(i<n&&!a[i][k])i++;if(i===n)return 0n;if(i!==k){[a[k],a[i]]=[a[i],a[k]];s=-s}let p=a[k][k];for(let i=k+1;i<n;i++)for(let j=k+1;j<n;j++)a[i][j]=(a[i][j]*p-a[i][k]*a[k][j])/q;for(let i=k+1;i<n;i++)a[i][k]=0n;q=p}return s*a[n-1][n-1]}
+function signRegular(cols){const {p,M}=standard(cols),r=p.length,J=bits(cols.length).filter(j=>!p.includes(j)),c=J.length;
+const g=Array.from({length:r+c},()=>[]),tree=g.map(()=>[]),E=[];for(let i=0;i<r;i++)for(let j=0;j<c;j++)if(M[i][J[j]]){g[i].push(r+j);g[r+j].push(i);E.push([i,r+j])}
+let seen=new Set();for(let i=0;i<g.length;i++)if(!seen.has(i)){seen.add(i);let q=[i];for(let x of q)for(let y of g[x])if(!seen.has(y)){seen.add(y);q.push(y);tree[x].push(y);tree[y].push(x)}}
+function cycleParity(C){let n=C.length;for(let i=0;i<n;i++)for(let j=i+2;j<n;j++)if(!(i===0&&j===n-1)&&g[C[i]].includes(C[j]))return cycleParity(C.slice(i,j+1))^cycleParity([...C.slice(j),...C.slice(0,i+1)]);return (n/2)%2}
+let U=M.map(a=>a.slice());for(let [a,b] of E)if(!tree[a].includes(b)){let Q=[[a]],S=new Set([a]),P;for(let path of Q){let x=path.at(-1);if(x===b){P=path;break}for(let y of tree[x])if(!S.has(y)){S.add(y);Q.push([...path,y])}}if(cycleParity(P))U[a][J[b-r]]=-1}
+for(let k=1;k<=Math.min(r,c);k++)for(let I of choose(r,k))for(let K of choose(c,k)){let d=det(I.map(i=>K.map(j=>U[i][J[j]])));if(d>1n||d< -1n)return null}
+return U}
+function exact(cols,t,w=cols.map(()=>1)){let best=Infinity,ids=[];for(let mask=0;mask<2**cols.length;mask++){let s=0n,c=0,I=[];for(let j=0;j<cols.length;j++)if(mask&(1<<j)){s^=cols[j];c+=w[j];I.push(j)}if(s===t&&c<best){best=c;ids=I}}return {cost:best,ids}}
+function lpBasis(cols,t,w=cols.map(()=>1)){if(t===0n)return {cost:0,ids:[]};if(rank(cols)!==rank([...cols,t]))return {cost:Infinity,ids:[]};let U=signRegular([...cols,t]);if(!U)return null;let r=U.length,m=cols.length,b=U.map(a=>a[m]);let best=Infinity,ids=[];for(let I of choose(m,r)){let C=U.map(a=>I.map(j=>a[j])),d=det(C);if(!d)continue;assert(d===1n||d===-1n,"basis determinant");let s=0,c=0,K=[];for(let k=0;k<r;k++){let v=det(C.map((a,i)=>a.map((x,j)=>j===k?b[i]:x)))/d;assert(v===0n||v===1n||v===-1n,"target signed lift");if(v){c+=w[I[k]];K.push(I[k])}}if(c<best){best=c;ids=K}}assert(ids.reduce((s,i)=>s^cols[i],0n)===t,"signed target witness");return {cost:best,ids}}
+const inc=(n,t)=>t.reduce((x,v,c)=>x|(1n<<BigInt(c*n+v)),0n),target=n=>(1n<<BigInt(3*n))-1n;
+function cover(n,T){let A=T.map(t=>inc(n,t));for(let I of choose(T.length,n)){let s=0n,ok=true;for(let i of I){if(s&A[i]){ok=false;break}s|=A[i]}if(ok&&s===target(n))return true}return false}
+function match(n,T,p,a,b){let usedA=new Set(),usedB=new Set();for(let i=0;i<T.length;i++)if(p[i]===1){let x=T[i][a],y=T[i][b];if(usedA.has(x)||usedB.has(y))return false;usedA.add(x);usedB.add(y)}let adj=Array.from({length:n},()=>[]);for(let i=0;i<T.length;i++)if(p[i]===-1&&!usedA.has(T[i][a])&&!usedB.has(T[i][b]))adj[T[i][a]].push(T[i][b]);let mt=Array(n).fill(-1);function dfs(x,s){for(let y of adj[x])if(!s.has(y)){s.add(y);if(mt[y]<0||dfs(mt[y],s)){mt[y]=x;return true}}return false}for(let x=0;x<n;x++)if(!usedA.has(x)&&!dfs(x,new Set()))return false;return true}
+function propagate(n,T,p){const A=T.map(t=>inc(n,t)),b=target(n);let changed=true;while(changed){changed=false;for(let v=0;v<3*n;v++){let J=bits(T.length).filter(i=>((A[i]>>BigInt(v))&1n)&&p[i]!==0),ones=J.filter(i=>p[i]===1);if(!J.length||ones.length>1)return false;if(ones.length){for(let i of J)if(p[i]===-1){p[i]=0;changed=true}}else if(J.length===1){p[J[0]]=1;changed=true}}}let t=b;const cols=[];for(let i=0;i<A.length;i++){if(p[i]===1)t^=A[i];if(p[i]===-1)cols.push(A[i])}if(rank(cols)!==rank([...cols,t]))return false;return [[0,1],[0,2],[1,2]].every(([a,b])=>match(n,T,p,a,b))}
+function closure(n,T){let p=T.map(()=>-1);for(;;){if(!propagate(n,T,p))return null;let forced=false;for(let i=0;i<T.length;i++)if(p[i]===-1){let a=p.slice(),b=p.slice();a[i]=0;b[i]=1;let z=propagate(n,T,a),o=propagate(n,T,b);if(!z&&!o)return null;if(!z||!o){p=o?b:a;forced=true;break}}if(!forced)return p}}
+function test(n,T){let C=T.map(t=>inc(n,t)),b=target(n),sat=cover(n,T),ref=exact(C,b);R.small.jobs++;R.small[sat?"sat":"no"]++;assert(sat===(ref.cost===n),"integer exact cover equivalence");
+if(!Number.isFinite(ref.cost))R.small.parityNo++;
+else{let s=lpBasis(C,b);if(s){R.small.regular++;R.small[sat?"regularYes":"regularNo"]++;assert(s.cost===ref.cost,"regular optimum");if(!sat&&!R.examples.regularNo)R.examples.regularNo={n,T,min:s.cost}}
+else{R.small.nonregular++;if(signRegular(C)){R.small.augmentationOnly++;if(!R.examples.augmentationOnly)R.examples.augmentationOnly={n,T,min:ref.cost}}}}
+let p=closure(n,T);if(!p){R.small.closureNo++;assert(!sat,"sound closure");return}let K=bits(T.length).filter(i=>p[i]===1),J=bits(T.length).filter(i=>p[i]===-1),d=b^K.reduce((x,i)=>x^C[i],0n);let cs=J.map(i=>C[i]);if(!J.length){R.small.closureSolved++;assert(sat&&d===0n&&K.length===n,"closure solved");return}
+let s=lpBasis(cs,d);if(s){R.small.closureRegular++;assert((s.cost+K.length===n)===sat,"residual regular optimum")}else{R.small.closureNonregular++;if(!R.examples.postClosureNonregular)R.examples.postClosureNonregular={n,T,p}}
+}
+let oct=[];for(let x=0;x<2;x++)for(let y=0;y<2;y++)for(let z=0;z<2;z++)oct.push([x,y,z]);for(let mask=0;mask<256;mask++)test(2,oct.filter((_,i)=>mask&(1<<i)));
+let glue=oct.filter(t=>t.join("")!=="010");for(let x of [0,2])for(let y of [1,2])for(let z of [0,2])if([x,y,z].join("")!=="010")glue.push([x,y,z]);
+test(3,glue);for(let i=0;i<100;i++)test(3,glue.filter(()=>rnd()<0.76));
+// Arbitrary target and weights independently check the TU terminal, including zero weights.
+for(let k=0;k<100;k++){let C=bits(7).map(()=>BigInt(1+Math.floor(rnd()*15))),t=BigInt(Math.floor(rnd()*16)),w=C.map(()=>Math.floor(rnd()*5));if(rank(C)!==rank([...C,t]))continue;let s=lpBasis(C,t,w),ref=exact(C,t,w);R.guard.jobs++;if(s){R.guard.regular++;assert(s.cost===ref.cost,"weighted affine target")}else R.guard.nonregular++}
+const full=oct.map(t=>inc(2,t)),b=target(2);assert(!signRegular([...full,b]),"full octa nonregular");assert(closure(2,oct).every(x=>x===-1),"full octa survives closure");let a=full[0];const quotient=full.slice(1).map(v=>{let bit=a&-a;return v&bit?v^a:v});assert(new Set(quotient.map(String)).size===7&&rank(quotient)===3&&quotient.every(x=>x!==0n),"Fano contraction");
+R.examples.fano={n:2,triples:oct,contracted:oct[0],quotient:quotient.map(String)};
+// Rank-one seam test: disjoint copies of octahedron, or a copy with all complements removed but an odd parity solution if found.
+// Use weighted arbitrary binary local targets as additional NO/YES boundary checks.
+for(let k of [1,4,16,64]){let A=[],qs=[],localCost=0,witness=[];for(let j=0;j<k;j++){let offset=BigInt(6*j),c=full.map(v=>v<<offset),q=b<<offset;let s=exact(c,q);localCost+=s.cost;A.push(...c);qs.push(q);witness.push(...s.ids.map(i=>8*j+i))}
+let t=qs.reduce((x,y)=>x^y,0n);let remaining=[...A,t];for(let j=0;j<k;j++){let left=remaining.slice(0,8),right=remaining.slice(8),q=qs[j];assert(rank(left)+rank(right)-rank(remaining)===1,"rank one seam");assert(rank([...left,q])===rank(left)&&rank([...right,q])===rank(right),"common virtual column");remaining=[...right.slice(0,-1),q,right.at(-1)]}
+assert(rank(remaining.slice(0,-1))===k&&remaining.slice(0,-1).reduce((x,y)=>x^y,0n)===t,"root circuit");assert(witness.reduce((x,i)=>x^A[i],0n)===t&&localCost===2*k,"scale witness");R.scale.push({blocks:k,triples:8*k,minimum:localCost,rankOneSeams:k})}
+return R
+}
+console.log(JSON.stringify(audit(),null,2));
