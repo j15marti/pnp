@@ -1,0 +1,17 @@
+function audit3(){
+const R={templates:[],controls:[],jointMinima:null};function ck(b,m){if(!b)throw Error(m)}
+const pairList=[[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];
+function pm(n,E,D=[]){let alive=Array.from({length:n},(_,i)=>i).filter(i=>!D.includes(i));let A=new Set(alive),m=[];function f(){if(!A.size)return m.slice();let u=A.values().next().value;A.delete(u);for(let e of E)if(e.includes(u)){let v=e[0]===u?e[1]:e[0];if(A.has(v)){A.delete(v);m.push(e);let r=f();if(r)return r;m.pop();A.add(v)}}A.add(u);return null}return f()}
+function template(n,E,p,r,classes){let mask=[],witnesses=[];for(let [i,j] of pairList){let d=[p[i],p[j],r],a=new Set(d).size===3?pm(n,E,d):null;mask.push(+!!a);if(a)witnesses.push({pair:[i,j],M:a});ck(!!a===(classes[i]!==classes[j]),"template mismatch")}R.templates.push({n,E,p,r,classes,mask,witnesses})}
+template(3,[[0,2],[1,2]],[0,0,1,1],2,[0,0,1,1]);
+template(5,[[0,1],[1,2],[2,3],[3,0],[0,4]],[4,4,1,3],2,[0,0,1,2]);
+let cube=[];for(let u=0;u<8;u++)for(let j=0;j<3;j++){let v=u^(1<<j);if(u<v&&u!==0&&!(u===3&&v===7))cube.push([u-1,v-1])}
+template(7,cube,[0,1,3,6],2,[0,1,2,3]);
+function source(n,E){let all=[],A=new Set(Array.from({length:n},(_,i)=>i));function rec(m){if(!A.size){all.push(m.slice());return}let u=A.values().next().value;A.delete(u);for(let i=0;i<E.length;i++)if(E[i].includes(u)){let v=E[i][0]===u?E[i][1]:E[i][0];if(A.has(v)){A.delete(v);rec(m.concat(i));A.add(v)}}A.add(u)}rec([]);let even=0;for(let m of all){let a=Array.from({length:n},()=>[]);E.forEach(([u,v],i)=>{if(!m.includes(i)){a[u].push(v);a[v].push(u)}});let seen=new Set(),ok=true;for(let u=0;u<n;u++)if(!seen.has(u)){let q=[u];seen.add(u);for(let v of q)for(let w of a[v])if(!seen.has(w)){seen.add(w);q.push(w)}if(q.length%2)ok=false}if(ok)even++}return {matchings:all.length,even,allEdgeStatuses:E.every((_,i)=>all.some(m=>m.includes(i))&&all.some(m=>!m.includes(i)))}}
+function candidates(n,E){let C={4:0,5:0,strict4:0,strict5:0};for(let bits=1;bits<(1<<n)-1;bits++){let S=Array.from({length:n},(_,i)=>i).filter(i=>bits>>i&1),inside=e=>Boolean(bits>>e&1),cross=E.filter(([u,v])=>inside(u)!==inside(v));if(![4,5].includes(cross.length))continue;let p=cross.map(e=>e.find(inside)),q=cross.map(e=>e.find(u=>!inside(u)));if(new Set(p).size!==p.length||new Set(q).size!==q.length)continue;let A=Array.from({length:n},()=>[]);for(let [u,v] of E)if(inside(u)&&inside(v)){A[u].push(v);A[v].push(u)}let h=new Map([[S[0],0]]),todo=[S[0]],ok=true;for(let u of todo)for(let v of A[u]){if(h.has(v)){if(h.get(v)===h.get(u))ok=false}else{h.set(v,1-h.get(u));todo.push(v)}}if(!ok||h.size!==S.length)continue;C[cross.length]++;if(S.length>(cross.length===4?4:7))C["strict"+cross.length]++}return C}
+let P=[],Q=[];for(let i=0;i<5;i++){P.push([i,(i+1)%5],[i+5,5+(i+2)%5],[i,i+5]);Q.push([i,(i+1)%5],[i+5,5+(i+1)%5],[i,i+5])}
+for(let [name,E] of [["Petersen",P],["prism",Q]])R.controls.push({name,...source(10,E),cuts:candidates(10,E)});
+let S=[[0,1],[1,2],[2,3],[3,0]],xOut=[0,1,1,0],C=[];
+for(let b=0;b<16;b++){let x=Array.from({length:4},(_,i)=>b>>i&1),M=S.filter(([u,v])=>x[u]===x[v]).length,P=[[0,1],[2,3]].filter(([u,v])=>x[u]===x[v]).length+x.filter((a,i)=>a===xOut[i]).length;C.push([M,P])}
+ck(C.some(a=>a[0]===0)&&C.some(a=>a[1]===0)&&!C.some(a=>a[0]===0&&a[1]===0),"joint minima falsifier");R.jointMinima={insideSquare:S,outsideBits:xOut,matchingM:"all seams selected",matchingP:"internal selected edges 1-2 and 3-0; all seams unselected",costPairs:C};return R}
+console.log(JSON.stringify(audit3(),null,2));
