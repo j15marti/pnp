@@ -1,4 +1,4 @@
-function(){
+const audit = function(){
 const C=[[0,1,6],[0,1,3],[1,3,6],[2,3,4],[2,4,5],[0,4,5],[2,10,11],[7,8,9],[8,9,10],[8,12,13],[9,10,11],[5,7,11],[6,7,17],[12,13,14],[13,14,15],[14,15,16],[15,16,17],[12,16,17]], B=C.map(a=>a.slice());B[4]=[2,5,6];B[12]=[7,17,4];
 const rots=[[[18,24,19],[18,19,21],[19,24,21],[20,22,21],[22,20,23],[23,18,22],[28,29,20],[25,27,26],[26,27,28],[26,30,31],[29,28,27],[23,29,25],[24,25,35],[30,32,31],[31,32,33],[32,34,33],[33,34,35],[35,34,30],[0,1,5],[1,0,2],[6,4,3],[3,1,2],[3,4,5],[4,11,5],[2,0,12],[12,11,7],[7,8,9],[10,8,7],[8,10,6],[11,6,10],[9,17,13],[13,14,9],[14,13,15],[15,16,14],[17,16,15],[16,17,12]],[[18,24,19],[18,19,21],[19,24,21],[20,22,21],[24,23,20],[22,23,18],[29,28,20],[26,27,25],[28,27,26],[31,26,30],[27,28,29],[23,25,29],[25,22,35],[30,32,31],[33,31,32],[32,34,33],[35,33,34],[34,30,35],[0,1,5],[1,0,2],[4,6,3],[3,1,2],[3,12,5],[5,11,4],[2,0,4],[7,11,12],[8,7,9],[7,8,10],[6,10,8],[11,10,6],[9,17,13],[14,9,13],[13,15,14],[16,14,15],[15,17,16],[12,16,17]]];
 let checks=0,matching=0,closureRounds=0,forced=0;function A(x){checks++;if(!x)throw Error("assert "+checks)}
@@ -16,4 +16,5 @@ for(const target of seq){const nx=new Map();for(const [key,cost] of dp)for(const
 let cases=[];for(const k of [1,2,4,8,16,32,64]){const len=2*k+1,c=source(len,false),bad=source(len,true),seq=[...Array(k).fill(W11),W10,...Array(k).fill(W00)],s=bits(seq),a=bits(Array(len).fill(W00)),b=bits([...Array(k).fill(W00),W01,...Array(k).fill(W11)]),z=bits(Array(len).fill(W11));A(defect(c,s)===6);for(const v of [a,b,z])A(defect(c,v)===0);A(s.every((v,i)=>v===(a[i]^b[i]^z[i])));let good=close(c,Array(len).fill(T)),no=close(bad,Array.from({length:len},(_,j)=>j===k?U:T));A(good.sat&&!no.sat);A(good.pins.every((v,i)=>v<0||s[i]===v));const dist=distance(seq);A(dist[0]===8*k+4&&dist[1]===null&&dist[2]===0);cases.push({k,n:c.length,defects:6,nearest_sat:dist[0],three_defects_exist:dist[1]!==null,forced_pins:good.pins.filter(x=>x>=0).length,sat_rounds:good.rounds,unsat_rounds:no.rounds})}
 return {checks,matching,closureRounds,forced,base_table:T,bad_table:U,cases}
 }
+;
 console.log(JSON.stringify(audit(),null,2));
