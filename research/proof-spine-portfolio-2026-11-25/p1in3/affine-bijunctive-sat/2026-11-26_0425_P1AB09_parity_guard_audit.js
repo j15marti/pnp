@@ -1,0 +1,3 @@
+function parityGuardAudit(){const R=n=>Array.from({length:n},(_,i)=>i),w=x=>x.toString(2).replace(/0/g,"").length, U=[3,5,6,9,10,12], bad=T=>{if(!T.length)return false;let A=R(4).filter(i=>T.some(t=>t>>i&1));return A.some(i=>A.some(j=>A.some(k=>i!==j&&j!==k&&i!==k&&!T.includes((1<<i)|(1<<j))&&!T.includes((1<<j)|(1<<k))&&T.includes((1<<i)|(1<<k)))))};
+let rows=[];for(let s=1;s<64;s++){let T=U.filter((t,i)=>s>>i&1);if(!bad(T))continue;let good=[1,2,4,8,3,5,9].filter(g=>[0,1].every(b=>!bad(T.filter(t=>w(t&g)%2===b))));if(good.filter(g=>w(g)===1).length!==4)throw Error("literal guard");rows.push({T,guards:good})}return{bad:rows.length,withPair:rows.filter(r=>r.guards.some(g=>w(g)===2)).length,rows}}
+console.log(JSON.stringify(parityGuardAudit(),null,2));
