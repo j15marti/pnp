@@ -1,0 +1,36 @@
+function flowAudit(){
+const mod=x=>(x%3+3)%3, A=(x,m)=>{if(!x)throw Error(m)}, R=n=>Array.from({length:n},(_,i)=>i), stats={gauss:0,rankTests:0,branches:0,maxflow:0,augment:0,witness:0,comparisons:0,unknown:0,closure:0,matching:0},out=[];
+function make(n,edges,q,p={}){return{n,edges,q,p}}
+function native(c,p={}){let n=c.length,E=[];c.forEach((row,j)=>row.forEach(i=>E.push([i,n+j])));return make(2*n,E,R(2*n).map(i=>i<n?0:2),p)}
+function prism(n){return native(R(n).map(i=>[(i+n-1)%n,i,(i+1)%n]))}
+function gaussian(rows,m){stats.gauss++;let a=rows.map(r=>r.slice()),piv=[],j=0;for(let c=0;c<m&&j<a.length;c++){let k=a.findIndex((r,i)=>i>=j&&r[c]);if(k<0)continue;[a[j],a[k]]=[a[k],a[j]];if(a[j][c]===2)a[j]=a[j].map(x=>mod(2*x));for(let i=0;i<a.length;i++)if(i!==j&&a[i][c]){let f=a[i][c];for(let l=c;l<=m;l++)a[i][l]=mod(a[i][l]-f*a[j][l])}piv.push(c);j++}if(a.some(r=>r.slice(0,m).every(x=>x===0)&&r[m]))return null;let F=R(m).filter(i=>!piv.includes(i)),b=R(m).map(()=>0),D=R(m).map(()=>R(F.length).map(()=>0));F.forEach((v,i)=>D[v][i]=1);piv.forEach((v,i)=>{b[v]=a[i][m];F.forEach((f,k)=>D[v][k]=mod(-a[i][f]))});return{b,D,F}}
+function incidence(g){let ad=R(g.n).map(()=>[]);g.edges.forEach(([u,v],i)=>{ad[u].push([i,1]);ad[v].push([i,-1])});return ad}
+function check(g,x){return x.length===g.edges.length&&x.every(b=>b===0||b===1)&&Object.entries(g.p).every(([i,b])=>x[i]===b)&&incidence(g).every((a,v)=>mod(a.reduce((s,[i,d])=>s+d*x[i],0))===g.q[v])}
+function local(g,p){stats.closure++;let ad=incidence(g),x={...p};for(;;){let old=Object.keys(x).length;for(let v=0;v<g.n;v++){let a=ad[v],t=R(1<<a.length).map(k=>R(a.length).map(i=>(k>>i)&1)).filter(z=>mod(z.reduce((s,b,i)=>s+b*a[i][1],0))===g.q[v]&&z.every((b,i)=>x[a[i][0]]===undefined||x[a[i][0]]===b));if(!t.length)return null;for(let i=0;i<a.length;i++)if(t.every(z=>z[i]===t[0][i]))x[a[i][0]]=t[0][i]}
+ // Matching relaxation applies only to native all-out charge-zero and all-in charge-two vertices; all other endpoints get private slots.
+ let own={},C=R(g.n).filter(v=>g.q[v]===2&&ad[v].length===3&&ad[v].every(([i,s])=>s===-1)&&!ad[v].some(([i])=>x[i]===1));stats.matching++;
+ function aug(v,seen){for(let [i] of ad[v])if(x[i]!==0){let u=g.edges[i][0],sl=g.q[u]===0&&ad[u].length===3&&ad[u].every(([j,s])=>s===1)?R(3).map(j=>u+":"+j):["e:"+i];for(let k of sl)if(!seen.has(k)){seen.add(k);if(own[k]===undefined||aug(own[k],seen)){own[k]=v;return true}}}return false}
+ if(C.some(v=>!aug(v,new Set())))return null;if(Object.keys(x).length===old)return x}}
+function chart(g,p){let m=g.edges.length,ad=incidence(g),rows=[],rep=[];function row(terms,b){let r=R(m+1).map(()=>0);for(let [i,s] of terms)r[i]=mod(r[i]+s);r[m]=mod(b);rows.push(r)}
+ for(let v=0;v<g.n;v++){let a=ad[v];row(a,g.q[v]);let f=a.filter(([i])=>p[i]===undefined),q=mod(g.q[v]-a.filter(([i])=>p[i]!==undefined).reduce((s,[i,d])=>s+d*p[i],0)+f.filter(([i,d])=>d===-1).length);if(f.length===3&&q===0){let [i,s]=f[0];rep.push(i);for(let [j,t] of f.slice(1))row([[i,s],[j,-t]],(t===-1?1:0)-(s===-1?1:0))}}
+ for(let [i,b] of Object.entries(p))row([[Number(i),1]],b);let h=gaussian(rows,m);return h?{...h,rows,rep}:null}
+function flow(g,p){stats.maxflow++;let n=g.n,m=g.edges.length,ad=incidence(g),x=R(m).map(i=>p[i]),B=[];for(let v=0;v<n;v++){let a=ad[v],f=a.filter(([i])=>x[i]===undefined),q=mod(g.q[v]-a.filter(([i])=>x[i]!==undefined).reduce((s,[i,d])=>s+d*x[i],0)),h=f.filter(([i,d])=>d===-1).length,w=mod(q+h);A(!(f.length===3&&w===0),"unresolved equality");if(w>f.length)return null;B.push(w-h)}if(B.reduce((a,b)=>a+b,0)!==0)return null;let E=R(n+2).map(()=>[]),S=n,T=n+1,arc={};function add(u,v,c){let a={v,c,rev:E[v].length},b={v:u,c:0,rev:E[u].length};E[u].push(a);E[v].push(b);return a}
+ g.edges.forEach(([u,v],i)=>{if(x[i]===undefined)arc[i]=add(u,v,1)});let need=0;B.forEach((b,v)=>{if(b>0){add(S,v,b);need+=b}else if(b<0)add(v,T,-b)});let f=0;while(f<need){let par=R(n+2).map(()=>null),Q=[S];par[S]=[-1,-1];for(let j=0;j<Q.length&&!par[T];j++){let u=Q[j];E[u].forEach((a,i)=>{if(a.c>0&&!par[a.v]){par[a.v]=[u,i];Q.push(a.v)}})}if(!par[T])return null;let d=need-f;for(let v=T;v!==S;){let [u,i]=par[v];d=Math.min(d,E[u][i].c);v=u}for(let v=T;v!==S;){let[u,i]=par[v],a=E[u][i];a.c-=d;E[v][a.rev].c+=d;v=u}f+=d;stats.augment++}
+ for(let [i,a] of Object.entries(arc))x[i]=1-a.c;A(check(g,x),"flow witness");stats.witness++;return x}
+function solve(g,cap=10){let p=local(g,g.p);if(!p)return{status:"NO",rank:null};let h=chart(g,p);if(!h)return{status:"NO",rank:null};let m=g.edges.length;
+ // Certified unconditional affine constants, then reclose.
+ for(;;){let k=Object.keys(p).length;for(let i=0;i<m;i++)if(h.D[i].every(a=>a===0)){if(h.b[i]===2)return{status:"NO",rank:null};p[i]=h.b[i]}if(Object.keys(p).length===k)break;p=local(g,p);if(!p)return{status:"NO",rank:null};h=chart(g,p);if(!h)return{status:"NO",rank:null}}
+ let bas=[],B=[];for(let i of h.rep){stats.rankTests++;let w=h.D[i].slice();for(let {p,v} of B)if(w[p]){let f=w[p];w=w.map((a,j)=>mod(a-f*v[j]))}let j=w.findIndex(a=>a!==0);if(j<0)continue;if(w[j]===2)w=w.map(a=>mod(2*a));B.push({p:j,v:w});bas.push(i)}
+ let r=bas.length;if(r>cap){stats.unknown++;return{status:"OPEN",rank:r}}
+ for(let k=0;k<2**r;k++){stats.branches++;let rows=h.rows.map(a=>a.slice());bas.forEach((i,j)=>{let row=R(m+1).map(()=>0);row[i]=1;row[m]=(k>>j)&1;rows.push(row)});let z=gaussian(rows,m);if(!z)continue;let P={...p},bad=false;for(let i of h.rep){A(z.D[i].every(a=>a===0),"span");if(z.b[i]===2){bad=true;break}let v=incidence(g).findIndex(a=>a.length===3&&a.some(([j])=>j===i)&&a.every(([j])=>z.D[j].every(x=>x===0))); // all affine constants can be pinned, not only reps
+ }
+ if(bad)continue;for(let i=0;i<m;i++)if(z.D[i].every(a=>a===0)){if(z.b[i]===2){bad=true;break}P[i]=z.b[i]}if(bad)continue;P=local(g,P);if(!P)continue;let x=flow(g,P);if(x)return{status:"YES",rank:r,x}}
+ return{status:"NO",rank:r}}
+function brute(g){let m=g.edges.length;A(m<=20,"small reference");for(let k=0;k<2**m;k++)if(check(g,R(m).map(i=>(k>>i)&1)))return true;return false}
+let seed=82611;function rng(n){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed%n}
+for(let j=0;j<120;j++){let n=4+rng(4),deg=R(n).map(()=>0),E=[];for(let k=0;k<18;k++){let u=rng(n),v=rng(n);if(u!==v&&deg[u]<3&&deg[v]<3){E.push([u,v]);deg[u]++;deg[v]++}}let q=R(n).map(()=>0);if(j%2===0)E.forEach(([u,v])=>{let x=rng(2);q[u]=mod(q[u]+x);q[v]=mod(q[v]-x)});else q=q.map(()=>rng(3));let p={};if(E.length&&j%3===0)p[rng(E.length)]=rng(2);let g=make(n,E,q,p),z=solve(g);A(z.status!=="OPEN"&&(z.status==="YES")===brute(g),"generic reference");stats.comparisons++}
+const prior=[[3,14,17],[1,4,6],[0,2,5],[0,3,5],[1,4,12],[2,5,7],[2,7,8],[6,9,13],[6,9,10],[3,7,8],[0,8,10],[11,15,16],[9,12,13],[4,12,13],[11,14,15],[10,14,15],[1,16,17],[11,16,17]];
+const neg=[[6,7,8],[1,2,3],[2,3,9],[7,8,11],[1,5,9],[4,6,10],[0,3,11],[0,4,5],[6,7,10],[1,2,9],[0,4,10],[5,8,11]];
+for(let [name,g,expected] of [["prior",native(prior),true],["NO",native(neg),false],...[6,12,18,36,72].map(n=>["prism"+n,prism(n),true])]){let z=solve(g);A((z.status==="YES")===expected&&z.status!=="OPEN","native");out.push({name,n:g.n/2,status:z.status,rank:z.rank})}
+return{stats,out}}
+console.log(JSON.stringify(flowAudit(),null,2));
