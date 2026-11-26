@@ -1,0 +1,13 @@
+function primeAudit(){
+let checks=0;function ck(x){checks++;if(!x)throw Error("assertion "+checks)}
+function run(p){let L=Math.floor(Math.sqrt(p)),sh=[0,1,L,L+1],C=[];for(let s of sh)for(let i=0;i<p;i++)C.push([i,p+(i+s)%p,2*p+(i+2*s)%p]);let n=3*p,V=7*p,E=[],pairs=new Set(),freq=Array.from({length:n},()=>[0,0,0,0]);C.forEach((t,j)=>{for(let x of t){E.push([x,n+j]);freq[x][Math.floor(j/p)]++}for(let a=0;a<3;a++)for(let b=a+1;b<3;b++){let key=t[a]+","+t[b];ck(!pairs.has(key));pairs.add(key)}});ck(freq.every(f=>f.every(x=>x===1)));
+let adj=Array.from({length:V},()=>[]);E.forEach(([u,v],i)=>{adj[u].push([v,2*i]);adj[v].push([u,2*i+1])});
+let queries=0,augment=0;
+function cappedFlow(a,b){let cap=new Int8Array(E.length*2).fill(1),flow=0;let source=E[a],target=E[b];if(source.some(v=>target.includes(v)))return 5;for(;flow<5;flow++){let prev=new Int32Array(V).fill(-1),prevE=new Int32Array(V).fill(-1),q=[...source],end=-1;for(let x of source)prev[x]=x;for(let h=0;h<q.length&&end<0;h++){let u=q[h];if(target.includes(u)){end=u;break}for(let [v,e] of adj[u])if(cap[e]>0&&prev[v]<0){prev[v]=u;prevE[v]=e;q.push(v)}}if(end<0)return flow;for(let v=end;prev[v]!==v;v=prev[v]){let e=prevE[v];cap[e]--;cap[e^1]++}augment++}return flow}
+for(let a=0;a<5;a++)for(let b=0;b<E.length;b++)if(!E[a].some(x=>E[b].includes(x))){queries++;ck(cappedFlow(a,b)>=5)}
+// Direct GF3 elimination on the same source, no group labels used in solver.
+let M=C.map(t=>{let row=new Uint8Array(n);t.forEach(i=>row[i]=1);return row}),r=0,piv=[];for(let c=0;c<n;c++){let j=r;while(j<M.length&&!M[j][c])j++;if(j===M.length)continue;[M[j],M[r]]=[M[r],M[j]];if(M[r][c]===2)for(let i=c;i<n;i++)M[r][i]=2*M[r][i]%3;for(let i=r+1;i<M.length;i++)if(M[i][c]){let a=M[i][c];for(let q=c;q<n;q++)M[i][q]=(M[i][q]+6-a*M[r][q])%3}piv.push(c);r++}ck(n-r===2);let free=Array.from({length:n},(_,i)=>i).filter(i=>!piv.includes(i)),word=null;for(let f of free){let x=new Uint8Array(n);x[f]=1;for(let i=r-1;i>=0;i--){let sum=0;for(let j=piv[i]+1;j<n;j++)sum=(sum+M[i][j]*x[j])%3;x[piv[i]]=(3-sum)%3}if(x.some(v=>v!==x[0])){word=x;break}}ck(word!==null);let w=Array.from(word,x=>x===0?0:1);ck(C.every(t=>new Set(t.map(i=>w[i])).size===2));
+return {p,L,variables:n,clauses:C.length,queries,augment,rank:r,cut:"no cut <=4 with an internal edge on each shore",sat:true}}
+return {cases:[5,7,11,29,101].map(run),checks,limitations:"five-anchor bounded augmenting path test covers all cuts with internal edges both shores; raw min degree3 excludes independent shore of >=2 for cuts <=4. The theorem uses prime p>=5 and distinct shifts; no universal prime solver."}
+}
+console.log(JSON.stringify(primeAudit(),null,2));
