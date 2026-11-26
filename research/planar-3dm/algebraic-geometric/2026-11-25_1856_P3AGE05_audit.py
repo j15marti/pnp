@@ -86,7 +86,7 @@ def compile_net(tables,ports,n):
             pa=polar(v,a);pb=polar(v,b)
             rest.append((v^(a if pb else 0)^(b if pa else 0),c^(ac if pb else 0)^(bc if pa else 0)))
         pairs.append((a,b));vec=rest
-    # Coordinates of pair directions in original wire space: B(a, x+x0), B(b, x+x0).
+    # Coordinates of pair directions in original wire space: B(a, x+x0), B(b,x+x0).
     def form(v):
         # directly compute linear derivative with no affine constant
         return sum(1<<i for i in range(n) if polar(v,1<<i))
