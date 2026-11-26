@@ -1,3 +1,13 @@
+# Current research redirection: 2026-11-26
+
+The user's latest request assigns every P versus NP research agent a distinct obligation toward P=NP or P!=NP and requires literature, Anthropic, OpenAI and other substantive GitHub searches on every run, cooperative multiple-method work at obstructions, and constructive or contradiction proofs for individual lemmas.
+
+Read FIRST [the multi-track both-directions directive](research/coordination/2026-11-26_MULTI_TRACK_PNP_BOTH_DIRECTIONS.md) ([initial verified revision](https://github.com/j15marti/pnp/blob/ef05e45509b1f8cfc53a1e13a40cdf56a29cec93/research/coordination/2026-11-26_MULTI_TRACK_PNP_BOTH_DIRECTIONS.md)). It supersedes conflicting older topic/source assignments and active-cohort counts while preserving compatible scientific safeguards, task identities, current schedules/enabled states, historical files and manuscript ownership. The current roster has 14 enabled agents and 11 paused reserves; paused reserves are not restarted by this redirection. All prior chat claims, including the proposed grid/overlap lemmas, retain candidate status until independently audited in a precise model.
+
+Use the role-specific namespaces and handoffs in the new directive. Neither P=NP nor P!=NP is established by this assignment change. Ordinary research runs do not change task settings. The older governance below remains intact and applies where compatible.
+
+---
+
 # Research objective: follow the evidence toward P=NP or P!=NP
 
 User clarification: 2026-11-21, America/Los_Angeles.
