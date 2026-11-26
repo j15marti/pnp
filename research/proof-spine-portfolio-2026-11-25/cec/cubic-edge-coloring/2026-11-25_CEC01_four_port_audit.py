@@ -16,6 +16,7 @@ def check(g,w,cubic=True):
 def source(g):
     assert not g.is_multigraph() and nx.number_of_selfloops(g)==0
     assert all(d==3 for _,d in g.degree())
+
 def brute(g,pins=None):
     w=dict(pins or {}); used={v:0 for v in g}
     for (u,v),c in w.items():
@@ -71,6 +72,7 @@ def closure(g):
         h=g.copy(); h.remove_edge(u,v); ST['matching']+=1
         if len(nx.max_weight_matching(h,maxcardinality=True))*2!=len(h): return False
     return True
+
 def cap(mask):
     mask=set(mask); g=nx.Graph(); p=[None]*4
     if len(mask)==3:
