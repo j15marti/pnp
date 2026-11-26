@@ -1,0 +1,71 @@
+const audit = function(){
+const C=[[0,1,6],[0,1,3],[1,3,6],[2,3,4],[2,4,5],[0,4,5],[2,10,11],[7,8,9],[8,9,10],[8,12,13],[9,10,11],[5,7,11],[6,7,17],[12,13,14],[13,14,15],[14,15,16],[15,16,17],[12,16,17]], B=C.map(a=>a.slice());B[4]=[2,5,6];B[12]=[7,17,4];
+const rots=[[[18,24,19],[18,19,21],[19,24,21],[20,22,21],[22,20,23],[23,18,22],[28,29,20],[25,27,26],[26,27,28],[26,30,31],[29,28,27],[23,29,25],[24,25,35],[30,32,31],[31,32,33],[32,34,33],[33,34,35],[35,34,30],[0,1,5],[1,0,2],[6,4,3],[3,1,2],[3,4,5],[4,11,5],[2,0,12],[12,11,7],[7,8,9],[10,8,7],[8,10,6],[11,6,10],[9,17,13],[13,14,9],[14,13,15],[15,16,14],[17,16,15],[16,17,12]],[[18,24,19],[18,19,21],[19,24,21],[20,22,21],[24,23,20],[22,23,18],[29,28,20],[26,27,25],[28,27,26],[31,26,30],[27,28,29],[23,25,29],[25,22,35],[30,32,31],[33,31,32],[32,34,33],[35,33,34],[34,30,35],[0,1,5],[1,0,2],[4,6,3],[3,1,2],[3,12,5],[5,11,4],[2,0,4],[7,11,12],[8,7,9],[7,8,10],[6,10,8],[11,10,6],[9,17,13],[14,9,13],[13,15,14],[16,14,15],[15,17,16],[12,16,17]]];
+let checks=0,matching=0,closureRounds=0,forced=0;function A(x){checks++;if(!x)throw Error("assert "+checks)}
+function source(k,bad){let c=[],rot=[];for(let j=0;j<k;j++){const t=bad&&j===Math.floor(k/2)?1:0;c.push(...(t?B:C).map(r=>r.map(v=>v+18*j)));rot.push(...rots[t].map(r=>r.map(v=>v+36*j)))}function rep(i,old,v){const q=rot[i].indexOf(old);A(q>=0);rot[i][q]=v}for(let j=0;j<k-1;j++){const a=36*j+7,b=36*(j+1)+9,x=36*j+18+7,y=36*(j+1)+18+12;c[18*j+7]=c[18*j+7].map(v=>v===18*j+7?18*(j+1)+12:v);c[18*(j+1)+9]=c[18*(j+1)+9].map(v=>v===18*(j+1)+12?18*j+7:v);rep(a,x,y);rep(x,a,b);rep(b,y,x);rep(y,b,a)}const n=18*k;A(c.length===n);const deg=Array(n).fill(0);for(const row of c){A(new Set(row).size===3);for(const v of row)deg[v]++}A(deg.every(d=>d===3));const conv=i=>Math.floor(i/36)*18+i%36-18;for(let i=0;i<n;i++){const node=36*Math.floor(i/18)+i%18;A(rot[node].map(conv).sort((a,b)=>a-b).join()===c[i].slice().sort((a,b)=>a-b).join())}let visited=new Set(),Q=[0];while(Q.length){const v=Q.pop();if(visited.has(v))continue;visited.add(v);Q.push(...rot[v])}A(visited.size===rot.length);let seen=new Set(),faces=0;for(let i=0;i<rot.length;i++)for(let j of rot[i]){let a=i,b=j,key=a+","+b;if(seen.has(key))continue;faces++;while(!seen.has(key)){seen.add(key);const p=rot[b].indexOf(a);A(p>=0);const t=rot[b][(p+1)%3];a=b;b=t;key=a+","+b}A(a===i&&b===j)}A(rot.length-seen.size/2+faces===2);return c}
+function basic(c,pins){closureRounds++;let change=true;while(change){change=false;for(const r of c){let t=r.filter(v=>pins[v]===1).length,f=r.filter(v=>pins[v]===-1);if(t>1||(!t&&!f.length))return false;let target=t?0:f.length===1?1:-1;if(target>=0)for(const v of f){pins[v]=target;forced++;change=true}}}matching++;const m=Array(3*pins.length).fill(-1),uncovered=c.filter(r=>!r.some(v=>pins[v]===1));function aug(i,seen){for(const v of uncovered[i])if(pins[v]===-1)for(let j=0;j<3;j++){const p=3*v+j;if(seen.has(p))continue;seen.add(p);if(m[p]<0||aug(m[p],seen)){m[p]=i;return true}}return false}for(let i=0;i<uncovered.length;i++)if(!aug(i,new Set()))return false;return true}
+
+
+const mod=(x,p)=>(x%p+p)%p;
+function rref(M,p,d){let a=M.map(r=>r.slice()),j=0, piv=[];for(let i=0;i<d;i++){let k=j;while(k<a.length&&!a[k][i])k++;if(k===a.length)continue;[a[j],a[k]]=[a[k],a[j]];if(a[j][i]!==1)a[j]=a[j].map(x=>mod(x*2,p));for(k=0;k<a.length;k++)if(k!==j&&a[k][i]){let f=a[k][i];for(let h=i;h<a[k].length;h++)a[k][h]=mod(a[k][h]-f*a[j][h],p)}piv.push(i);j++}return {a,piv}}
+let gauss=0,probes=0,triangleScans=0,solverCalls=0;
+function chart(c,pins,p){gauss++;let n=pins.length, M=c.map(r=>{let a=Array(n+1).fill(0);r.forEach(v=>a[v]=1);a[n]=1;return a});pins.forEach((v,i)=>{if(v>=0){let a=Array(n+1).fill(0);a[i]=1;a[n]=v;M.push(a)}});let {a,piv}=rref(M,p,n);if(a.some(r=>r.slice(0,n).every(x=>!x)&&r[n]))return null;let F=Array.from({length:n},(_,i)=>i).filter(i=>!piv.includes(i)),rows=Array.from({length:n},()=>Array(F.length).fill(0)),b=Array(n).fill(0);F.forEach((i,j)=>rows[i][j]=1);piv.forEach((i,j)=>{b[i]=a[j][n];F.forEach((f,k)=>rows[i][k]=mod(-a[j][f],p))});return {rows,b,F}}
+function base(c,pins){while(true){let before=pins.filter(v=>v>=0).length;if(!basic(c,pins))return null;for(let p of [2,3]){let q=chart(c,pins,p);if(!q)return null;for(let i=0;i<pins.length;i++)if(q.rows[i].every(x=>!x)){if(q.b[i]>1||pins[i]>=0&&pins[i]!==q.b[i])return null;if(pins[i]<0){pins[i]=q.b[i];forced++}}}let q=chart(c,pins,3), groups=new Map();for(let i=0;i<pins.length;i++){let row=q.rows[i],s=row.find(v=>v);if(!s)continue;let k=row.map(v=>mod(v*s,3)).join("");if(!groups.has(k))groups.set(k,[]);groups.get(k).push([i,s])}for(let g of groups.values()){let good=[0,1,2].filter(t=>g.every(([i,s])=>mod(q.b[i]+s*t,3)<2));if(!good.length)return null;if(good.length===1)for(let [i,s] of g){let v=mod(q.b[i]+s*good[0],3);if(pins[i]>=0&&pins[i]!==v)return null;if(pins[i]<0){pins[i]=v;forced++}}}if(pins.filter(v=>v>=0).length===before)return q}}
+function close(c,pins,full){while(true){let q=base(c,pins);if(!q||!full)return q;let changed=false;for(let i=0;i<pins.length;i++)if(pins[i]<0){let ok=[];for(let t=0;t<2;t++){let a=pins.slice();a[i]=t;probes++;ok[t]=!!base(c,a)}if(!ok[0]&&!ok[1])return null;if(!ok[0]||!ok[1]){pins[i]=ok[0]?0:1;forced++;changed=true;break}}if(!changed)return q}}
+function key(v){let x=v.find(x=>x);return x?v.map(y=>mod(y*x,3)).join(""):null}
+function discover(q){let d=q.F.length, V=[],ids=[],map=new Map();q.rows.forEach((r,i)=>{let k=key(r);if(k!==null&&!map.has(k)){map.set(k,V.length);V.push(r);ids.push(i)}});let ts=new Set();for(let i=0;i<V.length;i++)for(let j=i+1;j<V.length;j++)for(let s of [1,2]){triangleScans++;let k=map.get(key(V[i].map((v,h)=>mod(v+s*V[j][h],3))));if(k!==undefined&&k!==i&&k!==j)ts.add([i,j,k].sort((a,b)=>a-b).join(","))}let tris=[...ts].map(t=>t.split(",").map(Number)),degree=Array(V.length).fill(0);tris.forEach(t=>t.forEach(i=>degree[i]++));let S=new Set(degree.flatMap((v,i)=>v>1?[i]:[]));for(let t of tris)for(let i of t)if(t.filter(j=>S.has(j)).length<2)S.add(i);
+let J=[...S].map(i=>ids[i]);let rank=a=>rref(a,3,d).piv.length;if(rank(J.map(i=>q.rows[i]))!==J.length)return {triangles:tris.length,admitted:false};for(let i of ids)if(J.length<d&&rank([...J,i].map(j=>q.rows[j]))>J.length)J.push(i);if(J.length!==d)return {triangles:tris.length,admitted:false};
+let K=J.map((i,j)=>[...q.rows[i],...Array.from({length:d},(_,h)=>+(h===j))]);let inv=rref(K,3,d).a.map(r=>r.slice(d));let R=q.rows.map(r=>Array.from({length:d},(_,j)=>mod(r.reduce((s,v,i)=>s+v*inv[i][j],0),3)));let b=q.b.map((v,i)=>mod(v-R[i].reduce((s,x,j)=>s+x*q.b[J[j]],0),3));let width=Math.max(0,...R.map(r=>r.filter(Boolean).length));return {triangles:tris.length,admitted:width<=2,R,b,J,width,raw:Math.max(0,...q.rows.map(r=>r.filter(Boolean).length))}
+}
+
+const H=[[0,3,17],[1,4,6],[0,2,5],[0,3,5],[1,3,4],[2,5,7],[2,7,8],[6,9,13],[6,9,10],[7,8,12],[8,10,14],[11,15,16],[9,12,13],[4,12,13],[11,14,15],[10,14,15],[1,16,17],[11,16,17]];
+const HR=[[18,21,35],[19,22,24],[18,20,23],[23,21,18],[21,22,19],[20,25,23],[25,20,26],[31,27,24],[24,27,28],[30,25,26],[26,32,28],[29,34,33],[27,31,30],[22,30,31],[32,29,33],[28,32,33],[34,35,19],[35,34,29],[0,2,3],[4,1,16],[2,6,5],[3,4,0],[1,4,13],[5,3,2],[7,8,1],[9,5,6],[6,10,9],[8,7,12],[10,15,8],[14,17,11],[12,13,9],[13,12,7],[15,10,14],[11,15,14],[11,17,16],[16,17,0]];
+function verify(c,rot){let n=c.length;A(rot.length===2*n);let deg=Array(n).fill(0);for(let i=0;i<n;i++){A(c[i].length===3&&new Set(c[i]).size===3);A(rot[i].map(v=>v-n).sort((a,b)=>a-b).join()===c[i].slice().sort((a,b)=>a-b).join());for(let v of c[i])deg[v]++}A(deg.every(x=>x===3));let seen=new Set(),faces=0,reach=new Set(),todo=[0];while(todo.length){let v=todo.pop();if(reach.has(v))continue;reach.add(v);todo.push(...rot[v])}A(reach.size===2*n);for(let i=0;i<2*n;i++)for(let j of rot[i]){let a=i,b=j,k=a+","+b;if(seen.has(k))continue;faces++;while(!seen.has(k)){seen.add(k);let p=rot[b].indexOf(a);A(p>=0);[a,b]=[b,rot[b][(p+1)%3]];k=a+","+b}A(a===i&&b===j)}A(2*n-seen.size/2+faces===2)}
+function prism(n){let c=Array.from({length:n},(_,i)=>[(i+n-1)%n,i,(i+1)%n]);let out=i=>i%2?n+i-n:n+i, inn=i=>i%2?n+i:i; // outer odd clause, outer even variable
+let rot=Array.from({length:2*n},()=>[]);for(let i=0;i<n;i++){let l=(i+n-1)%n,j=(i+1)%n;rot[out(i)]=[out(l),inn(i),out(j)];rot[inn(i)]=[inn(l),inn(j),out(i)]}verify(c,rot);return c}
+
+let sampleCount=0,rounds=0,added=0,identityChecks=0,rankOps=0;
+const lift=(q,z)=>q.rows.map((r,i)=>mod(q.b[i]+r.reduce((s,v,j)=>s+v*z[j],0),3));
+const valid=(x,c,pins)=>x.every((v,i)=>v<2&&(pins[i]<0||pins[i]===v))&&c.every(r=>r.reduce((a,i)=>a+x[i],0)===1);
+function candidates(d){let p=[];for(let i=0;i<d;i++)for(let a=0;a<2;a++){p.push([2*i+a]);for(let j=i+1;j<d;j++)for(let b=0;b<2;b++)p.push([2*i+a,2*j+b])}return p}
+const holds=(z,p)=>p.every(l=>z[l>>1]===(l&1));
+function samples(d,B){
+ let G=Array.from({length:2*d},()=>[]);
+ for(let p of B){let a=p[0],b=p[1]??a;G[a].push(b^1);G[b].push(a^1)}
+ function propagate(seeds,init){let s=init?init.slice():Array(d).fill(-1),Q=seeds.slice();for(let k=0;k<Q.length;k++){let l=Q[k],i=l>>1,v=l&1;if(s[i]>=0){if(s[i]!==v)return null;continue}s[i]=v;Q.push(...G[l])}return s}
+ for(let i=0;i<d;i++)if(!propagate([2*i])&&!propagate([2*i+1]))return null;
+ let root=Array(d).fill(-1);
+ for(let i=0;i<d;i++)if(root[i]<0){root=propagate([2*i],root)||propagate([2*i+1],root);if(!root)return null}
+ A(B.every(p=>!holds(root,p)));
+ let W=[],seen=new Set();
+ function put(J){let u=propagate(J.map(i=>2*i+(root[i]^1)));if(!u)return;u=u.map((v,i)=>v<0?root[i]:v);A(B.every(p=>!holds(u,p)));let key=u.join("");if(!seen.has(key)){seen.add(key);W.push(u)}}
+ put([]);for(let i=0;i<d;i++){put([i]);for(let j=i+1;j<d;j++)put([i,j])}sampleCount+=W.length;
+ return W;
+}
+function span(m){let piv=Array(m).fill(null);
+ function reduce(v){let r=v.slice();for(let i=0;i<m;i++)if(r[i]&&piv[i]){let f=r[i];for(let j=i;j<m;j++)r[j]=mod(r[j]-f*piv[i][j],3);rankOps++}return r}
+ return {add(v){let r=reduce(v),i=r.findIndex(Boolean);if(i<0)return false;if(r[i]===2)r=r.map(x=>mod(2*x,3));piv[i]=r;return true},has(v){return reduce(v).every(x=>!x)}}
+}
+function complete(q,onRound=()=>{}){
+ let d=q.F.length, all=candidates(d), B=[],known=new Set(),trace=[];
+ function add(p){let k=p.join(",");if(!known.has(k)){known.add(k);B.push(p);return true}return false}
+ for(let i=0;i<q.rows.length;i++){let S=q.rows[i].flatMap((v,j)=>v?[j]:[]);if(S.length===0&&q.b[i]===2)return {label:"NO",trace};if(S.length>2)continue;for(let a=0;a<2**S.length;a++){let p=S.map((j,h)=>2*j+((a>>h)&1));if(mod(q.b[i]+p.reduce((s,l)=>s+(l&1)*q.rows[i][l>>1],0),3)===2){if(!p.length)return {label:"NO",trace};add(p)}}}
+ while(true){rounds++;let W=samples(d,B);if(!W)return {label:"NO",trace};let V=W.map(z=>lift(q,z)), E=span(W.length), bad=0;for(let i=0;i<q.rows.length;i++){let v=V.map(x=>+(x[i]===2));if(v.some(Boolean)){bad++;E.add(v)}}trace.push({clauses:B.length,witnessBasis:W.length,unabsorbedRows:bad});
+ if(!bad)return {label:"EXACT",z:W[0],B,trace};
+ if(E.has(W.map(()=>1)))return {label:"NO",trace};
+ let inc=0;for(let p of all){if(known.has(p.join(",")))continue;let v=W.map(z=>+holds(z,p));identityChecks++;if(v.some(Boolean)&&E.has(v)){add(p);inc++;added++}}
+ if(!inc){onRound();let i=V.findIndex(x=>x.every(v=>v<2));return {label:i>=0?"SAT_ONLY":"OPEN",...(i>=0?{z:W[i]}:{}),B,trace}}
+ onRound();
+ }
+}
+function native(c,guard,full){let pins=Array(c.length).fill(-1);for(let [i,v] of guard)pins[i]=v;let q=close(c,pins,full);if(!q)return {label:"NO",stage:"closure"};let r=complete(q,()=>{let a=pins.slice();let v=close(c,a,full);A(v!==null);A(a.join()===pins.join())});if(r.z)A(valid(lift(q,r.z),c,pins));if(q.F.length<=12){let actual=[],relax=[];for(let w=0;w<2**q.F.length;w++){let z=q.F.map((_,i)=>(w>>i)&1);if(valid(lift(q,z),c,pins))actual.push(z);if(r.B&&r.B.every(p=>!holds(z,p)))relax.push(z)}if(r.label==="NO")A(!actual.length);if(r.label==="EXACT")A(actual.length===relax.length&&actual.every(z=>r.B.every(p=>!holds(z,p))));if(r.B)A(actual.every(z=>r.B.every(p=>!holds(z,p))))}
+ return {label:r.label,stage:"quadratic",d:q.F.length,width:Math.max(0,...q.rows.map(r=>r.filter(Boolean).length)),trace:r.trace};
+}
+let controls=[];verify(H,HR);controls.push({name:"AB05 native nonregular",n:18,result:native(H,[],true)});for(let k of [1,3,5,9,17]){let c=source(k,false),bad=source(k,true),full=k<=3;let a=native(c,[],full),b=native(bad,[],full);A(a.label==="EXACT"||a.label==="SAT_ONLY");A(b.label==="NO");controls.push({name:"same-size chain neighbors",n:c.length,full,yes:a,no:b})}
+for(let n of [6,12,24,48]){let a=native(prism(n),[],true),b=native(prism(n+2),[],true);A(a.label==="EXACT"||a.label==="SAT_ONLY");A(b.label==="NO");controls.push({name:"prism neighbors",n,yes:a,no:b})}
+let products=[];for(let k of [1,2,4,8]){let c=[];for(let j=0;j<k;j++)c.push(...H.map(r=>r.map(i=>i+18*j)));let a=native(c,[],k<=2);A(a.label==="EXACT");products.push({n:c.length,result:a})}
+let q={F:[0,1,2],rows:[[1,0,0],[0,1,0],[0,0,1],[1,1,1]],b:[0,0,0,0]},r=complete(q);A(r.label==="SAT_ONLY"&&r.B.length===0);let actual=[];for(let w=0;w<8;w++){let z=q.F.map(i=>(w>>i)&1);if(lift(q,z).every(x=>x<2))actual.push(z)}A(actual.length===5);A(candidates(3).every(p=>actual.some(z=>holds(z,p))));
+let seed=141926;function rng(n){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed%n}let random={exact:0,no:0,satOnly:0,open:0};for(let t=0;t<300;t++){let d=1+rng(7),q={F:Array.from({length:d},(_,i)=>i),rows:[],b:[]};for(let i=0;i<d;i++){q.rows.push(q.F.map(j=>+(i===j)));q.b.push(0)}for(let i=0;i<1+rng(10);i++){q.rows.push(q.F.map(()=>rng(3)));q.b.push(rng(3))}let a=complete(q),actual=[],relax=[];for(let w=0;w<2**d;w++){let z=q.F.map(i=>(w>>i)&1);if(lift(q,z).every(v=>v<2))actual.push(z);if(a.B&&a.B.every(p=>!holds(z,p)))relax.push(z)}if(a.label==="NO"){A(!actual.length);random.no++}else{A(actual.every(z=>a.B.every(p=>!holds(z,p))));if(a.label==="EXACT"){A(actual.length===relax.length);random.exact++}else if(a.label==="SAT_ONLY"){A(lift(q,a.z).every(v=>v<2));random.satOnly++}else random.open++}}
+return {checks,matching,closureRounds,forced,gauss,probes,sampleCount,rounds,added,identityChecks,rankOps,controls,products,abstractObstruction:{actual,trace:r.trace},random};
+};
+console.log(JSON.stringify(audit(),null,2));
