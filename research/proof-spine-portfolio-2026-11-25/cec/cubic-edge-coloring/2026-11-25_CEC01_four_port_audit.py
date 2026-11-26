@@ -13,10 +13,10 @@ def check(g,w,cubic=True):
         s=[w[edge(v,u)] for u in g[v]]
         assert len(s)==len(set(s)) and set(s)<=set(range(3))
         if cubic: assert len(s)==3
+
 def source(g):
     assert not g.is_multigraph() and nx.number_of_selfloops(g)==0
     assert all(d==3 for _,d in g.degree())
-
 def brute(g,pins=None):
     w=dict(pins or {}); used={v:0 for v in g}
     for (u,v),c in w.items():
