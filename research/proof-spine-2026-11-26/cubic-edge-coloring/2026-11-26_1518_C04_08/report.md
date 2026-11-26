@@ -12,7 +12,7 @@ For each attained {i,j}, choose its witness. Swap the majority color and the sin
 There are 10 triangles, 15 four-cycles and 12 five-cycles on five labels, total 37. Each has an exact small cap, by relabeling:
 - triangle: a single cubic vertex with its three ports plus one isolated free edge joining the other two ports; the two singleton ports lie among the vertex's three ports and any of their three pairs is attainable.
 - four-cycle: three-vertex path, each end vertex carrying two ports, central vertex one. Majority must appear once at each end and at center; singleton pair consists of one port from each end, giving all four K2,2 pairs.
-- five-cycle: pentagon with one port per vertex. Enumerate its five internal edges over 3 colors and require three distinct incidences at each vertex. The singleton pairs form a five-cycle (nonadjacent port pairs in cyclic order). Relabel to any desired cycle.
+- five-cycle: pentagon with one port per vertex. Enumerate its five internal edges over 3 colors and require three distinct incidences at each vertex. The singleton pairs form a five-cycle (adjacent port pairs in cyclic order). Relabel to any desired cycle.
 Directly enumerated all 37 caps and verified supports. Cap internal order <=5. Joining two poles yields proper coloring iff their singleton-pair supports intersect, since global color permutation aligns any common type.
 
 ## B. Exact cycle signature and six finite representatives
