@@ -1,0 +1,17 @@
+/* Standalone Node.js independent finite verifier. */
+function audit(D,U,A,B,BU,paths){
+ const check=(z,m)=>{if(!z)throw Error(m)},key=(a,b)=>[a,b].sort().join("|"),edge=(T,j,c)=>key("t"+j,"e"+c+","+T[j][c]);
+ function source(T){let n=T.length/3,R=Array.from({length:4*n},()=>[]),E=new Set();check(new Set(T.map(t=>t.join(","))).size===T.length,"distinct");T.forEach((t,j)=>t.forEach((v,c)=>{check(v>=0&&v<n,"range");R[c*n+v].push(j);E.add(edge(T,j,c))}));check(R.every(r=>r.length===3),"degree");return {R,E}}
+ function words(T){let {R}=source(T),W=[];for(let w=0;w<1<<18;w++){if(R.every(r=>r.reduce((s,j)=>s+(w>>j&1),0)===1))W.push(w)}return W}
+ function connected(T,P){let {E}=source(T);for(let [j,c] of P)E.delete(edge(T,j,c));let V=new Set(Array.from({length:T.length},(_,i)=>"t"+i));for(let c=0;c<4;c++)for(let v=0;v<T.length/3;v++)V.add("e"+c+","+v);let Z=new Set(["t0"]);let old=0;while(old!==Z.size){old=Z.size;for(let e of E){let [a,b]=e.split("|");if(Z.has(a)||Z.has(b)){Z.add(a);Z.add(b)}}}check(Z.size===V.size,"connected");return E}
+ const W=words(D);check(W.length===4&&words(U).length===0,"core labels");for(let j=0;j<18;j++)check(W.some(w=>w>>j&1)&&W.some(w=>!(w>>j&1)),"full support");
+ const E=connected(D,[...A,...B]);connected(U,BU);
+ const ends=P=>P.flatMap(([j,c])=>["t"+j,"e"+c+","+D[j][c]]).sort().join("|");
+ check(paths.map(p=>p[0]).sort().join("|")===ends(A)&&paths.map(p=>p[p.length-1]).sort().join("|")===ends(B),"endpoints");let used=new Set();for(let p of paths)for(let i=1;i<p.length;i++){let e=key(p[i-1],p[i]);check(E.has(e)&&!used.has(e),"edge-disjoint paths");used.add(e)}
+ const bits=(w,P)=>P.map(([j,c])=>w>>j&1).join("");let a=W.map(w=>bits(w,A)),b=W.map(w=>bits(w,B));check(new Set(a).size===4&&new Set(b).size===4&&a.slice().sort().join()===b.slice().sort().join(),"permutation support");
+ let max=0;
+ for(let k of [2,4,8,12,64]){let T=Array.from({length:k},(_,i)=>D.map(t=>t.map(v=>v+6*i))).flat();for(let i=0;i<k-1;i++)for(let p=0;p<3;p++){let [j,c]=A[p],[l,d]=B[p];check(c===d,"color");let u=T[18*i+j],v=T[18*(i+1)+l];[u[c],v[c]]=[v[c],u[c]]}let {R}=source(T);for(let w of W){let x=[];for(let i=0;i<k;i++){x.push(w);w=W[b.indexOf(bits(w,A))]}check(R.every(r=>r.reduce((s,j)=>s+(x[Math.floor(j/18)]>>(j%18)&1),0)===1),"source lift")}max=T.length}
+ let tests=0;for(let n=72;n<=600;n+=3)for(let s=36;s<=n/2;s+=3){check(8n*BigInt(s+18)**8n+BigInt(n-s+Math.floor(s/2))**8n<=BigInt(n)**8n-1n,"recurrence");tests++}
+ return {D,U,A,B,BU,paths,covers:W.map(w=>Array.from({length:18},(_,j)=>j).filter(j=>w>>j&1)),outbound:a,inbound:b,edge_disjoint_paths:paths.length,checked_source_lifts_through:max,recurrence_checks:tests,limitations:"Independent finite core/paths/lifts/arithmetic; Python separately checks planarity, cuts, closure, blind acquisition, guards, negatives and relabeling."}
+}
+console.log(JSON.stringify(audit([[0,0,5,1],[0,1,0,1],[2,1,1,0],[1,0,0,1],[1,0,1,0],[1,1,0,0],[2,2,3,3],[0,3,2,3],[2,4,3,2],[3,2,2,3],[3,2,3,2],[3,3,2,2],[4,3,5,5],[4,5,4,5],[4,5,5,4],[5,4,4,5],[5,4,1,4],[5,5,4,4]],[[3,5,0,0],[2,0,4,2],[1,1,2,2],[0,5,1,3],[1,4,2,4],[5,0,4,5],[3,2,5,0],[0,4,2,2],[5,3,4,1],[4,2,0,0],[4,2,5,1],[0,4,1,4],[5,3,3,5],[2,1,3,3],[3,3,5,3],[2,0,3,5],[4,5,0,1],[1,1,1,4]],[[0,0],[7,1],[12,2]],[[8,0],[16,1],[2,2]],[[3,0],[16,1],[1,2]],[["t0","e1,0","t4","e2,1"],["e0,0","t1","e1,1","t2"],["t7","e3,3","t6","e0,2"],["e1,3","t11","e3,2","t8"],["t12","e3,5","t15","e1,4"],["e2,5","t14","e3,4","t16"]]),null,2));
