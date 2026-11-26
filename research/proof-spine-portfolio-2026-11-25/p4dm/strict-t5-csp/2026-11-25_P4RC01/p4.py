@@ -12,7 +12,7 @@ def covers(T):
   for j in groups[v]:
    vs={(i,w) for i,w in enumerate(T[j])}
    if vs<=left:
-    ans=rec(left-vs,sel+[j])
+    ans=rec(left-vs,sel+[j]);
     if ans is not None:return ans
   return None
  return rec(set(groups),[])
