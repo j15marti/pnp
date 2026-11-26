@@ -4,7 +4,7 @@ def normalize(D,R):
  while True:
   changed=False
   for i in D:
-   d={a for a in D[i] if all(any((a,b) in R[i,j] for b in D[j]) for j in D if j!=i)};changed|=d!=D[i];D[i]=d
+   d={a for a in D[i] if all(any((a,b) in R[i,j] for b in D[j]) for j in D if i!=j)};changed|=d!=D[i];D[i]=d
    if not d:return False
   for i,j in I.combinations(D,2):
    r={(a,b) for a,b in R[i,j] if a in D[i] and b in D[j] and all(any((a,c) in R[i,k] and (b,c) in R[j,k] for c in D[k]) for k in D if k not in (i,j))};changed|=r!=R[i,j];R[i,j]=r;R[j,i]={(b,a) for a,b in r}
