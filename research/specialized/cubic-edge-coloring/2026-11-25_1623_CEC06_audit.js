@@ -1,0 +1,38 @@
+function audit(){
+ const A=(x,m)=>{if(!x)throw Error(m)};
+ const canon=a=>{const m=new Map();return a.map(x=>{if(!m.has(x))m.set(x,m.size);return m.get(x)}).join("")};
+ const states=[...new Set(Array.from({length:729},(_,i)=>Array.from({length:6},(_,j)=>Math.floor(i/3**j)%3)).filter(a=>[0,1,2].every(c=>a.filter(x=>x===c).length%2===0)).map(canon))].sort();
+ A(states.length===31,"31 types");
+ const cp=[[0,1],[0,2],[1,2]];
+ function pairs(a){if(!a.length)return [[]];return a.slice(1).flatMap((x,i)=>pairs(a.filter((_,j)=>j!==0&&j!==i+1)).map(p=>[[a[0],x],...p]))}
+ function toggled(s,p,m,a,b){let t=[...s].map(Number);p.forEach((q,j)=>{if(m>>j&1)q.forEach(i=>t[i]=a+b-t[i])});return canon(t)}
+ const rules=Object.fromEntries(states.map(s=>[s,cp.map(([a,b])=>pairs([...s].map((x,i)=>+x===a||+x===b?i:-1).filter(i=>i>=0)).map(p=>[...new Set(Array.from({length:2**p.length},(_,m)=>toggled(s,p,m,a,b)))]))]));
+ let checks=0;
+ function core(allowed){let u=new Set(allowed),layers=[];while(true){let d=[...u].filter(s=>rules[s].some(r=>!r.some(p=>p.every(j=>{checks++;return u.has(j)}))));if(!d.length)return {survivors:[...u],layers};layers.push(d);d.forEach(s=>u.delete(s))}}
+ const cap={n:10,E:[[4,8],[2,8],[5,9],[3,7],[3,5],[0,7],[0,4],[6,8],[1,6],[6,9],[1,7],[2,9]],P:[0,1,2,3,4,5]};
+ const near={n:10,E:[[0,4],[1,4],[0,5],[2,5],[0,6],[3,6],[1,7],[2,7],[1,8],[3,8],[2,9],[3,9]],P:[4,5,6,7,8,9]};
+ const counts={calls:0,nodes:0,scans:0,reductions:0,failures:0,stagnations:0,words:0,checks:0,normalizations:0,pathExchanges:0,maxExchanges:0,lifts:0};
+ function inc(G){let l=Array.from({length:G.n},()=>[]);G.E.forEach(([u,v],i)=>{l[u].push(i);l[v].push(i)});G.P.forEach((v,i)=>l[v].push(G.E.length+i));A(l.every(x=>x.length===3),"cubic pole");return l}
+ function verify(G,w){counts.checks++;A(w.length===G.E.length+G.P.length&&w.every(c=>[0,1,2].includes(c))&&inc(G).every(a=>new Set(a.map(i=>w[i])).size===3),"invalid word")}
+ function table(G,stop=false){counts.calls++;let l=inc(G),out={};function dfs(d){counts.nodes++;while(true){let ch=false;for(const a of l){counts.scans++;let opts=[];for(let x=0;x<3;x++)for(let y=0;y<3;y++)if(x!==y){let t=[x,y,3-x-y];if(t.every((c,i)=>d[a[i]]>>c&1))opts.push(t)}if(!opts.length){counts.failures++;return false}for(let i=0;i<3;i++){let q=d[a[i]]&opts.reduce((m,t)=>m|1<<t[i],0);if(q!==d[a[i]]){d[a[i]]=q;counts.reductions++;ch=true}}}if(!ch)break}let i=d.findIndex(x=>x&(x-1));if(i<0){let w=d.map(x=>Math.log2(x));verify(G,w);counts.words++;out[canon(w.slice(G.E.length))]??=w;return stop}counts.stagnations++;for(let c=0;c<3;c++)if(d[i]>>c&1){let t=d.slice();t[i]=1<<c;if(dfs(t)&&stop)return true}return false}let d=Array(G.E.length+G.P.length).fill(7);l[0].forEach((i,c)=>d[i]=1<<c);dfs(d);return out}
+ let W=table(cap),NW=table(near),target=Object.keys(W).sort(),C=core(states.filter(s=>!target.includes(s)));
+ A(target.length===14&&target.filter(s=>new Set(s).size===3).length===5&&!C.survivors.length,"cap universal");
+ A(Object.keys(NW).length===14&&core(states.filter(s=>!NW[s])).survivors.length===5,"near obstruction");
+ let rank=Object.fromEntries(C.layers.flatMap((l,i)=>l.map(s=>[s,i+1])));
+ function normalize(G,w){let l=inc(G),steps=0;w=w.slice();while(!W[canon(w.slice(G.E.length))]){let s=canon(w.slice(G.E.length)),r=rank[s];A(r>0,"rank");let lower=new Set(target.concat(Object.keys(rank).filter(t=>rank[t]<r))),pIndex=rules[s].findIndex(rs=>rs.every(q=>q.some(t=>lower.has(t))));A(pIndex>=0,"forcing pair");let colorMap=[];for(let x of w.slice(G.E.length))if(!colorMap.includes(x))colorMap.push(x);for(let x of [0,1,2])if(!colorMap.includes(x))colorMap.push(x);let [a,b]=cp[pIndex].map(c=>colorMap[c]);let seen=new Set(),paths=[];for(let j=0;j<G.P.length;j++){let e=G.E.length+j;if(seen.has(e)||![a,b].includes(w[e]))continue;let v=G.P[j],path=[e];seen.add(e);while(true){let f=l[v].find(i=>i!==e&&[a,b].includes(w[i]));A(f!==undefined&&!seen.has(f),"path");seen.add(f);path.push(f);if(f>=G.E.length)break;let [x,y]=G.E[f];v=x===v?y:x;e=f}paths.push(path)}
+ let hit=false;for(let m=0;m<2**paths.length;m++){let t=w.slice();paths.forEach((p,j)=>{if(m>>j&1)p.forEach(e=>t[e]=a+b-t[e])});if(lower.has(canon(t.slice(G.E.length)))){verify(G,t);w=t;steps++;counts.pathExchanges+=paths.filter((_,j)=>m>>j&1).length;hit=true;break}}A(hit,"actual lowering move")}
+ counts.normalizations++;counts.maxExchanges=Math.max(counts.maxExchanges,steps);return w}
+ function adapt(G,w,b){let map={};w.slice(G.E.length).forEach((c,i)=>{let z=b[i];A(map[c]===undefined||map[c]===z,"type");map[c]=z});let t=w.map(c=>map[c]??[0,1,2].find(z=>!Object.values(map).includes(z)));verify(G,t);return t}
+ function join(X,Y,x,y){let E=X.E.concat(Y.E.map(([a,b])=>[a+X.n,b+X.n]),X.P.map((v,i)=>[v,Y.P[i]+X.n]));let G={n:X.n+Y.n,E,P:[]};A(E.every(([a,b])=>a!==b)&&new Set(E.map(e=>e.slice().sort((a,b)=>a-b).join())).size===E.length,"simple join");if(x&&y){let w=x.slice(0,X.E.length).concat(y.slice(0,Y.E.length),x.slice(X.E.length));A(x.slice(X.E.length).every((c,i)=>c===y[Y.E.length+i]),"port agreement");verify(G,w);counts.lifts++;return {G,w}}return {G}}
+ function expand(G,w){let l=inc(G);let port=(v,i)=>3*v+l[v].indexOf(i),E=G.E.map(([u,v],i)=>[port(u,i),port(v,i)]),P=G.P.map((v,i)=>port(v,G.E.length+i)),t=w.slice(0,G.E.length);for(let v=0;v<G.n;v++)for(let a=0;a<3;a++){let b=(a+1)%3;E.push([3*v+a,3*v+b]);t.push(3-w[l[v][a]]-w[l[v][b]])}let H={n:3*G.n,E,P};t=t.concat(w.slice(G.E.length));verify(H,t);return {H,t}}
+ const cyc=n=>Array.from({length:n},(_,i)=>[i,(i+1)%n]),prism=k=>({n:2*k,E:cyc(k).concat(cyc(k).map(([a,b])=>[a+k,b+k]),Array.from({length:k},(_,i)=>[i,i+k])),P:[]}),pet={n:10,E:cyc(5).concat(Array.from({length:5},(_,i)=>[5+i,5+(i+2)%5]),Array.from({length:5},(_,i)=>[i,i+5])),P:[]},k4={n:4,E:[[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]],P:[]},k33={n:6,E:Array.from({length:9},(_,i)=>[Math.floor(i/3),3+i%3]),P:[]};
+ let named=[["K4",k4,true],["K33",k33,true],["prism3",prism(3),true],["cube",prism(4),true],["prism5",prism(5),true],["Petersen",pet,false]];
+ let controls=[],expanded=Object.fromEntries(target.map(s=>{let {H,t}=expand(cap,W[s]);return [s,{H,t}]})),one=Object.values(expanded)[0].H;
+ for(let [name,G,sat] of named){A(Boolean(Object.keys(table(G,true)).length)===sat,"named");let poles=0,words=0;for(let i=0;i<G.E.length;i++)for(let j=i+1;j<G.E.length;j++)for(let k=j+1;k<G.E.length;k++){let P=[...G.E[i],...G.E[j],...G.E[k]];if(new Set(P).size!==6)continue;let H={n:G.n,E:G.E.filter((_,z)=>![i,j,k].includes(z)),P},T=table(H);A(core(Object.keys(T)).survivors.length===Object.keys(T).length,"actual table closure");poles++;for(let w of Object.values(T)){let y=normalize(H,w),s=canon(y.slice(H.E.length)),x=adapt(cap,W[s],y.slice(H.E.length));join(cap,H,x,y);let X=expanded[s],z=adapt(X.H,X.t,y.slice(H.E.length));join(X.H,H,z,y);words++}}controls.push({name,sat,poles,words})}
+ // Connected NO with Petersen 2-pole replacing an internal edge of a colorable exterior.
+ let Y={n:6,E:cyc(6),P:[0,1,2,3,4,5]},p=pet.E[0],edge=Y.E[0],bad={n:16,E:Y.E.slice(1).concat(pet.E.slice(1).map(([u,v])=>[u+6,v+6]),[[edge[0],p[0]+6],[edge[1],p[1]+6]]),P:Y.P};
+ A(!Object.keys(table(bad,true)).length,"bad exterior");let no1=join(cap,bad).G,no2=join(one,bad).G;A(!Object.keys(table(no1,true)).length&&!Object.keys(table(no2,true)).length,"both NO");
+ let yes1=join(cap,Y).G,yes2=join(one,Y).G;A(Object.keys(table(yes1,true)).length&&Object.keys(table(yes2,true)).length,"both YES");
+ return {cap,target,capWitnesses:W,nearWitnesses:NW,elimination:C,nearSurvivors:core(states.filter(s=>!NW[s])).survivors,controls,counts,ruleChecks:checks,expandedSide:one,negativeExterior:bad,joinedOrders:[yes1.n,yes2.n,no1.n,no2.n]};
+}
+console.log(JSON.stringify(audit(),null,2));
