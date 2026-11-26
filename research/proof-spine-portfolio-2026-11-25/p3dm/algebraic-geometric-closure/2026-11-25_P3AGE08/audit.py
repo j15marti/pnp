@@ -45,7 +45,7 @@ def chart(T,n,c,d):
                 w=emb.traverse_face(a,b,seen)
                 for u,v in zip(w,w[1:]+w[:1]):faces[u,v]=F
                 F+=1
-    edge=[];D=nx.DiGraph();D.add_nodes_from(range(F))
+    edge=[];D=nx.DiGraph();D.add_nodes_from(range(F));
     for j,t in enumerate(T):
         a=(c,t[c]);b=('t',j);v=(d,t[d]);l,r=faces[a,b],faces[b,a];assert faces[b,v]==l and faces[v,b]==r
         m=int(j in base);edge.append((l,r,m))
@@ -54,7 +54,7 @@ def chart(T,n,c,d):
     ds=dict(nx.all_pairs_dijkstra_path_length(D));lo={};hi={}
     for root in roots:
         for f in ds[root]:lo[f]=-ds[f][root];hi[f]=ds[root][f]
-    ids={}
+    ids={};
     for f in range(F):
         for t in range(lo[f]+1,hi[f]+1):ids[f,t]=len(ids)
     # literals 2*i true, 2*i+1 false; constants represented by -1 True, -2 False
