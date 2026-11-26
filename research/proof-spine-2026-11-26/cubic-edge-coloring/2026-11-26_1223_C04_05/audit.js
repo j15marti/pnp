@@ -1,0 +1,15 @@
+// C04-05 independent finite audit; node audit.js
+const E=[[0,6],[0,17],[0,19],[1,4],[1,7],[1,14],[2,6],[2,8],[2,10],[3,8],[3,12],[3,13],[4,10],[4,13],[5,9],[5,13],[5,17],[6,16],[7,11],[7,15],[8,14],[9,14],[9,15],[10,15],[11,16],[11,19],[12,18],[12,19],[16,18],[17,18]],z=18,n=20,full=(1<<30)-1,M=[2,3,8,10,15,17,18,20,22,29];
+function audit(){
+const A=Array.from({length:n},()=>[]);E.forEach(([u,v],i)=>{A[u].push([v,i]);A[v].push([u,i])});const assert=(x)=>{if(!x)throw Error("assert")},mask=es=>es.reduce((a,i)=>a|(1<<i),0),pop=x=>{let c=0;while(x){x&=x-1;c++}return c};
+let par=Array(n).fill(-1),pe=Array(n).fill(-1),Q=[0];par[0]=0;for(const u of Q)for(const [v,i] of A[u])if(par[v]<0){par[v]=u;pe[v]=i;Q.push(v)};function pm(v){let m=0;while(v){m^=1<<pe[v];v=par[v]}return m}
+let L=[0];E.forEach(([u,v],i)=>{if(!pe.includes(i)){let b=pm(u)^pm(v)^(1<<i);L=L.concat(L.map(x=>x^b))}});assert(L.length===2048&&new Set(L).size===2048);for(const x of L)for(const a of A)assert(a.reduce((s,[v,i])=>s^((x>>i)&1),0)===0);
+let Ps=[];function dfs(V,p){if(!V){Ps.push(p);return}let u=0;while(!((V>>u)&1))u++;for(const [v,i] of A[u])if((V>>v)&1)dfs(V^ (1<<u)^(1<<v),p|(1<<i))}dfs(((1<<n)-1)^mask(E[z]),1<<z);
+function odd(p){let seen=new Set(),o=0;for(let v=0;v<n;v++)if(!seen.has(v)){let q=[v];seen.add(v);for(const u of q)for(const [w,i] of A[u])if(!(p>>i&1)&&!seen.has(w)){seen.add(w);q.push(w)}o+=q.length%2}return o}
+function bridge(p,q){let req=(p|q)&~(1<<z),best=30;for(const b of L)if(!(b>>z&1))best=Math.min(best,pop(req&~b));return best}
+function parity(p,q){let req=(p|q)&~(1<<z),free=full&~req&~(1<<z),seen=new Set(),bad=0;for(let v=0;v<n;v++)if(!seen.has(v)){let q=[v];seen.add(v);let d=0;for(const u of q)for(const [w,i] of A[u]){if(req>>i&1)d^=1;if((free>>i&1)&&!seen.has(w)){seen.add(w);q.push(w)}}bad+=d}return bad}
+let hist={},cmp=0;for(const p of Ps)for(const q of Ps){let b=bridge(p,q);assert((b===0)===(parity(p,q)===0));cmp++}for(const p of Ps){let key=odd(p)+","+bridge(mask(M),p);hist[key]=(hist[key]||0)+1}
+let mq=[mask(M)],ms=new Set(mq);for(const p of mq)for(const q of Ps)if(!ms.has(q)&&bridge(p,q)===0){ms.add(q);mq.push(q)}assert(ms.size===10&&mq.every(p=>odd(p)===2));
+function plateau(pin){let start=full^mask(M),q=[start],seen=new Set(q),prev=new Map([[start,null]]),tests=0;for(const a of q)for(const b of L){tests++;let d=full^(a|b);if(pin?(d&~(1<<z)):pop(d)>1)continue;if(!d){let path=[b,a],p=a;while(prev.get(p)!==null){p=prev.get(p);path.push(p)}path.reverse();return {found:true,path,tests,zeros:path.slice(1).map((b,i)=>full^(b|path[i]))}}if(!seen.has(b)){seen.add(b);prev.set(b,a);q.push(b)}}return {found:false,tests,reachable:[...seen].sort((a,b)=>a-b)}}
+let pin=plateau(true),free=plateau(false);assert(!pin.found&&pin.reachable.length===30&&free.found);return {matchings:Ps.length,even:Ps.filter(p=>!odd(p)).length,pair_comparisons:cmp,hist,matching_component:mq, pin,free}}
+console.log(JSON.stringify(audit(),null,2));
