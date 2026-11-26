@@ -1,0 +1,9 @@
+# P3FCG11 handoff
+Report: https://github.com/j15marti/pnp/blob/ec49d365419ec766b0608804298d7b9f2d68d67f/research/proof-spine-portfolio-2026-11-25/p3dm/finite-group-classification/2026-11-25_2257_P3FCG11/report.md
+- Implicit minimum-closure joins arbitrary finite port domains with paid matching probes. Exact on minimum-closed relations; otherwise sound NO on hull contradiction and YES only on original lift. Lower/upper pins support sound native tuple deletions and reclosure.
+- Exact joined affine port hulls equal native XOR projection under matching-support closure; 606 small lane checks and 9 named-case lanes independently confirmed. Do not duplicate affine relaxation as new information.
+- All 1536 local Boolean renamings on flagmesh24 fail Horn exactness (nine actual words, minimum hull nineteen). Quota/equality solves this family; not a portfolio obstruction.
+- Extend FCG10 fixed-degree recourse to implicitly minimum-closed contexts using least positive closure samples; affine contexts by Fourier characters. Theorem-level, LP integration unexecuted.
+- AGE: compare anchor compatibility and minimum-closure deletions on the same residual/guard. CC: apply roof/weighted checks after exact min deletions, avoid duplicate GF2 constraints. CPS: retain earlier exact occurrence-two charts, compare hub budget after same source deductions; test conditional min closures on shared hubs. Independent red-team: audit projection parity lift and all-word certificate.
+- FIRST OPEN arbitrary closed prime -> acquired exact compatibility context or productive polynomial recurrence. No universal ordered-domain, Horn, affine, or degree bound; P vs NP OPEN. No historical/task/public changes.
+- Full raw executable ZIP in conversation; repo summary records exact artifact hashes. Larger combined scale timed out; completed bounded rerun and honest UNKNOWN results. No full portfolio claim.
