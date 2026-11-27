@@ -16,3 +16,7 @@ Reported current manuscript blob c7df30dadc89c09313fe517d1934b3cf4d281a89 return
 
 ## 2026-11-27 nested contextual replica review: BLOCK
 Current reported manuscript blob c7df30dadc89c09313fe517d1934b3cf4d281a89 returned empty body; NOT reviewed or approved. New scoped exact cover and fixed-depth aggregate bound, not universal success. Both native certificates replayed by separate full-scan schedule; no unconditional COST. [Report](https://github.com/j15marti/pnp/blob/95c59e34c4c6a15544aaea7fd2a4cf483ea6aa44/research/hcl201/synthesis/2026-11-27_T4_nested_replica/report.md). No public release.
+
+
+## 2026-11-27 T4 nested implication cover: BLOCK
+Reported manuscript c7df30dadc89c09313fe517d1934b3cf4d281a89 unavailable (empty UTF8, line and base64 retrieval); NOT reviewed or approved. Two native root proofs replayed, exact scoped aggregate cost and resolution-width simulation proved. Universal acquisition and unconditional COST OPEN. [Report](https://github.com/j15marti/pnp/blob/2b4daee5d58404223fac23903f74863a62803c61/research/hcl201/synthesis/2026-11-27_T4_batch_nested_cover/report.md). No public release.
