@@ -8,3 +8,7 @@ Focused review of aggregate theorem lines 18–27, U-PROGRESS lines 28–30, BH2
 
 ## S29 review: BLOCK
 Exact reviewed manuscript blob: `3add0a88e2f6660d2558fcb6f6615ab8e0205493` (commit 906fb3ffa5470ce20c849d2b2db43d1cdf1187cd). Focused audit of S29 and aggregate theorem, not final full-manuscript certification. U-PROGRESS L28–30, SEM/CLOSE and unconditional COST remain OPEN. Complete hull acquisition is coNP-hard even given a model and codim-one basis; cheap decision does not imply cheap semantic closure. Outside-span target-only algorithm is conditional on paid calls. Source projection and both labels checked on finite controls, native/compiler replay and kernel not executed. No public release authorized; earlier approvals on different SHA invalidated. [S29 report](https://github.com/j15marti/pnp/commit/141bd8a3c40902e31b0ef36ad7988c398d972f4e).
+
+
+## 2026-11-27 T4 review: BLOCK (access and mathematical)
+Reported current manuscript blob c7df30dadc89c09313fe517d1934b3cf4d281a89 returned empty body; NOT reviewed, no SHA approval. Scoped native refutations and aggregate nogood saturation prove no universal progress. U-PROGRESS and unconditional COST OPEN. [Report](https://github.com/j15marti/pnp/blob/b40874748f090d268b5e7036d38a66bf05821523/research/hcl201/synthesis/2026-11-27_T4_nogood_credit/report.md). No public release.
