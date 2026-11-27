@@ -86,7 +86,7 @@ def recover(F):
     while rem:
         Q=[rem.pop()];S=set(Q)
         for x in Q:
-            for y in adj[x]&rem:rem.remove(y);Q.append(y);S.add(y)
+            for y in adj[x]&rem:rem.remove(y);S.add(y);Q.append(y)
         comps.append(S)
     out=[]
     for S in comps:
