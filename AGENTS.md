@@ -1,3 +1,7 @@
+# Current research redirection, November 27, 2026
+
+Read [the communicating proof tracks directive](research/coordination/2026-11-27_COMMUNICATING_PROOF_TRACKS.md) first. It supersedes earlier track priorities, active counts and schedules, and preserves compatible ownership and scientific safeguards. All tracks consume and broadcast verified certificates through [issue 328](https://github.com/j15marti/pnp/issues/328). The earlier directives below are historical wherever they conflict.
+
 # Current research redirection: 2026-11-26
 
 The user's latest request assigns every P versus NP research agent a distinct obligation toward P=NP or P!=NP and requires literature, Anthropic, OpenAI and other substantive GitHub searches on every run, cooperative multiple-method work at obstructions, and constructive or contradiction proofs for individual lemmas.
