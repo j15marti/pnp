@@ -1,0 +1,2 @@
+PROVED WITH SCOPE: per-signature-connected key graph exact equivalence to full Fourier LP; edge bound and sparse row tariff; support peeling preserves feasible face. COMPUTATIONAL: same native NO, sparse key and hybrid exact duals; 8117 connectivity checks, 794 intersection bases, 4359 dual columns. FALSIFIED: ordinary block connectivity suffices. OPEN: universal polynomial acquisition, negative coverage, unrestricted lower-bound transfer. No external review or Lean build.
+
