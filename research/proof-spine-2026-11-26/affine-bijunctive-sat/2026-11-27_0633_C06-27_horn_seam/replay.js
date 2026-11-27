@@ -1,0 +1,9 @@
+function replay(){
+ const bits=m=>{let a=[];while(m){let b=m&-m;a.push(b);m^=b}return a};
+ const solve=(H,R,cap=100000)=>{const cl=s=>{for(;;){let old=s;for(const [a,b] of H)if((a&s)===a){if(!b)return null;s|=b}if(s===old)return s}};let d=new Set(),c=cl(0n),calls=1,peak=0,hist=[];if(c===null)return{status:"NO",calls,peak,hist};d.add(c);for(const [a,b] of R){const z=bits(a);if(!b)z.push(0n);const e=new Set();for(const u of d)for(const v of z){if(calls>=cap)return{status:"UNKNOWN_CAP",calls,peak,hist};const q=cl(u|v);calls++;if(q!==null){if(e.has(q))e.delete(q);else e.add(q)}}d=e;peak=Math.max(peak,d.size);hist.push(d.size);if(!d.size)return{status:"NO",calls,peak,hist}}return{status:"NONZERO",calls,peak,hist}};
+ const nr=[[97,134,262,521,1048,2096,193,386,772,584,3088,3104],[769,1027,2054,4108,8264,16432,98368,1600,131456,1537,2178,6148,12296,24592,49184,32816,196736,196864]];
+ const native=nr.map(rows=>{let H=[],R=rows.map(r=>[BigInt(r),1]);for(const [r] of R){const a=bits(r);for(let i=0;i<3;i++)for(let j=i+1;j<3;j++)H.push([a[i]|a[j],0n])}return solve(H,R)});
+ const guarded=[0,2,6,12,24].map(s=>{const g=Array.from({length:s+3},(_,i)=>[0,1,2].map(j=>1n<<BigInt(3*i+j)));let H=[];for(const a of g[0])for(const b of g[1])for(const c of g[2])H.push([a|b|c,0n]);for(const h of g.slice(3))H.push([g[0][0]|h[0],0n]);let R=g.map(h=>[h.reduce((a,b)=>a|b,0n),1]);return {s,core:solve(H,R.slice(0,3)),full:solve(H,R.slice(3).concat(R.slice(0,3)))}});
+ const equality=solve([[1n,2n],[2n,1n]],[[3n,1]]);if(equality.status!=="NO"||equality.hist[0]!==0)throw Error("equality cancellation");if(native.some((v,i)=>v.status!=="NO"||v.calls!==[106,280][i])||guarded.some(v=>v.core.status!=="NO"||v.core.calls!==40))throw Error("replay mismatch");return {native,guarded,equality};
+}
+console.log(JSON.stringify(replay(),null,2));
