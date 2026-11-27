@@ -1,0 +1,2 @@
+# C03-10 handoff
+C04: cleanify crossing five-bond when one pole has constant-delta boundary path, relay +8, max cap +17; investigate six-port dirty analog. C02: strict n^160 tariff for s>=19, no free clean module call; FP29 conditional. C06: exact guarded path only, blocked colorable example in audit.js; affine hull not joint support. L03: scoped counterexample only, no arbitrary-decider transfer. X01: reconstruct relay, both directions, path obstruction and cap overhead; review FP29 dependence. First OPEN universal prime singleton repair. No scheduler changes.
