@@ -1,0 +1,21 @@
+function run(){
+ let checks=0;const ck=(v,s="")=>{checks++;if(!v)throw Error("assert "+checks+" "+s)};
+ const val=x=>{let k=0;while((x&1n)===0n){x>>=1n;k++}return k};
+ const E=[[0,1,0],[1,2,0],[2,0,1],[0,3,0],[3,4,0],[4,3,1],[3,5,1],[5,6,0],[6,7,1],[7,5,1]];
+ function pref(m,w,x){let z=0n;for(let r=0;r<m;r++)z+=w[r]*((x>>BigInt(r))-(x>>BigInt(r+1)));return z}
+ function coefficients(m,w){return Array.from({length:m},(_,j)=>pref(m,w,1n<<BigInt(j)))}
+ function direct(m,W,u){let L=(1n<<BigInt(m))-1n,t=L-1n-3n*u,i=0n,j=0n,c=0n;const step=e=>{let a=E[e][2]?++j:++i;c+=W[e][val(a)]};for(let a=0n;a<u;a++){step(0);step(1);step(2)}step(3);for(let a=0n;a<t;a++){step(4);step(5)}step(6);for(let a=0n;a<u;a++){step(7);step(8);step(9)}ck(i===L&&j===L,"endpoint");return c}
+ function construct(m,W){let L=(1n<<BigInt(m))-1n,U=(L-1n)/3n;let A=Array.from({length:m},(_,k)=>W[k===0?0:1][k]),B=Array.from({length:m},(_,k)=>W[k===0?9:8][k]);const plus=(a,b)=>a.map((x,k)=>x+b[k]),neg=a=>a.map(x=>-x);let forms=[[2,0n,A],[1,0n,plus(W[2],neg(W[5]))],[-1,L,plus(W[4],neg(W[7]))],[2,1n,neg(W[4])],[-2,L-1n,W[5]],[-2,L,neg(B)],[-1,U,Array(m).fill(0n)]];let constant=W[3][0]+W[6][0]+pref(m,W[7],L)+pref(m,B,L);return{forms,constant,U}}
+ function arithmetic(m,W,u){let {forms,constant}=construct(m,W);return constant+forms.reduce((a,[b,c,w])=>a+pref(m,w,BigInt(b)*u+c),0n)}
+ function digit(m,W){let {forms,constant,U}=construct(m,W),co=forms.map(f=>coefficients(m,f[2]));let M=new Map([["0,0,0,0,0,0,0",{c:Array(7).fill(0),cost:0n,u:0n}]]),peak=1,trans=0;for(let k=0;k<m;k++){let N=new Map();for(let v of M.values())for(let d=0;d<2;d++){trans++;let cost=v.cost,c=forms.map(([a,b],i)=>{let s=v.c[i]+a*d+Number((b>>BigInt(k))&1n),bit=(s%2+2)%2;cost+=BigInt(bit)*co[i][k];return (s-bit)/2});let key=c.join(","),u=v.u+(BigInt(d)<<BigInt(k)),old=N.get(key);if(!old||cost<old.cost)N.set(key,{c,cost,u})}M=N;peak=Math.max(peak,M.size)}let z=M.get("0,0,0,0,0,0,0");ck(z&&z.u<=U);return{cost:z.cost+constant,u:z.u,peak,trans}}
+ function brute(m,W,kind){let U=construct(m,W).U,best=null,at=0n;for(let u=0n;u<=U;u++){let c=kind==="word"?direct(m,W,u):arithmetic(m,W,u);if(best===null||c<best){best=c;at=u}}return{cost:best,u:at}}
+ function grid(m,W){let L=2**m-1,P=Array.from({length:L+1},()=>Array.from({length:L+1},()=>Array(8).fill(null)));P[0][0][0]=0n;for(let i=0;i<=L;i++)for(let j=0;j<=L;j++)for(let e=0;e<E.length;e++){let [u,v,t]=E[e],c=P[i][j][u];if(c===null||(!t&&i===L)||(t&&j===L))continue;let ni=i+Number(!t),nj=j+Number(!!t),x=c+W[e][val(BigInt(t?nj:ni))],old=P[ni][nj][v];if(old===null||x<old)P[ni][nj][v]=x}return P[L][L][5]}
+ let seed=785198;const rnd=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};
+ let tests=0,missing=0,feasible=0,interior=0,nonaffine=0,large=[],gridTests=0,example=null;
+ for(let z=0;z<100;z++){let m=3+z%5,P=1n<<BigInt(m+8),W=Array.from({length:10},()=>Array.from({length:m},()=>rnd()<.075?P:BigInt(Math.floor(rnd()*13))));let d=digit(m,W),a=brute(m,W,"word"),b=brute(m,W,"arithmetic");ck(d.cost===a.cost&&d.cost===b.cost,"same source");ck(arithmetic(m,W,d.u)===d.cost&&direct(m,W,d.u)===d.cost,"lift");if(m<=5){ck(grid(m,W)===d.cost,"full grid");gridTests++}let U=construct(m,W).U;
+ if(d.cost<P){feasible++;if(d.u>0n&&d.u<U){interior++;if(!example&&d.cost<arithmetic(m,W,0n)&&d.cost<arithmetic(m,W,U)){example={m,W:W.map(r=>r.map(String)),u:String(d.u),cost:String(d.cost),left:String(arithmetic(m,W,0n)),right:String(arithmetic(m,W,U))}}}}else missing++;
+ if(U>=2n&&arithmetic(m,W,0n)+arithmetic(m,W,2n)!==2n*arithmetic(m,W,1n))nonaffine++;tests++}
+ for(let m of [12,20,32,48,64,128]){let W=Array.from({length:10},()=>Array.from({length:m},()=>BigInt(1+Math.floor(rnd()*20))));let d=digit(m,W);ck(arithmetic(m,W,d.u)===d.cost);large.push({m,candidates:String(construct(m,W).U+1n),cost:String(d.cost),u:String(d.u),peak:d.peak,trans:d.trans})}
+ return{checks,tests,gridTests,feasible,missing,interior,nonaffine,example,large,scope:"same explicit macro graph, zero offsets, fixed preoverflow endpoint; sequential independent word expansion, arithmetic enumeration, original macro grid on small cases, integrated digit DP; not native rule-table tests; no equal-bit-budget claim"}
+}
+console.log(JSON.stringify(run(),null,2));
