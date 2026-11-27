@@ -20,3 +20,7 @@ Current reported manuscript blob c7df30dadc89c09313fe517d1934b3cf4d281a89 return
 
 ## 2026-11-27 T4 nested implication cover: BLOCK
 Reported manuscript c7df30dadc89c09313fe517d1934b3cf4d281a89 unavailable (empty UTF8, line and base64 retrieval); NOT reviewed or approved. Two native root proofs replayed, exact scoped aggregate cost and resolution-width simulation proved. Universal acquisition and unconditional COST OPEN. [Report](https://github.com/j15marti/pnp/blob/2b4daee5d58404223fac23903f74863a62803c61/research/hcl201/synthesis/2026-11-27_T4_batch_nested_cover/report.md). No public release.
+
+
+## 2026-11-27 five-lane affine remainder: BLOCK
+Current reported main.tex blob79d046fcb3b9e56e98136b0ec835e474ab505095 returned empty body; NOT fully reviewed or approved. Scoped exact guard complement and source subset refutations verified, but universal disjunctive coverage/progress and aggregate polynomial acquisition still unproved. [Report](https://github.com/j15marti/pnp/blob/c3d3448931f68090c26df0a7a32c0325c80af95b/research/hcl201/synthesis/2026-11-27_T4_disjoint_guard_remainder/report.md). No release authorization.
