@@ -1,0 +1,144 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\F}{\mathbb{F}_2}
+\title{Grok 4.7 hourly work log --- 07:58 KST\\
+\large Review of \texttt{9bd80e3}..\texttt{6c82f4c} (forced-information rule, FP54 signed parity, five-lane guard reports),\\
+and amortized acquisition of GF(2) Nullstellensatz block cores}
+\author{Grok 4.7 (automated reviewer)}
+\date{2026-11-28 07:58 KST (2026-11-27 14:58 PST)}
+\begin{document}
+\sloppy
+\maketitle
+
+\noindent\textbf{Executive status.} P vs NP remains \textbf{OPEN}. Nothing here claims P$\neq$NP, P$=$NP, a Clay result, or an unrestricted lower bound. The new work answers the ``next lemma'' of FP54 (\texttt{631f951}): how to reuse one row basis across block-deletion probes instead of paying one full Gaussian elimination per probe. The result is an exact cost bound for a \emph{fixed} degree-$d$ row system. It says nothing about whether a useful degree-$d$ identity exists, and known polynomial-calculus degree lower bounds limit that question (\S\ref{sec:limits}). Root \texttt{main.tex} was \emph{not} edited. Labels: KNOWN THEOREM, PROVED, PROVED WITH SCOPE, COMPUTATIONAL, CONDITIONAL, OPEN.
+
+\section{Review log}
+\subsection*{Commits seen}
+The previous Grok work log is \texttt{0174b73} (2026-11-27 14:02:12 PST). It reviewed through \texttt{2a00e30} (13:53:11 PST) and deferred \texttt{e709468}..\texttt{4b1d656}. This run covers every commit on \texttt{main} from \texttt{9bd80e3} (13:55:26 PST) through \texttt{6c82f4c} (14:51:52 PST). That is about 160 commits, listed in time windows with no truncation gap. They include:
+\begin{itemize}
+\item \texttt{bcb1ce4} (AGENTS.md, $+6$): a new mandatory ``early forced-information reduction'' section, added at the user's request, that applies to every lane before any branching;
+\item FP52--FP54 (T1 flow-plateau): \texttt{904adf8}..\texttt{1addcb5}, \texttt{b9aa5ce}..\texttt{1eeed93} (FP53), \texttt{5fa6031}..\texttt{021d159} and the report \texttt{631f951} (FP54, signed parity);
+\item T1/L02 weighted conservation and flow \texttt{16f8e4a}..\texttt{52fe2e8}; T1 intake feedback and early quotient \texttt{0fbeb94}..\texttt{f7f35d0}, with the report \texttt{6c82f4c};
+\item T2: \texttt{9bd80e3}..\texttt{7396f80}, \texttt{ac28761}, the syzygy series \texttt{a6b8ed3}..\texttt{3c04692}, the orientation/flow-cut series \texttt{fd222d7}..\texttt{5c5e3e6}, the report \texttt{275f4d7}, and the count-bit series \texttt{414247b}..\texttt{fd065f3};
+\item T3: \texttt{e0632ff}..\texttt{ece0813}, T3-05 \texttt{406ad5a}..\texttt{90aa0bb}, the five-guard audit \texttt{f9988b3}..\texttt{24d2ec8}, the report \texttt{58f7d0a} (transport rank lemma), the report \texttt{4130afa} (Fano guard obstruction) and \texttt{aaeeb3f};
+\item T4 \texttt{2535fe2}..\texttt{bf58138}; C04-30 \texttt{0be588f}..\texttt{685c695}; X01-35 \texttt{be74f8d}; the early-forced certificates \texttt{4e922b4}..\texttt{fababd4};
+\item the root note \texttt{58e52f6} (\path{DYNAMIC-COMPATIBILITY-OBLIGATION1-POST-CROSSING-PURE-FUNCTION-COLLAPSE1.md}).
+\end{itemize}
+Read in full: the FP54 report, the T3 transport report \texttt{58f7d0a} (head and open arrow), and the T2 orientation, T3 five-feedback and T1 intake reports (status, forced-information and open-arrow sections). I also read the AGENTS.md head; the connector truncates the file at about 19.6\,KB. Everything else was checked by commit message only. Earlier Grok logs (0259, 0404, 0455, 0600, 0700) and \texttt{code/} are intact. At the pre-push HEAD check (15:00 PST) 28 further commits, \texttt{c5ac1ec}..\texttt{77885fa} (14:52--14:59 PST: T2 early signed feedback, L02 first-stall feedback, T3 guarded residue controls), had landed on top of \texttt{6c82f4c}. They are left for the next run.
+
+\subsection*{Findings}
+\begin{enumerate}
+\item \textbf{Root \texttt{main.tex} is a one-line placeholder.} The connector returns the text \texttt{PLACEHOLDER\_TOO\_LARGE\_USE\_LOCAL\_APPEND} (blob \texttt{22e5354}). The last commit touching the file is \texttt{0094f2c} (2026-11-17 08:37 PST, ``GROKPROOF: append status block \ldots''), with $+1/-28182$ lines. The living status document was therefore overwritten by a placeholder 10 days ago. The last full version is at \texttt{66c56b4} (2026-11-14). This log does not edit \texttt{main.tex}. Restoring it, with the appended block, needs an owner decision.
+\item \textbf{FP54 parity identities (\texttt{631f951}): correct, and replayed.} For truth bits $u$ with $Q=\sum u$: $e_1e_2=e_3$ holds in the Boolean quotient (pairs occur twice and cancel; each triple occurs three times). A clause is satisfied iff $e_1\lor e_2$. A B4 vertex is exact iff $e_1=0\land e_2=1$. The defect indicator is $1+e_2+e_3$. I replayed all 16 rows, the 8 clause rows and the formal multilinear product (code, \S\ref{sec:comp}). The argument ``even costs and total $\le2$ $\Rightarrow$ the unique positive factor lies in the core $C$'' is also sound. The method is degree-$d$ Nullstellensatz over $\F$ (Beame--Impagliazzo--Kraj\'{\i}\v{c}ek--Pitassi--Pudl\'ak 1994/96). The report calls it ``standard'' but does not cite it. Its own accounting shows no net speedup (JOINT: hybrid plus algebra 3\,861\,679 $>$ baseline 3\,656\,053 events). That is honest and agrees with \S\ref{sec:limits}.
+\item \textbf{T3 Fano obstruction (\texttt{4130afa}): replayed.} The seven monochromatic-line guards (each of codimension 2) cover all 128 points. Each guard has exactly 10 exclusive points, so no six of them cover. The Kraft sum is $7/4$. This fits the 07:00 rank theorem: each guard has codimension $2\le k-1$. It is a correct finite counterexample to ``five supplied guards suffice''. It does not refute adaptive acquisition.
+\item \textbf{Forced-information rule (\texttt{bcb1ce4}) is followed but has no effect here.} T1 (\texttt{6c82f4c}) and T3 (\texttt{4130afa}) both report zero forced bits beyond the gauge and equality contraction on both STRICT-EB4 cases. T1 notes that its first run projected before the forced pass, and corrected this. The rule is sound, but on these two instances early forced information supplies only the 643/593 equality carriers.
+\item \textbf{T2 orientation report (\texttt{275f4d7}).} The conditional portfolio theorem (a guard tree of height $\le c\log N$ gives $\le N^c$ leaves) is correct and correctly marked conditional. Acquisition remains OPEN, as the report states.
+\item \textbf{Format and labels.} Every new report is \texttt{.md}, not \texttt{.tex}. FP54 uses ``PROVED WITH SCOPE'' and T3 uses ``PROVED/EXACT scoped''. Both are acceptable, but the AGENTS label list should name one form. The root note \texttt{58e52f6} adds yet another root-level \texttt{.md}.
+\end{enumerate}
+
+\section{Work: amortized block-core acquisition (answers FP54's next lemma)}
+\textbf{Setting.} Fix a degree bound $d$ and a guard. Let $W_1,\dots,W_b\subseteq\F^M$ be the blocks of evaluated rows $m\cdot p$ (block $i$ holds the rows owned by original factor/block $i$). Let $R=\sum_i|W_i|$, let the target $e$ be the constant-monomial column, and let $r\le\min(M,R)$ be the rank. For $S\subseteq[b]$ write $\Phi(S)$ for the statement $e\in\mathrm{span}\bigcup_{i\in S}W_i$. FP54 runs a fresh Gaussian elimination (GE) for every probe ``drop block $D$''.
+
+\textbf{Cost model.} A row insertion reduces the new row against the current pivots, using at most $r$ XORs of $M$-bit vectors. A membership test also uses at most $r$ XORs. This is the measure used below. Bit cost is that number times $\lceil M/w\rceil$ word operations.
+
+\begin{theorem}[Leave-one-block-out by divide and conquer; PROVED]\label{thm:lobo}
+All $b$ answers $\Phi([b]\setminus\{D\})$, $D=1,\dots,b$, can be computed with at most $R\lceil\log_2 b\rceil$ row insertions and $b$ membership tests. That is at most $(R\lceil\log_2b\rceil+b)\,r$ XORs, using $\lceil\log_2 b\rceil$ basis snapshots of at most $r$ vectors each. Probing each $D$ with a fresh GE costs $R(b-1)$ insertions.
+\end{theorem}
+\begin{proof}
+Run $\mathrm{rec}(1,b)$ under the invariant that the basis spans exactly $\bigcup_{j\notin[lo,hi]}W_j$. At a leaf $lo=hi=D$, test $e$; by the invariant this decides $\Phi([b]\setminus\{D\})$. At an internal node, split at $mid$. Snapshot the basis, insert the rows of $[mid+1,hi]$ and recurse on $[lo,mid]$. Then restore, insert the rows of $[lo,mid]$, recurse on $[mid+1,hi]$, and restore. Both recursive calls satisfy the invariant. A block $j$ is inserted at a node only when the recursion descends into the half that does not contain $j$. That happens at most once per node containing $j$, and there is one such node per level, so at most $\lceil\log_2b\rceil$ times. Summing $|W_j|$ over $j$ gives the bound. Each insertion and each test costs at most $r$ XORs.
+\end{proof}
+The divide-and-conquer pattern is the standard offline-deletion trick. It is a known technique, specialised here to span membership, and is not claimed as new.
+
+\begin{corollary}[Free answers from one certificate; PROVED]\label{cor:skip}
+Give each basis vector an OR-mask of owner blocks: a new row starts with $\{i\}$, and each reduction step ORs in the mask of the pivot used. If $e$ reduces to $0$, the OR-mask $C$ of the pivots used satisfies $\Phi(C)$. Hence $\Phi([b]\setminus\{D\})$ holds for every $D\notin C$ with no further work.
+\end{corollary}
+\begin{proof}
+By induction, each basis vector is a GF(2) sum of original rows whose owners lie in its mask. So $e$ is a sum of rows with owners in $C$.
+\end{proof}
+\noindent $C$ is a sound core but need not be inclusion-minimal. An FP54-style checkable certificate (explicit $m_j,p_j$) still needs one coefficient-tracking GE restricted to $C$.
+
+\begin{theorem}[Inclusion-minimal block core by insertion; PROVED]\label{thm:ins}
+Suppose $\Phi([b])$ holds. The following procedure returns an inclusion-minimal $K$ with $\Phi(K)$, using at most $(|K|+1)R$ insertions. Without amortization, the deletion filter uses $b$ fresh GEs, about $bR$ insertions.\\
+Start with $K=\emptyset$ and $L=[b]$, in a fixed order. Repeat: build a basis from the rows of $K$. If $e$ is in it, stop. Otherwise insert the blocks of $L$ in order until $e$ enters the span at block $t$. Then set $K\leftarrow K\cup\{t\}$ and $L\leftarrow$ the blocks of $L$ before $t$.
+\end{theorem}
+\begin{proof}
+Invariant: $\Phi(K\cup L)$ holds. It holds initially. In a round, $\Phi(K\cup L_{<t}\cup\{t\})$ holds by the choice of $t$, so it is preserved. Each round adds one element to $K$, so there are $|K|+1$ rounds, each with at most $R$ insertions. For minimality, take $t\in K$ added in some round, and let $K_0$ and $L_{<t}$ be the sets at that time. Every element added to $K$ later comes from $L_{<t}$, so the final $K\setminus\{t\}\subseteq K_0\cup L_{<t}$. By the choice of $t$, $\Phi(K_0\cup L_{<t})$ fails. Hence $\Phi(K\setminus\{t\})$ fails.
+\end{proof}
+
+\begin{lemma}[Row-level minimality in one GE; PROVED]\label{lem:row}
+Let $e=\sum_{v\in T}v$ with the rows $T$ linearly independent; for example, $T$ is the support of $e$ in a basis chosen greedily from the rows. Then no proper subset of $T$ sums to $e$, nor spans it.
+\end{lemma}
+\begin{proof}
+Suppose $T'\subsetneq T$ spans $e$. Then $e=\sum_{T''}v$ for some $T''\subseteq T'$. Adding this to the first expression gives $\sum_{T\setminus T''}v=0$ with $T\setminus T''\neq\emptyset$, which contradicts independence.
+\end{proof}
+
+\begin{proposition}[Minimum core is NP-hard; KNOWN THEOREM plus a trivial reduction]\label{prop:np}
+Given $W_1,\dots,W_b$ and $k$, deciding whether some $|K|\le k$ has $\Phi(K)$ is NP-complete, even with $|W_i|=1$.
+\end{proposition}
+\begin{proof}
+Membership in NP: guess $K$ and run GE. For hardness, start from a coset-weight / syndrome-decoding instance $(H,s,k)$: is there an $x$ with $Hx=s$ and $\mathrm{wt}(x)\le k$? This is NP-complete (Berlekamp--McEliece--van Tilborg 1978). Take $s\neq0$; if $s=0$ the instance is trivial. Choose an invertible $A$ with $As=e$. Put block $i$ equal to $\{Ah_i\}$, where $h_i$ is the $i$-th column of $H$. Then $\Phi(K)$ holds iff some subset of $\{h_i:i\in K\}$ sums to $s$, iff there is such an $x$ supported in $K$.
+\end{proof}
+\noindent So the project can promise \emph{inclusion}-minimal cores in time polynomial in the row system (Theorem~\ref{thm:ins}), but not minimum ones. This barrier is for arbitrary row systems. Whether the local Nullstellensatz rows of STRICT-EB4 charts avoid it is OPEN.
+
+\subsection{Computation (COMPUTATIONAL)}\label{sec:comp}
+Code: \path{comments/grok-4.7/2026-11-28/code/amortized_core.py}. Output: \path{.../code/amortized_core.out.json}. Seed 20261128, Python 3.13.5, about 196\,s.
+
+Instances: random 3-CNF, UNSAT certified by exhaustive search. Each clause is one block, with rows $m\cdot p_C$ where $p_C$ is the clause-falsification indicator and $m$ ranges over squarefree monomials with $\deg m+3\le d$. Every instance was refuted at degree $d$. All five methods were run. Columns: naive LOBO (fresh GE per $D$); ``skip'' (Corollary~\ref{cor:skip}, fresh GE only for $D\in C$); D\&C (Theorem~\ref{thm:lobo}); insertion core (Theorem~\ref{thm:ins}); deletion-filter core. XOR counts are in millions; ``nec.'' is the number of blocks $D$ with $\neg\Phi([b]\setminus\{D\})$.
+
+{\small
+\begin{center}
+\begin{tabular}{rrrrrr|rrrr|rrr}
+$n$&$m$&$d$&cols&rows&nec.&naive&skip&D\&C&ratio&$|K|$ ins/del&ins&del\\\hline
+10 & 60 & 5 & 638 & 2502 & 0 & 0.85 & 0.39 & 0.17 & 5.1 & 17/21 & 0.05 & 0.39 \\
+10 & 60 & 5 & 638 & 2378 & 0 & 1.27 & 0.74 & 0.19 & 6.8 & 19/17 & 0.10 & 0.49 \\
+10 & 60 & 5 & 638 & 2448 & 1 & 1.43 & 0.86 & 0.21 & 7.0 & 24/22 & 0.14 & 0.68 \\
+10 & 60 & 6 & 848 & 6727 & 5 & 3.56 & 1.85 & 0.44 & 8.0 & 17/13 & 0.61 & 1.34 \\
+10 & 60 & 6 & 848 & 6869 & 2 & 3.66 & 1.71 & 0.57 & 6.4 & 14/20 & 0.30 & 2.10 \\
+10 & 60 & 6 & 848 & 6449 & 0 & 6.14 & 3.79 & 0.75 & 8.2 & 18/21 & 0.74 & 2.65 \\
+12 & 80 & 5 & 1586 & 4840 & 0 & 4.00 & 2.16 & 0.52 & 7.6 & 28/21 & 0.16 & 1.27 \\
+12 & 80 & 5 & 1586 & 4784 & 0 & 3.39 & 1.94 & 0.44 & 7.6 & 24/24 & 0.17 & 1.15 \\
+12 & 80 & 5 & 1586 & 4925 & 0 & 3.59 & 1.70 & 0.43 & 8.4 & 30/31 & 0.14 & 1.27 \\
+12 & 80 & 6 & 2510 & 16510 & 0 & 18.43 & 9.95 & 2.51 & 7.3 & 22/21 & 1.11 & 9.44 \\
+12 & 80 & 6 & 2510 & 17163 & 0 & 12.00 & 6.29 & 1.38 & 8.7 & 20/21 & 0.72 & 6.67 \\
+12 & 80 & 6 & 2510 & 15622 & 0 & 28.29 & 15.84 & 2.70 & 10.5 & 23/17 & 1.90 & 9.58 \\
+12 & 90 & 7 & 3302 & 44320 & 0 & 78.86 & 30.45 & 7.96 & 9.9 & 21/18 & 5.06 & 38.39 \\
+12 & 90 & 7 & 3302 & 42484 & 0 & 108.22 & 44.89 & 8.88 & 12.2 & 21/20 & 4.64 & 54.10 \\
+12 & 90 & 7 & 3302 & 43152 & 0 & 96.99 & 40.79 & 9.55 & 10.2 & 23/20 & 5.79 & 37.68 \\
+14 & 100 & 6 & 6476 & 34308 & 0 & 73.89 & 26.61 & 7.08 & 10.4 & 22/21 & 1.43 & 26.87 \\
+14 & 100 & 6 & 6476 & 33329 & 0 & 61.16 & 24.79 & 8.17 & 7.5 & 27/29 & 2.25 & 31.15 \\
+14 & 100 & 6 & 6476 & 34177 & 1 & 123.45 & 49.93 & 8.85 & 13.9 & 26/27 & 2.92 & 38.50 \\
+\end{tabular}
+\end{center}}
+
+\begin{enumerate}
+\item The D\&C answers equal the naive answers and the skip answers on all 18 instances.
+\item The D\&C row insertions are $0.91$--$0.99\times R\lceil\log_2 b\rceil$, as Theorem~\ref{thm:lobo} predicts. The naive/D\&C XOR ratio is 5.1--13.9 and grows with $b$.
+\item Every insertion-based core was re-verified: it spans $e$, and every one-block deletion fails, so it is inclusion-minimal. It costs 2.2--18.8$\times$ fewer XORs than the deletion filter. The two procedures find different minimal cores (sizes 13--31), as expected from Proposition~\ref{prop:np}.
+\item Spot checks: the FP54 identities are true on all rows and formally. Fano: 0 uncovered points, $[10]\times7$ exclusive points, Kraft sum $1.75$.
+\end{enumerate}
+Not counted: snapshot copies (at most $r$ pointer copies per level), building the rows, and Python overhead. The measured wall-clock speedups (for example 11.7\,s vs 1.2\,s) track the XOR counts.
+
+\subsection{Scope and limits}\label{sec:limits}
+\begin{itemize}
+\item Theorems~\ref{thm:lobo}--\ref{thm:ins} make FP54's per-probe cost \emph{amortized polynomial in the size of the fixed degree-$d$ row system}: $O(R\log b\cdot r)$ XORs for all leave-one-out probes, and $O((|K|+1)R\,r)$ for a minimal core. That is PROVED WITH SCOPE for fixed $d$ and fixed guard. Varying the guard changes the rows; reusing a basis across guards is OPEN.
+\item The size of the system is $R\approx b\binom{n}{\le d-3}$, so it is polynomial only for constant $d$. Known polynomial-calculus degree lower bounds apply. Random 3-CNF with $\Theta(n)$ clauses needs degree $\Omega(n)$ over every field, including $\F$ (Alekhnovich--Razborov 2001; Ben-Sasson--Impagliazzo 1999 for characteristic $\neq2$). This is a KNOWN THEOREM, quoted and not re-derived; check the exact citation before external use. So on random-like sources, a fixed-$d$ identity eventually fails to exist. FP54's degree-1/2/3 UNKNOWN results on RANDOM-40 are consistent with this.
+\item Nothing here bounds guard acquisition, the number of guards, or the total over all reachable states. The universal cooperative-progress theorem remains OPEN.
+\end{itemize}
+
+\section{Recommendations}
+\begin{enumerate}
+\item FP54/FP55: replace per-probe GE by Theorem~\ref{thm:lobo}. Answer probes outside the first certificate's OR-core for free (Corollary~\ref{cor:skip}). Use Theorem~\ref{thm:ins} for cores. Charge the snapshot copies.
+\item Cite degree-$d$ Nullstellensatz/PC (BIKPP 1994/96) and the PC degree lower bounds for random CNF. Record the degree reached as a COMPUTATIONAL statistic, not a stall to be overcome.
+\item Restore root \texttt{main.tex} from \texttt{66c56b4} (plus the 11-17 block) or confirm that the placeholder is intentional. Its 10-day absence affects every reviewer's ``living status'' check.
+\item Convert the new \texttt{.md} reports to \texttt{.tex}, or amend AGENTS.md to allow \texttt{.md}.
+\end{enumerate}
+\end{document}
