@@ -1,0 +1,67 @@
+function audit(){
+const mod=(a,p)=>((a%p)+p)%p, ok=(x,m)=>{if(!x)throw Error(m||"assert")};
+function graph(n,E){const e=[...new Set(E.map(([u,v])=>`${Math.min(u,v)},${Math.max(u,v)}`))].map(s=>s.split(",").map(Number));ok(e.every(([u,v])=>u<v&&u>=0&&v<n));return {n,e}}
+function myc(k,L){const E=[];for(let i=0;i<k;i++){const j=(i+1)%k;E.push([i,j]);for(let h=0;h<L-1;h++){E.push([h*k+i,(h+1)*k+j],[h*k+j,(h+1)*k+i])}E.push([(L-1)*k+i,L*k])}return graph(L*k+1,E)}
+function native(G){let n=5;const rows=[[0,1,2,3],[0,1,3,4],[0,1,4,2]],owners=Array.from({length:G.n},()=>[n++,n++,n++]);for(const x of owners)rows.push([...x,2]);const edgeRows=[];for(const [u,v] of G.e){const ids=[];for(let c=0;c<3;c++){ids.push(rows.length);rows.push([owners[u][c],owners[v][c],2,n++])}edgeRows.push(ids)}return {n,rows,owners,edgeRows,G,guards:[[0,0]]}}
+function verifyChart(F){const f=native(F.G);ok(JSON.stringify(f)===JSON.stringify(F),"chart map");ok(F.rows.every(r=>r.length===4&&new Set(r).size===4));let checks=0;
+for(let a=0;a<8;a++){const t=[a&1,(a>>1)&1,(a>>2)&1];ok((1+t.reduce((s,x)=>s+x,0)===2)===(t.reduce((s,x)=>s+x,0)===1));checks++}
+for(let a=0;a<2;a++)for(let b=0;b<2;b++){ok([0,1].some(w=>a+b+1+w===2)===(a+b<=1));checks++}return checks}
+function close(F){const w=Array(F.n).fill(-1);w[0]=0;w[1]=0;w[2]=w[3]=w[4]=1;let change=true,scans=0;while(change){change=false;for(const r of F.rows){scans++;let s=0,u=[];for(const i of r){if(w[i]<0)u.push(i);else s+=w[i]}if(s>2||s+u.length<2)return {no:true,scans};if(s===2||s+u.length===2)for(const i of u){w[i]=s===2?0:1;change=true}}}return {no:false,scans,unfixed:w.filter(x=>x<0).length}}
+function index(G){const adj=Array.from({length:G.n},()=>[]),ids=new Map();G.e.forEach(([u,v],i)=>{adj[u].push(v);adj[v].push(u);ids.set(`${u},${v}`,i)});const id=(u,v)=>ids.get(`${Math.min(u,v)},${Math.max(u,v)}`),sg=(u,v)=>u<v?1:-1;return {adj,id,sg}}
+function cycles(G){const {adj,id,sg}=index(G),tri=[],sq=[];let probes=0;
+for(let a=0;a<G.n;a++)for(const b of adj[a])if(b>a)for(const c of adj[b])if(c>a&&c!==b){
+probes++;if(c>b&&id(c,a)!==undefined)tri.push([a,b,c]);
+for(const d of adj[c])if(d>a&&d!==b&&d>b){probes++;if(id(d,a)!==undefined)sq.push([a,b,c,d])}}
+const orient=c=>c.map((u,i)=>[id(u,c[(i+1)%c.length]),sg(u,c[(i+1)%c.length])]);return {tri:tri.map(orient),sq:sq.map(orient),probes}}
+function parity(G,C,triangles=false){const m=G.e.length,P=new Map();let ops=0,rank=0,contradiction=null;const rows=[];
+for(const s of C.sq){let v=0n,r=0;for(const [e,d] of s){v^=1n<<BigInt(e);r+=d}rows.push([v,mod(r/2,2)])}
+if(triangles)for(const t of C.tri)for(let j=1;j<3;j++)rows.push([(1n<<BigInt(t[0][0]))^(1n<<BigInt(t[j][0])),t[0][1]===t[j][1]?0:1]);
+function reduce(v,r,pr=0n){while(v){const p=v.toString(2).length-1;ops++;const q=P.get(p);if(!q)break;v^=q[0];r^=q[1];pr^=q[2]}return [v,r,pr]}
+for(let i=0;i<rows.length;i++){const [v,r,pr]=reduce(...rows[i],1n<<BigInt(i));if(!v&&r){contradiction=pr;break}if(v){P.set(v.toString(2).length-1,[v,r,pr]);rank++}}
+const rel=[];if(contradiction===null){for(let i=0;i<m;i++)for(let j=0;j<i;j++){const [v,r]=reduce((1n<<BigInt(i))^(1n<<BigInt(j)),0);if(!v)rel.push([i,j,r])}}
+let cert=[];if(contradiction!==null){let v=0n,r=0;for(let i=0;i<rows.length;i++)if((contradiction>>BigInt(i))&1n){cert.push(i);v^=rows[i][0];r^=rows[i][1]}ok(v===0n&&r===1,"cert")}
+return {no:contradiction!==null,rank,rel,ops,cert,rows:rows.length}}
+function ternary(G,C,extra=[]){const P=new Map();let ops=0;const vec=(i)=>{const a=Array(G.n).fill(0),[u,v]=G.e[i];a[u]=2;a[v]=1;return a};
+function reduce(a){for(let i=0;i<G.n;i++)if(a[i]&&P.has(i)){const b=P.get(i),q=a[i];for(let j=i;j<G.n;j++){a[j]=mod(a[j]-q*b[j],3);ops++}}return a}
+function add(i,j,r){const a=vec(i),b=vec(j),s=r?2:1;for(let l=0;l<G.n;l++)a[l]=mod(a[l]-s*b[l],3);reduce(a);const k=a.findIndex(x=>x);if(k>=0){const x=a[k];for(let l=k;l<G.n;l++)a[l]=mod(x*a[l],3);P.set(k,a)}}
+for(const t of C.tri)for(let j=1;j<3;j++)add(t[0][0],t[j][0],t[0][1]===t[j][1]?0:1);
+for(const [i,j,r] of extra)add(i,j,r);
+const forced=[];for(let i=0;i<G.e.length;i++)if(reduce(vec(i)).every(x=>x===0))forced.push(i);
+return {no:forced.length>0,rank:P.size,forced,ops}}
+function ref(G,cap){const {adj}=index(G),col=Array(G.n).fill(-1);let nodes=0,exceeded=false;function visit(){if(++nodes>cap){exceeded=true;return false}let v=-1,best=-1,mask=0;for(let i=0;i<G.n;i++)if(col[i]<0){let m=0;for(const j of adj[i])if(col[j]>=0)m|=1<<col[j];const s=10*((m&1)+((m>>1)&1)+((m>>2)&1))+adj[i].length;if(s>best){v=i;best=s;mask=m}}if(v<0)return true;for(let c=0;c<3;c++)if(!(mask&(1<<c))){col[v]=c;if(visit())return true;col[v]=-1;if(exceeded)return false}return false}
+col[0]=0;const sat=visit();return {status:exceeded?"UNKNOWN":sat?"SAT":"UNSAT",nodes,col:sat?col:null}}
+function explicit(G,k,L){const {id,sg}=index(G);let sums=Array(G.e.length).fill(0),count=0;function face(c,s=1){count++;for(let i=0;i<4;i++){const u=c[i],v=c[(i+1)%4],e=id(u,v);ok(e!==undefined,"face edge");sums[e]+=s*sg(u,v)}}const v=(i,h)=>h*k+mod(i,k);
+for(let i=0;i<k;i++)face([v(i,0),v(i+1,0),v(i+2,0),v(i+1,1)]);
+for(let h=1;h<L-1;h++)for(let i=0;i<k;i++)face([v(i,h),v(i+1,h-1),v(i+2,h),v(i+1,h+1)]);
+for(let i=0;i<k;i++)face([v(i,L-2),v(i+1,L-1),L*k,v(i-1,L-1)]);
+// base faces give 2 base - S0, intermediate S_prev-S_next, top S_last.
+const want=Array(G.e.length).fill(0);for(let i=0;i<k;i++)want[id(i,(i+1)%k)]+=2*sg(i,(i+1)%k);ok(sums.every((x,i)=>x===want[i]),"integer identity");return {count,odd:k%2===1}}
+const br=[[2,5,7,13],[3,6,7,8],[4,8,9],[5,9,10],[6,10,11],[11,12],[12,13],[15,20],[14,16],[15,17],[16,18],[17,19],[18,20],[14,19],[17,18],[18,19],[19,20],[20]].flatMap((a,i)=>a.map(j=>[i,j]));
+function hash(s){let h=2166136261;for(const c of s)h=Math.imul(h^c.charCodeAt(0),16777619)>>>0;return h.toString(16)}
+function run(G,name,k=0,L=0){const F=native(G),s=JSON.stringify(F),N=8*s.length,cap=BigInt(N)**3n;const copies=Array.from({length:4},()=>JSON.parse(s));const closures=copies.map(f=>{ok(hash(JSON.stringify(f))===hash(s));verifyChart(f);return close(f)});ok(closures.every(c=>!c.no));const A=parity(copies[0].G,cycles(copies[0].G)),B=ternary(copies[1].G,cycles(copies[1].G)),C=k?explicit(copies[2].G,k,L):ref(copies[2].G,1000000);if(!k)ok(C.status==="UNSAT","not verified NO");const cy=cycles(copies[3].G),ap=parity(copies[3].G,cy,true),I=ap.no?{no:true,why:"parity+triangle"}:ternary(copies[3].G,cy,ap.rel);
+for(const z of [A.ops,B.ops,ap.ops,I.ops||0,cy.probes])ok(BigInt(z)<=cap);
+return {name,k,L,n:G.n,e:G.e.length,vars:F.n,rows:F.rows.length,N,hash:hash(s),closure:closures[0],squares:cy.sq.length,triangles:cy.tri.length,A:{...A,rel:A.rel.length},B,C,I:{...I},combinedParity:{...ap,rel:ap.rel.length},probes:cy.probes}}
+
+const G=graph(12,[[0,5],[0,6],[0,10],[0,11],[1,2],[1,3],[1,9],[1,11],[2,10],[3,6],[3,9],[4,5],[4,7],[4,8],[4,11],[5,7],[5,8],[5,9],[5,10],[6,9],[7,9],[7,10],[7,11],[8,9]]),C=cycles(G),m=G.e.length;
+const rows=[];
+for(let i=0;i<C.sq.length;i++){const s=C.sq[i];let v=0n,r=0;for(const [e,d] of s){v^=1n<<BigInt(e);r+=d}rows.push({v,r:mod(r/2,2),origin:["square",i]})}
+for(let i=0;i<C.tri.length;i++){const t=C.tri[i];for(let j=1;j<3;j++)rows.push({v:(1n<<BigInt(t[0][0]))^(1n<<BigInt(t[j][0])),r:t[0][1]===t[j][1]?0:1,origin:["triangle",i,j]})}
+const P=new Map();
+function red(v,r,pr=0n){while(v){let i=v.toString(2).length-1,q=P.get(i);if(!q)break;v^=q[0];r^=q[1];pr^=q[2]}return [v,r,pr]}
+for(let i=0;i<rows.length;i++){const {v,r}=rows[i],z=red(v,r,1n<<BigInt(i));ok(z[0]||!z[1]);if(z[0])P.set(z[0].toString(2).length-1,z)}
+const relations=[];
+for(let i=0;i<m;i++)for(let j=0;j<i;j++){const w=(1n<<BigInt(i))^(1n<<BigInt(j)),z=red(w,0);if(z[0])continue;let vv=0n,rr=0,proof=[];for(let k=0;k<rows.length;k++)if((z[2]>>BigInt(k))&1n){vv^=rows[k].v;rr^=rows[k].r;proof.push(rows[k].origin)}ok(vv===w&&rr===z[1]);relations.push({i,j,r:z[1],proof})}
+const vec=i=>{const a=Array(G.n).fill(0),[u,v]=G.e[i];a[u]=2;a[v]=1;return a};
+const rr=relations.map(({i,j,r})=>vec(i).map((v,l)=>mod(v-(r?2:1)*vec(j)[l],3)));
+const Q=new Map();
+function red3(a,p){for(let i=0;i<G.n;i++)if(a[i]&&Q.has(i)){const b=Q.get(i),q=a[i];a=a.map((v,j)=>mod(v-q*b[0][j],3));p=p.map((v,j)=>mod(v-q*b[1][j],3))}return [a,p]}
+for(let i=0;i<rr.length;i++){let pr=Array(rr.length).fill(0);pr[i]=1;let [a,p]=red3(rr[i].slice(),pr),k=a.findIndex(Boolean);if(k<0)continue;let s=a[k];Q.set(k,[a.map(v=>mod(v*s,3)),p.map(v=>mod(v*s,3))])}
+const [rem,coef]=red3(vec(0),Array(rr.length).fill(0));ok(rem.every(v=>!v),"no edge certificate");
+const proof=[];let sum=Array(G.n).fill(0);
+for(let i=0;i<coef.length;i++)if(coef[i]){let a=mod(-coef[i],3);sum=sum.map((v,j)=>mod(v+a*rr[i][j],3));proof.push({coefficient:a,...relations[i]})}
+ok(sum.every((v,j)=>v===vec(0)[j]),"verify forced zero");
+return {G,hash:hash(JSON.stringify(native(G))),edge:0,proof,triangles:C.tri,squares:C.sq};
+
+}
+
+console.log(JSON.stringify(audit(),null,2));
