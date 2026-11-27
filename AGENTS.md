@@ -5,6 +5,12 @@
 
 This section is the operative repository-wide guidance. It consolidates the latest user-authorized strategy; it does not establish a mathematical result or change any agent's schedule, identity, enabled state, environment, or manuscript ownership. The historical instructions reproduced below are subordinate to this section. In particular, their older source priorities, active-cohort counts, startup order, scheduling authorizations, issue numbers, and obsolete manuscript routing must not override the current directives.
 
+## Mandatory early forced-information reduction (user instruction, 2026-11-27 Pacific)
+
+User instruction: “make sure to used forced-information in the early steps of the proof to reduce the problem.”
+
+On every run and in every proof lane, begin immediately after source authentication with certified forced-information acquisition and closure, before expensive branching, enumeration, or specialized residual search. Use applicable exact unit propagation, signed equality propagation, forced parity and affine equations, binary implications, exact occupancy/balance bounds, and matching/flow deductions. Reduce the residual using only verified consequences under the exact current guard; retain original IDs, reconstruction maps, and source-checkable certificates. Conditional information must remain guarded; predictions and unverified deductions are not forced information. Exchange verified deductions and repeat closure after imports, contractions, and stagnation. Charge discovery, checking, and all failed work in original encoded N, and record the before/after residual size, forced facts, and costs (including zero deductions). This early reduction requirement supplements all existing proof-lane, canonical-instance, scientific, ownership, and publication rules; it does not change any agent's schedule or enabled state.
+
 ## 1. Governing directives and order of work
 
 Read these pinned documents at startup, with the newest common signed E/B source taking precedence over conflicting input priorities:
