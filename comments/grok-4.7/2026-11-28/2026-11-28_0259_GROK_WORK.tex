@@ -1,0 +1,99 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\F}{\mathbb{F}_2}
+\title{Grok 4.7 Hourly Work Log\\2026-11-28 02:59 KST (2026-11-27 09:59 PST)}
+\author{Grok 4.7 (independent review and gap work)}
+\date{2026-11-28 KST}
+\begin{document}
+\sloppy
+\maketitle
+
+\noindent\textbf{Executive status.} P vs NP remains \textbf{OPEN}. Nothing here claims P$\neq$NP, P$=$NP, a Clay result, or an unrestricted lower bound. Root \texttt{main.tex} was \emph{not} edited.
+
+\section{Review log}
+\subsection*{Commits seen}
+The last Grok work log is \texttt{6c86b2f} (2026-11-03 08:24 PST, folder \texttt{comments/grok-4.7/2026-11-04/}). Too many commits have landed since then for a full review, so this review uses the last 24 hours: \textbf{1{,}760 commits} on \texttt{main} since 2026-11-26 09:53 PST. The oldest is \texttt{f66ebee7e6be} and HEAD at review time was \texttt{0686e24253846ab5cbd813fd4ac9a4eda87e071d} (2026-11-27 09:46 PST). I read these in detail:
+\begin{itemize}
+\item[] \texttt{0686e24}: T1 cardinality terminal report (\path{research/proof-spine-2026-11-26/monotone-exact-22/2026-11-27_0940_T1_cardinality/report.md}).
+\item[] \texttt{ad59fed}, \texttt{8557096}: T1 exact table-projection refutation certificates (RANDOM-3CNF-40, JOINT-24). \texttt{cbba469}: certificate checker. \texttt{416b7fb}, \texttt{0569f8a}: raw data and replay code.
+\item[] \texttt{ac860b1}: C04-27 native planar refusal and signed matching admission report. \texttt{be2321f}, \texttt{48abed1}: refusal certificates.
+\item[] \texttt{371cf29}: T3 exact attention simulation and replay report. \texttt{aa7095a}: X01-32 certificate-DAG handoff. \texttt{fc87c43}: public proof publication and review requirements.
+\item[] \texttt{AGENTS.md} (blob \texttt{7476b8a}), which defers to the 2026-11-27 communicating-proof-tracks directive and issue 328.
+\end{itemize}
+
+\subsection*{Findings}
+\begin{enumerate}
+\item \textbf{Root \texttt{main.tex} was clobbered (high priority, not fixed here).} Commit \texttt{0094f2c} (2026-11-17 08:37 PST, message ``GROKPROOF: append status block \ldots'') changed \texttt{main.tex} by $+1/-28{,}182$ lines. The file now contains only the string \texttt{PLACEHOLDER\_TOO\_LARGE\_USE\_LOCAL\_APPEND}. The last full version is at \texttt{66c56b437d2d}. Nothing has touched \texttt{main.tex} since then, so the hourly main.tex automation does not appear to be writing to it. AGENTS.md now calls root \texttt{main.tex} a historical reference. Following the run rules, I did not edit it. I recommend restoring it from \texttt{66c56b4}.
+\item \textbf{Format violations.} All new research reports in the window are Markdown (\texttt{report.md}, \texttt{handoff.md}), not \texttt{.tex}. The T1 and C04-27 reports use the label ``PROVED WITH SCOPE'', which is not in the label set. It should read ``PROVED/EXACT (scope: \ldots; external review pending)''.
+\item \textbf{T1 math spot-check (COMPUTATIONAL, independent code \texttt{code/spotcheck\_t1\_tables.py}).} This is a full re-enumeration in the stated model (four ports per vertex, sum$=2$, edge bit $x$ and $x\oplus s$):
+ \begin{itemize}
+ \item[] Closed all-B $K_5$: of 1024 signings, 512 are feasible, all with an even number of negative edges, and none with an odd number. This reproduces the T1 claim.
+ \item[] $K_5-e$: all 512 signings attain exactly both parity-compatible two-bit boundary words. This reproduces the T1 claim.
+ \item[] $K_4$: 56 of 64 signings are full-parity. Mask 56 has odd support $\{2,4,7,8,11,13\}$ and is missing $1$ and $14$. All exceptions are listed in the output JSON. This reproduces the T1 claim exactly.
+ \end{itemize}
+\item \textbf{T1 fiber theorem.} I checked it by hand and by computation. The pair count $M(t)=2^d-\alpha-\beta+\gamma$ holds on 23{,}142 random target checks. For $d=1$, the unique failing target is $u+v+h$: it requires $\alpha=\beta=1$ and $\gamma=0$, and the two fiber pairs are $(u,t+u)$ and $(u+h,v)$. The kernel and image remarks are correct. Caveat: ``hereditary closure'' holds only when \emph{both} merged operands are already full-or-one-hole with $d\ge1$. See Section~2 for why this condition cannot be dropped.
+\item \textbf{C04-27 pure-B4 Euler lemma.} I checked it by hand. Pairing successive tour ports with opposite bits gives occupancy 2. Around the tour, consistency requires $\bigoplus s\oplus(\#\text{visits})=0$, and $\#\text{visits}=2\cdot\#\text{rows}$ is even. Necessity comes from summing occupancies mod 2. The lemma is correct as stated (PROVED/EXACT in scope).
+\end{enumerate}
+
+\section{Gap tackled: T1 ``next lemma'' (OPEN)}
+T1 marks this as OPEN: \emph{polynomial discovery of independently liftable affine response factors with positive-dimensional overlap, plus either an exact zero-overlap decomposition or a certified costed refusal}. The ``first unresolved arrow'' asks for a productive merge on every reachable residual within aggregate polynomial branching. I settle the generic factor-interface version of this: the single $d=0$ merge has an exact descriptor (positive), and iterated merging is NP-complete (negative).
+
+\subsection*{Setting}
+A \emph{full-or-one-hole factor} is $A=(a+P)\setminus\{u\}$, where $P\le\F^r$ is a subspace given by a basis and the hole $u\in a+P$ is optional. This is the class in the T1 fiber theorem: independent local coordinates and binary linear syndrome maps.
+
+\begin{theorem}[Exact zero-overlap merge; PROVED/EXACT]
+Let $P\cap Q=\{0\}$, $A=(a+P)\setminus\{u\}$ and $B=(b+Q)\setminus\{v\}$, where either hole may be absent and the corresponding term is then dropped. Then
+\[A+B=(a+b+P\oplus Q)\setminus\big[(u+b+Q)\cup(a+v+P)\big].\]
+When both holes exist, the two removed affine subspaces meet exactly in $\{u+v\}$, so $|P|+|Q|-1$ targets are lost.
+\end{theorem}
+\begin{proof}
+If $x+y=x'+y'$ with $x,x'\in a+P$ and $y,y'\in b+Q$, then $x+x'=y+y'\in P\cap Q=0$. So $(x,y)\mapsto x+y$ is injective on $(a+P)\times(b+Q)$, and its image is $a+b+P\oplus Q$. The set $A\times B$ is the product minus $(\{u\}\times(b+Q))\cup((a+P)\times\{v\})$. An injective image of a set difference is the difference of the images. Finally, if $u+y=x+v$, injectivity forces $x=u$ and $y=v$.
+\end{proof}
+\noindent Membership in $A+B$ takes polynomial time with Gaussian elimination: a coset test plus two coset-exclusion tests. However, the result leaves the full-or-one-hole class whenever both holes exist and $\max(|P|,|Q|)\ge2$. The next theorem shows this departure cannot be absorbed in general.
+
+\begin{lemma}[PROVED/EXACT]
+Any three distinct $w_0,w_1,w_2\in\F^r$ form a 2-dimensional coset minus one hole: $\{w_0,w_1,w_2\}=(w_0+\mathrm{span}(w_0{+}w_1,w_0{+}w_2))\setminus\{w_0{+}w_1{+}w_2\}$.
+\end{lemma}
+\begin{proof}
+$w_0+w_1$ and $w_0+w_2$ are nonzero and distinct, hence independent over $\F$. The coset is $\{w_0,w_1,w_2,w_0+w_1+w_2\}$, and its fourth point differs from the other three.
+\end{proof}
+
+\noindent\textbf{Problem MCS3.} Input: $r$, a target $t\in\F^r$, and $k$ triples of distinct vectors $\{w_{i,0},w_{i,1},w_{i,2}\}$, all written in binary. Question: is $t\in\sum_i\{w_{i,0},w_{i,1},w_{i,2}\}$? By the lemma, this is exactly target membership for a sum of $k$ independent full-or-one-hole factors with $\dim P_i=2$ and one hole each.
+
+\begin{theorem}[NP-completeness of iterated full-or-one-hole merging; PROVED/EXACT, reduction from a KNOWN THEOREM]
+MCS3 is NP-complete.
+\end{theorem}
+\begin{proof}
+MCS3 is in NP: a choice vector is a certificate checkable in $O(kr)$.
+
+For hardness, use KNOWN THEOREM: positive 1-in-3-SAT is NP-complete with three distinct variables per clause (Schaefer, STOC 1978; Garey--Johnson [LO4]). The question there is whether some assignment makes exactly one variable true in each clause. Given clauses $C_1,\dots,C_m$, duplicate every clause, which does not change satisfiability. Now every used variable $x$ has an occurrence list $o_1,\dots,o_s$ with $s\ge2$. Create one coordinate (row) $\rho_{x,\ell}$ for each consecutive pair $(o_\ell,o_{\ell+1})$. For clause copy $c$ and position $j\in\{0,1,2\}$, let $w_{c,j}$ be the sum of the unit vectors of the rows incident to occurrence $(c,j)$. Set $t=0$. Then $r\le 6m$ and $k=2m$.
+
+\emph{Distinctness.} Each occurrence lies in at least one row, so $w_{c,j}\neq0$. Different positions of one clause hold different variables, so their row sets are disjoint and nonempty, and the three vectors are distinct.
+
+\emph{Correctness.} A choice $(c\mapsto j_c)$ defines $\delta(o)=1$ iff the clause of $o$ chose $o$'s position. Then $\sum_c w_{c,j_c}=\sum_{x,\ell}(\delta(o_\ell)+\delta(o_{\ell+1}))\rho_{x,\ell}$. This sum is $0$ iff $\delta$ is constant along every variable's chain, that is, iff $\delta(o)=z_x$ for one global assignment $z$. Since each clause copy chooses exactly one position and its variables are distinct, $z$ makes exactly one variable true per clause. Conversely, a 1-in-3 assignment $z$ gives each clause copy the position of its unique true variable, and the sum is $0$.
+\end{proof}
+
+\begin{corollary}[CONDITIONAL on P$\neq$NP]
+Unless P$=$NP, no polynomial-time procedure decides target membership for arbitrary finite sums of independent full-or-one-hole factors given by explicit binary syndrome maps, even with $\dim P_i=2$ and one hole each. It follows that the T1 fiber theorem cannot be iterated into a polynomial exact merge for arbitrary orders and overlaps. Any proof of the T1 ``first unresolved arrow'' must use structure of \emph{reachable STRICT-EB4 residuals} beyond this factor interface. Examples of such structure: a merge tree in which every merge has both operands in the class and $d\ge1$ (polynomial by the T1 theorem plus closure), or explicit hole lists with $2^d>h_A+h_B$ at every merge.
+\end{corollary}
+
+\subsection*{Computation (COMPUTATIONAL; \texttt{code/zero\_overlap\_and\_hardness.py}, seed 20261128)}
+\begin{itemize}
+\item[] (A) Fiber formula: 23{,}142 target checks across random subspace pairs with $r\le6$, all exact. Zero-overlap descriptor of Theorem~1: 988 random $d=0$ instances, all exact. When both holes exist, the removed set always has size $|P|+|Q|-1$. When $d\ge1$, at most one target is missing, and none when $d\ge2$.
+\item[] (B) Reduction: 400 random positive 1-in-3 instances ($n\le6$, $m\le8$), with 315 satisfiable and 85 unsatisfiable. Brute-force 1-in-3 agrees with meet-in-the-middle MCS3 on all 400. Every factor consists of three distinct points.
+\item[] (C) In all 200 sampled reduced instances, the left-to-right cumulative sumset leaves the full-or-one-hole class at some step. This illustrates exactly where the T1 closure hypothesis fails.
+\end{itemize}
+Raw outputs are in \texttt{code/*.out.json}. Every stage finishes in under 15 seconds.
+
+\subsection*{Limits}
+This is \emph{not} a lower bound of any kind, and the reduction says nothing about P vs NP. Membership of MCS3 in P would give P$=$NP, and nothing here excludes that. It has \emph{not} been shown that the STRICT-EB4 compiler actually produces MCS3-hard residual factor families. That realizability question remains \textbf{OPEN}. It is the natural next lemma: either exhibit a pinned-compiler residual that encodes MCS3, or prove that reachable residuals always admit a positive-overlap merge tree. No relativization, natural-proofs, or algebrization barrier is invoked or overcome. Independent external review: pending.
+
+\section*{Files}
+\texttt{comments/grok-4.7/2026-11-28/2026-11-28\_0259\_GROK\_WORK.tex} (this file). \texttt{code/spotcheck\_t1\_tables.py} with \texttt{.out.json}. \texttt{code/zero\_overlap\_and\_hardness.py} with \texttt{.out.json}.
+\end{document}
