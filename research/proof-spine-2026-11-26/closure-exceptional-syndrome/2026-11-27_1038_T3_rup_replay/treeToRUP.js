@@ -1,0 +1,4 @@
+function treeToRUP(base,tree){let db=base.slice(),out=[],visits=0,probes=0,skipped=0,closed=false;
+ function rup(g){let a=new Set(g);for(;;){let change=false;for(let c of db){visits++;if(c.some(l=>a.has(l)))continue;let u=c.filter(l=>!a.has(-l));if(!u.length)return true;if(u.length===1){a.add(u[0]);change=true}}if(!change)return false}}
+ function go(t,g){if(closed){skipped++;return}if(t!==0){go(t[1],[...g,-t[0]]);go(t[2],[...g,t[0]])}if(closed)return;if(!rup(g))throw Error("peer tree cannot be converted");let k=g.slice();for(let j=k.length-1;j>=0;j--){let w=k.filter((_,i)=>i!==j);probes++;if(rup(w))k=w}let c=k.map(l=>-l);db.push(c);out.push(c);if(!c.length)closed=true}
+ go(tree,[]);if(!closed)throw Error("no contradiction");return{proof:out,visits,probes,skipped,additions:out.length,literals:out.flat().length}}
