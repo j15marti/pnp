@@ -1,0 +1,2 @@
+function occupancyBound(n,owners,A){let C=new Map(),ops=0;for(let v of owners)for(let i=0;i<4;i++){let [p,s]=n.pm[4*v+i];if(!C.has(p))C.set(p,[0,0]);C.get(p)[s]++;ops++}let max=0,min=0,terms=[];for(let [p,[c0,c1]] of [...C].sort((a,b)=>a[0]-b[0])){ops++;let lo=A.has(p)?(A.get(p)?c0:c1):Math.min(c0,c1),hi=A.has(p)?lo:Math.max(c0,c1);max+=hi;min+=lo;terms.push([p,c0,c1,A.has(p)?A.get(p):null,lo,hi])}return {min,max,required:2*owners.length,terms,ops}}
+module.exports={occupancyBound};
