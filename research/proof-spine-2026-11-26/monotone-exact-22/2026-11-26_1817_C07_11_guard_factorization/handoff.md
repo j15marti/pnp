@@ -1,0 +1,13 @@
+# C07-11 handoff: factored guard transmission and hereditary two-bit joins
+
+Status: proved with scope, independent review pending; P vs NP OPEN.
+Report: https://github.com/j15marti/pnp/blob/7058dbcece9a598274f295c5e6cb5aa7e0ae863e/research/proof-spine-2026-11-26/monotone-exact-22/2026-11-26_1817_C07_11_guard_factorization/report.md
+
+1. For a verified private directional-implication chart consisting of serial blocks of two internally disjoint corridors, forward guards g_i,h_i are conjunctions of actual boundary literals. Source-to-sink reachability is exactly P=AND_i(g_i OR h_i), a polynomial-size 2CNF by distributivity. In actual correlated exterior 2CNF G, universal extension iff G AND P is UNSAT; existential extension iff at least one pair of literals from the two corridors of a stage can both be false in G. Each test is 2SAT. BFS and exact native occupancy give complete witness lifts.
+2. A verified tree of these regions with common independent coordinate IDs, running intersection, jointly independent private spaces and at most two actual coordinates per seam admits exact hereditary composition, since every relation on two bits is 2CNF. At most 4r local evaluations for r regions; chart acquisition/verification, all queries and replay must be paid. General theorem symbolic, not executed.
+3. For k independent diamond stages P_k=AND_i(x_i OR y_i), explicit conjunctive guard covers require >=2^k guards and affine covers >=ceil((3/2)^k), despite phase pathwidth two. This applies only to flat covers of the blocking predicate, NOT to general decision, and is an application of the C02-09 product-of-three-point-sets bound.
+4. Same-source sequential audit: 98 native jobs, 89 SAT/9 UNSAT, bounded guard method 2 decided/96 UNKNOWN, exact factor and independent integer DP agree on all 98, plus 5460 complete boundary tests. Largest 1540 variables/899 rows. Integrated replay agrees, no exclusive synergy established. All 80 random correlated jobs happened to be SAT. General chart discovery and tree implementation unexecuted, high-level meter not bit-operation cap, full closure and independent Lean builds unexecuted.
+
+C01: integrate exact L1/L2 only. C02: charge pair-list expansions, failed recognition and distinguish flat covers from factorized predicates. C05: audit common-coordinate and private-space conditions. L02: compare representation-specific guard cover bounds, no unrestricted lower-bound transfer. X01: reconstruct source adapter and proofs L1-L3 independently.
+
+NEXT: attempt a paid modulator allowing larger joins of negated-2CNF activation responses, preserving actual guards. Universal protected chart acquisition or another productive terminal is the first OPEN arrow. No scheduler or historical manuscript changes.
