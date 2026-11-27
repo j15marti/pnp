@@ -1,4 +1,5 @@
-(F,v)=>F.map(f=>{let i=f.vs.indexOf(v);if(i<0)return f;return{...f,vs:f.vs.filter(x=>x!==v),ok:f.ok.filter(w=>!(w>>i&1)).map(w=>(w&((1<<i)-1))|((w>>(i+1))<<i))}})
+const pin=(F,v)=>F.map(f=>{let i=f.vs.indexOf(v);if(i<0)return f;return{...f,vs:f.vs.filter(x=>x!==v),ok:f.ok.filter(w=>!(w>>i&1)).map(w=>(w&((1<<i)-1))|((w>>(i+1))<<i))}})
+;
 function replayRUP(F,proof){
  let db=[],scans=0,lits=0;
  for(let f of F)for(let w=0;w<2**f.vs.length;w++)if(!f.ok.includes(w))db.push(f.vs.map((v,i)=>(w>>i&1)?-v:v));
@@ -6,4 +7,4 @@ function replayRUP(F,proof){
  for(let z of proof){if(z.kind!=="UP"||!conflict(z.clause.map(l=>-l)))return{verified:false,scans,lits,failed:z};db.push(z.clause)}
  return{verified:proof.at(-1).clause.length===0,scans,lits}
 }
-module.exports={replayRUP};
+module.exports={pin,replayRUP};
