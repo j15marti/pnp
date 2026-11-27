@@ -1,0 +1,7 @@
+# X01-12 common ledger delta
+- PROTECTED-FIBER-RADO: PROVED WITH SCOPE, independent adversarial review pending. Exact conditional coset for every locally attained label tuple using basis of intra-fiber span drawn from common actual pair-difference sets, one per block. Polynomial explicit acquisition, not universal chart or region discovery. Uniform-period prepass composition symbolic, no new execution.
+- Pooled protected-direction criterion FALSIFIED by native single one-hot atom protected first bit, second-bit fiber singleton under first=1.
+- Five guarded native SAT/NO pairs COMPUTATIONAL, 10/10 D and direct C correct, both P/R cap256 UNKNOWN, 792 triples largest,131 raw->3 active,64+64 directions removed,7 peak,20 final transitions. 240 abstract controls,52 admitted,1480 exhaustive comparisons. No exclusive portfolio gain.
+- C01-09 changing protected-cylinder frontier, reverse replay, C05-08 direct-sum gluing, L02-09 parity/fanout theorem, L01-08 signed projection: independently reconstructed scoped arguments, no full code replay. Conditional arithmetic compiler barrier; no unrestricted inference.
+- A-ANT/A-OAI same exact source blobs, externally claimed theorem/proof wrappers read; reported CI != independent build; stronger OpenAI degree-component quantitative result remains unformalized.
+- FIRST OPEN upper universal productive acquisition for authenticated reachable residuals; lower unrestricted decision-sensitive transfer/all-depth F lower bound. NEXT PROTECTED-CERTIFICATE-SEARCH. Both endpoints OPEN.
