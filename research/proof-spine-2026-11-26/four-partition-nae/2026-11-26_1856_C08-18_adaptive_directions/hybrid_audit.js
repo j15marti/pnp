@@ -1,0 +1,18 @@
+function hybridAudit(){
+function par(v){let r=0;while(v){r^=1;v&=v-1}return r}
+function mul(a,b){let r=0;while(b){if(b&1)r^=a;b>>>=1;a<<=1;if(a&64)a^=67}return r}
+const col=Array.from({length:64},(_,t)=>1|(t<<1)|(mul(mul(t,t),t)<<7));
+const AG=[[[0,1,2],[3,4,5],[6,7,8]],[[0,3,6],[1,4,7],[2,5,8]],[[0,4,8],[1,5,6],[2,3,7]],[[0,5,7],[1,3,8],[2,4,6]]];
+function native(){let a=[],B=[];for(let c of AG.flat()){let L=[[0,1],[0,2],[1,2]].map(([i,j])=>{let h=(c[i]?1<<(c[i]-1):0)^(c[j]?1<<(c[j]-1):0);let k=a.indexOf(h);if(k<0){k=a.length;a.push(h)}return 2*k+1});B.push([L[0],L[1]],[L[0],L[2]],[L[1],L[2]])}return{d:8,a,b:a.map(()=>0),B}}
+function gauss(d){let P=Array(d).fill(null),rank=0,bad=false;function reduce(a,b){for(let i=d-1;i>=0;i--)if(P[i]&&(a&(1<<i))){a^=P[i][0];b^=P[i][1]}return[a,b]}function add(a,b){[a,b]=reduce(a,b);if(!a){if(b)bad=true;return}let i=31-Math.clz32(a);P[i]=[a,b];rank++}return{add,reduce,get rank(){return rank},get bad(){return bad}}}
+function run(M,D){
+let Q=M.B.map(([l,k])=>{function f(l){let i=l>>1;return [...((M.b[i]^(l&1))?[0]:[]),...Array.from({length:M.d},(_,j)=>1<<j).filter(v=>v&M.a[i])]}let S=new Set;for(let a of f(l))for(let b of f(k)){let m=a|b;S.has(m)?S.delete(m):S.add(m)}return [...S]});
+let order=[0,...Array.from({length:M.d},(_,i)=>1<<i)];for(let k=2;k<=D;k++)for(let m=1;m<1<<M.d;m++){let b=m,n=0;while(b){n++;b&=b-1}if(n===k)order.push(m)}let idx=new Map(order.map((m,i)=>[m,i])),P=new Map,terms=[];
+for(let i=0;i<Q.length;i++)for(let a of [0,...(D===3?order.slice(1,M.d+1):[])]){let row=0n;for(let m of Q[i])row^=1n<<BigInt(idx.get(a|m));let cert=1n<<BigInt(terms.length);terms.push([i,a]);while(row){let p=row.toString(2).length-1;if(!P.has(p)){P.set(p,[row,cert]);break}let [r,c]=P.get(p);row^=r;cert^=c}}
+let H=gauss(M.d),certs=[];for(let j=0;j<=M.d;j++)if(P.has(j)){let [r,c]=P.get(j),S=new Set,ids=[];for(let i=0;i<terms.length;i++)if(c&(1n<<BigInt(i))){let [q,a]=terms[i];ids.push([q,a]);for(let m of Q[q]){let t=a|m;S.has(t)?S.delete(t):S.add(t)}}let expected=order.filter((_,i)=>r&(1n<<BigInt(i)));if(S.size!==expected.length||expected.some(m=>!S.has(m)))throw Error("cert");let a=expected.reduce((acc,m)=>acc|m,0),b=+S.has(0);H.add(a,b);certs.push({a,b,terms:ids})}
+let initialRank=H.rank,rounds=[],status="OPEN";for(let iter=0;iter<=M.d;iter++){if(H.bad){status="NO";break}let s=M.a.map((a,i)=>H.reduce(a,M.b[i])),n=s.length,L=M.B.slice(),rep=new Map;for(let i=0;i<n;i++){let [a,b]=s[i];if(!a)L.push([2*i+b,2*i+b]);else if(rep.has(a)){let j=rep.get(a),t=b^s[j][1];L.push([2*i,2*j+(1^t)],[2*i+1,2*j+t])}else rep.set(a,i)}let adj=Array.from({length:2*n},()=>[]);for(let [l,k] of L){adj[l^1].push(k);adj[k^1].push(l)}let R=adj.map((_,i)=>{let S=new Set([i]),q=[i];for(let u of q)for(let v of adj[u])if(!S.has(v)){S.add(v);q.push(v)}return S});let contradiction=-1;for(let i=0;i<n;i++)if(R[2*i].has(2*i+1)&&R[2*i+1].has(2*i)){contradiction=i;break}if(contradiction>=0){status="NO";rounds.push({rank:H.rank,contradictionObservation:contradiction});break}let rank=H.rank;for(let i=0;i<n;i++){for(let b of [0,1])if(R[2*i+(b^1)].has(2*i+b))H.add(M.a[i],M.b[i]^b);for(let j=0;j<i;j++)for(let b of [0,1])if(R[2*i].has(2*j+b)&&R[2*j+b].has(2*i))H.add(M.a[i]^M.a[j],M.b[i]^M.b[j]^b)}rounds.push({rank,newRank:H.rank});if(H.rank===rank&&!H.bad)break}
+return{degree:D,initialRank,status,rounds,certs}}
+const M={d:13,a:col,b:col.map((_,i)=>((i<32?648477357:3348622548)>>>(i%32))&1),B:Array.from({length:32},(_,i)=>[4*i+1,4*i+3])};
+return [{name:"raw AG9",...run(native(),3)},{name:"abstract GF64",...run(M,2)}]
+}
+console.log(JSON.stringify(hybridAudit(),null,2));
