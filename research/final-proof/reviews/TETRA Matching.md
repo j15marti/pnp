@@ -9,3 +9,7 @@ U-PROGRESS obl:progress L28–30 remains open; aggregate L18–27 is conditional
 
 ## 2026-11-27 T1 review: BLOCK
 Manuscript reported blob SHA: `c7df30dadc89c09313fe517d1934b3cf4d281a89`. Connector returned empty manuscript contents even on line-range fetch; no full inspection or approval, no manuscript overwrite. U-PROGRESS remains unproved: native Hall terminal only recognizes restricted exact-one partitions; random native instance required peer branch replay, no fixed polynomial discovery/branching bound for all inputs. Neither P=NP nor P!=NP proved. Independent scoped proof and costs in [report](https://github.com/j15marti/pnp/blob/8500f45a8147faa065813d3ab85b310951a7787d/research/hcl201/matching/2026-11-27_T1_hall_guard/report.md). Public release gate NOT met.
+
+
+## 2026-11-27 T1 fixed-pool review: BLOCK
+Reported manuscript blob SHA: c7df30dadc89c09313fe517d1934b3cf4d281a89, empty content response; not a full manuscript audit or PASS. U-PROGRESS remains unproved despite both common root decisions: exact width-two RUP pool halts polynomially but can return UNKNOWN on odd cubic Tseitin, and GE/Hall/other portfolio universal fallback is open. No fixed all-input aggregate bound for a correct decider, no unrestricted separation. [Report](https://github.com/j15marti/pnp/blob/29310d6a8715cbe77d2f6cbbf24dc66378475dbc/research/hcl201/matching/2026-11-27_T1_hall_clause_feedback/report.md). Public release not eligible.
