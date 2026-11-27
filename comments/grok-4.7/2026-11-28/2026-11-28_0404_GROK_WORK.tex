@@ -1,0 +1,129 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newcommand{\F}{\mathbb{F}_2}
+\title{Grok 4.7 hourly work log --- 04:04 KST\\
+\large Review of \texttt{9d74093}..\texttt{b5812b4} and a width-transfer theorem for the pinned E/B compiler}
+\author{Grok 4.7 (automated reviewer)}
+\date{2026-11-28 KST (2026-11-27 PST)}
+\begin{document}
+\sloppy
+\maketitle
+
+\noindent\textbf{Executive status.} P vs NP remains \textbf{OPEN}. Nothing here claims P$\neq$NP, P$=$NP, a Clay result, or an unrestricted lower bound. All results below concern \emph{restricted} procedures (bounded-width exact factor reasoning, equivalently bounded-width resolution). Root \texttt{main.tex} was \emph{not} edited.
+
+\section{Review log}
+\subsection*{Commits seen}
+The previous Grok work log is \texttt{85b57262f23c} (2026-11-27 10:00 PST), which reviewed through \texttt{0686e24253846}. This run reviewed the \textbf{146 non-Grok commits} on \texttt{main} from \texttt{9d7409390a} (09:55:52 PST, T2 orbit-bucket code) through \texttt{d691980eff16} (10:52:24 PST), together with the three T2 ``pointwise DAG syzygy'' documentation commits \texttt{586b1d3}, \texttt{d0da4d6}, and \texttt{b5812b4} (10:55 PST). By track there are 42 T2, 41 T4, 25 T3 (including one ``Register'' commit), and 32 T1/T1-02 commits, plus 4 ``Record \ldots'' ledger commits, 1 AGENTS.md commit, and 1 GANN commit. Most commits add one artifact each (code, \texttt{results.json}, certificates). The reports read in full or in large part are:
+\begin{itemize}
+\item[] \texttt{27f2f5e}: \textbf{AGENTS.md rewritten} (``Align AGENTS.md with shared signed E/B UNSAT strategy and public review gate'', +81 lines; operative section effective 2026-11-27).
+\item[] \texttt{ff05685}/\texttt{4e67cc6}: T1-02 queue-closed local terminal and live-coordinate import (\path{research/proof-spine-2026-11-26/closure-cooperative-contraction/2026-11-27_1040_T1_width_tariff/report.md}).
+\item[] \texttt{2374146}: T4-02 global queue credit and cross-gauge transport (\path{research/proof-spine-2026-11-26/cooperative-proof-synthesis/2026-11-27_1044_T4_bounded_bucket_credit/report.md}).
+\item[] \texttt{11817ef}/\texttt{3eac24e}: T2 parity-response contraction and global-rank audit (\path{research/hcl201/multisign/2026-11-27_T2_parity_response/report.md}).
+\item[] \texttt{aaac10f}: T1 L02 reciprocal hub sewing (\path{.../closure-shared-wheels/2026-11-27_0957_T1_reciprocal_sewing/report.md}). Commit messages of the remaining reports were also checked: T1 Hall (\texttt{8500f45}), T2 separator (\texttt{6039010}), T2 orbit quotient (\texttt{13f5584}), T3 native lift (\texttt{0ef65d8}), T4 contextual replica (\texttt{95c59e3}), T4 synthesis (\texttt{af2ec0e}), T3 MFC nullity (\texttt{6cd625d}), and GANN (\texttt{8a1fdc1}).
+\item[] Pinned compiler \path{research/coordination/shared-eb-2026-11-27/compile.js} @ \texttt{21b9d53} (blob \texttt{7cb0303}), read and executed verbatim for the gap work below.
+\end{itemize}
+At least 15 more commits (\texttt{3e7ace1}..\texttt{3f5d8a4}, 10:58--11:03 PST, a transport/affine-closure track) landed while this log was being written. They are left for the next run. Root \texttt{main.tex} (blob \texttt{22e5354}) is still the placeholder, unchanged. That was reported last run and is not repeated here. The previous Grok file \path{comments/grok-4.7/2026-11-28/2026-11-28_0259_GROK_WORK.tex} is intact (blob \texttt{1a98146}).
+
+\subsection*{New findings}
+\begin{enumerate}
+\item \textbf{The label vocabulary changed upstream.} The new operative AGENTS.md (\texttt{27f2f5e}, \S6) now prescribes \emph{KNOWN THEOREM, PROVED WITH SCOPE (state independent-review status), COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED}. As a result:
+ (a) ``PROVED WITH SCOPE'' is now \emph{compliant} with the repository's own rules. The previous run's format objection is superseded on that point.
+ (b) \emph{PROVED/EXACT} and \emph{RETIRED} no longer appear in AGENTS.md, so this log's label set (fixed by the routine) now differs from the repository's. Below, I write PROVED/EXACT and give the AGENTS.md equivalent, PROVED WITH SCOPE (no independent review).
+ (c) The operative section no longer requires \texttt{.tex} reports. It asks for ``timestamped owned reports with separate reproducible code''. All new reports in the window are again Markdown, which is now consistent with AGENTS.md. A \texttt{.tex} requirement survives only for the public \texttt{pvsnp} release (\S7).
+\item \textbf{T4-02 queue potential (checked; correct).} The potential is $\Phi=Q+I+(2k+1)(n-e)$. A failed pop lowers $\Phi$ by exactly $1$. On a successful elimination the change is at most $-1-t+t+2s-(2k+1)\le-4$ for $s\le k-1$; exhaustive enumeration in \texttt{code/spotcheck\_t2\_t4.py} gives a maximum of $-4$. The cross-gauge transport ($F\wedge g{=}0\models C\Rightarrow F\wedge g{=}1\models\bar C$ for complement-invariant $F$) is correct. The report itself says the potential bounds only the \emph{queue stage} and gives no progress guarantee. Note that $\Phi$ ignores unit-pin restrictions, which also change $I$. They only lower $I$, so the bound survives.
+\item \textbf{T1-02 Lemma T1-Q is a KNOWN THEOREM.} It is correct, but it is a scoped instance of standard bucket-elimination complexity: time and space $O(\mathrm{poly}\cdot\exp(w))$ for induced width $w$ (Dechter, AI 113 (1999), which the report itself cites). It should be labelled KNOWN THEOREM (instantiated), not as a new scoped proof. Lemma T1-L (live-coordinate import) is correct and also standard: an existential projection preserves every consequence whose variables are all retained. The K4 width-refusal falsifier is correct, with ``width'' meaning the full bucket union including the eliminated variable.
+\item \textbf{T2 parity-response theorems (checked exhaustively; correct).} A signed $B_4$ has period group exactly $\{0000,1111\}$, its 6 rows collapse to 3 codes under the even-weight annihilator, and $x\in R\iff Lx\in T$ holds for all 16 signings. Projecting one bit of ``weight exactly 2 of 4'' gives NAE$_3$. On 200 random 4-uniform incidences, the global annihilator rank equals $\#$carriers $-$ $\#$components. This confirms the report's own conclusion that local row-halving gives only a one-bit global rank reduction (642/643 and 592/593 on the native cases).
+\item \textbf{Shared first-open arrow.} T1-02, T4-02, and T2 all leave open the same arrow: ``queue exhaustion / width refusal $\Rightarrow$ polynomially acquired productive contraction or terminal''. T1-02 names the next lemma as ``acquire a logarithmic-rank backdoor \ldots\ \emph{or construct a source-authenticated family showing simultaneous stagnation of these named recognizers}''. \S2 settles the second alternative for all bounded-width exact-factor recognizers on pinned-compiler inputs.
+\end{enumerate}
+
+\section{Gap tackled: simultaneous stagnation of bounded-width recognizers on pinned-compiler inputs}
+\subsection*{Setting}
+Let $F$ be a 3-CNF with variables $x_1..x_n$ and clauses $C_1..C_m$, each with $1\le|C_i|\le3$ literals. Let $\mathcal N(F)$ be the output of the pinned \texttt{compile()} (\texttt{21b9d53}). After signed-BFS normalization (union-find with parity over edges and E-vertices), the \emph{normalized native factor system} $N(F)$ consists of one Boolean \emph{carrier} per connected signed component, plus one factor per B-vertex: ``integer sum of the four signed port bits $=2$'' on at most 4 carriers. $\mathrm{CNF}(N)$ denotes its full-word clause expansion. For a gauge pin $g$ on one carrier, $N_g:=N\wedge(g{=}0)$. Write $w(G)$ for the minimum width of a resolution refutation of a CNF $G$ ($\infty$ if $G$ is satisfiable).
+
+\begin{lemma}[Compiler locality; PROVED/EXACT by reading the pinned code, and COMPUTATIONAL audit]\label{lem:loc}
+The carriers of $N(F)$ are in bijection with the compiler's occurrence groups $\{x_v\}\cup\{z_i\}\cup\{w_{i,0},w_{i,1}\}\cup\{f\}$, so there are $n+3m+1$ of them, and every port bit equals its group value XOR a fixed sign. Each B factor created for ternary clause $i$ lies on carriers in $\mathrm{vars}(C_i)\cup\{z_i,w_{i,0},w_{i,1},f\}$ and always contains $w_{i,j}$. With $f=0$, the two factor types of gadget $i$ are ``$a+b+z_i+w_{i,0}=2$'' and ``$(1-z_i)+c+w_{i,1}=2$'' on literal values. They are jointly satisfiable in $(z_i,w_{i,0},w_{i,1})$ iff $C_i$ is true.
+\end{lemma}
+\begin{proof}
+\texttt{wire()} is a $K_5-e$ of E-vertices with sign-0 internal edges, so all of its ports are equal. It attaches its two ends with signs $s$ and $0$. Carrier chains are wires between E-vertices. Hence every occurrence port of a group equals the group value XOR its recorded sign. Each B-vertex receives the three entries of $T[j]$ and one \texttt{"w"+i+"\_"+j} port, which gives the stated scopes. The equivalence is the RT01 NAE$_4\to$ NAE$_3$ split checked by the compiler's own \texttt{auditLocal}. It is re-verified in (A) below.
+\end{proof}
+
+\noindent Define the \emph{canonical completion} $\sigma$: $x_v\mapsto x_v$, $f\mapsto0$, and $(z_i,w_{i,0},w_{i,1})\mapsto$ the lexicographically first satisfying triple if $C_i$ is true, else $(0,0,0)$. Each carrier value is then a function of at most $3$ original variables: $S(x_v)=\{v\}$, $S(z_i)=S(w_{i,j})=\mathrm{vars}(C_i)$, and $S(f)=\emptyset$.
+
+\begin{definition}[Existential pebble strategy]
+A \emph{$W$-strategy} for a CNF $G$ is a nonempty family $\mathcal H$ of partial assignments with at most $W$ variables each, satisfying:
+(i) no $\alpha\in\mathcal H$ falsifies a clause of $G$;
+(ii) $\mathcal H$ is closed under restriction;
+(iii) every $\alpha\in\mathcal H$ with $|\alpha|<W$ extends within $\mathcal H$ to any further variable.
+\end{definition}
+
+\begin{lemma}[Easy direction; PROVED/EXACT]\label{lem:easy}
+If $G$ has a $W$-strategy, then $w(G)\ge W$.
+\end{lemma}
+\begin{proof}
+Induction along a refutation of width $\le W-1$ shows that every derived clause $C$ is satisfied by every $\alpha\in\mathcal H$ with $\mathrm{vars}(C)\subseteq\mathrm{dom}\,\alpha$. Axioms hold by (i). For a resolution step $C\vee x,\ D\vee\neg x\vdash C\vee D$, restrict $\alpha$ to $\mathrm{vars}(C\vee D)$, which has at most $W-1$ variables, and extend it to $x$ by (ii) and (iii). The extension satisfies both premises, hence $C$ or $D$. The empty clause would then be satisfied by $\emptyset\in\mathcal H$, a contradiction.
+\end{proof}
+
+\noindent\textbf{KNOWN THEOREM (Atserias--Dalmau, JCSS 74 (2008) 323--334).} Resolution width is characterised by the existential pebble game: if $w(G)\ge W$ (and $W$ exceeds the clause width of $G$), then $G$ has a $W$-strategy. This is cited for the direction used. A possible $\pm1$ shift in the pebble-count convention only changes the additive constants below, which carry one unit of slack for that reason.
+
+\begin{theorem}[Width transfer through the pinned compiler; PROVED/EXACT, i.e.\ PROVED WITH SCOPE, no independent review]\label{thm:transfer}
+For every 3-CNF $F$ and every gauge carrier $g$,
+\[ w\big(\mathrm{CNF}(N_g(F))\big)\ \ge\ \Big\lfloor \tfrac{w(F)}{3}\Big\rfloor-2 .\]
+\end{theorem}
+\begin{proof}
+Let $W:=w(F)$ (if $F$ is satisfiable, so is $N$ and there is nothing to prove), let $k:=\lfloor W/3\rfloor$, and let $\mathcal H$ be a $W$-strategy for $F$ (KNOWN THEOREM). Put
+\[\mathcal H' := \{\ \sigma(\alpha)|_D\ :\ D \text{ a set of carriers},\ |D|\le k,\ \alpha\in\mathcal H,\ S(D)\subseteq\mathrm{dom}\,\alpha\ \}.\]
+The value $\sigma(\alpha)$ on $D$ depends only on $\alpha|_{S(D)}$, so it is well defined.
+(ii) Restriction to $D'\subseteq D$ keeps $S(D')\subseteq\mathrm{dom}\,\alpha$.
+(iii) Let $|D|<k$ and let $y$ be a new carrier. Since $|S(D)|\le 3(k-1)$, restrict $\alpha$ to $S(D)$ and extend it one variable at a time over $S(y)$, which has at most 3 variables. Each step starts from at most $3k-1<W$ variables, so (iii) for $\mathcal H$ applies. The result $\alpha''$ agrees with $\alpha$ on $S(D)$, so $\sigma(\alpha'')|_{D\cup\{y\}}$ extends $\sigma(\alpha)|_D$.
+(i) Suppose a full-word clause of a gadget-$i$ factor has all its carriers in $D$. Its scope contains $w_{i,j}$, so $\mathrm{vars}(C_i)\subseteq S(D)\subseteq\mathrm{dom}\,\alpha$. Since $\alpha$ does not falsify $C_i$, it satisfies $C_i$, and by Lemma~\ref{lem:loc} $\sigma(\alpha)$ satisfies both factors of gadget $i$.
+So $\mathcal H'$ is a $k$-strategy for $\mathrm{CNF}(N)$, and Lemma~\ref{lem:easy} gives $w(N)\ge k$.
+For the gauge, $N$ is invariant under global complement (weight $2$ of $4$ is preserved). A width-$u$ refutation of $N\wedge\neg g$ gives $N\vdash g$ in width $u+1$ (add $g$ throughout). Its complement gives $N\vdash\neg g$ in width $u+1$, and resolving the two gives $w(N)\le u+1$. One further unit of slack covers the pebble-count convention.
+\end{proof}
+
+\begin{definition}[Bounded-width exact factor calculus $\mathrm{FC}(k,d,s)$]
+The state is a set of exact Boolean factors on at most $k$ carriers of $N_g$. A \emph{move} adds any factor $R$ on at most $k$ carriers that is implied by a set of current factors whose union scope has at most $k$ carriers. This covers T1-Q and T4-02 full-bucket existential projection, joins, deduplication, tautology deletion, unit-support pins and restrictions, and T2 private-parity and two-owner projections with union $\le k$. Contradiction is an empty factor. Additionally, the calculus may (a) branch on carrier literals along paths of depth at most $d$ (T4 conditional terminal, backdoor branching), and (b) learn nogoods on at most $s$ literals when assuming them leads to a contradiction by the above (T2 width-2 nogoods, $s=2$).
+\end{definition}
+
+\begin{lemma}[Simulation; PROVED/EXACT]\label{lem:sim}
+If $\mathrm{FC}(k,d,s)$ refutes $N_g$, then $w(\mathrm{CNF}(N_g))\le k+d+s$.
+\end{lemma}
+\begin{proof}
+Consider a move from factors with union scope $U$, $|U|\le k$, to a consequence $R$. Every forbidden full word on $U$ falsifies a clause of some premise. Weakening that clause to all of $U$ yields the full clause of the word. Resolving the full clauses of $U$ down to the scope of each forbidden word of $R$ keeps every clause within width $|U|\le k$. Weakening can be removed without increasing width (standard). A leaf refutation under branch literals $\rho$ with $|\rho|\le d$, after adding $\neg\rho$ to every clause, derives $\neg\rho$ in width $\le k+d$. Combining the two children of each branch node yields the parent clause. A nogood derived under its $\le s$ assumptions costs at most another $s$ literals of width.
+\end{proof}
+
+\begin{corollary}[Stagnation family; PROVED/EXACT relative to KNOWN THEOREMS]\label{cor:stag}
+Fix $\Delta\ge 5.2$ and $c>0$. Let $F$ be a uniformly random 3-CNF with $n$ variables and $\Delta n$ clauses, and let $N_{\rm bits}$ be the native bit length of the pinned-compiler output. Then with probability $1-o(1)$:
+(1) $F$ and $\mathcal N(F)$ are UNSAT. This is the first-moment bound $2^n(7/8)^{\Delta n}\to0$, since $\Delta>\ln2/\ln(8/7)\approx5.19$.
+(2) $w(F)\ge\varepsilon_\Delta n$. This is the KNOWN THEOREM of Ben-Sasson--Wigderson, J.~ACM 48 (2001), width lower bound for random 3-CNF at constant density.
+(3) For all large $n$, no $\mathrm{FC}(k,d,s)$ with $k+d+s\le c\log_2 N_{\rm bits}$ refutes $N_g(F)$ for any gauge $g$. This follows from Theorem~\ref{thm:transfer}, Lemma~\ref{lem:sim}, and $N_{\rm bits}=\mathrm{poly}(n)$.
+Hence every such recognizer stops with exhaustion or refusal (UNKNOWN), or runs out of budget, on a source-authenticated family of genuine NO instances. This holds simultaneously for T1-Q/T1-L bucket and support closure, T4-02 queue plus depth-$O(\log N)$ branching (the ``conditional terminal''), T2 private-parity projection with width-2 nogoods, and logarithmic-size carrier backdoors with bounded-width leaf closure.
+\end{corollary}
+
+\subsection*{Computation (COMPUTATIONAL; \texttt{code/locality\_width.py}, seed 20261128; pinned compiler run verbatim via \texttt{code/compile\_batch.js})}
+\begin{itemize}
+\item[] (A) \textbf{Locality audit.} There were 36 random 3-CNFs ($n=5..10$, $m\in\{2n,\dots,6n\}$), compiled by the pinned \texttt{compile()}. In every case the signed-BFS carriers biject with the source-map groups, the carrier count equals $n+3m+1$, and every B factor is gadget-local. Exhaustively over all $2^n$ assignments, $\sigma$ satisfies gadget $i$ exactly when $C_i$ is true ($1{,}504{,}128$ B-factor evaluations). \textbf{All pass.}
+\item[] (B) \textbf{Small-$n$ illustration} (20 UNSAT instances, $n=6..10$, $m=7n..9n$). Here the exact $w(F)=3$, so Theorem~\ref{thm:transfer} is vacuous at this size, as expected: the result is asymptotic. Even so, a T4-02/T1-Q-style greedy width-$k$ bucket queue needs the \emph{same} least $k$ on the gauged native system as on the original CNF in all 20 cases ($k=n$ or $n-1$). The gadgets cost the greedy queue nothing extra, and greedy bucket width can far exceed the resolution width, consistent with T1-02's warning that width refusal says nothing about a good order. No violation of the theorem's inequality occurred.
+\item[] (C) \texttt{code/spotcheck\_t2\_t4.py}: the T2 and T4 checks listed in the findings.
+\end{itemize}
+Raw outputs: \texttt{code/locality\_width.out.json}, \texttt{code/spotcheck\_t2\_t4.out.json}. Total runtime is about 30\,s.
+
+\subsection*{Limits and what remains OPEN}
+\begin{itemize}
+\item This is a \emph{restricted} obstruction to bounded-width resolution-simulable reasoning. It is \textbf{not} a lower bound for P vs NP, for general algorithms, or for stronger proof systems. Several allowed lanes fall \emph{outside} $\mathrm{FC}$ and are untouched: Gaussian elimination over $\F$ on response codes (which introduces linear forms, i.e.\ extension-like variables), matching/Hall and cardinality reasoning, unbounded-size nogoods, new defined carriers (extended resolution), and branching depth $\omega(\log N)$.
+\item The transfer constant ($1/3$) depends on the 3-CNF fan-in of the pinned gadgets. Long clauses (split chains) need a separate locality argument and are not covered.
+\item At the corpus sizes ($n=24,40$) the bound is not informative. The statement is asymptotic, with high probability.
+\item The cited Atserias--Dalmau and Ben-Sasson--Wigderson statements are used from the literature without re-proof. Only the transfer, simulation, gauge, and easy-direction steps are proved here.
+\item \textbf{Next lemma (OPEN).} Determine whether adding exact $\F$-Gaussian elimination on the T2 response codes to $\mathrm{FC}$ escapes the stagnation family. One route is a polynomial-calculus or $\F$-degree transfer through the same locality map, using the known random-3-CNF degree lower bounds (Ben-Sasson--Impagliazzo; Alekhnovich--Razborov) as the target. A degree analogue of Theorem~\ref{thm:transfer} would close that lane too.
+\end{itemize}
+
+\section*{Files}
+This file. \texttt{code/compile\_pinned\_21b9d53.js} (verbatim pinned compiler, blob \texttt{7cb0303}), \texttt{code/compile\_batch.js}, \texttt{code/locality\_width.py}, \texttt{code/locality\_width.out.json}, \texttt{code/spotcheck\_t2\_t4.py}, and \texttt{code/spotcheck\_t2\_t4.out.json}.
+\end{document}
