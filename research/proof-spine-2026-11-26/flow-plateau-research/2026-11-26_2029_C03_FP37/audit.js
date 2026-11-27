@@ -1,0 +1,817 @@
+// Independent certificate verifier for FP37 Dot8; reference enumeration is capped, not the proposed production algorithm.
+const data = {
+  "edges": [
+    [
+      10,
+      21
+    ],
+    [
+      6,
+      20
+    ],
+    [
+      10,
+      16
+    ],
+    [
+      12,
+      20
+    ],
+    [
+      12,
+      21
+    ],
+    [
+      11,
+      14
+    ],
+    [
+      19,
+      24
+    ],
+    [
+      4,
+      14
+    ],
+    [
+      11,
+      13
+    ],
+    [
+      0,
+      5
+    ],
+    [
+      2,
+      17
+    ],
+    [
+      16,
+      22
+    ],
+    [
+      14,
+      25
+    ],
+    [
+      3,
+      24
+    ],
+    [
+      16,
+      23
+    ],
+    [
+      7,
+      13
+    ],
+    [
+      7,
+      25
+    ],
+    [
+      4,
+      20
+    ],
+    [
+      12,
+      17
+    ],
+    [
+      7,
+      8
+    ],
+    [
+      0,
+      2
+    ],
+    [
+      8,
+      15
+    ],
+    [
+      4,
+      9
+    ],
+    [
+      18,
+      19
+    ],
+    [
+      3,
+      9
+    ],
+    [
+      13,
+      18
+    ],
+    [
+      5,
+      11
+    ],
+    [
+      3,
+      23
+    ],
+    [
+      17,
+      19
+    ],
+    [
+      9,
+      22
+    ],
+    [
+      2,
+      6
+    ],
+    [
+      5,
+      8
+    ],
+    [
+      1,
+      15
+    ],
+    [
+      1,
+      22
+    ],
+    [
+      1,
+      24
+    ],
+    [
+      15,
+      23
+    ],
+    [
+      6,
+      10
+    ],
+    [
+      0,
+      18
+    ],
+    [
+      21,
+      25
+    ]
+  ],
+  "certificate": [
+    {
+      "coefficient": 2,
+      "row": [
+        "support",
+        [
+          11,
+          22,
+          23,
+          27,
+          28,
+          32
+        ],
+        [
+          0,
+          5,
+          6,
+          10,
+          12,
+          15,
+          17,
+          18,
+          24,
+          27,
+          36,
+          40,
+          43,
+          48
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          2,
+          2,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "coefficient": 2,
+      "row": [
+        "support",
+        [
+          6,
+          14,
+          21,
+          24,
+          33
+        ],
+        [
+          1,
+          2,
+          4,
+          8,
+          16,
+          21,
+          22,
+          25,
+          31
+        ],
+        [
+          0,
+          2,
+          2,
+          2,
+          2,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "coefficient": 2,
+      "row": [
+        "support",
+        [
+          0,
+          1,
+          2,
+          10,
+          20
+        ],
+        [
+          1,
+          4,
+          8,
+          14,
+          16,
+          19,
+          22
+        ],
+        [
+          1,
+          2,
+          0,
+          2,
+          0,
+          0,
+          2,
+          0,
+          2,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "coefficient": 1,
+      "row": [
+        "support",
+        [
+          14,
+          21,
+          23,
+          24,
+          28,
+          33
+        ],
+        [
+          0,
+          5,
+          6,
+          12,
+          17,
+          18,
+          24,
+          34,
+          36,
+          39,
+          40,
+          43,
+          48,
+          51
+        ],
+        [
+          0,
+          2,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          1,
+          2,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "coefficient": 2,
+      "row": [
+        "support",
+        [
+          7,
+          19,
+          25,
+          26,
+          38
+        ],
+        [
+          1,
+          2,
+          4,
+          8,
+          13,
+          14,
+          16,
+          19,
+          22,
+          25,
+          31
+        ],
+        [
+          2,
+          2,
+          2,
+          1,
+          1,
+          1,
+          0,
+          0,
+          2,
+          2,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "coefficient": 2,
+      "row": [
+        "vertex",
+        5
+      ]
+    },
+    {
+      "coefficient": 1,
+      "row": [
+        "support",
+        [
+          4,
+          17,
+          20,
+          28,
+          36
+        ],
+        [
+          1,
+          2,
+          4,
+          8,
+          11,
+          13,
+          16,
+          19,
+          22,
+          28,
+          31
+        ],
+        [
+          2,
+          0,
+          0,
+          1,
+          2,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "coefficient": 2,
+      "row": [
+        "support",
+        [
+          2,
+          17,
+          18,
+          30,
+          38
+        ],
+        [
+          1,
+          2,
+          4,
+          8,
+          11,
+          14,
+          16,
+          21,
+          22,
+          25,
+          31
+        ],
+        [
+          2,
+          2,
+          2,
+          1,
+          1,
+          1,
+          0,
+          0,
+          2,
+          2,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "coefficient": 2,
+      "row": [
+        "vertex",
+        16
+      ]
+    },
+    {
+      "coefficient": 1,
+      "row": [
+        "support",
+        [
+          6,
+          11,
+          22,
+          27,
+          32
+        ],
+        [
+          1,
+          2,
+          4,
+          8,
+          13,
+          14,
+          16,
+          25,
+          31
+        ],
+        [
+          0,
+          1,
+          1,
+          1,
+          2,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "coefficient": 1,
+      "row": [
+        "support",
+        [
+          7,
+          8,
+          9,
+          12,
+          31
+        ],
+        [
+          1,
+          4,
+          7,
+          8,
+          14,
+          16,
+          19
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          0,
+          0,
+          2,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "coefficient": 2,
+      "row": [
+        "vertex",
+        17
+      ]
+    },
+    {
+      "coefficient": 1,
+      "row": [
+        "vertex",
+        2
+      ]
+    },
+    {
+      "coefficient": 1,
+      "row": [
+        "vertex",
+        25
+      ]
+    },
+    {
+      "coefficient": 2,
+      "row": [
+        "vertex",
+        11
+      ]
+    },
+    {
+      "coefficient": 2,
+      "row": [
+        "vertex",
+        6
+      ]
+    },
+    {
+      "coefficient": 1,
+      "row": [
+        "support",
+        [
+          7,
+          20,
+          21,
+          23,
+          38
+        ],
+        [
+          1,
+          2,
+          4,
+          7,
+          8,
+          11,
+          13,
+          14,
+          16,
+          19,
+          21,
+          25,
+          26,
+          28,
+          31
+        ],
+        [
+          0,
+          2,
+          0,
+          0,
+          2,
+          0,
+          1,
+          2,
+          0,
+          2,
+          1,
+          0,
+          2,
+          2,
+          0,
+          1
+        ]
+      ]
+    },
+    {
+      "coefficient": 1,
+      "row": [
+        "support",
+        [
+          5,
+          15,
+          20,
+          23,
+          31
+        ],
+        [
+          1,
+          2,
+          4,
+          8,
+          11,
+          14,
+          16,
+          19,
+          21,
+          28,
+          31
+        ],
+        [
+          2,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          2,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "coefficient": 2,
+      "row": [
+        "vertex",
+        19
+      ]
+    },
+    {
+      "coefficient": 1,
+      "row": [
+        "vertex",
+        20
+      ]
+    },
+    {
+      "coefficient": 1,
+      "row": [
+        "vertex",
+        7
+      ]
+    },
+    {
+      "coefficient": 2,
+      "row": [
+        "support",
+        [
+          8,
+          16,
+          19,
+          23,
+          37
+        ],
+        [
+          2,
+          4,
+          8,
+          11,
+          13,
+          16,
+          19
+        ],
+        [
+          0,
+          1,
+          2,
+          0,
+          2,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "coefficient": 1,
+      "row": [
+        "vertex",
+        8
+      ]
+    },
+    {
+      "coefficient": 1,
+      "row": [
+        "vertex",
+        21
+      ]
+    }
+  ]
+};
+function audit(data){
+ const mod=x=>((x%3)+3)%3, check=(b,msg)=>{if(!b)throw Error(msg);};
+ const E=data.edges,n=1+Math.max(...E.flat()),m=E.length,inc=Array.from({length:n},()=>[]);
+ check(n===26&&m===39,"size");check(new Set(E.map(e=>e.join(","))).size===m,"duplicates");
+ E.forEach(([a,b],i)=>{check(a<b,"edge order");inc[a].push(i);inc[b].push(i);});
+ check(inc.every(a=>a.length===3),"degree");
+ let states=0;const matchings=[];
+ function dfs(U,M){if(++states>500000)throw Error("reference cap");if(!U){matchings.push(new Set(M));return;}const u=31-Math.clz32(U&-U);for(const e of inc[u]){const [a,b]=E[e],v=a+b-u;if(U&(1<<v))dfs(U^(1<<u)^(1<<v),[...M,e]);}}
+ dfs((1<<n)-1,[]);
+ let even=0;
+ for(const M of matchings){let good=true;const seen=new Set();for(let v=0;v<n;v++){if(seen.has(v))continue;let t=[v],num=0;seen.add(v);while(t.length){const u=t.pop();num++;for(const e of inc[u])if(!M.has(e)){let w=E[e][0]+E[e][1]-u;if(!seen.has(w)){seen.add(w);t.push(w);}}}if(num%2)good=false;}if(good)even++;}
+ check(even===0,"source YES");
+ const A=inc.map(ls=>Array.from({length:m},(_,e)=>Number(ls.includes(e))));A.push(Array.from({length:m},(_,e)=>Number(e===0)));
+ let rank=0;const piv=[];
+ for(let j=0;j<m;j++){let p=A.findIndex((r,i)=>i>=rank&&r[j]);if(p<0)continue;[A[rank],A[p]]=[A[p],A[rank]];let a=A[rank][j];A[rank]=A[rank].map(x=>mod(a*x));for(let i=0;i<A.length;i++)if(i!==rank){a=A[i][j];A[i]=A[i].map((x,k)=>mod(x-a*A[rank][k]));}piv.push(j);rank++;}
+ const free=Array.from({length:m},(_,i)=>i).filter(i=>!piv.includes(i)),d=free.length;
+ const K=Array.from({length:m},(_,e)=>free.map((j,k)=>e===j?1:piv.includes(e)?mod(-A[piv.indexOf(e)][j]):0));
+ for(const ls of inc)for(let j=0;j<d;j++)check(mod(ls.reduce((s,e)=>s+K[e][j],0))===0,"nullspace");
+ check(K[0].every(x=>!x),"pin");
+ let total=Array.from({length:d},()=>Array(d).fill(0)),rhs=0,words=0,cuts=0;
+ function addOuter(v,w,c){for(let i=0;i<d;i++)for(let j=0;j<d;j++)total[i][j]=mod(total[i][j]+c*v[i]*w[j]);}
+ for(const {coefficient:c,row} of data.certificate){if(row[0]==="vertex"){const [a,b]=inc[row[1]],v=K[a].map((x,i)=>mod(x-K[b][i]));addOuter(v,v,c);rhs=mod(rhs+c);continue;}
+ const [,C,supp,u]=row,k=C.length;const set=new Set(C),side=Array(n).fill(-1);
+ for(let a=0;a<n;a++)if(side[a]<0){side[a]=0;let todo=[a];while(todo.length){let v=todo.pop();for(const e of inc[v]){const w=E[e][0]+E[e][1]-v,b=side[v]^Number(set.has(e));if(side[w]<0){side[w]=b;todo.push(w);}else check(side[w]===b,"not a cut");}}}
+ const masks=[...new Set(matchings.map(M=>C.reduce((v,e,i)=>v|(Number(M.has(e))<<i),0)))].sort((a,b)=>a-b);check(JSON.stringify(masks)===JSON.stringify(supp),"matching support");cuts++;
+ const pairs=[];for(let i=0;i<k;i++)for(let j=i;j<k;j++)pairs.push([i,j]);check(u.length===1+pairs.length,"features");
+ for(let t=0;t<3**k;t++){let z=t;const w=Array.from({length:k},()=>{let a=z%3;z=Math.floor(z/3);return a;});const ms=[0,0,0];w.forEach((a,i)=>ms[a]|=1<<i);if(ms.every(a=>masks.includes(a))){check(mod(u[0]+pairs.reduce((s,[i,j],a)=>s+u[a+1]*w[i]*w[j],0))===0,"local row");words++;}}
+ for(let a=0;a<pairs.length;a++){const [i,j]=pairs[a],v=K[C[i]],w=K[C[j]],t=c*u[a+1];addOuter(v,w,2*t);addOuter(w,v,2*t);}
+ rhs=mod(rhs-c*u[0]);
+ }
+ check(total.every(r=>r.every(x=>!x))&&rhs===1,"certificate contradiction");
+ return {n,m,states,matchings:matchings.length,evenComplements:even,dimension:d,terms:data.certificate.length,cutChecks:cuts,wordChecks:words,contradiction:"0=1 over F3"};
+}
+console.log(JSON.stringify(audit(data),null,2));
