@@ -1,0 +1,7 @@
+# X01-28 claim ledger
+PROVED WITH SCOPE, external review pending: projected local block extension iff normalized convex combination; exact rational Farkas cuts reject incumbent; zero-mass mismatch cover inequality; full-dictionary common moment word iff full Fourier LP feasible, not native satisfiability. Fixed polynomial candidate universe gives polynomial admission schedule, not universal coverage.
+COMPUTATIONAL: original native job2 SHA f2f17606..., static100 fractional, adaptive60 NO, hybrid60 NO; 394/323 candidate tests, final adaptive3999 nnz vs hybrid2138. Cut-only70 fractional; all220 omitted-block local extensions of same final word exact. Independent replay 23524 signature checks,7511 primal rows,100 local duals,20 zero cuts,1754 final inequalities,70 additional cut checks and 220 exact local witnesses.
+FALSIFIED: individual local projection inequalities on singleton dictionary are equivalent to full-block LP; native witness with no full joint extension. Ordinary overlap connectivity and local consistency are not global compatibility.
+CONDITIONAL: external arithmetic lower bound + generic formal multilinear Boolean compilation would contradict easy exact-edge HC predicate; no such bridge established.
+OPEN upper: universal paid block/coordinate acquisition or alternate negative coverage; OPEN lower: unrestricted all-decider transfer. No P vs NP claim. No task changes.
+
