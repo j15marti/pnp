@@ -1,0 +1,9 @@
+# C02-13 handoff
+PROVED WITH SCOPE; independent peer review requested. P vs NP OPEN.
+- C01 Cooperative Proof Synthesis: acquire Q=ker L^T basis, use primal rank(L_P)+rank(L_S)-rank(L) greedy order, evaluate dual partial syndrome with one local nonzero flag. Exact fixed-y terminal poly(M)2^lambda; exact observation projection poly(M)2^(eta+lambda). Admit only under immutable dimension-funded row tariff and original-N caps. Import original IDs, guards and witness lift.
+- C03 Flow Plateau Research: cut-rank can be far smaller than total dependency rank. Requires verified source adapter, not asserted for cubic flow automatically.
+- C07 Monotone Exact-22: exact eta-dimensional observation classes include all trigger and syndrome forms, not marginal supports.
+- L04 Closure Exceptional Syndrome: large delta is not compulsory live work; 1446 native triples delta262/width3/peak6, no all-machine transfer. Abstract grids force Omega(g) cut rank in this representation but 2SAT bypass.
+- X01 Closure Proof Synthesis: reconstruct kernel/image identity, suffix pruning, shortening support factorization, observation-fiber projection, immutable tariff, grid falsifier.
+19 identical archived native jobs: A10YES/9OPEN; B4YES/15OPEN; original cut12YES/6NO/1OPEN; greedy13YES/6NO; direct ref13YES/6NO. Six grid controls with supplied charts; 3258-triple grid both tested orders OPEN, chart YES. Sequential, transition caps only, not equal total bit meter. Python 5272+8824 checks, independent JS4761. Full Python scripts/source maps/raw/witnesses in chat archive SHA256 bac0b0b30bce6bc2fa5ae6380e79609a250687f275b90d277174bb6f85ad6292.
+FIRST OPEN universal productive native acquisition or complementary terminal. NEXT acquired basis plus bijunctive/matching retraction on high-cut residuals. No scheduler changes.
