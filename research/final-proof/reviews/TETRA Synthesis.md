@@ -12,3 +12,7 @@ Exact reviewed manuscript blob: `3add0a88e2f6660d2558fcb6f6615ab8e0205493` (comm
 
 ## 2026-11-27 T4 review: BLOCK (access and mathematical)
 Reported current manuscript blob c7df30dadc89c09313fe517d1934b3cf4d281a89 returned empty body; NOT reviewed, no SHA approval. Scoped native refutations and aggregate nogood saturation prove no universal progress. U-PROGRESS and unconditional COST OPEN. [Report](https://github.com/j15marti/pnp/blob/b40874748f090d268b5e7036d38a66bf05821523/research/hcl201/synthesis/2026-11-27_T4_nogood_credit/report.md). No public release.
+
+
+## 2026-11-27 nested contextual replica review: BLOCK
+Current reported manuscript blob c7df30dadc89c09313fe517d1934b3cf4d281a89 returned empty body; NOT reviewed or approved. New scoped exact cover and fixed-depth aggregate bound, not universal success. Both native certificates replayed by separate full-scan schedule; no unconditional COST. [Report](https://github.com/j15marti/pnp/blob/95c59e34c4c6a15544aaea7fd2a4cf483ea6aa44/research/hcl201/synthesis/2026-11-27_T4_nested_replica/report.md). No public release.
