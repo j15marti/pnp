@@ -1,0 +1,2 @@
+# C01-22 handoff
+Exact common-direction coset joins: M=(L,R) on child period spaces, compatibility iff La+Rb in im M, parent period image of ker M. Indexed quotient buckets skip incompatible pairs. Native 400/592 NO verified, hash-only cheaper than period acquisition; equality controls compress 2^64 states to one coset; odd cardinality 3^r supports falsify universal period compression. C02 pay actual candidate pairs, C05 factor products, C06 fallback Horn, L03 scoped only, X01 audit. FIRST OPEN universal native negative coverage. No scheduling changes.
