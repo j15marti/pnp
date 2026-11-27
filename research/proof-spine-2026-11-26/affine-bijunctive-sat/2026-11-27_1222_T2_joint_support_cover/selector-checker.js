@@ -1,0 +1,15 @@
+function atom(){
+const planes=[[15,32,47],[13,17,28],[14,36,42],[11,53,62],[10,39,45]],fib=Array.from({length:64},()=>[]),low=Array.from({length:64},()=>new Set()),inv=new Map();
+for(let x=0;x<1024;x++){let s=0,good=true;for(let i=0;i<5;i++){let c=x>>(2*i)&3;if(!c)good=false;else s^=planes[i][c-1]}let key=s*16+(x&15);if(inv.has(key))throw Error("bad lift");inv.set(key,x);if(good){fib[s].push(x);low[s].add(x&15)}}
+if(fib.some((r,s)=>!r.length&&s!==29)||fib[29].length||fib.reduce((a,r)=>a+r.length,0)!==243)throw Error("hole");
+for(let mask=1;mask<32;mask++){let A=new Set([0]);for(let i=0;i<5;i++)if(mask>>i&1)A=new Set([...A].flatMap(a=>[0,...planes[i]].map(b=>a^b)));if(Math.log2(A.size)<mask.toString(2).replace(/0/g,"").length+1)throw Error("strict rank")}
+let K=[[[0]]];for(let q=1;q<=4;q++){let D=new Map();for(let s of K[q-1])for(let a=1;a<64;a++)if(!s.includes(a)){let t=[...s,...s.map(b=>b^a)].sort((a,b)=>a-b);D.set(t.join(),t)}K.push([...D.values()].sort((a,b)=>{for(let i=0;i<a.length;i++)if(a[i]!==b[i])return a[i]-b[i];return 0}))}
+let all={},coverCertificate=null;for(let k of [2,3,4]){let stats={rank:k,subspaces:K[6-k].length,has_section:0,full_cover:0,candidate_charts:0,best_covered:0},R=[];for(let ker of K[6-k]){let seen=new Set(),slices=[],pts=0,ok=true,full=true;for(let s=0;s<64;s++){if(seen.has(s))continue;let C=ker.map(a=>a^s).sort((a,b)=>a-b);C.forEach(a=>seen.add(a));let T=C.filter(a=>fib[a].length),span=new Map([[0,0]]),basis=[];for(let a of T){let v=a|64;if(span.has(v))continue;let bit=1<<basis.length;basis.push(a);for(let [u,z] of [...span])span.set(u^v,z|bit)}let choices=[],count=0,covered=new Map(T.map(a=>[a,new Set()])),charts=[];
+function go(i){if(i<basis.length){for(let w of fib[basis[i]]){choices.push(w);go(i+1);choices.pop()}return}stats.candidate_charts++;let val=[0];for(let w of choices)val.push(...val.map(v=>v^w));let rows=T.map(a=>[a,val[span.get(a|64)]]);if(rows.some(([a,x])=>!fib[a].includes(x)))return;count++;if(rows.some(([a,x])=>!covered.get(a).has(x))){charts.push({basis_targets:basis.slice(),basis_words:choices.slice(),rows});for(let [a,x] of rows)covered.get(a).add(x)}}
+go(0);let coveredCount=[...covered.values()].reduce((a,S)=>a+S.size,0),fc=T.every(a=>covered.get(a).size===fib[a].length);pts+=coveredCount;ok=ok&&count>0;full=full&&fc;slices.push({targets:T,count,covered:coveredCount,charts});}
+stats.has_section+=Number(ok);stats.full_cover+=Number(full);stats.best_covered=Math.max(stats.best_covered,pts);R.push({kernel:ker,counts:slices.map(x=>x.count),covered:pts,has_section:ok,full_cover:full});if(k===4&&full&&!coverCertificate)coverCertificate={kernel:ker,slices};}
+all[k]={stats,records:R}}
+if(all[2].stats.has_section||all[3].stats.has_section||all[4].stats.has_section!==641||all[4].stats.full_cover!==41||!coverCertificate)throw Error("classification");
+return {planes,fiber_sizes:fib.map(r=>r.length),missing:29,classification:all,coverCertificate};
+}
+if(typeof module!=="undefined"){module.exports={atom};if(require.main===module)console.log(JSON.stringify(atom()))}
