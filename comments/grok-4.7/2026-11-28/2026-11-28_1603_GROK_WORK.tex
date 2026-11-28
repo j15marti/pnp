@@ -1,0 +1,488 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage[hidelinks]{hyperref}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\newcommand{\lab}[1]{\textbf{[#1]}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\AG}{\mathrm{AG}}
+\title{Grok 4.7 hourly work log --- 2026-11-28 1603 KST\\
+\large Review of \texttt{98e4372..da27100} (UCAC round 5: T2 intersection escape and
+switch-path duals, T2 full PC / AG4, T3 coupled colouring, T3-10 twisted Fano ring, T4 fair
+scheduler, FP60); gap: T2's ``symbolic, not executed'' even-arity AG generalisation ---
+the quadratic UNSAT threshold is replaced by a linear one, with exact small thresholds}
+\author{Grok 4.7 (automated reviewer) for j15marti/pnp}
+\date{2026-11-28 1603 KST (2026-11-27 23:03 PST)}
+\begin{document}
+\sloppy
+\maketitle
+
+\section*{Executive assessment}
+\textbf{P vs NP remains OPEN.} Nothing reviewed in this window, and nothing in this log,
+establishes P$\neq$NP, P$=$NP, a Clay-level result, or an unrestricted lower bound. The
+window holds 100 project commits after \texttt{4eafae3} (plus Grok's own \texttt{9a83660}).
+They come from the fifth UCAC round: T2 bounded-overlap closure quotient with a paid SCC
+escape and switch-path dual certificates; T2 full bounded-degree PC versus grouped ANF,
+including the new AG4 family; T3 coupled (Mycielski) colouring; T3-10 twisted Fano ring with a
+degree-4 local retraction; T4 fair width-two scheduling; and FP60 owner-syndrome and cost
+transport code. I spot-checked six claims (\S\ref{sec:spot}). I found no mathematical error.
+
+\textbf{This hour's gap.} T2 (\texttt{c563f1a}) generalises AG4 to every even arity $2t$. The
+instance takes all $2t$-subsets of $\F_2^k$ with XOR $0$ and asks that none be monochromatic.
+The report proves NO only when $M(M-t+1)>nt^2$ with $M=n/2$, that is, $n\gtrsim 4t^2$, and it
+labels the argument ``symbolic proof, not executed''. I checked that proof (it is correct) and
+improved it:
+\begin{itemize}
+\item Theorem~\ref{thm:linear} \lab{PROVED/EXACT}: for $n=2^k\ge 64$ and every
+$2\le t\le n/4-(\sqrt{2n}+1)/2$, $\AG(2t)$-$n$ is UNSAT. The threshold is \emph{linear} in
+$t$, not quadratic.
+\item Proposition~\ref{prop:yes} \lab{PROVED/EXACT}: $\AG(2t)$-$n$ is SAT for every
+$t\ge n/4-1$, with explicit witnesses. Write $P(t)$ for the least power of two strictly above $4t+4$. Then the true
+threshold satisfies $n_0(t)\ge P(t)$, and for every $t\ge 6$ also $n_0(t)\le 2P(t)$.
+\lab{CANDIDATE} In every case computed so far, $n_0(t)=P(t)$; that is, $\AG(2t)$-$n$ is
+UNSAT exactly when $n>4t+4$.
+\item Proposition~\ref{prop:stab} \lab{PROVED/EXACT}: a stabiliser argument settles
+$t=n/4-2$ for balanced colourings at every $n\ge 32$, and it settles $n=32$, $t=6$ completely.
+\item Computation \lab{COMPUTATIONAL}: there are two exact solvers. One uses the full CNF with
+CaDiCaL. The other is a lazy, counterexample-guided solver whose UNSAT answers come with
+explicit block cores. Exact values: $n_0(2)=16$, $n_0(3)=n_0(4)=n_0(5)=n_0(6)=32$, and
+$n_0(t)=64$ for $7\le t\le 12$. Still OPEN: $n=64$ with $t\in\{13,14\}$; the lazy solver gave no
+verdict at $t=14$ and was killed.
+\item Corollary~\ref{cor:core} \lab{PROVED/EXACT}: for each fixed arity, every NO member
+contains an UNSAT sub-instance on a subspace of $n_0(t)=O(t)$ points. Its refutation degree
+and its tree-like resolution size depend on $t$ only, not on $n$. Together with T2's grouped
+degree-$(2t-1)$ fixed point, this makes the AG degree barrier exactly $\Theta(t)$ \emph{for
+each fixed arity}. It is a degree barrier, never a size barrier. T2's caveat (a ``fixed
+16-point embedded core'') holds for every arity.
+\end{itemize}
+Root \texttt{main.tex} was \emph{not} edited.
+
+\section{Review log}
+\subsection{Commits seen}
+I listed the default branch \texttt{main} with the GitHub connector (\texttt{list\_commits},
+paged). The window starts at \texttt{98e4372} (2026-11-28 05:56:13Z $=$ 2026-11-27 21:56
+PST), the first commit after \texttt{4eafae3}. It ends at \texttt{da27100} (06:47:18Z $=$
+22:47 PST), which was HEAD when this run started. It holds 100 project commits plus Grok's
+\texttt{9a83660} (1514 KST), 101 in all; Appendix~\ref{app:shas} lists them. The three T2
+commits flagged as unreviewed by the previous run (\texttt{d1b226c}, \texttt{018e1b2},
+\texttt{0434f20}) are covered here. By write time, further commits had landed after
+\texttt{da27100} (\texttt{455a6d6}, \ldots, \texttt{5fbc470} FP60 overlap plateau,
+\texttt{17686ad}). They are \emph{not} reviewed here; the next run should start after
+\texttt{da27100}. Main reports read:
+\begin{itemize}
+\item \texttt{018e1b2} (with \texttt{65a1527}, \texttt{fcdeec2}, \texttt{23fb217},
+\texttt{5630ce8}, \texttt{83b30b1}, \texttt{be1d5e5}, \texttt{71af56f}, \texttt{d1b226c},
+\texttt{0434f20}, feedback \texttt{f1b8d7e}--\texttt{7c1b4c3}):
+\path{research/proof-spine-2026-11-26/affine-bijunctive-sat/2026-11-27_2205_T2_intersection_escape/report.md}.
+Covers early quotient multiplication in the 2CNF closure-key basis, the bounded-overlap
+polynomial theorem, and the growing switch-path family with an odd-component dual.
+\item \texttt{c563f1a} (with \texttt{6e2e5e7}, \texttt{9d26e6a}, \texttt{692287b},
+\texttt{f42fa17}, \texttt{6f65f94}, \texttt{b9d9033}, \texttt{03b2e4e}, \texttt{855d98a},
+\texttt{8ac733e}):
+\path{research/agents/algebraic-geometric-closure/2026-11-27_2231_T2_full_pc/report.md}.
+Covers full PC3 on the twisted Fano ring, the AG4 family with its grouped PC3 fixed point,
+the even-arity generalisation, and paired feedback.
+\item \texttt{7338d0c} (with \texttt{1d1e7d6}/\texttt{4dbf683}, \texttt{2656b58}/\texttt{68a80c3},
+\texttt{13321f2}, \texttt{74f3770}, \texttt{2e47527}, root certificates \texttt{52f7c69},
+\texttt{5dadcaa}, \texttt{64a83cc}, \texttt{2cc7033}, \texttt{d379d71}, degree-three
+\texttt{5feacc8}/\texttt{01395e3}, \texttt{77975a0}/\texttt{cd7ade2},
+\texttt{63e5b83}/\texttt{b341eed}, \texttt{f67b378}, \texttt{576fedb}, \texttt{b69375f}):
+\path{research/agents/ground-up-unsat-bounds/2026-11-27_T3_coupled_coloring/report.md}.
+Covers the Mycielskian of grid-plus-chord, the growing projected core $2k-1$, the width-$\le2$
+RUP stall on triangle-free one-hot colouring, and a cheap structural bypass.
+\item \texttt{bf4d3a1} (with \texttt{70180cb}--\texttt{f7ae4ad}):
+\path{research/proof-spine-2026-11-26/closure-exceptional-syndrome/2026-11-27_2215_T3_nonlinear_correction/report.md}.
+Covers the twisted Fano-minus-line ring, complete width-2 RUP and unmultiplied-ANF refusal,
+and a degree-4 local affine retraction.
+\item \texttt{9fee0d8} (with \texttt{bae2590}, \texttt{73d4d3c}, \texttt{268ec7e},
+\texttt{4ff3260}, \texttt{3da2ccd}, \texttt{39a594f}):
+\path{research/hcl201/synthesis/2026-11-27_T4_UCAC_scope_scheduler/report.md}. Covers fair
+width-2 RUP scheduling in $O(r^4)$ probes, the persistent closure lemma, and the SCC shortcut.
+\item \texttt{9b1a5fa}: \path{research/hcl201/interfaces/2026-11-27_2113_T2_cone_activation/report.md};
+\texttt{98e4372}--\texttt{dadbc60}: causal boundary-row and separator certificates;
+\texttt{123dd5d}--\texttt{df0fcb8}: 22:00 coordinator material; \texttt{f884904}--\texttt{ce4bb6b}:
+T2 multisign energy-cone and spectral refusal; \texttt{253dcad}/\texttt{0598a61}/\texttt{c6b3338}:
+T1 incident-credit certificates; \texttt{62b62b7}--\texttt{da27100}: FP60 owner-syndrome and
+cost-transport code; \texttt{71e51be}: a root-level
+\texttt{DYNAMIC-COMPATIBILITY-OBLIGATION1-\allowbreak INTERACTIVE-MAP-CHALLENGE-COLLAPSE1.md}.
+\end{itemize}
+
+\subsection{Spot checks}\label{sec:spot}
+\begin{enumerate}
+\item \textbf{T2 closure-key quotient (\texttt{018e1b2}).} Fix the anchor $a$ and set
+$z=x+a$. Every clause of $B$ then reads $\bar z_i\vee z_j$, $\bar z_i\vee\bar z_j$ or
+$\bar z_i$. So for an implication-closed, feasible $C$, the point $z=1_C$ is a model. Each
+monomial $z_S$ restricted to $B$ equals $e_{C(S)}$ or $0$. The $e_C$ are triangular, so
+coefficients are unique. Since $\prod_i(1+g_i)$ equals the sum over products of at most $t$
+factors on $B$, keys have seed degree at most $dt$. The minimum-key witness gives
+$Q(1_C)=\mathrm{coef}_C=1$. All of this is correct. (The label ``PROVED WITH SCOPE'' is
+nonstandard; that issue is already reported.)
+\item \textbf{T2 switch-path dual (\texttt{d1b226c}, \texttt{0434f20}).} Removing the 7th
+Gray-path edge leaves path components with 7 and 9 vertices. Each edge cube contains exactly
+its two endpoint words, both in the same component. So the parity functional on the 7-vertex
+component gives $0$ on every edge packet and $1$ on the constant. Correct.
+\item \textbf{T2 even-arity AG generalisation (\texttt{c563f1a}).} The per-vertex count
+``each member containing $v$ uses $t-1$ distinct $(t-1)$-sets through $v$'' is right. Two
+same-sum $t$-sets sharing $t-1$ points coincide, so the bound
+$|\mathcal F|\le t\binom{M-1}{t-2}/(t-1)$ holds; it even includes $T$. Algebra:
+$\binom Mt=\frac{M(M-t+1)}{t(t-1)}\binom{M-1}{t-2}$, so the stated condition
+$M(M-t+1)>nt^2$ is exactly right. With $M=n/2$ it needs $n>4t^2+2t-2$. Correct, but
+quadratic; \S\ref{sec:work} improves it.
+\item \textbf{T3 coupled colouring (\texttt{7338d0c}).} Code: \texttt{spotchecks.py}. For
+$k=4,6$ the base graph is triangle-free with odd girth $7,11$ $(=2k-1)$. $M(B)$ has
+$33,73$ $(=2k^2+1)$ vertices, is triangle-free, and is \emph{not} 3-colourable (CaDiCaL).
+I re-derived the width-$\le2$ RUP stall case by case: two positive pins of different colours
+at non-adjacent vertices force their common neighbours to the third colour; a further forced
+vertex would need a triangle. I found no gap.
+\item \textbf{T3-10 Fano-minus-line block (\texttt{bf4d3a1}).} Exhaustive check over 128
+words: 10 words satisfy NAE on the six triples. In all of them $x_0=x_1=x_2$ (the omitted
+line is monochromatic), both colours occur, and every pair has multiplicity $1$. This matches
+the report and T2's ``ten satisfying local words''.
+\item \textbf{T4 fair schedule (\texttt{9fee0d8}).} $K=O(r^2)$ unary/pair guards, at most
+$K$ admissions, at most $K+1$ passes, $O(r^4)$ probes. The SCC shortcut is standard
+\lab{KNOWN THEOREM} (Aspvall--Plass--Tarjan). Correct as scoped.
+\end{enumerate}
+
+\subsection{Findings and flags}
+\begin{itemize}
+\item No mathematical error found in this window.
+\item \textbf{New (minor):} \texttt{71e51be} adds a research note at the \emph{repository
+root} (\texttt{DYNAMIC-COMPATIBILITY-OBLIGATION1-\allowbreak INTERACTIVE-MAP-CHALLENGE-COLLAPSE1.md}),
+outside \texttt{research/}, and in \texttt{.md}.
+\item \textbf{New (artifact integrity):} two committed artifacts fail exact readback, as their
+own reports say. They are \texttt{03b2e4e} (2.84\,MB raw PC4 certificate for AG4 $n=16$:
+``readback JSON truncated; not a verified publication artifact'') and the T3-10
+\texttt{common-evidence.json} (\texttt{48f638b}). Neither should be cited as verified evidence
+until it is re-split and read back.
+\item Standing issues (unchanged, not re-flagged in detail): root \texttt{main.tex} is still
+the one-line placeholder \texttt{PLACEHOLDER\_TOO\_LARGE\_USE\_LOCAL\_APPEND}; reports are
+\texttt{.md}; labels are nonstandard (``PROVED WITH SCOPE''); some commits are duplicated
+(e.g.\ \texttt{63e5b83}/\texttt{b341eed}, \texttt{5feacc8}/\texttt{01395e3}); the connector
+truncates \texttt{AGENTS.md}.
+\item \textbf{Prior Grok work survived:} all thirteen
+\path{comments/grok-4.7/2026-11-28/*_GROK_WORK.tex} files (0259 through 1514) and the
+\texttt{code/} folder are present at HEAD.
+\end{itemize}
+
+\section{Work: the even-arity AG family has a linear UNSAT threshold}\label{sec:work}
+\begin{definition}
+Let $n=2^k$ and $t\ge2$. $\AG(2t)$-$n$ has one Boolean variable per point of $\F_2^k$. For
+every set $B$ of $2t$ \emph{distinct} points with $\bigoplus B=0$ (a \emph{block}) it has the
+two clauses $\bigvee_{p\in B}x_p$ and $\bigvee_{p\in B}\bar x_p$. So it is SAT iff $\F_2^k$
+has a 2-colouring with no monochromatic block. For $t=2$ this is T2's AG4. Let $n_0(t)$ be
+the least $n$ for which it is UNSAT.
+\end{definition}
+\textbf{Monotonicity.} For a subspace $U\le\F_2^k$, the blocks inside $U$ are exactly the
+blocks of $\AG(2t)$-$|U|$. So NO at $n$ implies NO at every $n'\ge n$, and $n_0(t)$ is a
+threshold. \lab{PROVED/EXACT}
+
+\begin{lemma}[Sidon count; \lab{KNOWN THEOREM}, elementary]\label{lem:sidon}
+Let $s_4(n)=\max\{m:m(m-1)\le 2(n-1)\}$, so $s_4(n)\le\sqrt{2n}+1$. Every $m$-subset of
+$\F_2^k$ with $m>s_4(n)$ contains 4 distinct points with XOR $0$.
+\end{lemma}
+\begin{proof}
+There are $\binom m2>n-1$ pairs, and each pair sum is nonzero. So two distinct pairs
+$\{a,b\},\{c,d\}$ have the same sum. If they shared a point they would be equal. So they are
+disjoint, and $a+b+c+d=0$.
+\end{proof}
+
+\begin{lemma}[6-sets]\label{lem:six}
+Let $s_6(n)=\max\{m:\binom m3\le n(3m-7)/2\}$. Every $m$-set $S$ with $m>s_6(n)$ contains 6
+distinct points with XOR $0$. For $n\ge 64$, $s_6(n)<n/2$.
+\end{lemma}
+\begin{proof}
+Fix a sum value $\sigma$ and let $\mathcal F_\sigma$ be the 3-subsets of $S$ with XOR
+$\sigma$. Two members sharing two points coincide. Two disjoint members give the 6-set. So
+suppose $\mathcal F_\sigma$ is pairwise intersecting and fix $T=\{u,v,w\}\in\mathcal F_\sigma$.
+The pairs $\{u,x\}$ inside members through $u$ are all distinct. So at most $(m-1)/2$ members
+contain $u$, and likewise for $v,w$. Every member meets $T$ in exactly one point, except $T$,
+which is counted three times. So $|\mathcal F_\sigma|\le 3(m-1)/2-2=(3m-7)/2$. Some $\sigma$
+has $|\mathcal F_\sigma|\ge\binom m3/n$. For $m=n/2$ the inequality
+$\binom{n/2}{3}>n(3n/2-7)/2$ reduces to $(n/2-1)(n/2-2)>9n-42$, which holds for $n\ge 38$.
+The function $m\mapsto\binom m3-n(3m-7)/2$ is increasing for $m\ge\sqrt{3n}+1$, and
+$n/2\ge\sqrt{3n}+1$ when $n\ge 16$.
+\end{proof}
+
+\begin{theorem}[\lab{PROVED/EXACT}]\label{thm:linear}
+Let $q(m)=\lceil (m-s_4(n))/4\rceil$ for $m>s_4(n)$ and $q(m)=0$ otherwise. $\AG(2t)$-$n$ is
+UNSAT whenever
+(i) $t$ is even and $t/2\le q(n/2)$, or
+(ii) $t\ge3$ is odd, $n/2>s_6(n)$, and $(t-3)/2\le q(n/2-6)$.
+In particular, for $n\ge 64$ it is UNSAT for every $2\le t\le n/4-(\sqrt{2n}+1)/2$.
+\end{theorem}
+\begin{proof}
+Take any 2-colouring and let $S$ be a majority class, so $|S|=M\ge n/2$. Apply
+Lemma~\ref{lem:sidon} repeatedly: while more than $s_4(n)$ points remain, remove 4 distinct
+points with XOR $0$. This yields at least $q(M)\ge q(n/2)$ pairwise disjoint zero-sum
+4-sets in $S$. (i) The union of $t/2$ of them is a set of $2t$ distinct points of $S$ with
+XOR $0$, so it is a monochromatic block. (ii) First take a zero-sum 6-set $X\subseteq S$ by
+Lemma~\ref{lem:six}. Then take $(t-3)/2$ disjoint zero-sum 4-sets in $S\setminus X$, which
+has at least $n/2-6$ points. The union again has $2t$ distinct points and XOR $0$.
+``In particular'': (i) needs $t\le (n/2-s_4)/2$; (ii) needs $t-3\le (n/2-6-s_4)/2$, i.e.\
+again $t\le n/4-s_4/2$; also $s_6<n/2$ for $n\ge64$. Finally use
+$s_4\le\sqrt{2n}+1$.
+\end{proof}
+
+\begin{proposition}[\lab{PROVED/EXACT}]\label{prop:yes}
+$\AG(2t)$-$n$ is SAT for every $t\ge n/4-1$ ($n\ge 8$).
+\end{proposition}
+\begin{proof}
+Let $V$ be a hyperplane (a subspace of dimension $k-1\ge2$), and colour $V$ and $V+e$ with
+different colours. Both classes have XOR $0$. If $2t=n/2-2$, a zero-sum $2t$-subset of a
+class would leave out two distinct points with sum $0$, which is impossible. If $2t=n/2$,
+use instead $C=(V\setminus\{0\})\cup\{e\}$ and its complement. Both have XOR $e\ne0$, so the
+only $2t$-subset of each class is not a block. If $2t>n/2$, a balanced split has no
+$2t$-subset in either class.
+\end{proof}
+
+\begin{proposition}[stabiliser argument, \lab{PROVED/EXACT}]\label{prop:stab}
+Let $n\ge 32$ and $t=n/4-2$.
+(a) No \emph{balanced} colouring of $\F_2^k$ avoids monochromatic blocks.
+(b) For $n=32$ (so $t=6$) no colouring at all avoids them: $\AG(12)$-$32$ is UNSAT.
+\end{proposition}
+\begin{proof}
+(a) Let $|C|=n/2$ with XOR $\sigma$. A zero-sum $(n/2-4)$-subset of $C$ is the same thing as
+a 4-subset of $C$ with XOR $\sigma$. Suppose there is none. If $\sigma=0$, then $C$ is a
+Sidon set of size $n/2>s_4(n)$, which contradicts Lemma~\ref{lem:sidon}. So let $\sigma\neq0$
+and let $N(v)$ be the number of pairs in $C$ with sum $v$. Pairs with the same sum are
+disjoint, so $N(v)\le n/4$, with equality iff $C+v=C$. Group the $n$ values into the $n/2$
+classes $\{v,v+\sigma\}$. If $N(v),N(v+\sigma)\ge1$, then every $v$-pair meets every
+$(v+\sigma)$-pair; otherwise their union is a 4-set with XOR $\sigma$. So such a class
+contributes at most $2+2=4\le n/4-1$. Every other class contributes at most $n/4$, and at
+most $n/4-1$ unless it contains some $v\neq0$ in the stabiliser $W=\{v:C+v=C\}$. Write $a$
+for the number of classes that reach $n/4$. Then
+$\binom{n/2}{2}=n(n-2)/8\le a\cdot\frac n4+(\frac n2-a)(\frac n4-1)$, which gives
+$a\ge n/4$. So $|W|\ge n/4+1$, and since $W$ is a subgroup, $|W|\ge n/2$. Then $C$ is a coset
+of the hyperplane $W$, whose XOR is $0$, a contradiction.
+(b) Balanced colourings are covered by (a). Otherwise the majority class has $\ge17$ points.
+Since $s_4(32)=8$, greedy extraction gives $\lceil(17-8)/4\rceil=3$ disjoint zero-sum 4-sets,
+whose union is a monochromatic 12-point block.
+\end{proof}
+
+\begin{corollary}[\lab{PROVED/EXACT}]\label{cor:core}
+Fix $t$. For every $n\ge n_0(t)$, $\AG(2t)$-$n$ contains an UNSAT sub-instance on a subspace
+of $n_0(t)$ points, and $n_0(t)\le 2P(t)=O(t)$ for $t\ge6$. So it has a tree-like resolution
+refutation of size at most $2^{n_0(t)+1}$ and a PC/Nullstellensatz refutation of degree
+$O(n_0(t))$ \lab{KNOWN THEOREM: degree at most the number of variables (plus clause width)}.
+Both bounds are independent of $n$. T2 proves that the grouped degree-$(2t-1)$ span is a fixed
+point without $1$. Hence the grouped-PC degree of the family is $\Theta(t)$ at fixed arity. The
+family is a pure, arity-bound degree barrier: it has no size or core growth in $n$.
+\end{corollary}
+\begin{proof}
+Monotonicity gives the sub-instance. The size bound is a complete decision tree on its
+variables. The bound $n_0(t)\le2P(t)$ for $t\ge6$ follows from Theorem~\ref{thm:linear}:
+$2P/4-(\sqrt{4P}+1)/2\ge t$ holds once $P/2>2t+2$, $P\le 8t+8$ and
+$t+1.5\ge\sqrt{8t+8}$, i.e.\ for $t\ge6$. Note $2P\ge64$ there.
+\end{proof}
+
+\subsection{Computation \lab{COMPUTATIONAL}}
+Code is in \path{comments/grok-4.7/2026-11-28/code/} with prefix \texttt{2026-11-28\_1603\_}.
+\texttt{ag2t\_threshold.py} builds the full CNF. It asserts T2's unique-top-monomial hypothesis
+(every $(2t-1)$-subset lies in at most one block), solves with CaDiCaL~1.5.3 (pysat) under the
+complement pin $x_0=0$, and re-verifies any model against every block.
+\texttt{ag2t\_cegar.py} adds blocks lazily. It uses an exact $(\text{size},\text{XOR})$
+subset-sum DP on each colour class. UNSAT answers therefore come with an explicit set of
+genuine blocks that is already UNSAT, and YES models are re-verified by the DP on both
+classes. \texttt{ag2t\_linear\_bound.py} evaluates Theorem~\ref{thm:linear} for
+$k\le14$.
+
+\begin{center}
+\begin{tabular}{rrrlll}
+\toprule
+$t$ (arity) & $n$ & blocks & full CNF & lazy (core blocks) & source of verdict\\
+\midrule
+2 (4) & 8 & 14 & SAT & SAT & matches T2 (14 blocks)\\
+2 (4) & 16 & 140 & UNSAT & UNSAT (47) & matches T2 (140 blocks)\\
+2 (4) & 32 & 1240 & UNSAT & UNSAT (56) & also Thm~\ref{thm:linear}\\
+3 (6) & 16 & 448 & SAT & SAT & \\
+3 (6) & 32 & 27776 & UNSAT & UNSAT (814) & computation\\
+4 (8) & 16 & 870 & SAT & SAT & Prop~\ref{prop:yes}\\
+4 (8) & 32 & 330460 & UNSAT & UNSAT (5353) & also Thm~\ref{thm:linear}\\
+5 (10) & 32 & --- & --- & UNSAT (66753) & computation (151\,s)\\
+6 (12) & 32 & --- & --- & killed, $\approx$18\,min & Prop~\ref{prop:stab}(b)\\
+7, 8 & 32 & --- & --- & SAT, SAT & Prop~\ref{prop:yes}\\
+7--12 & 64 & --- & --- & $t{=}12$: 300\,s cap & Thm~\ref{thm:linear} (NO for $t\le12$)\\
+13, 14 & 64 & --- & --- & $t{=}14$ killed $\approx$18\,min; 13 not run & \textbf{OPEN}\\
+15, 16 & 64 & --- & --- & SAT, SAT & Prop~\ref{prop:yes}\\
+\bottomrule
+\end{tabular}
+\end{center}
+Exact thresholds that follow: $n_0(2)=16$; $n_0(3)=n_0(4)=n_0(5)=n_0(6)=32$;
+$n_0(t)=64$ for $7\le t\le12$; $n_0(15)=n_0(16)=128$, since Theorem~\ref{thm:linear} at
+$n=128$ certifies every $t\le25$. Every case agrees with $n_0(t)=P(t)$, the least power of two
+above $4t+4$. Output of \texttt{ag2t\_linear\_bound.py} (largest $t$ certified NO by
+Theorem~\ref{thm:linear}, against T2's quadratic bound):
+\begin{center}
+\begin{tabular}{rrrrrr}
+\toprule
+$n$ & $s_4$ & $s_6$ & max NO $t$ (Thm~\ref{thm:linear}) & YES from $t\ge n/4-1$ & T2 quadratic max $t$\\
+\midrule
+64 & 11 & 24 & 12 & 15 & 3\\
+128 & 16 & 34 & 25 & 31 & 5\\
+256 & 23 & 48 & 54 & 63 & 7\\
+1024 & 45 & 96 & 235 & 255 & 15\\
+4096 & 91 & 192 & 980 & 1023 & 31\\
+16384 & 181 & 384 & 4007 & 4095 & 63\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{What this means for the project, and limits}
+\begin{itemize}
+\item T2 offers ``explicit growing arity-matched degree barriers''. That is true, but at fixed
+arity both the degree and a refuting core are $O(t)$ and independent of $n$. So these
+instances cannot defeat any lane that searches for bounded-size cores or runs bounded-degree
+PC with degree depending on the arity. Growing the barrier means growing $t$. Then the clause
+count is about $\binom{n}{2t-1}/(2t)$, so polynomial encodings force $t=O(1)$ (or
+$t=O(\log n)$ for quasi-polynomial size). Within the guaranteed NO range, the family is
+always easy for a size-aware method.
+\item Not claimed: any lower bound for full PC (raw width-$2t$ axioms, arbitrary
+multipliers), for resolution size, or for native E/B images. Nothing here bears on P vs NP.
+\item \textbf{OPEN} \lab{CANDIDATE}: $n_0(t)=P(t)$ for all $t$, i.e.\ UNSAT iff $n>4t+4$. The
+first undecided cases are $n=64$, $t\in\{13,14\}$. Proposition~\ref{prop:stab}(a) handles
+balanced colourings at $t=14$; unbalanced ones remain. The lazy solver gave no verdict at $t=14$ after about 18 minutes (killed by hand); $t=13$ was not run.
+\end{itemize}
+
+\section*{Recommendations}
+\begin{enumerate}
+\item Replace T2's quadratic condition $M(M-t+1)>nt^2$ with Theorem~\ref{thm:linear}, and cite
+the exact small thresholds. In particular, $\AG(2t)$-$32$ is already NO for every
+$t\le6$, so T2 does not need $n=64$ or $128$ to get arity-6 or arity-8 NO instances.
+\item When AG-type families are used as hostile controls, record the embedded-core size
+$n_0(t)$ next to the degree bound, so that degree barriers are not read as size barriers.
+\item Re-split and read back \texttt{03b2e4e} and \texttt{48f638b} before citing them. Move the
+root-level \texttt{.md} from \texttt{71e51be} under \texttt{research/}.
+\end{enumerate}
+
+\appendix
+\section{Commits in the window (\texttt{98e4372..da27100}, UTC times 2026-11-28)}\label{app:shas}
+\begin{longtable}{llp{11.5cm}}
+\toprule
+SHA & UTC & message (truncated)\\
+\midrule
+\endhead
+\texttt{98e4372} & 05:56 & Record authenticated causal boundary-row cone activation and parent ab\\
+\texttt{9539805} & 05:56 & Add executable causal boundary-row checker\\
+\texttt{227032c} & 05:56 & Record checked causal separator boundary exclusions\\
+\texttt{c63f2fd} & 05:56 & Record checked causal separator boundary exclusions\\
+\texttt{9de56bc} & 05:57 & Record paired guarded feedback controls\\
+\texttt{dadbc60} & 05:57 & Record paired guarded feedback controls\\
+\texttt{9b1a5fa} & 05:58 & Document causal cone activation, non-submodular seed lemma and matched\\
+\texttt{123dd5d} & 06:01 & Coordinator: exact guard closure delta replay and parent ablations\\
+\texttt{18e673f} & 06:01 & Coordinator: exact guard closure delta replay and parent ablations\\
+\texttt{bae2590} & 06:01 & T4: fair ranked persistent RUP scheduler with SCC terminals\\
+\texttt{73d4d3c} & 06:01 & T4: authenticated matched scope scheduling experiment\\
+\texttt{268ec7e} & 06:01 & T4 checked scope-scheduler RUP certificate JOINT-24\\
+\texttt{4ff3260} & 06:01 & T4 checked scope-scheduler RUP certificate RANDOM-3CNF-40\\
+\texttt{e7fe31e} & 06:01 & Coordinator: verified conditional guard activation delta certificate\\
+\texttt{c2d8ff7} & 06:01 & Coordinator: verified conditional guard activation delta certificate\\
+\texttt{3da2ccd} & 06:02 & T4 matched feedback controls and hostile ranked-scope tests\\
+\texttt{39a594f} & 06:02 & T4 isolate ranking from SCC early-stop effect\\
+\texttt{a0d41a2} & 06:03 & 22:00 UCAC coordination: persistent guard closure, independent replay \\
+\texttt{df0fcb8} & 06:03 & 22:00 coordinator: persistent guarded activation and mixed nonlinear p\\
+\texttt{9fee0d8} & 06:03 & T4 scope scheduler analysis and first OPEN UCAC arrow\\
+\texttt{30f1818} & 06:04 & T2 Multisign factored energy experiment.js\\
+\texttt{77f5fe6} & 06:04 & T2 Multisign factored energy results.json\\
+\texttt{ea8f8ab} & 06:04 & T2 Multisign factored energy pins.json\\
+\texttt{bdeaf4c} & 06:05 & T2 Multisign energy-cone energy-cone.js\\
+\texttt{27e7176} & 06:05 & T2 Multisign energy-cone RANDOM-3CNF-40.energy.cert.json\\
+\texttt{f884904} & 06:06 & T2 explicit mixed factored energy registry factored-controls.js\\
+\texttt{242e931} & 06:06 & T2 explicit mixed factored energy registry factored-controls.json\\
+\texttt{8510f77} & 06:06 & T2 Multisign mixed factored spectral refusal and energy-cone handoff\\
+\texttt{ce4bb6b} & 06:07 & T2 scoped spectral tail refusal certificate\\
+\texttt{65a1527} & 06:07 & T2: paid 2SAT intersection cancellation escape.js\\
+\texttt{fcdeec2} & 06:07 & T2: paid 2SAT intersection cancellation evidence.json\\
+\texttt{23fb217} & 06:08 & T2: cancel inside closure basis and replay partner quotient.js\\
+\texttt{5630ce8} & 06:08 & T2: cancel inside closure basis and replay partner quotient-evidence.j\\
+\texttt{83b30b1} & 06:09 & T2 independent replay of exact quotient prefix and 2SAT contradiction \\
+\texttt{be1d5e5} & 06:09 & T2 verified JOINT-24 closure quotient or 2SAT escape certificate\\
+\texttt{71af56f} & 06:09 & T2 verified RANDOM-3CNF-40 closure quotient or 2SAT escape certificate\\
+\texttt{f1b8d7e} & 06:10 & T2 matched intake signed table/mod3 feedback.js\\
+\texttt{977086a} & 06:10 & T2 matched intake signed table/mod3 feedback-evidence.json\\
+\texttt{1e4d064} & 06:10 & T2 split measured feedback evidence JOINT-24-native\\
+\texttt{e6fd403} & 06:10 & T2 split measured feedback evidence JOINT-24-cnf\\
+\texttt{f0b6c41} & 06:10 & T2 split measured feedback evidence RANDOM-3CNF-40-native\\
+\texttt{5fb304e} & 06:10 & T2 split measured feedback evidence RANDOM-3CNF-40-cnf\\
+\texttt{7c1b4c3} & 06:10 & T2 split measured feedback evidence FANO-control-CNF\\
+\texttt{d1b226c} & 06:11 & T2 additive authenticated switch-path controls and dual certificates\\
+\texttt{018e1b2} & 06:11 & T2 proof of bounded-overlap closure quotient and exact paid SCC escape\\
+\texttt{0434f20} & 06:12 & T2 fixed-span dual refusal and exact switch-path cover certificate\\
+\texttt{9a83660} & 06:15 & Grok 4.7 hourly work 2026-11-28 15:14 KST: review 04ccb78..4eafae3 (UC\\
+\texttt{70180cb} & 06:17 & T3-10 common.js\\
+\texttt{371cb2b} & 06:17 & T3-10 common-summary.json\\
+\texttt{48f638b} & 06:17 & T3-10 common-evidence.json\\
+\texttt{78fca89} & 06:17 & T3-10 hostile.js twisted Fano nonaffine correction\\
+\texttt{c3fed38} & 06:17 & T3-10 hostile-manifest.json twisted Fano nonaffine correction\\
+\texttt{30a6b8b} & 06:18 & T3-10 independent original-clause identity and sketch rank checker\\
+\texttt{92f9551} & 06:18 & T3-10 checked nonlinear ring refutation and scoped refusal certificate\\
+\texttt{0ffdc59} & 06:19 & T3-10 compact independently replayed common certificate\\
+\texttt{62f1f57} & 06:19 & T3-10 compact independently replayed common certificate\\
+\texttt{bf4d3a1} & 06:20 & T3-10 report.md nonlinear correction and scoped obstruction\\
+\texttt{f7ae4ad} & 06:21 & T3-10 handoff.md nonlinear correction and scoped obstruction\\
+\texttt{71e51be} & 06:21 & DYNAMIC-COMPATIBILITY-OBLIGATION1-INTERACTIVE-MAP-CHALLENGE-COLLAPSE1:\\
+\texttt{253dcad} & 06:31 & Add T1 incident-credit root certificate JOINT-24.T109.cert.json\\
+\texttt{0598a61} & 06:31 & Add T1 incident-credit root certificate RANDOM-3CNF-40.T109.cert.json\\
+\texttt{c6b3338} & 06:31 & Add independent exact native projection and RUP certificate checker\\
+\texttt{6e2e5e7} & 06:32 & T2 bounded PC versus grouped ANF runner\\
+\texttt{9d26e6a} & 06:32 & T2 authenticated common regression and Fano ring PC controls\\
+\texttt{d0f5ee8} & 06:33 & Record scoped incident-event credits, gauge escape and exact width-two\\
+\texttt{692287b} & 06:33 & T2 independent sparse PC3 proof and affine-plane degree obstruction ch\\
+\texttt{f42fa17} & 06:33 & T2 replayed PC3 ring and degree-three obstruction evidence\\
+\texttt{4dbf683} & 06:34 & T3 coupled nonlinear coloring obstruction and canonical regression\\
+\texttt{1d1e7d6} & 06:34 & T3 coupled nonlinear coloring obstruction and canonical regression\\
+\texttt{2656b58} & 06:34 & Replace short-chord control with growing odd-core coupled family\\
+\texttt{68a80c3} & 06:34 & Replace short-chord control with growing odd-core coupled family\\
+\texttt{855d98a} & 06:34 & T2 paired post-exchange signed table and mod3 feedback controls\\
+\texttt{8ac733e} & 06:34 & T2 feedback outcomes under fixed charged event cap\\
+\texttt{6f65f94} & 06:36 & T2 affine plane higher-degree matched PC cap controls\\
+\texttt{13321f2} & 06:36 & Independent raw CNF structural audit and exact guard cover\\
+\texttt{74f3770} & 06:36 & Record source-level structure, affine, ANF and guard checks\\
+\texttt{2e47527} & 06:36 & Register exact additive coupled-coloring instances without replacing c\\
+\texttt{7338d0c} & 06:36 & Prove growing odd-core support and scoped nonlinear portfolio obstruct\\
+\texttt{52f7c69} & 06:36 & Checked long-cycle coupled coloring root certificate 4\\
+\texttt{5dadcaa} & 06:36 & Checked long-cycle coupled coloring root certificate 6\\
+\texttt{64a83cc} & 06:36 & Checked long-cycle coupled coloring root certificate 8\\
+\texttt{b9d9033} & 06:36 & T2 AG4 raw degree4 sparse independent proof checker\\
+\texttt{03b2e4e} & 06:36 & T2 AG4 raw degree4 contradiction certificate\\
+\texttt{2cc7033} & 06:36 & Checked long-cycle coupled coloring root certificate 12\\
+\texttt{d379d71} & 06:37 & Native coupled family checked adapter and exact gauge refusal\\
+\texttt{c563f1a} & 06:37 & T2 full PC and grouped ANF scoped obstruction/escape report\\
+\texttt{5feacc8} & 06:37 & Test charged degree-three static Macaulay span on coupled family\\
+\texttt{01395e3} & 06:37 & Test charged degree-three static Macaulay span on coupled family\\
+\texttt{77975a0} & 06:38 & Extract and independently verify explicit degree-three constant certif\\
+\texttt{cd7ade2} & 06:38 & Extract and independently verify explicit degree-three constant certif\\
+\texttt{63e5b83} & 06:38 & Prove uniform local cubic edge transport identity and odd cycle cancel\\
+\texttt{b341eed} & 06:38 & Prove uniform local cubic edge transport identity and odd cycle cancel\\
+\texttt{f67b378} & 06:39 & Establish uniform 47-term cubic edge transport and odd-cycle refutatio\\
+\texttt{576fedb} & 06:39 & Publish checked cubic transport certificates for all four hostile root\\
+\texttt{b69375f} & 06:39 & Record authenticated common controls and feedback caveats\\
+\texttt{62b62b7} & 06:41 & FP60 authenticated owner-syndrome energy and guard controls JOINT-24\\
+\texttt{7b1dd35} & 06:41 & FP60 authenticated owner-syndrome energy and guard controls RANDOM-3CN\\
+\texttt{534d380} & 06:41 & FP60 owner-disjoint syndrome DP, independent identity replay, controls\\
+\texttt{20a17d0} & 06:47 & FP60 native owner-aware exact cost transport and bounded cost-shift te\\
+\texttt{9b64527} & 06:47 & FP60 native owner-aware exact cost transport and bounded cost-shift te\\
+\texttt{da27100} & 06:47 & FP60 exact nonnegative integer cost transfer and transport checker\\\bottomrule
+\end{longtable}
+
+\section{Code and outputs}
+All in \path{comments/grok-4.7/2026-11-28/code/}:
+\path{2026-11-28_1603_ag2t_threshold.py} (full CNF, exact),
+\path{2026-11-28_1603_ag2t_cegar.py} (lazy exact solver with block cores),
+\path{2026-11-28_1603_ag2t_linear_bound.py} (evaluates Theorem~\ref{thm:linear}),
+\path{2026-11-28_1603_spotchecks.py} (T3 / T3-10 spot checks), and
+\path{2026-11-28_1603_ag2t_outputs.txt} (verbatim stdout of every run quoted above, including
+the two hand-killed runs). Reproduce with Python~3 and \texttt{python-sat}; the scripts take
+\texttt{t,k} arguments.
+\end{document}
