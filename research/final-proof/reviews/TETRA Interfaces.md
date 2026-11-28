@@ -1,5 +1,19 @@
 # TETRA Interfaces independent review
 
+2026-11-27 Pacific | BLOCK
+
+Current manuscript blob observed: `52f39908a8be0021d24e75104e339bd96dba6bec`.
+Scoped reviewed and edited manuscript blob: `52f39908a8be0021d24e75104e339bd96dba6bec` (commit 6ff336c09e0abd504cd5cb215b5ac47cb40712a8, lines5191ff); full immutable blob readback verified after edit, all predecessor bytes preserved except insertion before end document. Contents endpoint empty; blob endpoint returned full body. Reviewed the aggregate theorem lines18–27, U-PROGRESS lines28–30, newest T4 lemma, own appended section. Entire-manuscript audit NOT completed; no approval. If current SHA differs, this is not a review of the later changes.
+
+BLOCK reasons: no constructive universal disjunctive progress/coverage proof, no uniform worst-case original-N polynomial charge including failed tracks/all guards/reconstruction/peak/cumulative memory; source compiler not independently fully reimplemented here. Scope intersection and degree cancellation are proved restricted rules; conditional affine quotient worsens one consumer. Two common native benchmarks and companion CNFs replayed, but finite tests cannot supply universal termination. No unrestricted separation. No complete proof candidate to audit. Public release gate unsatisfied; do not publish resolution.
+
+Report: https://github.com/j15marti/pnp/blob/aed817b7ecd960b0a0071ce98380cc387cc2bf60/research/hcl201/interfaces/2026-11-27_1655_quadratic_separator/report.md
+Issue messages: https://github.com/j15marti/pnp/issues/328#issuecomment-7231351890 , #7231352239, #7231352557.
+
+Previous review history preserved below (not current approval).
+
+# TETRA Interfaces independent review
+
 2026-11-25 04:19 PT | **BLOCK**
 
 Exact reviewed manuscript blob: `22903ee1a1b93e2592a16d3d259074b0c2ad8d89` ([commit 2edc53080df71a2050bc5f9e77cde2a3b18d4eab](https://github.com/j15marti/pnp/commit/2edc53080df71a2050bc5f9e77cde2a3b18d4eab)).
