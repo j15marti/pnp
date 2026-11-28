@@ -1,0 +1,26 @@
+// node hostile.js hostile-family.json compiler.js previous-checker.js native-chart.js
+function hostile({manifest,compiler,old,chart}){
+ const sha=new Function(old.slice(old.indexOf("function sha"),old.indexOf("function chart"))+";return sha")(),compile=new Function(compiler.slice(compiler.indexOf("function compile"),compiler.indexOf("function auditLocal"))+";return compile")(),{project,verifyProjection}=new Function(chart.slice(chart.indexOf("const key="),chart.indexOf("function up("))+";return {project,verifyProjection}")(),enc=x=>JSON.stringify(x)+"\n";
+ function pc(F,d){
+  let vars=[...new Set(F.flat().map(Math.abs))].sort((a,b)=>a-b),n=vars.length,ix=new Map(vars.map((v,i)=>[v,i])),mon=[];
+  function gen(a,k,start){if(!k){mon.push(a);return}for(let i=start;i<=n-k;i++)gen(a|(1n<<BigInt(i)),k-1,i+1)}
+  for(let k=0;k<=d;k++)gen(0n,k,0);const D=mon.length,mi=new Map(mon.map((a,i)=>[a,i])),bp=mon.map((_,i)=>1n<<BigInt(i)),B=new Map(),counts={xor:0,projectedXor:0,multiplyTerms:0,rows:0,intersectionRows:0},rankEpoch=[],cap=3000000;let st="UNKNOWN",start=Date.now();
+  function insert(a){counts.rows++;while(a){let k=a.toString(2).length-1;if(!B.has(k)){B.set(k,a);return true}a^=B.get(k);counts.xor++}return false}
+  function vec(c){let S=new Set([0n]);for(let l of c){let Q=new Set(),m=1n<<BigInt(ix.get(Math.abs(l)));function tog(a){if(Q.has(a))Q.delete(a);else Q.add(a)}for(let a of S){if(l>0)tog(a);tog(a|m)}S=Q}let v=0n;for(let a of S){if(!mi.has(a))return null;v^=bp[mi.get(a)]}return v}
+  for(let c of F){let a=vec(c);if(a!==null)insert(a)}let initial=B.size;const maps=vars.map((_,x)=>mon.map(m=>mi.get(m|(1n<<BigInt(x))))),forbid=maps.map(a=>a.reduce((b,k,i)=>k===undefined?b|bp[i]:b,0n));
+  function mul(a,x){let z=0n;while(a){let low=a&-a,i=low.toString(2).length-1,k=maps[x][i];if(k===undefined)throw Error("bad product");z^=bp[k];a^=low;counts.multiplyTerms++}return z}
+  function charged(){return Object.values(counts).reduce((a,b)=>a+b,0)}
+  outer:for(let epoch=0;;epoch++){
+   if(B.has(0)){st="NO";break}let before=B.size,snapshot=[...B.values()];
+   for(let x=0;x<n;x++){let T=new Map();for(let row of snapshot){if(charged()>cap){st="UNKNOWN_CAP";break outer}let a=row,b=a&forbid[x];while(b){let k=b.toString(2).length-1;if(!T.has(k)){T.set(k,a);break}a^=T.get(k);b=a&forbid[x];counts.projectedXor++}if(!b){counts.intersectionRows++;insert(mul(a,x));if(B.has(0)){st="NO";break outer}}}}
+   rankEpoch.push(B.size);if(B.size===before){st="FIXED_POINT";break}
+  }
+  let basis=[...B].sort((a,b)=>a[0]-b[0]).map(([k,v])=>[k,v.toString(16)]);return {d,n,D,initial,rank:B.size,rankEpoch,st,counts,elapsed:Date.now()-start,basis,basisHash:sha(enc(basis))}
+ }
+ function width2(F){let vars=[...new Set(F.flat().map(Math.abs))].sort((a,b)=>a-b),probes=0,visits=0,hit=null;function conflict(c){let A=new Set(c.map(l=>-l));for(;;){let change=false;for(let f of F){let free=[],sat=false;for(let l of f){visits++;if(A.has(l)){sat=true;break}if(!A.has(-l))free.push(l)}if(sat)continue;if(!free.length)return true;if(free.length===1){A.add(free[0]);change=true}}if(!change)return false}}
+ let C=[[]];for(let v of vars)C.push([v],[-v]);for(let i=0;i<vars.length;i++)for(let j=i+1;j<vars.length;j++)for(let a of [1,-1])for(let b of [1,-1])C.push([a*vars[i],b*vars[j]]);for(let c of C){probes++;if(conflict(c)){hit=c;break}}return{probes,visits,hit,st:hit===null?"FIXED_POINT":"PRODUCTIVE"}}
+ function pairCover(F){let rows=new Set(F.map(c=>c.slice().sort((a,b)=>Math.abs(a)-Math.abs(b)).join(","))),vars=[...new Set(F.flat().map(Math.abs))],pairs=new Map(),triples=[];for(let c of F){if(c.length!==3||c.some(l=>l<0))continue;if(!rows.has(c.map(l=>-l).sort((a,b)=>Math.abs(a)-Math.abs(b)).join(",")))throw Error("pair");triples.push(c);for(let i=0;i<3;i++)for(let j=i+1;j<3;j++){let k=[c[i],c[j]].sort((a,b)=>a-b).join(",");pairs.set(k,(pairs.get(k)||0)+1)}}if(pairs.size!==vars.length*(vars.length-1)/2||[...pairs.values()].some(n=>n!==1))throw Error("coverage");let square=vars.length-2*triples.length;if(square>=0)throw Error("not negative");return {n:vars.length,m:triples.length,square,pairs:pairs.size}}
+ let out=[];for(let q of JSON.parse(manifest).instances){let dimacs=q.source_cnf.dimacs,nvars=Number(dimacs.split(" ")[2]),G=compile({dimacs,nvars});if(sha(enc(G.network))!==q.instance_id.split(":").at(-1)||enc(G.network).length*8!==q.N||sha(dimacs)!==q.source_cnf.id.split(":").at(-1)||dimacs.length*8!==q.source_cnf.N||sha(enc(G.source_map))!==q.mapHash)throw Error("hash");let p=project(G.network),ops=verifyProjection(G.network,p);if(enc(p.clauses)!==enc(q.chart))throw Error("chart");let w=width2(p.clauses),d2=pc(p.clauses,2),d3=pc(p.clauses,3),real=pairCover(p.clauses);out.push({instance:q.short_id,instance_id:q.instance_id,N:q.N,source_cnf:q.source_cnf.id,source_cnf_N:q.source_cnf.N,gid:q.gid,rid:q.rid,guard:q.guard,original_ids:q.original_ids,projectionReplay:ops,chart:p.clauses,width2:w,pc2:d2,pc3:d3,real})}
+ return out
+}
+if(typeof require!=='undefined'&&require.main===module){const fs=require('node:fs'),keys=['manifest','compiler','old','chart'];console.log(JSON.stringify(hostile(Object.fromEntries(keys.map((k,i)=>[k,fs.readFileSync(process.argv[i+2],'utf8')]))),null,2))}
