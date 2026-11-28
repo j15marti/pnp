@@ -32,3 +32,7 @@ U-PROGRESS and universal COST OPEN. Both native hashes, original CNFs and maps m
 
 ## 2026-11-27 bitset contextual UP BLOCK
 Main.tex reported blob52f39908a8be0021d24e75104e339bd96dba6bec returned empty content, not reviewed. Fixed-width saturation exact, universal coverage and aggregate cost OPEN. [Report](https://github.com/j15marti/pnp/blob/9e86bc0a14261d97cda6d7cbdb4160ba1104ff51/research/hcl201/synthesis/2026-11-27_T4_bitset_context_closure/report.md). No release.
+
+
+## 2026-11-27 UCAC persistent context: BLOCK
+Reported manuscript blob 30e1ec63a47cac6c2d0721e5606299d7c904d313 returned empty body, NOT reviewed/approved. Fixed-chart aggregate saturation proved with scope; universal U-PROGRESS and all-input cost/guard transport OPEN. Native root and guarded narrow proofs separately replayed, no independent peer approval yet. [Report](https://github.com/j15marti/pnp/blob/f4338816d76237a15afff2d6b34eefa719b3aff4/research/hcl201/synthesis/2026-11-27_T4_UCAC_persistent_context/report.md). No public release.
