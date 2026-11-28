@@ -1,0 +1,229 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\lab}[1]{\textbf{[#1]}}
+\title{Grok 4.7 hourly work log --- 2026-11-28 19:21 KST\\
+\large Review of \texttt{f8e6b14..760fcb9} and gap work:\\
+T2 ``fixed polynomial representation ceiling'' lemma for clause-elimination admission}
+\author{Grok 4.7 (independent reviewer, j15marti/pnp)}
+\date{2026-11-28 19:21 KST}
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.92\textwidth}{\textbf{Executive status.} P vs NP remains \textbf{OPEN}. Nothing here claims
+P$\neq$NP, P$=$NP, a Clay result, or an unrestricted lower bound. The gap result is a \emph{scoped refusal}
+for one restricted admission class (clause-level elimination/re-encoding moves that are $p$-simulated by
+resolution), obtained by reduction to KNOWN THEOREMS on resolution size. It does \emph{not} cover
+Gaussian-elimination/affine moves, extension variables, or unbounded branching.}}
+\end{center}
+
+\section{Review log}
+\subsection{Range and HEAD}
+Reviewed commits on \texttt{main} from \texttt{f8e6b14} (2026-11-28 08:49:27Z = 17:49 KST) through
+HEAD \texttt{760fcb9} (09:43:01Z = 18:43 KST), i.e.\ the commits after \texttt{91b46b4}; about 75 commits
+(T1 robust Hall, T2 affine-bijunctive/exact sections, T3 PC3/implication bridge and T3-12, T4 resolvent/feedback/
+existential reasons, L02 boundary parity, 01:00 coordinator, Hall-slack/Almost~2-SAT, DYNAMIC-COMPATIBILITY).
+The prior Grok commit \texttt{4b6396d} (09:08:44Z) is interleaved in this range.
+Reports read in full: 
+\texttt{research/proof-spine-2026-11-26/monotone-exact-22/2026-11-28\_0044\_T1\_fractional\_boundary/report.md} (\texttt{f8e6b14}),
+\texttt{.../affine-bijunctive-sat/2026-11-28\_0132\_T2\_exact\_sections/report.md} (\texttt{9db83e4}),
+\texttt{.../closure-exceptional-syndrome/2026-11-28\_0136\_T3\_lp\_response/report.md} (\texttt{760fcb9}),
+\texttt{DYNAMIC-COMPATIBILITY-OBLIGATION1-HALL-SLACK-ALMOST2SAT-RESIDUAL1.md} (\texttt{4d71f02}),
+and the AGENTS.md diff in \texttt{dae24dd}. File lists checked for \texttt{94b3a44}, \texttt{adde9ec},
+\texttt{e366010}, \texttt{28e83e0} (all single \texttt{report.md} additions).
+
+\subsection{Status checks}
+\begin{itemize}
+\item \textbf{Root \texttt{main.tex}: NOT restored.} At \texttt{760fcb9} it is still the 38-byte placeholder
+(\texttt{PLACEHOLDER\_TOO\_LARGE\_USE\_LOCAL\_APPEND}); known issue since \texttt{0094f2c}, unchanged. Not edited here.
+\item \textbf{Prior Grok work survived:} all 16 \texttt{comments/grok-4.7/2026-11-28/*.tex} files
+(0259 \dots\ 1810) and the \texttt{code/} directory are present at HEAD.
+\item \textbf{HEAD moved during this run} to \texttt{ea4c395} (10:19:41Z = 19:19 KST). First unreviewed commit:
+\texttt{f6a7fa0} (09:50:56Z, T1-11). Commits \texttt{bc04b91} (``exact no-growth BVE refusal'') and \texttt{071ef58}
+(``first-pivot resolvent growth'') look directly related to the gap below and are deferred to the next run; the
+result here was derived independently of them.
+\item \textbf{AGENTS.md} (\texttt{dae24dd}): additive ``01:00 Pacific'' handoff only; label set unchanged.
+It states ``Width $O(\log N)$ bounds one table, not the number or acquisition of candidate scopes'' --- the
+gap work below makes this quantitative for clause-level moves.
+\end{itemize}
+
+\subsection{New format/label observations (known issues not repeated)}
+\begin{enumerate}
+\item \textbf{New root-level report file} \texttt{DYNAMIC-COMPATIBILITY-OBLIGATION1-HALL-SLACK-ALMOST2SAT-RESIDUAL1.md}
+(\texttt{4d71f02}) is a research report placed at the repository root instead of under \texttt{research/}; it
+carries a compound label ``PROVED/EXACT for the stated free-resource model''. The model-scoped single-tape
+$\Omega(N^2)$ time bound is of classical Hennie/Hartmanis crossing-sequence type and is scoped correctly, but the
+``free protected Almost 2-SAT with $k=O(\log N)$'' resource is already polynomial ($15^k\,\mathrm{poly}=N^{O(1)}$),
+so it adds no power beyond polynomial local computation --- consistent with the report's own conclusion.
+\item \textbf{Duplicate commit pairs} with identical messages (e.g.\ \texttt{917eab9}/\texttt{77a33fd},
+\texttt{d4b81b4}/\texttt{6d96383}, \texttt{2177207}/\texttt{ac6d951}, \texttt{ef61300}/\texttt{9ce9c28},
+\texttt{abb0f41}/\texttt{301384a}); housekeeping only.
+\item The T2 report's adaptive-closure code is ``not separately committed'' (its own admission); measurement
+hashes in that section are therefore not reproducible artifacts.
+\end{enumerate}
+
+\subsection{Math spot-checks (all PASS unless noted)}
+\begin{itemize}
+\item \textbf{T1 robust Hall count shell} (\texttt{f8e6b14}): if $\delta=\min_S(|N(S)|-|S|)=q-d$, blocking
+$k\le q-d$ bins leaves $|N(S)|-k\ge|S|$, Hall applies; $k>q-d$ leaves capacity $q-k<d$. Exactness of
+$\sum x_t\le q-d$ is correct under the stated injective selector-to-bin and exact-syntax hypotheses. PASS.
+\item \textbf{T2 one-bit section} $f(z)=\bigwedge_j B_j(z)$: $C(f(z),z)\iff\exists v\,C(v,z)$. Standard
+Skolem/BVE fact; PASS.
+\item \textbf{T3-12 Theorem 1} (NAE4 local LP under $\le2$ pins): two free literals set opposite satisfy NAE;
+singleton marginals $1/2$; PASS. \textbf{Theorem 3} interval: $tp\le s$ (Markov) and
+$s\le (t-1)(1-p)+qp$ give $\max(0,\frac{s-t+1}{q-t+1})\le p\le\min(1,s/t)$; PASS. Lossy-merge example
+($b=3$: uniform weight-1 words vs.\ $\tfrac23\cdot000+\tfrac13\cdot111$, both means $1/3$, majority
+probability $0$ vs.\ $1/3$): PASS. Perturbation radius $d-h_{\max}$ per block: setting free bits to the phase
+value gives weight $\ge 2d+1-h\ge d+1+(d-h)$; PASS.
+\end{itemize}
+
+\section{Gap selected}
+T2 report (\texttt{9db83e4}), ``First OPEN arrow / Next lemma'': \emph{allow a global fixed polynomial
+representation ceiling rather than nonincrease at every local move; prove that explicit
+gate/one-sided/resolution/other certified regional candidates always yield a productive contraction under this
+ceiling, or produce a growing checked family defeating precisely that restricted admission class.}
+This is distinct from the two prior gaps today (T3 PC4 packing; C04-36 regional LP).
+
+\section{Result}
+\begin{definition}[Clause-level admission class $\mathcal A_{w,g}$]
+Starting from a CNF $F_0$ with $n$ variables and measure $N=\sum_{C}(|C|+1)$, a run applies moves:
+(M1) BVE of $v$: replace all clauses containing $v$ by all non-tautological resolvents on $v$;
+(M2) gate-based elimination of a defined variable (outputs only resolvents between gate and non-gate clauses);
+(M3) one-sided/pure elimination (delete all clauses of $v$ when $v$ occurs in one polarity);
+(M4) unit propagation (unit resolution, deleting satisfied clauses);
+(M5) deletion of tautologies, duplicates, subsumed clauses;
+(M6) exact regional re-encoding: for a clause set $R$ on a scope $W$, $|W|\le w$, and $\emptyset\ne Y\subseteq W$
+whose variables occur nowhere else, replace $R$ by any CNF $R'$ over $W\setminus Y$ with $R'\equiv\exists Y\,R$;
+(M7) a guard tree of depth $\le g$ (case splits on $\le g$ variables), each leaf run with (M1)--(M6).
+The run respects ceiling $L$ if every intermediate formula has measure $\le L$.
+\end{definition}
+This contains exactly the T2 stricter closure arms (gate arity $\le3$, single-sided, BVE pairs, UP), the
+T2/T3/T4 ``exact one-interior resolvent/subsumption recomposition'', and the coordinator's
+``width $O(\log N)$ regional table'' moves, with bounded prefix guards.
+
+\begin{lemma}[Simulation; \lab{PROVED}]\label{lem:sim}
+If an $\mathcal A_{w,g}$ run under ceiling $L$ on unsatisfiable $F_0$ terminates with $\bot$, then $F_0$ has a
+resolution refutation of size at most $2^{g+1}\bigl(N+n\,L\,2^{w+1}\bigr)$.
+\end{lemma}
+\begin{proof}
+Single leaf first. Invariant: every clause $C$ present at time $t$ has a resolution derivation from $F_0$ of some
+subclause $C'\subseteq C$. (M1)/(M2): a new clause $r$ is a resolvent of present $p,q$ on $v$; given $p'\subseteq p$,
+$q'\subseteq q$, either both contain the pivot literals and their resolvent is $\subseteq r$ (one step), or one of them,
+say $p'$, lacks $v$, whence $p'\subseteq r$ (no step). (M3)/(M5) only delete. (M4): unit resolution is (M1)-type.
+(M6): each $D\in R'$ is implied by $R$, hence by the subclause set $R''$; let $\rho$ falsify $D$; $R''|_\rho$ is
+unsatisfiable on $\le w$ variables, so a complete decision tree gives a tree-like refutation of size $<2^{w+1}$,
+which lifts (un-restricting $\rho$) to a derivation of a subclause of $D$ from $R''$. Counting: each clause-creating
+move (M1, M2, M4, M6 with $Y\ne\emptyset$) eliminates at least one variable, so there are $\le n$ of them, each adding
+$\le L$ clauses (ceiling), each costing $\le 2^{w+1}$ derived lines. At termination $\bot$ is present, so the empty
+subclause is derived. (M7): each leaf $\rho_\ell$ gives a refutation of $F_0|_{\rho_\ell}$, which lifts to a derivation
+of a subclause of $\neg\rho_\ell$ from $F_0$; resolving these up the guard tree adds $<2^{g+1}$ lines.
+\end{proof}
+
+\begin{lemma}[Stall dichotomy; \lab{PROVED}]\label{lem:stall}
+Every move in (M1)--(M6) preserves satisfiability-equivalence, and every clause-creating move removes a variable.
+Hence a ceiling-respecting run on unsatisfiable $F_0$ either derives $\bot$ within $\le n$ clause-creating moves or
+\emph{stalls} (no admissible candidate under $L$).
+\end{lemma}
+
+\begin{theorem}[Scoped refusal for $\mathcal A_{w,g}$; \lab{PROVED} by reduction to \lab{KNOWN THEOREM}]\label{thm:main}
+Let $G_n$ be $3$-regular graphs on $n$ vertices with edge expansion $e(G_n)\ge \varepsilon n$ and let $T_n$ be
+the Tseitin formula with one odd vertex ($N=\Theta(n)$). Fix constants $a,c$ and put $L=N^a$, $w,g\le c\log_2 N$.
+For all sufficiently large $n$, \emph{every} $\mathcal A_{w,g}$ run on $T_n$ under ceiling $L$ stalls; equivalently,
+every successful run has peak measure $\ge 2^{\Omega(n)}/N^{O(c)}$. The same holds whp for random 3-CNF with
+$m=\Delta n$ clauses, $\Delta$ a large constant.
+\end{theorem}
+\begin{proof}
+KNOWN THEOREM (Urquhart 1987, J.\ ACM 34; Ben-Sasson--Wigderson 2001, J.\ ACM 48: width $\ge e(G)$ and
+$S\ge\exp(\Omega((W-3)^2/m))$ with $m=3n/2$ variables): every resolution refutation of $T_n$ has size
+$2^{\Omega(n)}$. Random 3-CNF: Chv\'atal--Szemer\'edi 1988 (J.\ ACM 35), size $2^{\Omega(n)}$ whp.
+Lemma~\ref{lem:sim} gives a refutation of size $\le 2^{g+1}(N+nN^a2^{w+1})=N^{O(1)}$, a contradiction for large $n$;
+by Lemma~\ref{lem:stall} the run stalls.
+\end{proof}
+
+\begin{corollary}[Answer to the T2 ``Next lemma''; \lab{FALSIFIED} for $\mathcal A_{w,g}$]
+The universal statement ``explicit gate/one-sided/resolution/regional ($w=O(\log N)$) candidates always yield a
+productive contraction under a fixed polynomial ceiling'' is FALSIFIED: expander Tseitin (and random 3-CNF) is a
+growing family defeating precisely this admission class. The T2 finite stall (JOINT 0 events, RANDOM 1 event) is
+thereby upgraded from a measured stall to a proved asymptotic refusal for this class.
+\end{corollary}
+
+\begin{remark}[Positive side; \lab{KNOWN THEOREM}]
+If the variable-interaction graph has an elimination order of induced width $w^*$, DP along it (Davis--Putnam 1960;
+directional resolution, Dechter--Rish 1994) keeps every clause on $\le w^*+1$ variables, so the measure stays
+$\le n\,3^{w^*+1}(w^*+2)$; with $w^*=O(\log N)$ this is a polynomial ceiling. So the class succeeds on
+bounded-induced-width families and is refused on expanders: the ceiling is \emph{not} the binding constraint;
+interaction-graph width/expansion is.
+\end{remark}
+
+\subsection*{Limits (what is not covered)}
+\begin{itemize}
+\item \textbf{Affine/GE moves are excluded.} Tseitin is solved in polynomial time by Gaussian elimination, so
+expander Tseitin does \emph{not} defeat a hybrid class with exact GF(2) lanes (which the repository has). For a
+resolution+GE hybrid, random 3-CNF is the natural candidate, but general Res($\oplus$) lower bounds are
+\textbf{OPEN} (only restricted, e.g.\ regular/bounded-depth Res($\oplus$), lower bounds are known).
+\item Extension variables (fresh defined variables) give extended resolution; no lower bound known; excluded.
+\item Guards of depth $\omega(\log N)$ or regional scopes of width $\omega(\log N)$ break the polynomial simulation.
+\item The theorem refuses one admission class; it is not a lower bound for SAT algorithms. P vs NP stays OPEN.
+\end{itemize}
+
+\section{Computation (\lab{COMPUTATIONAL})}
+Code: \texttt{code/2026-11-28\_1921\_bve\_ceiling.py} (Python 3.13, networkx 3.7 for graphs only); output
+\texttt{code/2026-11-28\_1921\_bve\_ceiling\_output.txt}, \texttt{code/2026-11-28\_1921\_bve\_ceiling\_results.json}.
+Tseitin with one odd vertex on random 3-regular graphs (seed $1000+n$) and on cylinders $C_k\times P_3$.
+Per instance: (i) the T2 strict nonincrease rule; (ii) DP along a min-fill order of the variable-interaction
+(line) graph, with duplicate removal and forward subsumption; (iii) an independent checker verifying every derived
+clause is the resolvent on its recorded pivot of two earlier clauses and that $\bot$ is derived
+(Lemma~\ref{lem:sim} in action).
+
+\begin{center}\small
+\begin{tabular}{lrrrrrrr}
+\toprule
+family & $|V|$ & vars & $N$ & strict events & min-fill width & DP peak & peak$/N$\\
+\midrule
+3-reg & 8 & 12 & 128 & 0 & 4 & 136 & 1.06\\
+3-reg & 20 & 30 & 320 & 0 & 7 & 704 & 2.20\\
+3-reg & 28 & 42 & 448 & 0 & 9 & 3296 & 7.36\\
+3-reg & 40 & 60 & 640 & 0 & 11 & 13440 & 21.0\\
+3-reg & 48 & 72 & 768 & 0 & 10 & 6144 & 8.0\\
+3-reg & 56 & 84 & 896 & 0 & 15 & 264704 & 295.4\\
+3-reg & 64 & 96 & 1024 & 0 & 17 & $\ge$589312 (TIME, 77/96 events) & $\ge$575.5\\
+\midrule
+$C_{4}\times P_3$ & 12 & 20 & 288 & 0 & 7 & 776 & 2.69\\
+$C_{16}\times P_3$ & 48 & 80 & 1152 & 0 & 8 & 2680 & 2.33\\
+$C_{64}\times P_3$ & 192 & 320 & 4608 & 0 & 8 & 9976 & 2.16\\
+$C_{128}\times P_3$ & 384 & 640 & 9216 & 0 & 8 & 19704 & 2.14\\
+\bottomrule
+\end{tabular}
+\end{center}
+All 18 completed DP runs: trace check \texttt{true}; proof size $\le$ events$\times$peak$+N$ in every case
+(e.g.\ $n=56$: proof 66{,}111 lines vs.\ bound 22{,}236{,}032). The strict nonincrease rule stalls with
+\textbf{0} eliminations on every instance (eliminating an edge variable trades 8 width-3 clauses for 8 width-4
+clauses: measure $+8$). Interpretation: on expanders the heuristic peak tracks $2^{\text{width}}$ and grows
+super-polynomially in this range (peak$/N$ from $\approx1$ to $\ge575$ as $N$ goes 128$\to$1024), while on the
+bounded-width cylinders peak$/N\approx2.1$--$2.7$ stays constant. These are heuristic (min-fill) orders, finite sizes,
+and random graphs whose expansion was not certified per instance; the asymptotic statement rests only on
+Theorem~\ref{thm:main}.
+
+\section{Recommendations}
+\begin{enumerate}
+\item T2/coordinator: record the ceiling lemma for clause-level moves as FALSIFIED (scoped), cite
+Theorem~\ref{thm:main}; any surviving universal-contraction candidate must include a move \emph{not}
+$p$-simulated by resolution (GE/affine, extension, cutting-plane/PB, or unbounded-width regional tables with a paid
+acquisition argument).
+\item Test the hybrid (resolution + exact GE) class on random 3-CNF and on Tseitin-plus-random-noise mixtures;
+state honestly that its refusal is tied to OPEN Res($\oplus$) lower bounds.
+\item Move root-level research reports under \texttt{research/}; restore root \texttt{main.tex} from
+\texttt{66c56b4}; use \texttt{.tex} reports and the AGENTS.md label set.
+\end{enumerate}
+
+\end{document}
