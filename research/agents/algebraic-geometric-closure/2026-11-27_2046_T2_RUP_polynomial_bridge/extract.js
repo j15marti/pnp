@@ -1,0 +1,18 @@
+// Reproduce using chart and prefix from each certificate; node extract.js cert.json
+function extract(F,prefix,peerSeeds){
+ let vars=[...new Set(F.flat().map(Math.abs))].sort((a,b)=>a-b),n=vars.length,ix=new Map(vars.map((x,i)=>[x,i])),mon=[0n];
+ for(let i=0;i<n;i++)mon.push(1n<<BigInt(i));for(let i=0;i<n;i++)for(let j=i+1;j<n;j++)mon.push((1n<<BigInt(i))|(1n<<BigInt(j)));for(let i=0;i<n;i++)for(let j=i+1;j<n;j++)for(let k=j+1;k<n;k++)mon.push((1n<<BigInt(i))|(1n<<BigInt(j))|(1n<<BigInt(k)));
+ let mi=new Map(mon.map((x,i)=>[x,i])),visits=0;
+ function rup(db,c){let A=new Set(c.map(x=>-x));for(;;){let change=false;for(let f of db){let free=[],sat=false;for(let l of f){visits++;if(A.has(l)){sat=true;break}if(!A.has(-l))free.push(l)}if(sat)continue;if(!free.length)return true;if(free.length===1){A.add(free[0]);change=true}}if(!change)return false}}
+ function polynomial(c,v){let P=new Set([0n]);function xor(S,x){if(S.has(x))S.delete(x);else S.add(x)}for(let l of c){let b=1n<<BigInt(ix.get(Math.abs(l))),Q=new Set;for(let a of P){if(l>0)xor(Q,a);xor(Q,a|b)}P=Q}if(v){let b=1n<<BigInt(ix.get(v)),Q=new Set;for(let a of P)xor(Q,a|b);P=Q}return P}
+ function lin(db,trace){let piv=new Map(),sources=[],ops=0,peakBits=0;function add(c,j,v){let P=polynomial(c,v),a=0n;for(let m of P){let k=mi.get(m);if(k===undefined)throw Error("degree");a^=1n<<BigInt(k)}let u=trace?(1n<<BigInt(sources.length)):0n;sources.push([j,v]);while(a){let k=a.toString(2).length-1;if(!piv.has(k)){piv.set(k,[a,u]);peakBits=Math.max(peakBits,u.toString(2).length);break}let [b,t]=piv.get(k);a^=b;u^=t;ops++}}
+  for(let j=0;j<db.length;j++){let c=db[j];if(c.length>3)continue;add(c,j,0);if(c.length<=2)for(let v of vars)add(c,j,v);if(piv.has(0))break}
+  let terms=[];if(trace&&piv.has(0)){let u=piv.get(0)[1];for(let i=0;i<sources.length;i++)if(u>>BigInt(i)&1n)terms.push(sources[i]);let P=new Set;for(let [j,v] of terms){for(let m of polynomial(db[j],v)){if(P.has(m))P.delete(m);else P.add(m)}}if(P.size!==1||!P.has(0n))throw Error("certificate XOR")}
+  return {rank:piv.size,quadratic:[...piv.keys()].filter(k=>k<1+n+n*(n-1)/2).length,constant:piv.has(0),rowAttempts:sources.length,xor:ops,peakCoefficientBits:peakBits,terms}}
+ let db=F.slice(),prefixReplay=[];for(let c of prefix){let before=visits;if(!rup(db,c))throw Error("RUP prefix");db.push(c);prefixReplay.push(visits-before)}let final=lin(db,true);if(!final.constant)throw Error("prefix no contradiction");let earlier=lin(db.slice(0,-1),false);if(earlier.constant)throw Error("not first");
+ let selected=final.terms.filter(([i])=>i>=F.length).map(([i])=>i-F.length+1),unique=[...new Set(selected)];
+ // matched ordered peer seed admissions, not proof imports. Each rejected candidate is skipped.
+ let masks=[];for(let mask=0;mask<2**peerSeeds.length;mask++){let a=F.slice(),before=visits,accepted=[],refused=[];for(let j=0;j<peerSeeds.length;j++)if(mask>>j&1){let c=peerSeeds[j];if(rup(a,c)){a.push(c);accepted.push(j)}else refused.push(j)}let check=lin(a,false);masks.push({mask,accepted,refused,visits:visits-before,rank:check.rank,quadratic:check.quadratic,constant:check.constant,rowAttempts:check.rowAttempts,xor:check.xor})}
+ return {prefixReplay,final,earlier,selectedLearnedRows:unique,usedSourceRows:[...new Set(final.terms.filter(([i])=>i<F.length).map(([i])=>i))],peerMasks:masks,allRUPVisits:visits}
+}
+if(typeof require!=='undefined'&&require.main===module){const fs=require('node:fs'),c=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));let z=extract(c.chart,c.prefix,c.instance.startsWith('EB-JOINT')?[[-594]]:[[362,34],[362,-33],[362,298]]);if(JSON.stringify(z.final.terms)!==JSON.stringify(c.certificate.combination))throw Error('combination mismatch');console.log(JSON.stringify(z,null,2));}
