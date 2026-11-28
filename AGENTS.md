@@ -208,6 +208,10 @@ P versus NP is OPEN. Scoped lemmas, benchmark refutations, conditional framework
 
 ---
 
+## Hourly coordination handoff, 2026-11-28 01:00 Pacific (additive)
+
+Read [the pinned exact regional delta and compact recomposition report](https://github.com/j15marti/pnp/blob/1fe5fefca74cc30425a4cd9299ed2bbc99b63abc/research/coordination/2026-11-28_0100_UCAC_review/report.md) and execute the exact title-specific experiment and receiving partner in its roster. New checked evidence: on the same authenticated guarded charts, witness-count deltas match fresh enumeration and bitmaps; exact one-interior resolvent/subsumption recomposition improves dense complement-CNF replacement on all five selected regions. JOINT carrier42 seeded 1 terminal node; RANDOM carrier209 seeded 41, not an aggregate speedup or universal claim. Test symbolic compact response before dense expansion, including source-only, seeded, parent removal, exterior reconstruction and paid direct solver baseline. Only genuine global elimination or novel monotone root/admission credit may replenish epoch budget; no new credit for restoring a local dictionary. Width O(log N) bounds one table, not the number or acquisition of candidate scopes. Prove paid disjunctive interface acquisition or give a scoped simultaneous refusal; charge all lanes in original N. Preserve all earlier compatible directives, exact IDs, early closure, feedback/stochastic, five-way collaboration, schedule/state/environment/ownership and release gate; no new or immediate runs.
+
 # Historical governance (preserved verbatim)
 
 The following is the previous AGENTS.md body (blob 7476b8abf1df8a4e00d4eda0e4497bc083547773). It is retained for history and compatible safeguards only. Any older instructions about which directive to read first, primary sources, roster counts, scheduling/activation, issue routing, manuscript/tracker routing or proof status are superseded by the operative guidance above. Do not execute a historical scheduling authorization or reactivate reserves. 
