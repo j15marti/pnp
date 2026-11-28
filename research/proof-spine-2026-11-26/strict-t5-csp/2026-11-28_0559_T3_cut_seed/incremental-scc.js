@@ -1,0 +1,17 @@
+function experiment(R){
+const assert=(x,m)=>{if(!x)throw Error(m)},key=c=>c.slice().sort((a,b)=>a-b).join(","),vars=F=>[...new Set(F.flat().map(Math.abs))].sort((a,b)=>a-b);
+function one(e,mode){let F=e.F.slice(),V=vars(F),L=V.flatMap(v=>[v,-v]),index=new Map(L.map((l,i)=>[l,i])),bits=L.map((_,i)=>1n<<BigInt(i)),reach=bits.slice(),C={literal:0,check:0,reach:0,candidates:0},cap=4000000,proof=[],rounds=0,status="UNKNOWN",keys=new Set(F.map(key)),peak=F.length;let start=Date.now();
+function tick(k,n=1){C[k]+=n;if(C.literal+C.check+C.reach+C.candidates>cap)throw Error("CAP")}
+function edge(u,v){let a=index.get(u),b=index.get(v),S=reach[b];for(let i=0;i<L.length;i++){tick("reach");if(reach[i]&bits[a])reach[i]|=S}}
+function addGraph(c){if(c.length===1)edge(-c[0],c[0]);if(c.length===2){edge(-c[0],c[1]);edge(-c[1],c[0])}}
+function bad(){for(let i=0;i<L.length;i+=2){tick("reach");if((reach[i]&bits[i+1])&&(reach[i+1]&bits[i]))return L[i]}return null}
+function up(DB,pins){let A=new Map(pins),trace=[];for(;;){let changed=false;for(let j=0;j<DB.length;j++){let c=DB[j],u=[],sat=false;for(let l of c){tick("literal");let a=A.get(Math.abs(l));if(a===undefined)u.push(l);else if(a===Number(l>0)){sat=true;break}}if(sat)continue;if(!u.length)return{trace,conflict:j};if(u.length===1){let l=u[0];A.set(Math.abs(l),Number(l>0));trace.push([l,j]);changed=true}}if(!changed)return{trace,conflict:null}}}
+function replay(DB,pins,p){let a=new Map(pins);for(let [l,j] of p.trace){let c=DB[j];assert(c.includes(l)&&!a.has(Math.abs(l)),"head");for(let t of c)if(t!==l){tick("check");assert(a.get(Math.abs(t))===Number(t<0),"reason")}a.set(Math.abs(l),Number(l>0))}for(let t of DB[p.conflict]){tick("check");assert(a.get(Math.abs(t))===Number(t<0),"leaf")}}
+let B=new Set(mode==="spectral"?e.cut1.boundary:e.cut0.boundary),pairs=[];for(let i=0;i<V.length;i++)for(let j=i+1;j<V.length;j++)pairs.push([V[i],V[j]]);
+if(mode!=="lex")pairs.sort((a,b)=>(Number(B.has(b[0]))+Number(B.has(b[1])))-(Number(B.has(a[0]))+Number(B.has(a[1])))||a[0]-b[0]||a[1]-b[1]);
+let pivot=null;
+try{for(let c of F)addGraph(c);pivot=bad();if(pivot!==null)status="SCC";else if(F.length===0)status="SAT_EMPTY";for(let round=0;round<4&&status==="UNKNOWN";round++){rounds++;let before=F.length;for(let [x,y] of pairs){for(let w=0;w<4;w++){let c=[w&1?-x:x,w&2?-y:y];if(keys.has(key(c)))continue;tick("candidates");let pins=[[x,w&1],[y,w>>1]],p=up(mode==="frozen"?e.F:F,pins);if(p.conflict===null)continue;replay(mode==="frozen"?e.F:F,pins,p);proof.push({...p,x,y,w,clause:c,index:F.length});keys.add(key(c));F.push(c);peak=Math.max(peak,F.length);addGraph(c);pivot=bad();if(pivot!==null){status="SCC";break}}if(status!=="UNKNOWN")break}if(mode==="frozen"||F.length===before)break}}catch(e){if(e.message!=="CAP")throw e;status="UNKNOWN_CAP"}
+if(status==="SCC"){let a=index.get(pivot),b=index.get(-pivot);assert((reach[a]&bits[b])&&(reach[b]&bits[a]),"reach check")}
+return{mode,status,pivot,proof,counts:C,rounds,cap,peakClauses:peak,reachBits:L.length*L.length,ms:Date.now()-start}}
+return Object.values(R).map(e=>({instance:e.instance,guard:e.guard_id,residual:e.residual_id,arms:["frozen","lex","cut","spectral"].map(m=>one(e,m))}))}
+if(typeof require==="function"){let fs=require("fs"),R=Object.fromEntries(process.argv.slice(2).map(p=>{let e=JSON.parse(fs.readFileSync(p,"utf8"));return[e.id,e]}));console.log(JSON.stringify(experiment(R),null,2))}
