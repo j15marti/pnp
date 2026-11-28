@@ -1,0 +1,36 @@
+function extra(audit,old,compiler,corpus,registry,peer){
+ const end=audit.indexOf(" // Mandatory baseline, early forced-information");if(end<0)throw Error("extract");
+ const X=Function(audit.slice(0,end)+"return {H,K,compile,database,saturate,reverseCheck,correction,randomProbe};};return main")()(old,compiler,corpus,registry),{H,K,compile,correction,saturate,database,reverseCheck}=X;
+ const ck=(p,s)=>{if(!p)throw Error(s||"check")},sort=a=>[...new Set(a)].sort((a,b)=>a-b),enc=x=>JSON.stringify(x)+"\n";
+ function chart(G){let D=K.normal(G),rawV=sort(D.F.flatMap(f=>f.vs)),raw=K.early(D.F,rawV,K.clauses(D.F)),P=K.project(D.F),freq=new Map();for(let f of P.Q)for(let v of f.vs)freq.set(v,(freq.get(v)||0)+1);let anchor=[...freq].sort((a,b)=>b[1]-a[1]||a[0]-b[0])[0][0];ck(P.Q.every(f=>f.ok.every(w=>f.ok.includes(w^(2**f.vs.length-1)))));let F=K.gaugeFactors(P.Q,anchor),V=sort(F.flatMap(f=>f.vs)),C=K.clauses(F),early=K.early(F,V,C);return {chart:{anchor,V,F,trace:P.trace},raw:{r:rawV.length,rank:raw.rank,pins:raw.pins,conflict:raw.conflict},project:{steps:P.trace.length,scans:P.scans,tests:P.tests,checkTests:P.checkTests},early,C,V}}
+ // Reconstruct RANDOM proof data compactly; no reliance on oversized result readback.
+ let x=corpus.instances.find(z=>z.id==="RANDOM-3CNF-40"),e=registry.instances.find(z=>z.alias==="EB-RANDOM-3CNF-40"),G=compile(x);
+ ck(H.sha(enc(G.network))===e.sha256&&enc(G.network).length*8===e.N_bits&&H.sha(x.dimacs)===e.source_cnf.sha256&&H.sha(enc(G.source_map))===e.source_map_sha256,"auth");
+ let t=chart(G.network),q=saturate(t.C,t.V),source=x.dimacs.trimEnd().split("\n").slice(1).map(c=>c.split(/\s+/).map(Number).slice(0,-1)),d=saturate(source,Array.from({length:x.nvars},(_,i)=>i+1)),masks=[];let seeds=[[362,34],[362,-33],[362,298]];
+ for(let i=0;i<8;i++){let q=saturate(t.C,t.V,seeds.filter((_,j)=>i>>j&1));masks.push({mask:i,status:q.status,m:q.m,proof:q.proof,accepted:q.accepted,refused:q.refused,verify:q.verify,ms:q.ms})}
+ // Independently extract local UP reason cones from each own chart and verify their parent deletion. Use no imported row-index interpretation.
+ let D=database(t.C),local=[],parentClauses=t.C.map(c=>c.slice());
+ function witness(F,g){let work={reads:0},A=database(F),nodes=0;function search(p){nodes++;let z=A.probe(p,work);if(z.conflict)return null;let S=new Set(z.assigned),v=F.flat().map(Math.abs).find(v=>!S.has(v)&&!S.has(-v));if(v===undefined)return z.assigned;return search(p.concat(-v))??search(p.concat(v))}let a=search(g);if(a)ck(F.every(c=>c.some(l=>a.includes(l)))&&g.every(l=>a.includes(l)),"bad witness");return{a,work:work.reads,nodes}}
+ for(let c of seeds){let m={reads:0},r=D.probe(c.map(l=>-l),m,true);ck(r.conflict,"seed order");let ids=r.parents.slice();for(let j=0;j<ids.length;){let test=ids.filter((_,i)=>i!==j),Q=database(test.map(i=>parentClauses[i]));if(Q.probe(c.map(l=>-l),m).conflict)ids=test;else j++}
+ let Q=ids.map(i=>parentClauses[i]),verify=reverseCheck(Q,[c]),deleted=ids.map((id,j)=>({id,...witness(Q.filter((_,i)=>i!==j),c.map(l=>-l))})),full=witness(Q,[]);ck(full.a!==null&&deleted.every(w=>w.a!==null),"minimality");
+ local.push({c,ids,clauses:Q,admissionReads:m.reads,verify,full,deleted});D.add(c);parentClauses.push(c)}
+ let comparison={entry:e,chart:t.chart,raw:t.raw,project:t.project,early:t.early,guard:peer[1].guard_id,peerRef:"https://github.com/j15marti/pnp/issues/328#issuecomment-7233483586",scope:"reproved on own chart, local cone independently minimized, not replay of peer row IDs",native:{status:q.status,m:q.m,proof:q.proof,verify:q.verify},direct:{status:d.status,m:d.m,proof:d.proof,verify:d.verify},masks,local};
+ function paired(n){
+ let scopes=[],charges=[],owners=[],edges=[];
+ function block(b){let E=[];for(let j=0;j<2;j++)for(let i=0;i<n;i++)E.push([j*n+i,j*n+(i+1)%n]);for(let i=0;i<n;i++)E.push([i,n+i]);let map=E.map((_,i)=>b===0?i+1:i===0?1:3*n+i);for(let i=0;i<2*n;i++){let s=E.map((e,j)=>e.includes(i)?map[j]:0).filter(Boolean);ck(s.length===3);scopes.push(s);charges.push(+(i===0));owners.push(b)}edges.push({b,E,map})}
+ block(0);block(1);let rows=[];for(let i=0;i<scopes.length;i++)for(let w=0;w<8;w++)if(((w&1)^((w>>1)&1)^((w>>2)&1))!==charges[i])rows.push({owner:i,block:owners[i],c:scopes[i].map((v,k)=>w>>k&1?-v:v)});
+ let state=(20261127^n)>>>0;const next=()=>{state^=state<<13;state^=state>>>17;state^=state<<5;return state>>>0};for(let i=rows.length-1;i>0;i--){let j=next()%(i+1);[rows[i],rows[j]]=[rows[j],rows[i]]}
+ let C=rows.map(r=>r.c),r=6*n-1,x={id:"T3-COUPLED-PRISM-"+n,nvars:r,dimacs:"p cnf "+r+" "+C.length+"\n"+C.map(c=>c.join(" ")+" 0\n").join("")};ck(sort(C.flat().map(Math.abs)).length===r);return {x,rows,scopes,charges,owners,edges}}
+ let cases=[];
+ for(let n of [4,8,16]){
+ let P=paired(n),C=P.rows.map(r=>r.c),V=Array.from({length:P.x.nvars},(_,i)=>i+1),F=P.scopes.map((vs,i)=>({id:i,vs,ok:Array.from({length:8},(_,w)=>w).filter(w=>((w&1)^((w>>1)&1)^((w>>2)&1))===P.charges[i]),ids:P.rows.map((r,j)=>r.owner===i?j+1:0).filter(Boolean)})),early=K.early(F,V,C);ck(early.conflict,"affine");let rup=saturate(C,V),corr=correction(C,V);ck(rup.status==="UNKNOWN fixed point"&&rup.proof.length===0&&corr.exactNO&&corr.rank===C.length-1,"family audit");
+ let native=compile(P.x),nt=chart(native.network),nr=saturate(nt.C,nt.V),nc=correction(nt.C,nt.V),id="STRICT-EB4-v1:sha256:"+H.sha(enc(native.network)),cnfId="DIMACS-CNF-v1:sha256:"+H.sha(P.x.dimacs),guard=[[nt.chart.anchor-1,0]],guardId="GUARD-v1:sha256:"+H.sha(enc(["PNP-GUARD-v1",id,"EB-PORT-PINS-v1",H.sha(enc(guard))])),map={coordinate:"relative original representative port v-1 XOR anchor",anchor:nt.chart.anchor,reverse:"complete bucket projection trace then signed equality BFS and global complement"},chartId="RESIDUAL-v1:sha256:"+H.sha(enc(["PNP-RESIDUAL-v1",id,guardId,"T3-COUPLED-PRISM-CHART-v1",H.sha(enc(nt.chart)),H.sha(enc(map))]));
+ ck(nr.status==="UNKNOWN fixed point"&&nr.proof.length===0&&nc.exactNO,"native scope audit");
+ // Independent constant certificate via each original vertex's exact falsifier partition: no polynomial GE needed.
+ let occurrence=Array.from({length:2},()=>new Map()),odd=[0,0];for(let i=0;i<P.scopes.length;i++){let b=P.owners[i];odd[b]^=P.charges[i];for(let v of P.scopes[i])occurrence[b].set(v,(occurrence[b].get(v)||0)^1);let ids=F[i].ids;for(let w=0;w<8;w++){let hits=ids.filter(j=>C[j-1].every(l=>Boolean(w>>P.scopes[i].indexOf(Math.abs(l))&1)!==(l>0))).length;ck(hits===+(((w&1)^((w>>1)&1)^((w>>2)&1))!==P.charges[i]),"local block")}}
+ ck(odd.every(b=>b===1)&&occurrence.every(a=>[...a.values()].every(b=>b===0)),"parity sum");
+ cases.push({n,cnfId,cnfN:P.x.dimacs.length*8,instance:P.x,rows:P.rows,scopes:P.scopes,charges:P.charges,owners:P.owners,edges:P.edges,early,rup,corr,independent:{odd,localChecks:P.scopes.length*8,blockCertificate:P.rows.map((r,i)=>r.block===0?i+1:0).filter(Boolean)},native:{id,N:enc(native.network).length*8,vertices:native.network.types.length,edges:native.network.edges.length,mapSha:H.sha(enc(native.source_map)),guard,guardId,chartId,chart:nt.chart,map,raw:nt.raw,project:nt.project,early:nt.early,rup:nr,correction:nc}})
+ }
+ return{comparison,cases}
+}
+const fs=require('node:fs');const args=process.argv.slice(2).map(p=>fs.readFileSync(p,'utf8'));console.log(JSON.stringify(extra(...args.slice(0,3),...args.slice(3).map(JSON.parse)),null,2));
