@@ -1,0 +1,4 @@
+function coordinateQuotient(A,D,b){
+const N=2**b,weight=x=>{let n=0;while(x){x&=x-1;n++}return n},dif=new Uint8Array(N),work={pairs:0,zeta:0,check:0};for(let a of A)for(let d of D){dif[a^d]=1;work.pairs++}let bad=dif.slice();for(let j=0;j<b;j++)for(let m=0;m<N;m++)if(m>>j&1){bad[m]|=bad[m^(1<<j)];work.zeta++}let best=0,counts=Array(b+1).fill(0);for(let m=0;m<N;m++)if(!bad[m]){counts[weight(m)]++;if(weight(m)>weight(best))best=m}let key=x=>x&((N-1)^best),l=new Set(A.map(key)),r=new Set(D.map(key));for(let x of l){work.check++;if(r.has(x))throw Error("bad quotient")};return{b,best,drop:Array.from({length:b},(_,i)=>i).filter(i=>best>>i&1),rank:b-weight(best),counts,projected:[l.size,r.size],work}
+}
+const p=JSON.parse(require('node:fs').readFileSync(process.argv[2],'utf8')).peer;console.log(JSON.stringify(coordinateQuotient(p.leftSupport,p.rightSupport,p.B.length),null,2));
