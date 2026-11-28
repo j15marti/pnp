@@ -1,0 +1,9 @@
+function make(k,b){
+ const inputs=Array.from({length:2*k},(_,i)=>"x"+(i+1)).concat(["t","h"]),gates=[];for(let i=0;i<k;i++)gates.push(["o"+i,"OR","x"+(2*i+1),"x"+(2*i+2)]);let f="o0";for(let i=1;i<k;i++){gates.push(["a"+i,"AND",f,"o"+i]);f="a"+i}gates.push(["g","XOR",f,"h"]);return{format:"FACTORED-BOOL-ENERGY-v1",inputs,gates,requirements:[["EQ","t",f],["EQ","t","g"],["PIN","h",b]]}}
+function evalEnergy(src,word){let A=new Map(src.inputs.map((v,i)=>[v,word[i]]));for(let [z,op,u,v] of src.gates){let a=A.get(u),b=A.get(v);A.set(z,op==="OR"?a|b:op==="AND"?a&b:a^b)}return src.requirements.reduce((s,[op,u,v])=>s+Number(A.get(u)!==(op==="EQ"?A.get(v):v)),0)}
+function tests(sha){let out=[];for(let k of [2,4,6,8,12,20,32])for(let b of [0,1]){let s=make(k,b),bytes=JSON.stringify(s)+"\n",word=s.inputs.map(()=>0),upper=evalEnergy(s,word);let lower=3;for(let f=0;f<2;f++)for(let t=0;t<2;t++)for(let h=0;h<2;h++)lower=Math.min(lower,Number(t!==f)+Number(t!==(f^h))+Number(h!==b));if(lower!==upper||lower!==b)throw Error("witness");
+ const den=4n**BigInt(k),mass=2n*(6n**BigInt(k)-3n**BigInt(k)),max=3n**BigInt(k-1),m=BigInt(k*k),tail=mass-m*max; // exact common denominator 4^k
+ let brute=null;if(k<=6){brute=3;for(let w=0;w<2**s.inputs.length;w++)brute=Math.min(brute,evalEnergy(s,s.inputs.map((_,i)=>w>>i&1)));if(brute!==lower)throw Error("brute")}
+ out.push({k,b,model:s.format,instance_id:s.format+":sha256:"+sha(bytes),N_bits:8*bytes.length,source:s,exactMinimum:lower,word,brute,frequencyCount:(2n*den+2n).toString(),highMassNumerator:mass.toString(),denominator:den.toString(),maxHighCoefficientNumerator:max.toString(),retainedCap:m.toString(),tailLowerNumerator:tail.toString(),tailExceedsMean:2n*tail>3n*den})
+ }return out}
+if(typeof require!=='undefined'&&require.main===module){const c=require('node:crypto');console.log(JSON.stringify(tests(s=>c.createHash('sha256').update(s).digest('hex')),null,2))}
