@@ -1,0 +1,1202 @@
+Grok 4.7 hourly work, 2026-11-28 1707 KST -- T3/L05-36 triple-packing NAE4: exact PC4 / PC5 status.
+P vs NP remains OPEN. Scope: projected NAE4 residual hypergraphs (T3 Sec.5), multilinear F2 PC
+("full bounded multilinear closure" of T3 Sec.2). Nothing here is a lower bound for algorithms.
+
+Files (in comments/grok-4.7/2026-11-28/code/)
+  2026-11-28_1707_packing_pc4.py            single-file tool (subcommands below)
+  2026-11-28_1707_packing_pc4_mlclosure.c   C exact degree-d closure: gcc -O2 -o mlclosure <file>; mlclosure n d g|r edgefile
+  2026-11-28_1707_packing_pc4_outputs.txt   this file: README, hashes, checker output, edge lists, raw results, SHA list
+
+Run order (T = python3 2026-11-28_1707_packing_pc4.py; ./mlclosure must be in the working dir)
+  $T packgen ; $T defect ; $T yesctl        (yesctl writes pack16_yes.txt, pack18_yes.txt)
+  python3 -c "import importlib.util as u;s=u.spec_from_file_location('t','2026-11-28_1707_packing_pc4.py');m=u.module_from_spec(s);s.loader.exec_module(m);[open(f'pack{n}.txt','w').write(chr(10).join(' '.join(map(str,e)) for e in m.gen(n,sd,'down'))+chr(10)) for n,sd in [(16,20261127),(18,20261128)]]"
+  $T prove 16 4 g pack16.txt cert16_g4.json ; $T check cert16_g4.json     (same with r, and with 18)
+  $T mincore 16 20261127 3,4,5 ; $T mincore 18 20261128 3,4,5             (writes core_*.txt)
+  $T prove 16 5 g core_16_20261127.txt certcore16_g5.json ; $T check certcore16_g5.json   (same for 18)
+  $T scan 8,9,...,24 1 21 > scan_results.jsonl ; $T scan 26,28 1 4 >> scan_results.jsonl
+  $T corescan 14,15,16,17 1 21 > corescan_results.jsonl ; $T tables
+
+Certificates (deterministic, not committed because of size 3-27 MB), SHA-256:
+  50e58f535b443097b5562601b8e43146f1b4aaf85374e3ebab9045931ead90de  cert16_g4.json
+  50512a949f0ed85fdb4ef060f4f3bb0b57f83611c4f773b106b7e1601eace6dd  cert16_r4.json
+  c35c9d529c2a60a4ffbaf2fcd138034e2f1c874fbcf09ca5ecf95c9050f331e7  cert18_g4.json
+  f927898470081b59e57f363328ec76f98c6ce2416019302cad74a035c1aa9200  cert18_r4.json
+  d26a2d11a294e44fa766d7698c2e041ce05fa4fd76ce3e108c6db5734f197b7e  certcore16_g5.json
+  3550c61bf7629bdf48e241972628a8d126f0a69a2cf9e527f55018563e816b6a  certcore18_g5.json
+Edge lists:
+  8a66937eff1a34fbc8885e2902a26d39d7ea5b8274c471424391eba432aca3cb  pack16.txt
+  78bed9ae274273ba34efe359f2136485aec44ffd0f2f9641144dd7c4c7ca71cd  pack18.txt
+  e3ba847928985862481b5edced0833d66d50492b07bae8d8a7a163fe0997ef8e  core_16_20261127.txt
+  86a849da7a901e818121a75d6f526b4b59d2d000b6b1d67c576343538ae5aa56  core_18_20261128.txt
+
+Key outputs
+  mlclosure 16 3 g pack16.txt : FIXED_POINT rank 106 (ambient 697)        [T3 Sec.5 theorem]
+  mlclosure 16 4 g/r pack16.txt : REFUTED sweep 2 var 8 rank 2513 (rank after sweep 1 = 1555 = T3 cap rank)
+  mlclosure 18 4 g/r pack18.txt : REFUTED sweep 2 var 14 rank 4046
+  YES controls 16/18, d=4 : FIXED_POINT rank 2515/4046, dual dim 2
+  cores 16 (53 edges) / 18 (61 edges): d=3,4 FIXED_POINT (d=4 ranks 869/1028, C and Python agree); d=5 REFUTED (certified)
+Environment: Python 3.13, python-sat 1.9.dev15 (CaDiCaL 1.5.3 binding), numpy 2.5.5, gcc -O2; serial.
+
+===== checker output (cert_checks.txt) =====
+CERTIFICATE OK: degree-4 multilinear F2 PC refutation (g encoding), n=16, 106 edges, 2407 product rows, final combination of 1140 rows; triple-packing=True; max product degree 4
+CERTIFICATE OK: degree-4 multilinear F2 PC refutation (r encoding), n=16, 106 edges, 2301 product rows, final combination of 1141 rows; triple-packing=True; max product degree 4
+CERTIFICATE OK: degree-4 multilinear F2 PC refutation (g encoding), n=18, 147 edges, 3899 product rows, final combination of 1890 rows; triple-packing=True; max product degree 4
+CERTIFICATE OK: degree-4 multilinear F2 PC refutation (r encoding), n=18, 147 edges, 3752 product rows, final combination of 1903 rows; triple-packing=True; max product degree 4
+CERTIFICATE OK: degree-5 multilinear F2 PC refutation (g encoding), n=16, 53 edges, 6490 product rows, final combination of 2900 rows; triple-packing=True; max product degree 5
+CERTIFICATE OK: degree-5 multilinear F2 PC refutation (g encoding), n=18, 61 edges, 11821 product rows, final combination of 5550 rows; triple-packing=True; max product degree 5
+
+===== edge list pack16.txt (0-based, one 4-edge per line) =====
+1 2 7 11
+1 3 4 12
+1 2 5 13
+1 5 8 11
+8 9 12 15
+4 5 9 13
+2 3 12 14
+8 10 11 13
+0 2 9 13
+0 3 4 5
+0 4 13 15
+0 1 4 9
+3 5 7 9
+2 5 10 12
+7 9 14 15
+0 5 6 9
+0 1 10 12
+2 9 10 11
+3 5 10 14
+0 1 5 7
+0 2 3 6
+0 5 12 13
+6 7 9 10
+0 2 5 15
+0 6 11 13
+1 4 10 13
+1 6 11 12
+1 2 8 9
+1 9 12 13
+0 4 8 11
+4 7 10 12
+0 2 4 7
+1 2 12 15
+1 7 8 13
+2 6 13 15
+1 4 5 6
+6 7 12 13
+3 7 8 15
+2 8 10 15
+5 6 10 11
+1 11 13 14
+0 7 12 15
+10 11 12 15
+1 9 10 15
+0 1 6 8
+6 8 10 14
+2 5 9 14
+2 3 11 15
+4 5 7 14
+0 3 8 14
+4 7 8 9
+2 7 9 12
+0 2 11 12
+9 10 13 14
+3 8 12 13
+5 6 8 15
+3 4 6 8
+3 6 7 14
+1 3 8 10
+0 3 10 15
+2 4 11 13
+0 7 11 14
+4 6 7 11
+0 4 12 14
+7 9 11 13
+2 4 8 14
+0 3 9 11
+0 1 14 15
+3 4 7 13
+4 6 12 15
+0 8 9 10
+5 11 12 14
+3 6 9 12
+1 3 5 15
+4 10 11 14
+5 7 8 10
+7 8 11 12
+4 5 10 15
+2 6 8 12
+2 7 13 14
+1 2 6 10
+1 6 7 15
+4 9 11 15
+2 3 4 10
+1 3 6 13
+0 7 10 13
+3 9 13 15
+2 4 6 9
+2 6 11 14
+6 8 9 13
+8 9 11 14
+0 2 10 14
+5 11 13 15
+3 4 9 14
+1 8 12 14
+1 7 10 14
+0 4 6 10
+4 5 8 12
+1 6 9 14
+5 8 13 14
+12 13 14 15
+2 5 6 7
+4 6 13 14
+2 3 5 8
+1 4 8 15
+3 7 10 11
+
+===== edge list pack18.txt (0-based, one 4-edge per line) =====
+1 9 11 17
+1 4 5 8
+0 1 13 14
+3 9 12 15
+3 7 15 16
+0 5 8 16
+0 6 11 12
+1 6 7 8
+7 9 14 15
+0 4 9 16
+0 2 3 6
+2 6 8 12
+1 14 16 17
+0 3 9 10
+5 6 9 10
+0 6 16 17
+4 5 10 16
+0 7 14 17
+9 12 14 17
+1 5 7 13
+6 9 13 16
+0 2 10 12
+1 7 11 15
+1 2 4 17
+0 7 9 11
+2 5 8 11
+2 6 7 11
+0 1 4 6
+3 6 10 15
+7 13 15 17
+1 3 12 16
+1 4 9 14
+11 12 13 17
+4 10 11 17
+3 5 8 9
+0 6 8 9
+1 3 5 14
+4 12 14 16
+4 8 12 15
+4 9 11 12
+0 10 15 16
+1 8 9 12
+6 13 14 17
+2 5 13 15
+0 2 4 13
+4 7 12 17
+1 6 12 13
+3 4 10 12
+1 2 8 15
+0 7 12 16
+3 9 11 14
+0 8 11 17
+2 5 12 14
+2 10 13 16
+0 1 3 17
+0 12 14 15
+10 14 15 17
+3 6 7 9
+1 7 12 14
+4 7 8 13
+5 6 12 16
+1 8 10 13
+6 8 14 15
+0 3 8 14
+4 9 13 17
+3 8 10 16
+2 6 15 17
+2 4 11 16
+5 10 11 13
+5 8 10 12
+6 7 14 16
+1 13 15 16
+8 11 13 16
+2 7 12 13
+2 3 5 7
+0 1 5 12
+5 9 16 17
+3 6 12 14
+0 2 5 17
+11 13 14 15
+0 1 7 10
+2 9 13 14
+5 11 14 16
+1 2 6 9
+0 5 7 15
+6 7 10 13
+5 9 12 13
+1 6 11 14
+2 3 4 9
+0 4 15 17
+3 8 11 12
+1 2 7 16
+7 9 10 17
+11 12 15 16
+3 6 8 17
+0 3 5 11
+1 10 11 16
+0 10 11 14
+4 7 11 14
+0 10 13 17
+1 3 11 13
+2 3 8 13
+2 10 11 15
+2 4 6 14
+0 4 8 10
+0 2 7 8
+1 2 11 12
+1 10 12 17
+5 6 7 17
+0 8 12 13
+4 5 9 15
+2 8 9 17
+4 6 11 15
+3 4 13 16
+0 3 7 13
+2 3 16 17
+8 9 10 15
+7 10 11 12
+1 5 15 17
+3 4 5 6
+4 5 13 14
+0 5 9 14
+7 8 10 14
+3 10 13 14
+2 9 15 16
+0 2 14 16
+7 8 9 16
+2 3 14 15
+5 8 13 17
+2 4 7 15
+8 15 16 17
+0 5 6 13
+3 4 14 17
+3 5 12 17
+4 6 8 16
+1 2 10 14
+9 10 14 16
+1 3 4 7
+3 11 15 17
+6 8 10 11
+10 12 13 15
+1 4 10 15
+0 9 13 15
+6 7 12 15
+7 11 16 17
+2 11 14 17
+3 6 11 16
+
+===== edge list pack16_yes.txt (0-based, one 4-edge per line) =====
+1 2 7 11
+1 3 4 12
+1 2 5 13
+1 5 8 11
+8 9 12 15
+4 5 9 13
+2 3 12 14
+8 10 11 13
+0 2 9 13
+0 3 4 5
+0 4 13 15
+0 1 4 9
+3 5 7 9
+2 5 10 12
+0 5 6 9
+0 1 10 12
+2 9 10 11
+3 5 10 14
+0 1 5 7
+0 2 3 6
+0 5 12 13
+6 7 9 10
+0 2 5 15
+0 6 11 13
+1 4 10 13
+1 6 11 12
+1 2 8 9
+1 9 12 13
+0 4 8 11
+4 7 10 12
+0 2 4 7
+1 2 12 15
+1 7 8 13
+2 6 13 15
+1 4 5 6
+6 7 12 13
+3 7 8 15
+2 8 10 15
+5 6 10 11
+1 11 13 14
+0 7 12 15
+10 11 12 15
+1 9 10 15
+0 1 6 8
+6 8 10 14
+2 5 9 14
+2 3 11 15
+4 5 7 14
+0 3 8 14
+4 7 8 9
+2 7 9 12
+0 2 11 12
+9 10 13 14
+3 8 12 13
+5 6 8 15
+3 4 6 8
+3 6 7 14
+1 3 8 10
+0 3 10 15
+2 4 11 13
+0 7 11 14
+4 6 7 11
+0 4 12 14
+7 9 11 13
+2 4 8 14
+0 3 9 11
+0 1 14 15
+3 4 7 13
+4 6 12 15
+0 8 9 10
+5 11 12 14
+3 6 9 12
+1 3 5 15
+4 10 11 14
+5 7 8 10
+7 8 11 12
+4 5 10 15
+2 6 8 12
+2 7 13 14
+1 2 6 10
+1 6 7 15
+4 9 11 15
+2 3 4 10
+1 3 6 13
+0 7 10 13
+3 9 13 15
+2 4 6 9
+2 6 11 14
+6 8 9 13
+8 9 11 14
+0 2 10 14
+5 11 13 15
+3 4 9 14
+1 8 12 14
+1 7 10 14
+4 5 8 12
+1 6 9 14
+5 8 13 14
+12 13 14 15
+2 5 6 7
+4 6 13 14
+2 3 5 8
+1 4 8 15
+3 7 10 11
+
+===== edge list pack18_yes.txt (0-based, one 4-edge per line) =====
+1 9 11 17
+0 1 13 14
+3 9 12 15
+3 7 15 16
+0 6 11 12
+1 6 7 8
+7 9 14 15
+0 4 9 16
+0 2 3 6
+2 6 8 12
+1 14 16 17
+0 3 9 10
+5 6 9 10
+0 6 16 17
+4 5 10 16
+0 7 14 17
+9 12 14 17
+1 5 7 13
+6 9 13 16
+0 2 10 12
+1 7 11 15
+1 2 4 17
+0 7 9 11
+2 5 8 11
+2 6 7 11
+0 1 4 6
+3 6 10 15
+7 13 15 17
+1 3 12 16
+1 4 9 14
+4 10 11 17
+3 5 8 9
+0 6 8 9
+1 3 5 14
+4 12 14 16
+4 8 12 15
+4 9 11 12
+0 10 15 16
+1 8 9 12
+6 13 14 17
+2 5 13 15
+0 2 4 13
+4 7 12 17
+1 6 12 13
+3 4 10 12
+1 2 8 15
+0 7 12 16
+3 9 11 14
+0 8 11 17
+2 5 12 14
+2 10 13 16
+0 1 3 17
+0 12 14 15
+10 14 15 17
+3 6 7 9
+1 7 12 14
+4 7 8 13
+5 6 12 16
+1 8 10 13
+6 8 14 15
+0 3 8 14
+4 9 13 17
+3 8 10 16
+2 6 15 17
+2 4 11 16
+5 10 11 13
+5 8 10 12
+6 7 14 16
+1 13 15 16
+8 11 13 16
+2 7 12 13
+2 3 5 7
+0 1 5 12
+5 9 16 17
+3 6 12 14
+0 2 5 17
+11 13 14 15
+0 1 7 10
+2 9 13 14
+5 11 14 16
+1 2 6 9
+6 7 10 13
+5 9 12 13
+1 6 11 14
+2 3 4 9
+0 4 15 17
+3 8 11 12
+1 2 7 16
+7 9 10 17
+11 12 15 16
+3 6 8 17
+0 3 5 11
+1 10 11 16
+0 10 11 14
+4 7 11 14
+0 10 13 17
+1 3 11 13
+2 3 8 13
+2 10 11 15
+2 4 6 14
+0 4 8 10
+0 2 7 8
+1 2 11 12
+1 10 12 17
+5 6 7 17
+0 8 12 13
+4 5 9 15
+2 8 9 17
+4 6 11 15
+3 4 13 16
+0 3 7 13
+2 3 16 17
+8 9 10 15
+7 10 11 12
+1 5 15 17
+3 4 5 6
+4 5 13 14
+0 5 9 14
+7 8 10 14
+3 10 13 14
+2 9 15 16
+0 2 14 16
+7 8 9 16
+2 3 14 15
+5 8 13 17
+2 4 7 15
+8 15 16 17
+0 5 6 13
+3 4 14 17
+3 5 12 17
+4 6 8 16
+1 2 10 14
+9 10 14 16
+1 3 4 7
+3 11 15 17
+6 8 10 11
+10 12 13 15
+1 4 10 15
+0 9 13 15
+6 7 12 15
+7 11 16 17
+2 11 14 17
+3 6 11 16
+
+===== edge list core_16_20261127.txt (0-based, one 4-edge per line) =====
+1 4 10 13
+1 9 12 13
+2 6 13 15
+3 7 8 15
+5 6 10 11
+1 9 10 15
+6 8 10 14
+2 5 9 14
+2 3 11 15
+4 5 7 14
+4 7 8 9
+2 7 9 12
+9 10 13 14
+5 6 8 15
+3 6 7 14
+2 4 11 13
+4 6 7 11
+0 4 12 14
+7 9 11 13
+2 4 8 14
+0 3 9 11
+3 4 7 13
+4 6 12 15
+0 8 9 10
+5 11 12 14
+3 6 9 12
+4 10 11 14
+7 8 11 12
+2 6 8 12
+2 7 13 14
+1 6 7 15
+4 9 11 15
+2 3 4 10
+1 3 6 13
+0 7 10 13
+2 4 6 9
+2 6 11 14
+6 8 9 13
+8 9 11 14
+0 2 10 14
+5 11 13 15
+3 4 9 14
+1 8 12 14
+0 4 6 10
+4 5 8 12
+1 6 9 14
+5 8 13 14
+12 13 14 15
+2 5 6 7
+4 6 13 14
+2 3 5 8
+1 4 8 15
+3 7 10 11
+
+===== edge list core_18_20261128.txt (0-based, one 4-edge per line) =====
+6 8 14 15
+0 3 8 14
+2 4 11 16
+5 10 11 13
+5 8 10 12
+1 13 15 16
+2 7 12 13
+2 3 5 7
+3 6 12 14
+11 13 14 15
+1 2 6 9
+0 5 7 15
+6 7 10 13
+5 9 12 13
+1 6 11 14
+2 3 4 9
+0 4 15 17
+3 8 11 12
+0 3 5 11
+1 10 11 16
+4 7 11 14
+0 10 13 17
+1 3 11 13
+2 3 8 13
+2 10 11 15
+2 4 6 14
+0 2 7 8
+1 10 12 17
+5 6 7 17
+0 8 12 13
+4 5 9 15
+2 8 9 17
+4 6 11 15
+3 4 13 16
+8 9 10 15
+1 5 15 17
+3 4 5 6
+4 5 13 14
+0 5 9 14
+7 8 10 14
+3 10 13 14
+0 2 14 16
+7 8 9 16
+2 3 14 15
+5 8 13 17
+8 15 16 17
+0 5 6 13
+3 4 14 17
+4 6 8 16
+1 2 10 14
+9 10 14 16
+1 3 4 7
+3 11 15 17
+6 8 10 11
+10 12 13 15
+1 4 10 15
+0 9 13 15
+6 7 12 15
+7 11 16 17
+2 11 14 17
+3 6 11 16
+
+===== scan_results.jsonl =====
+{"n": 8, "seed": 1, "edges": 8, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=53 dual_dim=110 (1 not in W)", "secs": 0.0}
+{"n": 8, "seed": 2, "edges": 11, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=2 rank=85 dual_dim=78 (1 not in W)", "secs": 0.0}
+{"n": 8, "seed": 3, "edges": 8, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=53 dual_dim=110 (1 not in W)", "secs": 0.0}
+{"n": 8, "seed": 4, "edges": 9, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=69 dual_dim=94 (1 not in W)", "secs": 0.0}
+{"n": 8, "seed": 5, "edges": 9, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=69 dual_dim=94 (1 not in W)", "secs": 0.0}
+{"n": 8, "seed": 6, "edges": 11, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=2 rank=85 dual_dim=78 (1 not in W)", "secs": 0.0}
+{"n": 8, "seed": 7, "edges": 9, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=69 dual_dim=94 (1 not in W)", "secs": 0.0}
+{"n": 8, "seed": 8, "edges": 9, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=69 dual_dim=94 (1 not in W)", "secs": 0.0}
+{"n": 8, "seed": 9, "edges": 9, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=69 dual_dim=94 (1 not in W)", "secs": 0.0}
+{"n": 8, "seed": 10, "edges": 8, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=2 rank=48 dual_dim=115 (1 not in W)", "secs": 0.0}
+{"n": 8, "seed": 11, "edges": 9, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=69 dual_dim=94 (1 not in W)", "secs": 0.0}
+{"n": 8, "seed": 12, "edges": 8, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=53 dual_dim=110 (1 not in W)", "secs": 0.0}
+{"n": 8, "seed": 13, "edges": 9, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=69 dual_dim=94 (1 not in W)", "secs": 0.0}
+{"n": 8, "seed": 14, "edges": 10, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=76 dual_dim=87 (1 not in W)", "secs": 0.0}
+{"n": 8, "seed": 15, "edges": 9, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=69 dual_dim=94 (1 not in W)", "secs": 0.0}
+{"n": 8, "seed": 16, "edges": 8, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=2 rank=48 dual_dim=115 (1 not in W)", "secs": 0.0}
+{"n": 8, "seed": 17, "edges": 9, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=69 dual_dim=94 (1 not in W)", "secs": 0.0}
+{"n": 8, "seed": 18, "edges": 8, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=53 dual_dim=110 (1 not in W)", "secs": 0.0}
+{"n": 8, "seed": 19, "edges": 8, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=53 dual_dim=110 (1 not in W)", "secs": 0.0}
+{"n": 8, "seed": 20, "edges": 8, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=62 dual_dim=101 (1 not in W)", "secs": 0.0}
+{"n": 9, "seed": 1, "edges": 13, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=144 dual_dim=112 (1 not in W)", "secs": 0.0}
+{"n": 9, "seed": 2, "edges": 13, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=136 dual_dim=120 (1 not in W)", "secs": 0.0}
+{"n": 9, "seed": 3, "edges": 13, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=108 dual_dim=148 (1 not in W)", "secs": 0.0}
+{"n": 9, "seed": 4, "edges": 14, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=148 dual_dim=108 (1 not in W)", "secs": 0.0}
+{"n": 9, "seed": 5, "edges": 14, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=146 dual_dim=110 (1 not in W)", "secs": 0.0}
+{"n": 9, "seed": 6, "edges": 14, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=152 dual_dim=104 (1 not in W)", "secs": 0.0}
+{"n": 9, "seed": 7, "edges": 13, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=138 dual_dim=118 (1 not in W)", "secs": 0.0}
+{"n": 9, "seed": 8, "edges": 14, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=146 dual_dim=110 (1 not in W)", "secs": 0.0}
+{"n": 9, "seed": 9, "edges": 14, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=150 dual_dim=106 (1 not in W)", "secs": 0.0}
+{"n": 9, "seed": 10, "edges": 13, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=104 dual_dim=152 (1 not in W)", "secs": 0.0}
+{"n": 9, "seed": 11, "edges": 14, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=150 dual_dim=106 (1 not in W)", "secs": 0.0}
+{"n": 9, "seed": 12, "edges": 15, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=152 dual_dim=104 (1 not in W)", "secs": 0.0}
+{"n": 9, "seed": 13, "edges": 14, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=150 dual_dim=106 (1 not in W)", "secs": 0.0}
+{"n": 9, "seed": 14, "edges": 15, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=156 dual_dim=100 (1 not in W)", "secs": 0.0}
+{"n": 9, "seed": 15, "edges": 14, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=146 dual_dim=110 (1 not in W)", "secs": 0.0}
+{"n": 9, "seed": 16, "edges": 12, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=2 rank=84 dual_dim=172 (1 not in W)", "secs": 0.0}
+{"n": 9, "seed": 17, "edges": 12, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=91 dual_dim=165 (1 not in W)", "secs": 0.0}
+{"n": 9, "seed": 18, "edges": 13, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=101 dual_dim=155 (1 not in W)", "secs": 0.0}
+{"n": 9, "seed": 19, "edges": 15, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=156 dual_dim=100 (1 not in W)", "secs": 0.0}
+{"n": 9, "seed": 20, "edges": 13, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=148 dual_dim=108 (1 not in W)", "secs": 0.0}
+{"n": 10, "seed": 1, "edges": 18, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=266 dual_dim=120 (1 not in W)", "secs": 0.01}
+{"n": 10, "seed": 2, "edges": 21, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=298 dual_dim=88 (1 not in W)", "secs": 0.01}
+{"n": 10, "seed": 3, "edges": 20, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=284 dual_dim=102 (1 not in W)", "secs": 0.01}
+{"n": 10, "seed": 4, "edges": 20, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=282 dual_dim=104 (1 not in W)", "secs": 0.01}
+{"n": 10, "seed": 5, "edges": 22, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=308 dual_dim=78 (1 not in W)", "secs": 0.01}
+{"n": 10, "seed": 6, "edges": 21, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=300 dual_dim=86 (1 not in W)", "secs": 0.01}
+{"n": 10, "seed": 7, "edges": 18, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=5 rank=248 dual_dim=138 (1 not in W)", "secs": 0.01}
+{"n": 10, "seed": 8, "edges": 19, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=270 dual_dim=116 (1 not in W)", "secs": 0.01}
+{"n": 10, "seed": 9, "edges": 19, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=262 dual_dim=124 (1 not in W)", "secs": 0.01}
+{"n": 10, "seed": 10, "edges": 18, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=5 rank=282 dual_dim=104 (1 not in W)", "secs": 0.01}
+{"n": 10, "seed": 11, "edges": 19, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=168 dual_dim=218 (1 not in W)", "secs": 0.0}
+{"n": 10, "seed": 12, "edges": 21, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=302 dual_dim=84 (1 not in W)", "secs": 0.01}
+{"n": 10, "seed": 13, "edges": 21, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=294 dual_dim=92 (1 not in W)", "secs": 0.01}
+{"n": 10, "seed": 14, "edges": 19, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=270 dual_dim=116 (1 not in W)", "secs": 0.01}
+{"n": 10, "seed": 15, "edges": 19, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=268 dual_dim=118 (1 not in W)", "secs": 0.01}
+{"n": 10, "seed": 16, "edges": 19, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=268 dual_dim=118 (1 not in W)", "secs": 0.01}
+{"n": 10, "seed": 17, "edges": 19, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=280 dual_dim=106 (1 not in W)", "secs": 0.01}
+{"n": 10, "seed": 18, "edges": 20, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=282 dual_dim=104 (1 not in W)", "secs": 0.0}
+{"n": 10, "seed": 19, "edges": 20, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=282 dual_dim=104 (1 not in W)", "secs": 0.01}
+{"n": 10, "seed": 20, "edges": 21, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=296 dual_dim=90 (1 not in W)", "secs": 0.01}
+{"n": 11, "seed": 1, "edges": 29, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=494 dual_dim=68 (1 not in W)", "secs": 0.01}
+{"n": 11, "seed": 2, "edges": 29, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=496 dual_dim=66 (1 not in W)", "secs": 0.02}
+{"n": 11, "seed": 3, "edges": 30, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=508 dual_dim=54 (1 not in W)", "secs": 0.02}
+{"n": 11, "seed": 4, "edges": 27, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=496 dual_dim=66 (1 not in W)", "secs": 0.02}
+{"n": 11, "seed": 5, "edges": 30, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=502 dual_dim=60 (1 not in W)", "secs": 0.02}
+{"n": 11, "seed": 6, "edges": 28, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=510 dual_dim=52 (1 not in W)", "secs": 0.02}
+{"n": 11, "seed": 7, "edges": 26, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=262 dual_dim=300 (1 not in W)", "secs": 0.0}
+{"n": 11, "seed": 8, "edges": 30, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=502 dual_dim=60 (1 not in W)", "secs": 0.02}
+{"n": 11, "seed": 9, "edges": 30, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=508 dual_dim=54 (1 not in W)", "secs": 0.02}
+{"n": 11, "seed": 10, "edges": 28, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=494 dual_dim=68 (1 not in W)", "secs": 0.02}
+{"n": 11, "seed": 11, "edges": 28, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=492 dual_dim=70 (1 not in W)", "secs": 0.01}
+{"n": 11, "seed": 12, "edges": 27, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=484 dual_dim=78 (1 not in W)", "secs": 0.01}
+{"n": 11, "seed": 13, "edges": 29, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=494 dual_dim=68 (1 not in W)", "secs": 0.02}
+{"n": 11, "seed": 14, "edges": 28, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=482 dual_dim=80 (1 not in W)", "secs": 0.02}
+{"n": 11, "seed": 15, "edges": 26, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=472 dual_dim=90 (1 not in W)", "secs": 0.02}
+{"n": 11, "seed": 16, "edges": 30, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=508 dual_dim=54 (1 not in W)", "secs": 0.02}
+{"n": 11, "seed": 17, "edges": 29, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=510 dual_dim=52 (1 not in W)", "secs": 0.01}
+{"n": 11, "seed": 18, "edges": 28, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=482 dual_dim=80 (1 not in W)", "secs": 0.02}
+{"n": 11, "seed": 19, "edges": 30, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=502 dual_dim=60 (1 not in W)", "secs": 0.02}
+{"n": 11, "seed": 20, "edges": 28, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=490 dual_dim=72 (1 not in W)", "secs": 0.02}
+{"n": 12, "seed": 1, "edges": 38, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=762 dual_dim=32 (1 not in W)", "secs": 0.04}
+{"n": 12, "seed": 2, "edges": 39, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=754 dual_dim=40 (1 not in W)", "secs": 0.04}
+{"n": 12, "seed": 3, "edges": 36, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=748 dual_dim=46 (1 not in W)", "secs": 0.04}
+{"n": 12, "seed": 4, "edges": 37, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=750 dual_dim=44 (1 not in W)", "secs": 0.04}
+{"n": 12, "seed": 5, "edges": 38, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=768 dual_dim=26 (1 not in W)", "secs": 0.04}
+{"n": 12, "seed": 6, "edges": 37, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=766 dual_dim=28 (1 not in W)", "secs": 0.06}
+{"n": 12, "seed": 7, "edges": 40, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=770 dual_dim=24 (1 not in W)", "secs": 0.04}
+{"n": 12, "seed": 8, "edges": 37, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=760 dual_dim=34 (1 not in W)", "secs": 0.05}
+{"n": 12, "seed": 9, "edges": 39, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=762 dual_dim=32 (1 not in W)", "secs": 0.04}
+{"n": 12, "seed": 10, "edges": 37, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=748 dual_dim=46 (1 not in W)", "secs": 0.06}
+{"n": 12, "seed": 11, "edges": 37, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=750 dual_dim=44 (1 not in W)", "secs": 0.04}
+{"n": 12, "seed": 12, "edges": 37, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=766 dual_dim=28 (1 not in W)", "secs": 0.04}
+{"n": 12, "seed": 13, "edges": 40, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=768 dual_dim=26 (1 not in W)", "secs": 0.04}
+{"n": 12, "seed": 14, "edges": 39, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=760 dual_dim=34 (1 not in W)", "secs": 0.04}
+{"n": 12, "seed": 15, "edges": 39, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=768 dual_dim=26 (1 not in W)", "secs": 0.04}
+{"n": 12, "seed": 16, "edges": 36, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=381 dual_dim=413 (1 not in W)", "secs": 0.0}
+{"n": 12, "seed": 17, "edges": 39, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=750 dual_dim=44 (1 not in W)", "secs": 0.04}
+{"n": 12, "seed": 18, "edges": 39, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=764 dual_dim=30 (1 not in W)", "secs": 0.04}
+{"n": 12, "seed": 19, "edges": 39, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=766 dual_dim=28 (1 not in W)", "secs": 0.04}
+{"n": 12, "seed": 20, "edges": 36, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=746 dual_dim=48 (1 not in W)", "secs": 0.06}
+{"n": 13, "seed": 1, "edges": 46, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=589 dual_dim=504 (1 not in W)", "secs": 0.01}
+{"n": 13, "seed": 2, "edges": 51, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1087 dual_dim=6 (1 not in W)", "secs": 0.09}
+{"n": 13, "seed": 3, "edges": 47, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=1083 dual_dim=10 (1 not in W)", "secs": 0.12}
+{"n": 13, "seed": 4, "edges": 48, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=5 rank=1077 dual_dim=16 (1 not in W)", "secs": 0.11}
+{"n": 13, "seed": 5, "edges": 50, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1083 dual_dim=10 (1 not in W)", "secs": 0.08}
+{"n": 13, "seed": 6, "edges": 52, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1087 dual_dim=6 (1 not in W)", "secs": 0.09}
+{"n": 13, "seed": 7, "edges": 53, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1089 dual_dim=4 (1 not in W)", "secs": 0.09}
+{"n": 13, "seed": 8, "edges": 51, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1081 dual_dim=12 (1 not in W)", "secs": 0.08}
+{"n": 13, "seed": 9, "edges": 50, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=1081 dual_dim=12 (1 not in W)", "secs": 0.13}
+{"n": 13, "seed": 10, "edges": 52, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1083 dual_dim=10 (1 not in W)", "secs": 0.08}
+{"n": 13, "seed": 11, "edges": 52, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1089 dual_dim=4 (1 not in W)", "secs": 0.09}
+{"n": 13, "seed": 12, "edges": 52, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1087 dual_dim=6 (1 not in W)", "secs": 0.09}
+{"n": 13, "seed": 13, "edges": 50, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1083 dual_dim=10 (1 not in W)", "secs": 0.09}
+{"n": 13, "seed": 14, "edges": 49, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1083 dual_dim=10 (1 not in W)", "secs": 0.08}
+{"n": 13, "seed": 15, "edges": 49, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1085 dual_dim=8 (1 not in W)", "secs": 0.08}
+{"n": 13, "seed": 16, "edges": 51, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1089 dual_dim=4 (1 not in W)", "secs": 0.08}
+{"n": 13, "seed": 17, "edges": 48, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1083 dual_dim=10 (1 not in W)", "secs": 0.07}
+{"n": 13, "seed": 18, "edges": 49, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1081 dual_dim=12 (1 not in W)", "secs": 0.07}
+{"n": 13, "seed": 19, "edges": 52, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1081 dual_dim=12 (1 not in W)", "secs": 0.1}
+{"n": 13, "seed": 20, "edges": 52, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1085 dual_dim=8 (1 not in W)", "secs": 0.09}
+{"n": 14, "seed": 1, "edges": 60, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=4 var=3 rank=1471", "secs": 0.03}
+{"n": 14, "seed": 2, "edges": 67, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1469 dual_dim=2 (1 not in W)", "secs": 0.23}
+{"n": 14, "seed": 3, "edges": 64, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1467 dual_dim=4 (1 not in W)", "secs": 0.19}
+{"n": 14, "seed": 4, "edges": 66, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1467 dual_dim=4 (1 not in W)", "secs": 0.19}
+{"n": 14, "seed": 5, "edges": 65, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1469 dual_dim=2 (1 not in W)", "secs": 0.18}
+{"n": 14, "seed": 6, "edges": 66, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=8 rank=1462", "secs": 0.02}
+{"n": 14, "seed": 7, "edges": 63, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1467 dual_dim=4 (1 not in W)", "secs": 0.17}
+{"n": 14, "seed": 8, "edges": 62, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=10 rank=1471", "secs": 0.02}
+{"n": 14, "seed": 9, "edges": 65, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=6 rank=1469", "secs": 0.02}
+{"n": 14, "seed": 10, "edges": 61, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=835 dual_dim=636 (1 not in W)", "secs": 0.01}
+{"n": 14, "seed": 11, "edges": 63, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=1469", "secs": 0.02}
+{"n": 14, "seed": 12, "edges": 66, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1469 dual_dim=2 (1 not in W)", "secs": 0.19}
+{"n": 14, "seed": 13, "edges": 65, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=9 rank=1469", "secs": 0.02}
+{"n": 14, "seed": 14, "edges": 67, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1469 dual_dim=2 (1 not in W)", "secs": 0.2}
+{"n": 14, "seed": 15, "edges": 64, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1467 dual_dim=4 (1 not in W)", "secs": 0.15}
+{"n": 14, "seed": 16, "edges": 67, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=7 rank=1471", "secs": 0.02}
+{"n": 14, "seed": 17, "edges": 62, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=4 rank=1467 dual_dim=4 (1 not in W)", "secs": 0.23}
+{"n": 14, "seed": 18, "edges": 66, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1469 dual_dim=2 (1 not in W)", "secs": 0.2}
+{"n": 14, "seed": 19, "edges": 63, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=10 rank=1471", "secs": 0.02}
+{"n": 14, "seed": 20, "edges": 65, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=1469", "secs": 0.03}
+{"n": 15, "seed": 1, "edges": 84, "sat": true, "pc4": "FIXED_POINT", "detail": "FIXED_POINT sweeps=3 rank=1939 dual_dim=2 (1 not in W)", "secs": 0.44}
+{"n": 15, "seed": 2, "edges": 84, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=6 rank=1941", "secs": 0.03}
+{"n": 15, "seed": 3, "edges": 83, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=9 rank=1941", "secs": 0.06}
+{"n": 15, "seed": 4, "edges": 76, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=3 var=4 rank=1941", "secs": 0.06}
+{"n": 15, "seed": 5, "edges": 78, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=3 var=0 rank=1941", "secs": 0.06}
+{"n": 15, "seed": 6, "edges": 83, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=8 rank=1939", "secs": 0.05}
+{"n": 15, "seed": 7, "edges": 77, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=3 var=4 rank=1941", "secs": 0.08}
+{"n": 15, "seed": 8, "edges": 82, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=9 rank=1941", "secs": 0.04}
+{"n": 15, "seed": 9, "edges": 83, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=9 rank=1939", "secs": 0.05}
+{"n": 15, "seed": 10, "edges": 84, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=9 rank=1941", "secs": 0.05}
+{"n": 15, "seed": 11, "edges": 81, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=1941", "secs": 0.08}
+{"n": 15, "seed": 12, "edges": 85, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=7 rank=1941", "secs": 0.06}
+{"n": 15, "seed": 13, "edges": 84, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=9 rank=1937", "secs": 0.05}
+{"n": 15, "seed": 14, "edges": 81, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=8 rank=1941", "secs": 0.06}
+{"n": 15, "seed": 15, "edges": 81, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=10 rank=1941", "secs": 0.06}
+{"n": 15, "seed": 16, "edges": 80, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=1937", "secs": 0.07}
+{"n": 15, "seed": 17, "edges": 78, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=1938", "secs": 0.04}
+{"n": 15, "seed": 18, "edges": 83, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=8 rank=1941", "secs": 0.04}
+{"n": 15, "seed": 19, "edges": 80, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=1941", "secs": 0.06}
+{"n": 15, "seed": 20, "edges": 82, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=8 rank=1932", "secs": 0.05}
+{"n": 16, "seed": 1, "edges": 101, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=2517", "secs": 0.11}
+{"n": 16, "seed": 2, "edges": 102, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=7 rank=2517", "secs": 0.07}
+{"n": 16, "seed": 3, "edges": 99, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=15 rank=2517", "secs": 0.15}
+{"n": 16, "seed": 4, "edges": 101, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=9 rank=2517", "secs": 0.07}
+{"n": 16, "seed": 5, "edges": 96, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=3 var=1 rank=2517", "secs": 0.08}
+{"n": 16, "seed": 6, "edges": 101, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=9 rank=2513", "secs": 0.08}
+{"n": 16, "seed": 7, "edges": 104, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=9 rank=2515", "secs": 0.1}
+{"n": 16, "seed": 8, "edges": 101, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=2517", "secs": 0.08}
+{"n": 16, "seed": 9, "edges": 109, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=5 rank=2517", "secs": 0.07}
+{"n": 16, "seed": 10, "edges": 99, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=10 rank=2508", "secs": 0.07}
+{"n": 16, "seed": 11, "edges": 102, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=8 rank=2513", "secs": 0.08}
+{"n": 16, "seed": 12, "edges": 98, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=3 var=1 rank=2517", "secs": 0.11}
+{"n": 16, "seed": 13, "edges": 103, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=7 rank=2513", "secs": 0.06}
+{"n": 16, "seed": 14, "edges": 102, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=8 rank=2513", "secs": 0.07}
+{"n": 16, "seed": 15, "edges": 103, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=10 rank=2517", "secs": 0.07}
+{"n": 16, "seed": 16, "edges": 98, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=2517", "secs": 0.08}
+{"n": 16, "seed": 17, "edges": 99, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=3 var=0 rank=2517", "secs": 0.12}
+{"n": 16, "seed": 18, "edges": 101, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=2515", "secs": 0.09}
+{"n": 16, "seed": 19, "edges": 102, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=10 rank=2515", "secs": 0.09}
+{"n": 16, "seed": 20, "edges": 100, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=2517", "secs": 0.09}
+{"n": 17, "seed": 1, "edges": 120, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=14 rank=3212", "secs": 0.17}
+{"n": 17, "seed": 2, "edges": 123, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=3213", "secs": 0.16}
+{"n": 17, "seed": 3, "edges": 124, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=10 rank=3210", "secs": 0.14}
+{"n": 17, "seed": 4, "edges": 122, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=3214", "secs": 0.2}
+{"n": 17, "seed": 5, "edges": 121, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=9 rank=3212", "secs": 0.15}
+{"n": 17, "seed": 6, "edges": 123, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=9 rank=3207", "secs": 0.11}
+{"n": 17, "seed": 7, "edges": 122, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=14 rank=3212", "secs": 0.18}
+{"n": 17, "seed": 8, "edges": 123, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=9 rank=3212", "secs": 0.15}
+{"n": 17, "seed": 9, "edges": 121, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=3214", "secs": 0.21}
+{"n": 17, "seed": 10, "edges": 119, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=3 var=0 rank=3213", "secs": 0.16}
+{"n": 17, "seed": 11, "edges": 123, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=3212", "secs": 0.17}
+{"n": 17, "seed": 12, "edges": 123, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=9 rank=3209", "secs": 0.14}
+{"n": 17, "seed": 13, "edges": 128, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=7 rank=3210", "secs": 0.13}
+{"n": 17, "seed": 14, "edges": 127, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=8 rank=3212", "secs": 0.12}
+{"n": 17, "seed": 15, "edges": 127, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=8 rank=3207", "secs": 0.11}
+{"n": 17, "seed": 16, "edges": 126, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=10 rank=3211", "secs": 0.16}
+{"n": 17, "seed": 17, "edges": 126, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=9 rank=3202", "secs": 0.11}
+{"n": 17, "seed": 18, "edges": 128, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=7 rank=3210", "secs": 0.19}
+{"n": 17, "seed": 19, "edges": 125, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=9 rank=3212", "secs": 0.11}
+{"n": 17, "seed": 20, "edges": 125, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=10 rank=3207", "secs": 0.17}
+{"n": 18, "seed": 1, "edges": 152, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=10 rank=4042", "secs": 0.25}
+{"n": 18, "seed": 2, "edges": 148, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=4048", "secs": 0.37}
+{"n": 18, "seed": 3, "edges": 151, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=4043", "secs": 0.29}
+{"n": 18, "seed": 4, "edges": 150, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=9 rank=4048", "secs": 0.21}
+{"n": 18, "seed": 5, "edges": 152, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=10 rank=4046", "secs": 0.24}
+{"n": 18, "seed": 6, "edges": 151, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=4044", "secs": 0.38}
+{"n": 18, "seed": 7, "edges": 151, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=8 rank=4042", "secs": 0.21}
+{"n": 18, "seed": 8, "edges": 151, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=4042", "secs": 0.31}
+{"n": 18, "seed": 9, "edges": 149, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=14 rank=4048", "secs": 0.35}
+{"n": 18, "seed": 10, "edges": 153, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=9 rank=4039", "secs": 0.23}
+{"n": 18, "seed": 11, "edges": 155, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=6 rank=4045", "secs": 0.2}
+{"n": 18, "seed": 12, "edges": 147, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=4044", "secs": 0.28}
+{"n": 18, "seed": 13, "edges": 154, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=9 rank=4046", "secs": 0.25}
+{"n": 18, "seed": 14, "edges": 150, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=4048", "secs": 0.32}
+{"n": 18, "seed": 15, "edges": 152, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=4047", "secs": 0.24}
+{"n": 18, "seed": 16, "edges": 150, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=4046", "secs": 0.3}
+{"n": 18, "seed": 17, "edges": 153, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=4048", "secs": 0.27}
+{"n": 18, "seed": 18, "edges": 151, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=4046", "secs": 0.26}
+{"n": 18, "seed": 19, "edges": 146, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=14 rank=4048", "secs": 0.32}
+{"n": 18, "seed": 20, "edges": 148, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=16 rank=4048", "secs": 0.33}
+{"n": 19, "seed": 1, "edges": 184, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=10 rank=5034", "secs": 0.49}
+{"n": 19, "seed": 2, "edges": 174, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=16 rank=5036", "secs": 0.63}
+{"n": 19, "seed": 3, "edges": 179, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=5033", "secs": 0.62}
+{"n": 19, "seed": 4, "edges": 177, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=5025", "secs": 0.43}
+{"n": 19, "seed": 5, "edges": 181, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=5034", "secs": 0.58}
+{"n": 19, "seed": 6, "edges": 180, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=5032", "secs": 0.6}
+{"n": 19, "seed": 7, "edges": 181, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=5034", "secs": 0.68}
+{"n": 19, "seed": 8, "edges": 179, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=5035", "secs": 0.44}
+{"n": 19, "seed": 9, "edges": 177, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=5036", "secs": 0.64}
+{"n": 19, "seed": 10, "edges": 180, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=5036", "secs": 0.63}
+{"n": 19, "seed": 11, "edges": 177, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=5035", "secs": 0.51}
+{"n": 19, "seed": 12, "edges": 182, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=9 rank=5031", "secs": 0.41}
+{"n": 19, "seed": 13, "edges": 180, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=5036", "secs": 0.69}
+{"n": 19, "seed": 14, "edges": 180, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=10 rank=5030", "secs": 0.53}
+{"n": 19, "seed": 15, "edges": 180, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=5036", "secs": 0.63}
+{"n": 19, "seed": 16, "edges": 180, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=5034", "secs": 0.44}
+{"n": 19, "seed": 17, "edges": 181, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=5036", "secs": 0.59}
+{"n": 19, "seed": 18, "edges": 186, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=8 rank=5036", "secs": 0.55}
+{"n": 19, "seed": 19, "edges": 179, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=15 rank=5036", "secs": 0.64}
+{"n": 19, "seed": 20, "edges": 174, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=15 rank=5036", "secs": 0.82}
+{"n": 20, "seed": 1, "edges": 217, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=10 rank=6195", "secs": 1.12}
+{"n": 20, "seed": 2, "edges": 218, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=8 rank=6193", "secs": 0.95}
+{"n": 20, "seed": 3, "edges": 207, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=6190", "secs": 1.06}
+{"n": 20, "seed": 4, "edges": 208, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=14 rank=6196", "secs": 0.97}
+{"n": 20, "seed": 5, "edges": 213, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=6189", "secs": 1.07}
+{"n": 20, "seed": 6, "edges": 217, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=9 rank=6193", "secs": 0.72}
+{"n": 20, "seed": 7, "edges": 221, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=6192", "secs": 0.74}
+{"n": 20, "seed": 8, "edges": 215, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=6190", "secs": 0.96}
+{"n": 20, "seed": 9, "edges": 217, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=6196", "secs": 1.03}
+{"n": 20, "seed": 10, "edges": 213, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=9 rank=6192", "secs": 1.03}
+{"n": 20, "seed": 11, "edges": 209, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=14 rank=6196", "secs": 1.36}
+{"n": 20, "seed": 12, "edges": 212, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=16 rank=6196", "secs": 1.04}
+{"n": 20, "seed": 13, "edges": 212, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=6196", "secs": 1.08}
+{"n": 20, "seed": 14, "edges": 217, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=10 rank=6193", "secs": 0.92}
+{"n": 20, "seed": 15, "edges": 204, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=16 rank=6194", "secs": 1.4}
+{"n": 20, "seed": 16, "edges": 207, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=16 rank=6196", "secs": 1.12}
+{"n": 20, "seed": 17, "edges": 212, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=10 rank=6184", "secs": 0.72}
+{"n": 20, "seed": 18, "edges": 213, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=6196", "secs": 1.15}
+{"n": 20, "seed": 19, "edges": 207, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=15 rank=6196", "secs": 0.87}
+{"n": 20, "seed": 20, "edges": 213, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=6194", "secs": 0.92}
+{"n": 21, "seed": 1, "edges": 254, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=10 rank=7543", "secs": 1.45}
+{"n": 21, "seed": 2, "edges": 250, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=14 rank=7543", "secs": 1.46}
+{"n": 21, "seed": 3, "edges": 248, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=14 rank=7546", "secs": 1.74}
+{"n": 21, "seed": 4, "edges": 253, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=7546", "secs": 1.85}
+{"n": 21, "seed": 5, "edges": 251, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=7547", "secs": 1.37}
+{"n": 21, "seed": 6, "edges": 248, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=9 rank=7544", "secs": 1.17}
+{"n": 21, "seed": 7, "edges": 246, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=7547", "secs": 2.09}
+{"n": 21, "seed": 8, "edges": 252, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=7546", "secs": 2.03}
+{"n": 21, "seed": 9, "edges": 250, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=7547", "secs": 1.49}
+{"n": 21, "seed": 10, "edges": 248, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=14 rank=7540", "secs": 2.18}
+{"n": 21, "seed": 11, "edges": 247, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=7545", "secs": 1.34}
+{"n": 21, "seed": 12, "edges": 249, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=14 rank=7547", "secs": 1.66}
+{"n": 21, "seed": 13, "edges": 248, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=7543", "secs": 1.65}
+{"n": 21, "seed": 14, "edges": 246, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=7545", "secs": 1.51}
+{"n": 21, "seed": 15, "edges": 252, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=7547", "secs": 2.3}
+{"n": 21, "seed": 16, "edges": 248, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=7547", "secs": 1.59}
+{"n": 21, "seed": 17, "edges": 252, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=10 rank=7540", "secs": 1.69}
+{"n": 21, "seed": 18, "edges": 247, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=14 rank=7547", "secs": 2.24}
+{"n": 21, "seed": 19, "edges": 249, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=7538", "secs": 1.32}
+{"n": 21, "seed": 20, "edges": 252, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=9 rank=7547", "secs": 1.41}
+{"n": 22, "seed": 1, "edges": 289, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=9109", "secs": 3.17}
+{"n": 22, "seed": 2, "edges": 288, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=9107", "secs": 2.65}
+{"n": 22, "seed": 3, "edges": 297, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=10 rank=9109", "secs": 2.15}
+{"n": 22, "seed": 4, "edges": 284, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=14 rank=9105", "secs": 3.06}
+{"n": 22, "seed": 5, "edges": 293, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=9106", "secs": 2.28}
+{"n": 22, "seed": 6, "edges": 292, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=14 rank=9107", "secs": 3.3}
+{"n": 22, "seed": 7, "edges": 294, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=9102", "secs": 2.14}
+{"n": 22, "seed": 8, "edges": 290, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=9105", "secs": 2.82}
+{"n": 22, "seed": 9, "edges": 283, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=15 rank=9102", "secs": 3.53}
+{"n": 22, "seed": 10, "edges": 290, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=9108", "secs": 3.4}
+{"n": 22, "seed": 11, "edges": 288, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=14 rank=9109", "secs": 3.58}
+{"n": 22, "seed": 12, "edges": 296, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=9106", "secs": 3.53}
+{"n": 22, "seed": 13, "edges": 293, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=10 rank=9106", "secs": 3.34}
+{"n": 22, "seed": 14, "edges": 283, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=16 rank=9107", "secs": 4.02}
+{"n": 22, "seed": 15, "edges": 294, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=10 rank=9100", "secs": 2.9}
+{"n": 22, "seed": 16, "edges": 289, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=9109", "secs": 3.27}
+{"n": 22, "seed": 17, "edges": 293, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=9108", "secs": 2.99}
+{"n": 22, "seed": 18, "edges": 291, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=14 rank=9099", "secs": 2.65}
+{"n": 22, "seed": 19, "edges": 290, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=9107", "secs": 2.37}
+{"n": 22, "seed": 20, "edges": 287, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=17 rank=9109", "secs": 3.52}
+{"n": 23, "seed": 1, "edges": 341, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=10903", "secs": 5.69}
+{"n": 23, "seed": 2, "edges": 334, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=10898", "secs": 4.97}
+{"n": 23, "seed": 3, "edges": 335, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=16 rank=10900", "secs": 7.31}
+{"n": 23, "seed": 4, "edges": 334, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=16 rank=10903", "secs": 5.52}
+{"n": 23, "seed": 5, "edges": 338, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=14 rank=10902", "secs": 5.98}
+{"n": 23, "seed": 6, "edges": 342, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=10901", "secs": 5.27}
+{"n": 23, "seed": 7, "edges": 335, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=10899", "secs": 5.14}
+{"n": 23, "seed": 8, "edges": 334, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=16 rank=10903", "secs": 7.06}
+{"n": 23, "seed": 9, "edges": 343, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=10 rank=10901", "secs": 5.91}
+{"n": 23, "seed": 10, "edges": 332, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=15 rank=10901", "secs": 6.06}
+{"n": 23, "seed": 11, "edges": 338, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=14 rank=10902", "secs": 5.15}
+{"n": 23, "seed": 12, "edges": 335, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=10899", "secs": 4.46}
+{"n": 23, "seed": 13, "edges": 340, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=10 rank=10895", "secs": 4.72}
+{"n": 23, "seed": 14, "edges": 339, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=10900", "secs": 4.83}
+{"n": 23, "seed": 15, "edges": 338, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=10898", "secs": 4.22}
+{"n": 23, "seed": 16, "edges": 331, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=18 rank=10901", "secs": 6.22}
+{"n": 23, "seed": 17, "edges": 336, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=10896", "secs": 4.63}
+{"n": 23, "seed": 18, "edges": 338, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=10900", "secs": 4.59}
+{"n": 23, "seed": 19, "edges": 334, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=14 rank=10903", "secs": 5.24}
+{"n": 23, "seed": 20, "edges": 334, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=16 rank=10902", "secs": 5.27}
+{"n": 24, "seed": 1, "edges": 389, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=14 rank=12949", "secs": 8.31}
+{"n": 24, "seed": 2, "edges": 389, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=11 rank=12943", "secs": 7.45}
+{"n": 24, "seed": 3, "edges": 387, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=12944", "secs": 7.73}
+{"n": 24, "seed": 4, "edges": 385, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=12945", "secs": 7.03}
+{"n": 24, "seed": 5, "edges": 389, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=12945", "secs": 6.91}
+{"n": 24, "seed": 6, "edges": 380, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=12950", "secs": 7.06}
+{"n": 24, "seed": 7, "edges": 386, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=12 rank=12942", "secs": 6.18}
+{"n": 24, "seed": 8, "edges": 386, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=12949", "secs": 7.66}
+{"n": 24, "seed": 9, "edges": 386, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=14 rank=12948", "secs": 10.94}
+{"n": 24, "seed": 10, "edges": 385, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=12946", "secs": 10.15}
+{"n": 24, "seed": 11, "edges": 381, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=12940", "secs": 8.18}
+{"n": 24, "seed": 12, "edges": 388, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=12947", "secs": 8.22}
+{"n": 24, "seed": 13, "edges": 387, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=12948", "secs": 6.58}
+{"n": 24, "seed": 14, "edges": 381, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=17 rank=12949", "secs": 10.07}
+{"n": 24, "seed": 15, "edges": 387, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=14 rank=12951", "secs": 10.04}
+{"n": 24, "seed": 16, "edges": 382, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=15 rank=12948", "secs": 6.98}
+{"n": 24, "seed": 17, "edges": 381, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=16 rank=12945", "secs": 9.89}
+{"n": 24, "seed": 18, "edges": 385, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=15 rank=12951", "secs": 9.82}
+{"n": 24, "seed": 19, "edges": 378, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=12950", "secs": 10.14}
+{"n": 24, "seed": 20, "edges": 385, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=12947", "secs": 7.44}
+{"n": 26, "seed": 1, "edges": 498, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=16 rank=17894", "secs": 22.75}
+{"n": 26, "seed": 2, "edges": 509, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=13 rank=17896", "secs": 22.49}
+{"n": 26, "seed": 3, "edges": 496, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=16 rank=17902", "secs": 26.23}
+{"n": 28, "seed": 1, "edges": 628, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=14 rank=24149", "secs": 37.59}
+{"n": 28, "seed": 2, "edges": 631, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=14 rank=24156", "secs": 53.0}
+{"n": 28, "seed": 3, "edges": 634, "sat": false, "pc4": "REFUTED", "detail": "REFUTED sweep=2 var=14 rank=24154", "secs": 53.2}
+
+===== corescan_results.jsonl =====
+{"n": 14, "seed": 1, "edges": 60, "core_edges": 44, "core_vertices": 14, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 14, "seed": 6, "edges": 66, "core_edges": 47, "core_vertices": 14, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 14, "seed": 8, "edges": 62, "core_edges": 45, "core_vertices": 14, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 14, "seed": 9, "edges": 65, "core_edges": 44, "core_vertices": 14, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 14, "seed": 11, "edges": 63, "core_edges": 49, "core_vertices": 14, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 14, "seed": 13, "edges": 65, "core_edges": 47, "core_vertices": 14, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 14, "seed": 16, "edges": 67, "core_edges": 47, "core_vertices": 14, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 14, "seed": 19, "edges": 63, "core_edges": 48, "core_vertices": 14, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 14, "seed": 20, "edges": 65, "core_edges": 43, "core_vertices": 14, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 15, "seed": 2, "edges": 84, "core_edges": 49, "core_vertices": 15, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 15, "seed": 3, "edges": 83, "core_edges": 49, "core_vertices": 15, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 15, "seed": 4, "edges": 76, "core_edges": 48, "core_vertices": 15, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 15, "seed": 5, "edges": 78, "core_edges": 46, "core_vertices": 15, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 15, "seed": 6, "edges": 83, "core_edges": 47, "core_vertices": 15, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 15, "seed": 7, "edges": 77, "core_edges": 47, "core_vertices": 15, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 15, "seed": 8, "edges": 82, "core_edges": 49, "core_vertices": 15, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 15, "seed": 9, "edges": 83, "core_edges": 48, "core_vertices": 15, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 15, "seed": 10, "edges": 84, "core_edges": 52, "core_vertices": 15, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 15, "seed": 11, "edges": 81, "core_edges": 51, "core_vertices": 15, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 15, "seed": 12, "edges": 85, "core_edges": 48, "core_vertices": 15, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 15, "seed": 13, "edges": 84, "core_edges": 47, "core_vertices": 15, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 15, "seed": 14, "edges": 81, "core_edges": 48, "core_vertices": 15, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 15, "seed": 15, "edges": 81, "core_edges": 50, "core_vertices": 15, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 15, "seed": 16, "edges": 80, "core_edges": 50, "core_vertices": 15, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 15, "seed": 17, "edges": 78, "core_edges": 46, "core_vertices": 15, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 15, "seed": 18, "edges": 83, "core_edges": 49, "core_vertices": 15, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 15, "seed": 19, "edges": 80, "core_edges": 53, "core_vertices": 15, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 15, "seed": 20, "edges": 82, "core_edges": 46, "core_vertices": 15, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 16, "seed": 1, "edges": 101, "core_edges": 51, "core_vertices": 16, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 16, "seed": 2, "edges": 102, "core_edges": 50, "core_vertices": 16, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 16, "seed": 3, "edges": 99, "core_edges": 53, "core_vertices": 16, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 16, "seed": 4, "edges": 101, "core_edges": 53, "core_vertices": 16, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 16, "seed": 5, "edges": 96, "core_edges": 53, "core_vertices": 16, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 16, "seed": 6, "edges": 101, "core_edges": 50, "core_vertices": 16, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 16, "seed": 7, "edges": 104, "core_edges": 52, "core_vertices": 16, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 16, "seed": 8, "edges": 101, "core_edges": 54, "core_vertices": 16, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 16, "seed": 9, "edges": 109, "core_edges": 52, "core_vertices": 16, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 16, "seed": 10, "edges": 99, "core_edges": 52, "core_vertices": 16, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 16, "seed": 11, "edges": 102, "core_edges": 56, "core_vertices": 16, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 16, "seed": 12, "edges": 98, "core_edges": 48, "core_vertices": 16, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 16, "seed": 13, "edges": 103, "core_edges": 52, "core_vertices": 16, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 16, "seed": 14, "edges": 102, "core_edges": 53, "core_vertices": 16, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 16, "seed": 15, "edges": 103, "core_edges": 49, "core_vertices": 16, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 16, "seed": 16, "edges": 98, "core_edges": 53, "core_vertices": 16, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 16, "seed": 17, "edges": 99, "core_edges": 53, "core_vertices": 16, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 16, "seed": 18, "edges": 101, "core_edges": 52, "core_vertices": 16, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 16, "seed": 19, "edges": 102, "core_edges": 54, "core_vertices": 16, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 16, "seed": 20, "edges": 100, "core_edges": 50, "core_vertices": 16, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 17, "seed": 1, "edges": 120, "core_edges": 56, "core_vertices": 17, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 17, "seed": 2, "edges": 123, "core_edges": 58, "core_vertices": 17, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 17, "seed": 3, "edges": 124, "core_edges": 57, "core_vertices": 17, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 17, "seed": 4, "edges": 122, "core_edges": 54, "core_vertices": 17, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 17, "seed": 5, "edges": 121, "core_edges": 55, "core_vertices": 17, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 17, "seed": 6, "edges": 123, "core_edges": 55, "core_vertices": 17, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 17, "seed": 7, "edges": 122, "core_edges": 53, "core_vertices": 17, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 17, "seed": 8, "edges": 123, "core_edges": 51, "core_vertices": 17, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 17, "seed": 9, "edges": 121, "core_edges": 46, "core_vertices": 17, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 17, "seed": 10, "edges": 119, "core_edges": 56, "core_vertices": 17, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 17, "seed": 11, "edges": 123, "core_edges": 56, "core_vertices": 17, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 17, "seed": 12, "edges": 123, "core_edges": 55, "core_vertices": 17, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 17, "seed": 13, "edges": 128, "core_edges": 61, "core_vertices": 17, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 17, "seed": 14, "edges": 127, "core_edges": 51, "core_vertices": 17, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 17, "seed": 15, "edges": 127, "core_edges": 52, "core_vertices": 17, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 17, "seed": 16, "edges": 126, "core_edges": 50, "core_vertices": 17, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 17, "seed": 17, "edges": 126, "core_edges": 61, "core_vertices": 17, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 17, "seed": 18, "edges": 128, "core_edges": 56, "core_vertices": 17, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 17, "seed": 19, "edges": 125, "core_edges": 53, "core_vertices": 17, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+{"n": 17, "seed": 20, "edges": 125, "core_edges": 56, "core_vertices": 17, "pc": {"3": "FIXED_POINT", "4": "FIXED_POINT", "5": "REFUTED"}, "min_refuting_degree": 5}
+
+===== reviewed commit SHAs, newest first (sha_list.txt) =====
+0ef94649bd9d746c6120d51dfb51a3f38fd2f83c
+bb164f3497e7fb99f5d56565fe6dd6ec4204d579
+aa32488d5cca34dd1ef92075e1359c72d144db81
+989add5635643e7d4e6d9826d0d2035eb1654f3f
+da92c0d80ff83e91d26285b7868c0f878eca7a8f
+3127b60ec8250ce2bd1a3f6fd51e7becfc3d5b30
+dcf3acb4f9d33b4f1892ba163b000303d605c121
+ae44dd4e9b188080032235e9a7a3fa3a62b75617
+d74b3d61bd53b39aea6738bb15606d73650b58af
+ed7cfd4f499a02f323425332a2702d2ca49100dc
+7c03f8630de3f7b0e990078e177d32b0c2ab591c
+67c401b9a1d835afc61c908fa010447561d2001d
+62489b6df34e59f37abfa924e0bb5d610dac4923
+219f6b597d1d3d4b2c82a5cab49ef6f5101f572d
+60eda17087c6ddb986b366d0317c883eb1968df0
+b70f0f6f45ef8a5287bd0cdb0747786826b7d0e1
+16af681e246165b0832a231b125bdc26f323b5df
+9cca356da2c9322c9c92567ab0c32c2c9e7819d7
+2f565cdfbc6c6049c8410ef9bd5fcb93a7f10514
+ffa94ab11f2b176622285d181a5db6d7961117e8
+7acb02d6a173a8059987712d412b28fb3e9e5aff
+f720d38bdf292ec2cee6d392f444d0b7b496b3dc
+76b704b7d2c96b4c4afc583eacd7c415c9f8d7db
+a069893f2bb32c6613e00e0f8e8821600a24cef5
+0e923be82ed84f35e28c4cf7d120fc66b285ca1d
+fa96809a93707a8efc919b56930849b7819af437
+036bf6f9ed3c2d0633f3b440d9fee514628580ca
+10b258f4fcde37be92dadb922043ac2da6ae035a
+cd754e70535e1d86a42e26d2a0cacc37da7cc54c
+f12f132d11eb8518ab6e1efaed75ea9e9faad861
+afd38a0d9b88efc74665d22cc6a9478a9117f188
+0930a5e64aab61c72ab322c9e55cd219748cbff3
+8e4c42547bd152b0e5229880dcd4a30f150882d9
+e93c83347629e1a7f60ce0c3aa8dd199aefd97fe
+a10734a722662b5781dbb6c886d0fa9877ea2a2a
+5a5b4f02d28570cca9827c99fae9eec13632ef0b
+1fb197a35f69d723e5cd484f169baf07a566fb74
+857811f7cf8bb4f4d3dc22b62592443750b149b1
+399897be98db59d229595b59ea7a288c11a0657e
+add4fa3dc900ee20def6101856102ac8c1205df0
+5a8fb90bda8005771f035e778193b7427c8dd508
+3c748e3c8ea8729657e8ba61e2f50e1038ee7e7b
+3cdca88d4aece671b9308c0e7f5f667196283f1d
+a33a4aa9fcd495c215954c2270c6f7504a00743e
+bc8821933e3db069f758bafd7f25d933f5d092e4
+325a780a16ebd79d01850735a32ca44e65409d3c
+d9b1ef2fc1e1283adc9cffbdbb1dc87b463e7f13
+1bdcd5fe4cbe4d22d43895718ab41efa1ed3b16e
+efb011f59e05c0d4a9843610d82a69b818e565ea
+5a2100fec4931ef8293d51235c405829a570b3ca
+07f75279507728363bd2b926c8fa78d4b5d0132c
+adacb3a295a50ff6fcffd945dce9064fb9badfa5
+f7901aba0cccc550360b06791d9a8f71d62df572
+86c81dd6771139813823bb7c13cba36aeea6b06a
+9ad520c94e45aedf9c4d6faecbde91b590757c46
+760405fc0ec7295ef4f0dbdbe49f35e66037c585
+6e2cfeefe07abb9b5150136ab3ca764f6fe48ba5
+90c5ff82bfca22b68f66ead7de3a4dd638bc1400
+55263a519303f25dc22b00ade80e08be90a6119d
+59b74ec7eddb3086869b6e8a8e3fec21ba97c774
+0b96279d3b18fd6db07adac8429bf7c2e9338aef
+07ec52892d116952bdb471a9cb6e0076af197345
+392a32d5f596bc4bf6bb0897981b9665807b4fa9
+e9bf157a3b0b2ac133a9fc0d8b4d180d5140666a
+dbff7631d5f33bd1c664c67148574dc935348ea8
+9cf5d34eed63cd80bfa5d662fa645eb89c68c83a
+e8d3be60a13fe629c350ff0f6d4e74afe3f21c3f
+a4e3efaac5a868e05cc25ca53b217d1a01cbcbc0
+0af9ec4fcc11610a1b5ac90a092b8364ce9c77fc
+025cb53925e55eca0df043784627dccbb343a4bf
+9f238fee27b617118e6393fc5fb29acd6b1de717
+41766bd249886e252c945f255c7007b9c4bbf241
+4a42c99a37a2a22c1ac36ed204eadce7dfa77908
+98d96bec8ba20b45b426279194c405658916d96d
+b55560e3b53989424c4a3afc7373d6c615250537
+b9dd9077364c84dd5295846d9cbc401b2bfc0445
+427b8551e632c1e36579108330d392a1c359093b
+c51c0b8071c98d69c8dd2b3d11dc856162474d07
+615e654626f6a143d3cb276d769808506d9678a4
+ebc1de9f2b0b37a234e1f6abff9f0cf18cbf37cf
+98c177116de247ef44059997e7b1ff11650baacc
+397eb0944b93f9c3adb5693bcabda77908cb6c8a
+2886a5e80d7ad5388567fc3acc1f1c9d63769f96
+5bf6df3f41e253a4af86e5c6073451468c3f588e
+17686ad561abf5c027e371485aa37611d6f6fcee
+4926829abff79f0297bc1fcc39799897331471e1
+9776c38df24d71e5c47149d7f32540fd0c001675
+f7ce03a6c6bf860af6a027284b7dad0e4210de7e
+dbf9b1265a45ede9521d3c0ba8cc8ef0f1f96863
+5fbc4709976d623c9a223db4b26072d8988beafa
+d55951ecdded37182f539c834e71d348b4ea1508
+f377ec5cac6f2aa37970b1bf32626ba8e9cb891a
+b388ba9656838c6dfdbc0049a544ab299f0487ba
+455a6d61aa0d94ae0ffccc07c52a24c4becaee55
+87af2ceff6154b495c62506a465e890f68524fd1
+87bd80afdfff559a28a15aa0260f2ca25792ad00
+20539daae9a0c69e3b795fe558b1852b58db9bea
+3bc2e7b3730c4d6680dc9b50bb26360d339da2e7
+cc2b5d19ec5404593de22fc8920b6e639a18cc8c
+1ed655d6eebcc02378c6aa95422de04e48695767
+bbf7828bca70ae8d3100cd88a649e046694c3cc1
+8dd7aaa1b59c469cbe8c1cf7931053be99b10bfb
+7fd9ceed055a401fd972e2a5e2d03c930ae9c43c
+28c7aef226f17fea7cf93f9f7670557c1fdd7ce7
+468c665d54b6d04836fa05a075def44ae164061b
+7f7d33946ac40c1a9e505199819f7cded609df9a
+322f80fb3e316bae66902724f0c2389b04924d1d
+4a3e4db42a01fb891b196bef0d023e02defe00f1
+f5bfd16a9a6570180a6b0889406445a93c8077ce
+3e0dcf32dbd577e7b101be88f7ebdc69a326c04c

@@ -1,0 +1,459 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage[hidelinks]{hyperref}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\newcommand{\lab}[1]{\textbf{[#1]}}
+\newcommand{\F}{\mathbb{F}}
+\title{Grok 4.7 hourly work log --- 2026-11-28 1707 KST\\
+\large Review of \texttt{3e0dcf3..0ef9464} (UCAC 23:00 round: T1 sparse Hall separator, T2 orbit
+boundary, T2 degree/locality, T2 directional kernel, L02 relative port, T3/L05-36 full PC and
+triple packing, T4 gauge rollback, C04-35, FP60, X01-40, five-way directive); gap: T3's PC4
+\texttt{UNKNOWN\_CAP} on EB-PACK-16/18 --- degree-4 refutations, and degree~5 for minimal cores}
+\author{Grok 4.7 (automated reviewer) for j15marti/pnp}
+\date{2026-11-28 1707 KST (2026-11-28 00:07 PST, 2026-11-28 08:07 UTC)}
+\begin{document}
+\sloppy
+\maketitle
+\section*{Executive assessment}
+\textbf{P vs NP remains OPEN.} Nothing in this window and nothing in this log establishes
+P$\neq$NP, P$=$NP, a Clay-level result, or an unrestricted lower bound. The window starts
+right after \texttt{da27100}, the last commit reviewed by the previous Grok log
+(\texttt{07f7527}, 1603 KST), and ends at HEAD \texttt{0ef9464} (07:45:56Z). It holds 109
+project commits plus Grok's own \texttt{07f7527}; Appendix~\ref{app:shas} lists them. The work
+comes from the 23:00 PST UCAC round (coordinator \texttt{e9bf157}): T1 sparse Hall separator
+and regional clique cuts, T2 orbit-boundary discharge, T2 directional linear kernel, T2
+degree/locality AND-seam, L02 relative-port parity, T3/L05-36 full PC closure and triple
+packing, T4 gauge rollback and factorial runs, C04-35, FP60, X01-40, a new
+DYNAMIC-COMPATIBILITY note, and the five-way coordination directive. I spot-checked seven
+claims (\S\ref{sec:spot}) and found no mathematical error.
+
+\textbf{This hour's gap.} T3/L05-36 (\texttt{8e4c425}, \S5) proves that full grouped PC3
+refuses every NAE4 triple-packing instance. On its two new native NO families
+\texttt{EB-PACK-16} and \texttt{EB-PACK-18} it then reports that grouped and raw PC4 hit the
+200001-event cap at ranks 1555/1555 and 2456/2453. It labels this \texttt{UNKNOWN\_CAP, not a
+fixed point}, and it calls these instances ``genuinely non-affine motif controls''. I settled
+that open status.
+\begin{itemize}
+\item \lab{COMPUTATIONAL} I reproduced the T3 generator exactly. The block counts are 106 and
+147, the minimum defects are 2 and 4, the first minimising words are 9589 and 115123, and the
+YES deletion lists are $[14,96]$ and $[1,5,32,84]$; all match the report. \textbf{Degree-4
+multilinear $\F_2$ PC refutes both the 16-point and the 18-point projected residual
+hypergraphs}, in the grouped encoding and in the raw encoding. I wrote four explicit
+derivations, and a separate checker verified each one. The T3 rank 1555 is exactly the rank
+my closure has after its first full sweep; the refutation arrives in sweep~2. Combined with
+T3's PC3 theorem, the exact refutation degree of both residuals in this system is 4.
+\item \lab{PROVED/EXACT} Theorem~\ref{thm:enc}: for every 4-uniform hypergraph and every
+$d\ge4$, the grouped and raw NAE4 encodings have the \emph{same} degree-$d$ closure. So T3's
+2456 versus 2453 is a cap-timing artefact, not a difference between the systems.
+\item \lab{COMPUTATIONAL} On 346 greedy packings with $8\le n\le 28$, PC4 refutes \emph{every}
+UNSAT instance (a CaDiCaL label), and as soundness requires it never refutes a SAT one.
+\item \lab{COMPUTATIONAL} \textbf{The real degree-4 escape comes from redundancy.} I took
+edge-minimal UNSAT sub-hypergraphs (cores). They are again triple packings, and in all 68
+cores tested ($n=14..17$) PC4 reaches a fixed point without $1$, while PC5 refutes. Both named
+cores have checked degree-5 certificates. \lab{CANDIDATE}: cores of greedy packings have
+refutation degree exactly 5. The hostile direction should therefore use \emph{minimal cores},
+not the greedy packings themselves. Even so, the degree is small and DPLL is trivial at this
+size, so this is no obstruction to all algorithms.
+\end{itemize}
+Root \texttt{main.tex} was \emph{not} edited.
+
+\section{Review log}
+\subsection{Commits seen and window}
+I listed \texttt{main} with the GitHub connector (\texttt{list\_commits}, paged by time,
+because one gateway response was truncated at 20\,kB). The window runs from \texttt{3e0dcf3}
+(06:47:58Z) to \texttt{0ef9464} (07:45:56Z), that is, 2026-11-27 22:47--23:45 PST. It contains
+110 commits, 109 from the project plus Grok's \texttt{07f7527}. The previous log said that
+\texttt{455a6d6}\ldots\texttt{17686ad} had landed after its own window, and those commits are
+covered here. When I re-checked HEAD just before pushing, about 40 further commits had
+landed after \texttt{0ef9464} (\texttt{e9cbc8a} at 07:53Z through \texttt{4cad86e} at 08:03Z,
+among them T3-11 \texttt{d163f36}/\texttt{90e28ce}, ``packing.js full PC3 and RUP refusal
+controls''). They are \emph{not} reviewed here, and T3-11 may overlap this hour's gap. The next
+run should start after \texttt{0ef9464}. Main reports read in full:
+\begin{itemize}
+\item \texttt{8e4c425}: \path{research/proof-spine-2026-11-26/strict-t5-csp/2026-11-27_2316_T3_full_pc/report.md},
+with run/cert/audit commits \texttt{5a2100f}, \texttt{efb011f}, \texttt{d9b1ef2}, \texttt{325a780}, \texttt{1bdcd5f},
+\texttt{3c748e3}, \texttt{5a8fb90}, \texttt{add4fa3} and \texttt{1fb197a}. Covers the full bounded multilinear closure theorem,
+the paid RUP escape, the triple-packing family and the PC4 \texttt{UNKNOWN\_CAP}. \emph{This hour's gap.}
+\item \texttt{da92c0d}: \path{research/hcl201/interfaces/2026-11-27_2328_T2_orbit_boundary/report.md}
+(with \texttt{ed7cfd4}, \texttt{d74b3d6}, \texttt{ae44dd4}, \texttt{dcf3acb}, \texttt{3127b60}). Covers the complement-orbit
+three-row discharge and rank-neutral admission.
+\item \texttt{7c03f86}: \path{research/hcl201/matching/2026-11-27_2330_T1_sparse_separator/report.md}
+(with \texttt{2f565cd}--\texttt{67c401b}). Covers exact sparse Hall response, NO/YES
+controls, and paid width-two RUP with and without Hall seeds.
+\item \texttt{fa96809}: \path{research/proof-spine-2026-11-26/closure-shared-wheels/2026-11-27_2318_relative_port/report.md}
+(with \texttt{bc88219}, \texttt{a33a4aa}, \texttt{3cdca88}, \texttt{399897b}, \texttt{857811f}, \texttt{5a5b4f0}, \texttt{a10734a},
+\texttt{e93c833}, \texttt{0930a5e}--\texttt{036bf6f}). Covers L02 relative-port parity, the odd-cycle terminal and the Fano
+single-pair refusal.
+\item \texttt{98c1771}: \path{research/proof-spine-2026-11-26/four-partition-nae/2026-11-27_2248_T2_degree_locality/report.md}
+(with \texttt{1ed655d}--\texttt{f7ce03a}, \texttt{4926829}, \texttt{17686ad}, \texttt{2886a5e}, \texttt{397eb09}, \texttt{8dd7aaa}).
+Covers the AND-seam degree/locality refusal and the width-two RUP escape.
+\item \texttt{adacb3a}: \path{research/proof-spine-2026-11-26/finite-group-classification/2026-11-27_2335_T2_directional_gauge/report.md}.
+Covers the directional linear-kernel quotient.
+\end{itemize}
+Read only by commit metadata, file list or title: T1 regional clique cut (\texttt{86c81dd}
+and the \texttt{55263a5}--\texttt{f7901ab} artefacts), C04-35
+(\texttt{615e654}--\texttt{0b96279}), FP60 (\texttt{3e0dcf3}--\texttt{28c7aef},
+\texttt{7fd9cee}, \texttt{bbf7828}, \texttt{5fbc470}), X01-40 (\texttt{9776c38},
+\texttt{5bf6df3}, \texttt{ebc1de9}), the T3 nonlinear transport kernel
+(\texttt{9f238fe}--\texttt{a4e3efa}), T4 (\texttt{4a42c99}, \texttt{41766bd},
+\texttt{a069893}--\texttt{ffa94ab}, \texttt{bb164f3}, \texttt{0ef9464}, a 10643-line JSON), the
+coordinator (\texttt{e9bf157}, \texttt{392a32d}), \texttt{0e923be}
+(\texttt{DYNAMIC-COMPATIBILITY-OBLIGATION1-\allowbreak ALGEBRAIC-PERMANENT-RESIDUAL-COLLAPSE1.md}),
+and the five-way directive (\texttt{989add5} plus \texttt{aa32488}, which edits
+\texttt{AGENTS.md}).
+
+\subsection{Spot checks}\label{sec:spot}
+\begin{enumerate}
+\item \textbf{T2 orbit boundary, rank-neutral identity.} The falsity indicator of $a\lor C$
+is $(1+a)q_C$ and that of $\lnot a\lor C$ is $aq_C$; their sum is $q_C$. \emph{Correct.} The
+propagation example ($a\lor x\lor y$, $\lnot a\lor x\lor y$, $\lnot y\lor z$,
+$\lnot y\lor\lnot z$, with $x=0$) has no unit before $x\lor y$ is added and a conflict after.
+\emph{Correct.} This shows that rank-only credit misses productive admissions.
+\item \textbf{T2 orbit boundary, two-orientation discharge.} If $\mathrm{UP}(S,[-a,g])$ and
+$\mathrm{UP}(S,[a,g])$ both conflict, then $a\lor C_g$, $\lnot a\lor C_g$ and $C_g$ are RUP,
+in that order. \emph{Correct.} The claim that a one-sided conflict is insufficient also holds.
+\item \textbf{L02 Lemma 5, Fano.} Each non-monochromatic line contributes exactly one
+same-colour pair, so there are 7 such pairs, but a $3{+}4$ split of 7 points already has
+$3+6=9$. \emph{Correct.} Grok's earlier NAE/STS log (\texttt{4193e17}) contains the same
+counting.
+\item \textbf{T2 degree/locality.} For a proper subset $S$ of a $k$-block, the XOR of
+$\prod_S$ over the $2^k-1$ words other than all-ones is $1$. Products over independent free
+blocks factor, and the point set has odd size. Hence every polynomial of degree less than
+$k$ that vanishes on a bipartite edge subset vanishes at the all-ones word. \emph{Correct.}
+The path argument for the width-two RUP escape (zeros at both ends force the two inner blocks
+to all-ones, which hits the negative seam) is also \emph{correct}.
+\item \textbf{T3 \S5, private cubic.} $p_e=\prod x+\prod(1+x)$ has degree 3 and contains all
+four cubic monomials of $e$. Under triple packing the cubic coefficients of $\sum_{e\in S}p_e$
+are exactly the triples of the edges in $S$. If $i\in e$, the triple $e\setminus\{i\}$ avoids
+$i$, so $H_i$ is injective and $K_i=0$. The dual is $\lambda(1)=1$ plus one private cubic per
+edge. \emph{Correct}, and my code reproduces the T3 ranks (106 and 147; ambient 697 at
+$n=16$).
+\item \textbf{T1 sparse separator, local consistency.} Pairwise clause scopes overlap in at
+most one variable, so the uniform local marginals are pairwise consistent even on NO
+instances. \emph{Correct}, and the report correctly scopes this as a restricted refusal only.
+\item \textbf{T2 directional kernel.} $D_{h+u}F=D_hF(x)+D_uF(x+h)$, and translation preserves
+the top homogeneous part, so $V_k\to$ (degree-$k$ coefficients) is linear with kernel
+$V_{k-1}$. \emph{Correct.}
+\end{enumerate}
+
+\subsection{Label and format findings}
+\begin{itemize}
+\item All new reports in the window are \texttt{.md}, not \texttt{.tex}: the six
+\texttt{report.md} files above, the coordination note
+\path{research/coordination/2026-11-27_FIVE_WAY_INTERFACE_OR_CONTRACTION.md}, and a new
+root-level \texttt{.md} (\texttt{0e923be}). This is a \textbf{format violation} and the same
+standing issue as in earlier logs.
+\item Nonstandard labels persist: ``PROVED WITH SCOPE'' appears in \texttt{8e4c425} and
+\texttt{fa96809}. Status lines should use PROVED/EXACT together with an explicit scope
+sentence.
+\item T3 \S5 states ``No all-size NO statement'' and labels PC4 \texttt{UNKNOWN\_CAP}. That
+labelling is honest, but this log now resolves the PC4 status of both instances.
+\item Root \texttt{main.tex}: the connector returns the placeholder
+\texttt{PLACEHOLDER\_TOO\_LARGE\_USE\_LOCAL\_APPEND} (blob \texttt{22e5354}), so I could not
+read its contents this run. \texttt{AGENTS.md} is truncated at 20\,kB by the gateway; the
+visible part (including \texttt{aa32488}) keeps P vs NP OPEN.
+\item \textbf{Prior Grok work survived.} All fourteen earlier 2026-11-28 logs
+(\texttt{0259}\ldots\texttt{1603}) and the \texttt{code/} folder are present under
+\path{comments/grok-4.7/2026-11-28/}, and the latest log blob is unchanged
+(\texttt{eebd53c}). No commit in the window touches \path{comments/grok-4.7/}.
+\end{itemize}
+
+\section{Work: the PC4 status of the T3 triple-packing family}
+\subsection{Setting}
+$H$ is a 4-uniform hypergraph on $[n]$. For each edge $e$ write
+$x_e=\prod_{j\in e}x_j$ and $c_e=\prod_{j\in e}(1+x_j)$, both multilinear over $\F_2$. The
+\emph{grouped} axiom is $p_e=x_e+c_e$, which has degree 3. The \emph{raw} axioms are $x_e$
+and $c_e$, the falsity indicators of the two NAE clauses. $W_d(\mathcal A)$ is the T3 ``full
+bounded multilinear closure'': the least subspace of $V_d$ that contains $\mathcal A$ and is
+closed under $p\mapsto x_ip$ whenever $\deg(x_ip)\le d$. T3 \S2 proves that the kernel
+algorithm computes it exactly.
+
+\begin{theorem}[\lab{PROVED/EXACT}]\label{thm:enc}
+For every 4-uniform $H$ and every $d\ge4$,
+$W_d(\{p_e\})=W_d(\{x_e,c_e\})$.
+\end{theorem}
+\begin{proof}
+$p_e=x_e+c_e$ lies in the raw span. Conversely, take $a\in e$. Then $x_ax_e=x_e$ and
+$x_ac_e=0$ because $x_a(1+x_a)=0$, so $x_ap_e=x_e$, which has degree $4\le d$ and is an
+admissible product. Also $c_e=p_e+x_e$. Each initial set therefore lies in the closure of the
+other, and closures are monotone and idempotent.
+\end{proof}
+\noindent So T3's grouped and raw PC4 runs explore the same space. Their different capped
+ranks (2456 versus 2453 at $n=18$) reflect order and cap timing only. Two independent
+implementations agree: both encodings give identical ranks and verdicts.
+
+\begin{remark}[\lab{PROVED/EXACT}, elementary]
+$W_d(\mathcal A)\subseteq W_d(\mathcal A')$ whenever $\mathcal A\subseteq\mathcal A'$. Hence
+the minimal refuting degree of $H$ is at most that of any sub-hypergraph, and it is at most
+$n$, because $V_n$ is everything.
+\end{remark}
+
+\subsection{Exact reproduction of EB-PACK-16/18}
+Subcommand \texttt{packgen} uses the T3 description. It lists 4-subsets lexicographically,
+shuffles them Fisher--Yates from the top down with $s\leftarrow 1664525s+1013904223 \bmod
+2^{32}$ and $j=s\bmod(i+1)$, and keeps an edge iff all four of its triples are fresh. The
+result matches every published invariant (subcommands \texttt{defect}, \texttt{yesctl}):
+106 and 147 blocks; minimum defect 2 and 4; first minimisers 9589 and 115123; exactly two
+minimisers each; and monochromatic blocks under those words $[14,96]$ and $[1,5,32,84]$, which
+are exactly the T3 YES deletion lists. T3 \S5 states that the native source-only projection
+yields 16/18 coordinates with 212/294 clauses, equal as signed clause sets to this NAE4 CNF.
+Scope: my results are about that projected residual, not native STRICT-EB4 bytes.
+
+\subsection{Results}
+\textbf{Result 1} \lab{COMPUTATIONAL, certificate-checked}. Exact degree-$d$ closures:
+\begin{center}\begin{tabular}{lrrrll}
+\toprule
+instance & $n$ & edges & $D_4$ & PC3 & PC4\\
+\midrule
+EB-PACK-16 residual & 16 & 106 & 2517 & fixed point, rank 106 & \textbf{REFUTED} (sweep 2, rank 2513)\\
+EB-PACK-18 residual & 18 & 147 & 4048 & fixed point, rank 147 & \textbf{REFUTED} (sweep 2, rank 4046)\\
+EB-PACK-16 YES control & 16 & 104 & 2517 & -- & fixed point, rank 2515 (dual dim 2)\\
+EB-PACK-18 YES control & 18 & 143 & 4048 & -- & fixed point, rank 4046 (dual dim 2)\\
+\bottomrule
+\end{tabular}\end{center}
+After sweep 1, $n=16$ has rank exactly 1555, which is T3's capped rank. The cap therefore
+stopped T3 at the end of the first sweep. Subcommand \texttt{prove} writes explicit derivations:
+each row is $x_i\cdot(\text{sum of earlier rows})$ and the final row is a sum equal to $1$.
+Subcommand \texttt{check} is a separate set-of-monomials implementation. It rebuilds the axioms
+from the edge list alone and checks every product's admissibility (all monomials have degree
+$\le4$) and the final sum. Every check passed (outputs file):
+\begin{center}\begin{tabular}{lrrr}
+\toprule
+certificate & product rows & final combination & SHA-256 (prefix)\\
+\midrule
+16, grouped, $d=4$ & 2407 & 1140 & \texttt{50e58f53\ldots}\\
+16, raw, $d=4$ & 2301 & 1141 & \texttt{50512a94\ldots}\\
+18, grouped, $d=4$ & 3899 & 1890 & \texttt{c35c9d52\ldots}\\
+18, raw, $d=4$ & 3752 & 1903 & \texttt{f9278984\ldots}\\
+core-16 (53 edges), grouped, $d=5$ & 6490 & 2900 & \texttt{d26a2d11\ldots}\\
+core-18 (61 edges), grouped, $d=5$ & 11821 & 5550 & \texttt{3550c61b\ldots}\\
+\bottomrule
+\end{tabular}\end{center}
+The certificate JSONs (3--27\,MB) are deterministic outputs of the committed code and are not
+committed; their full hashes are in \path{code/2026-11-28_1707_packing_pc4_outputs.txt}. PC is sound, so a degree-4
+refutation also re-proves UNSAT independently of the solver labels. With T3's proved PC3
+refusal, \textbf{the exact refutation degree of both residuals in this system is 4}.
+
+\textbf{Result 2} \lab{COMPUTATIONAL}. I ran 20 seeds for each $n=8..24$ and 3 seeds each for
+$n=26,28$, with CaDiCaL labels and C closure (outputs file):
+\begin{center}
+\begin{tabular}{rrrrrrr}
+\toprule
+$n$ & inst. & edges & UNSAT & PC4 refuted & refuted\,\&\,SAT & UNSAT not refuted\\
+\midrule
+8 & 20 & 8--11 & 0 & 0 & 0 & 0\\
+9 & 20 & 12--15 & 0 & 0 & 0 & 0\\
+10 & 20 & 18--22 & 0 & 0 & 0 & 0\\
+11 & 20 & 26--30 & 0 & 0 & 0 & 0\\
+12 & 20 & 36--40 & 0 & 0 & 0 & 0\\
+13 & 20 & 46--53 & 0 & 0 & 0 & 0\\
+14 & 20 & 60--67 & 9 & 9 & 0 & 0\\
+15 & 20 & 76--85 & 19 & 19 & 0 & 0\\
+16 & 20 & 96--109 & 20 & 20 & 0 & 0\\
+17 & 20 & 119--128 & 20 & 20 & 0 & 0\\
+18 & 20 & 146--155 & 20 & 20 & 0 & 0\\
+19 & 20 & 174--186 & 20 & 20 & 0 & 0\\
+20 & 20 & 204--221 & 20 & 20 & 0 & 0\\
+21 & 20 & 246--254 & 20 & 20 & 0 & 0\\
+22 & 20 & 283--297 & 20 & 20 & 0 & 0\\
+23 & 20 & 331--343 & 20 & 20 & 0 & 0\\
+24 & 20 & 378--389 & 20 & 20 & 0 & 0\\
+26 & 3 & 496--509 & 3 & 3 & 0 & 0\\
+28 & 3 & 628--634 & 3 & 3 & 0 & 0\\
+\bottomrule
+\end{tabular}
+
+\end{center}
+Every UNSAT instance is PC4-refuted and no SAT instance is. \lab{CANDIDATE}: on greedy
+triple-packing NAE4, the PC4 closure decides satisfiability exactly. This is a finite
+observation only; no all-$n$ statement is claimed.
+
+\textbf{Result 3} \lab{COMPUTATIONAL; PC5 certificate-checked on the named cores}. I shrank
+each UNSAT instance to an edge-minimal UNSAT core by deletion in fixed order, checking
+minimality edge by edge with CaDiCaL (subcommands \texttt{mincore}, \texttt{corescan}). A
+sub-hypergraph of a triple packing is again a triple packing, so T3's PC3 theorem applies.
+\begin{center}
+\begin{tabular}{rrrrrrr}
+\toprule
+$n$ & cores & core edges & core vertices & PC3 & PC4 & PC5\\
+\midrule
+14 & 9 & 43--49 & 14--14 & 9 fixed & 9 fixed & 9 refuted\\
+15 & 19 & 46--53 & 15--15 & 19 fixed & 19 fixed & 19 refuted\\
+16 & 20 & 48--56 & 16--16 & 20 fixed & 20 fixed & 20 refuted\\
+17 & 20 & 46--61 & 17--17 & 20 fixed & 20 fixed & 20 refuted\\
+\bottomrule
+\end{tabular}
+
+\end{center}
+In \emph{every} core, PC4 reaches a fixed point without $1$. Two independent implementations
+agree on the ranks of the named cores: 869 of 2517 and 1028 of 4048. PC5 then refutes.
+\lab{CANDIDATE}: edge-minimal cores of greedy packings have multilinear refutation degree
+exactly 5. Interpretation: the degree-4 escape on EB-PACK-16/18 comes from redundant edges
+(about half the edges of these dense packings are redundant), and the degree barrier of the
+triple-packing family moves from 4 to 5 once that redundancy is removed. These are degree
+facts only. Every instance here is tiny ($n\le 28$) and trivial for DPLL, which T3 also
+reports.
+
+\subsection{Limits and what remains OPEN}
+\begin{itemize}
+\item \lab{OPEN} Asymptotics. Whether cores of growing size need growing degree is OPEN.
+Expansion-based PC lower bounds (Alekhnovich--Razborov; Ben-Sasson--Impagliazzo) are known
+theorems for random $k$-CNF. I did not check whether they transfer to sparse NAE4 triple
+packings, so they are not invoked.
+\item Native transfer is not claimed. The results concern the projected 16/18-coordinate NAE4
+residual, which T3 states has exact clause-set equality.
+\item Nothing here bears on unrestricted algorithms. Low PC degree implies a polynomial-time
+refutation \emph{for this proof system at fixed degree} only. Conversely, a PC refusal is
+never a decision lower bound.
+\item Suggested next falsifier for T3: use the edge-minimal cores, not the greedy packings, as
+the non-affine hostile family; test PC5 and width-two RUP on growing cores; and charge core
+extraction, which is itself a SAT-oracle procedure.
+\end{itemize}
+
+\section*{Reproducibility}
+The connector allows only a few attachments per commit, so the code comes as three files in
+\path{comments/grok-4.7/2026-11-28/code/}. \texttt{2026-11-28\_1707\_packing\_pc4.py} is a
+single-file Python tool with subcommands \texttt{packgen}, \texttt{defect}, \texttt{yesctl},
+\texttt{prove} (closure with derivation log), \texttt{check} (the independent checker, which
+shares no polynomial code with the prover), \texttt{mincore}, \texttt{scan},
+\texttt{corescan} and \texttt{tables}. \texttt{2026-11-28\_1707\_packing\_pc4\_mlclosure.c} is
+the C closure. \texttt{2026-11-28\_1707\_packing\_pc4\_outputs.txt} holds the run order,
+certificate and edge-list hashes, checker output, edge lists, raw \texttt{.jsonl} results and
+the full SHA list. I re-ran the bundled tool on the box and it reproduces the same certificate
+hash (\texttt{50e58f53\ldots}) and edge-list hashes. Runs were serial on the box (8 cores, at
+most 55\,s per instance, at $n=28$). Only logical counts were recorded, with no bit-level
+ledger.
+
+\appendix
+\section{All commits in the window (newest first)}\label{app:shas}
+110 commits: 109 project commits plus Grok's \texttt{07f7527}. Full 40-hex SHAs are in
+the last section of \path{code/2026-11-28_1707_packing_pc4_outputs.txt}.
+\begin{longtable}{lll}
+\toprule
+SHA & time (UTC) & message (first line, truncated)\\
+\midrule
+\endhead
+\texttt{0ef94649bd9d} & 07:45:56 & {\footnotesize T4: record matched gauge factorial results and exact proof data}\\
+\texttt{bb164f3497e7} & 07:45:54 & {\footnotesize T4: gauge quotient factorial and direct width comparison runner}\\
+\texttt{aa32488d5cca} & 07:45:28 & {\footnotesize Add mandatory five-way collaborative interface discovery to operative strategy}\\
+\texttt{989add563564} & 07:45:18 & {\footnotesize Coordinate five-way simultaneous interface-or-contraction research}\\
+\texttt{da92c0d80ff8} & 07:40:06 & {\footnotesize Document orbit-boundary discharge, rank-neutral activation and resource limitations}\\
+\texttt{3127b60ec825} & 07:39:20 & {\footnotesize Record checked rank-neutral and feedback experiments}\\
+\texttt{dcf3acb4f9d3} & 07:39:18 & {\footnotesize Test algebraic rank-neutral row discharge and matched signed feedback}\\
+\texttt{ae44dd4e9b18} & 07:38:25 & {\footnotesize Record exact orbit-boundary subset activation evidence EB-RANDOM-3CNF-40@8a18e86479df}\\
+\texttt{d74b3d61bd53} & 07:38:22 & {\footnotesize Record exact orbit-boundary subset activation evidence EB-JOINT-24@e84a0ab6dc6f}\\
+\texttt{ed7cfd4f499a} & 07:38:20 & {\footnotesize Add paid complement-orbit boundary row replay and all-subset controls}\\
+\texttt{7c03f8630de3} & 07:35:32 & {\footnotesize T1: exact sparse Hall separator result, limits and coordination handoff}\\
+\texttt{67c401b9a1d8} & 07:34:58 & {\footnotesize Register new sparse Hall separator NO and YES controls additively}\\
+\texttt{62489b6df34e} & 07:34:56 & {\footnotesize T1: independent RUP replay and exact native NO transfer}\\
+\texttt{219f6b597d1d} & 07:34:33 & {\footnotesize T1: standalone versus Hall-seeded paid RUP controls}\\
+\texttt{60eda17087c6} & 07:34:31 & {\footnotesize T1: fixed-cap complete width-two RUP control}\\
+\texttt{b70f0f6f45ef} & 07:34:15 & {\footnotesize T1: additive sparse Hall separator NO and YES exact certificates}\\
+\texttt{16af681e2461} & 07:34:13 & {\footnotesize T1: sparse matching and joint separator hybrid with exact cut checker}\\
+\texttt{9cca356da2c9} & 07:33:19 & {\footnotesize T1: common exact authenticated gauge and intake controls}\\
+\texttt{2f565cdfbc6c} & 07:33:17 & {\footnotesize T1: independent gauge replay and paired intake flip controls}\\
+\texttt{ffa94ab11f2b} & 07:31:25 & {\footnotesize T4 rollback and operational credit obligations}\\
+\texttt{7acb02d6a173} & 07:31:23 & {\footnotesize T4 gauge transport BLOCK review}\\
+\texttt{f720d38bdf29} & 07:31:21 & {\footnotesize T4 gauge reason summaries and rollback audit}\\
+\texttt{76b704b7d2c9} & 07:29:47 & {\footnotesize T4 gauge summary rollback: results.json}\\
+\texttt{a069893f2bb3} & 07:29:44 & {\footnotesize T4 gauge summary rollback: checker.js}\\
+\texttt{0e923be82ed8} & 07:25:17 & {\footnotesize DYNAMIC-COMPATIBILITY-OBLIGATION1-ALGEBRAIC-PERMANENT-RESIDUAL-COLLAPSE1: free permanent evalua}\\
+\texttt{fa96809a9370} & 07:25:10 & {\footnotesize L02 scoped relative-port terminal, matching refusal, and paired feedback report}\\
+\texttt{036bf6f9ed3c} & 07:23:50 & {\footnotesize L02 guarded local support and separator comparison lanes-evidence.json}\\
+\texttt{10b258f4fcde} & 07:23:48 & {\footnotesize L02 guarded local support and separator comparison lanes.js}\\
+\texttt{cd754e70535e} & 07:23:18 & {\footnotesize L02 independent graph traversal and gauge replay random-baseline.cert.json}\\
+\texttt{f12f132d11eb} & 07:23:16 & {\footnotesize L02 independent graph traversal and gauge replay joint-baseline.cert.json}\\
+\texttt{afd38a0d9b88} & 07:23:14 & {\footnotesize L02 independent graph traversal and gauge replay independent-evidence.json}\\
+\texttt{0930a5e64aab} & 07:23:11 & {\footnotesize L02 independent graph traversal and gauge replay independent-check.js}\\
+\texttt{8e4c42547bd1} & 07:23:03 & {\footnotesize T3 L05-36: exact full PC closure refusal and scoped cooperative escape}\\
+\texttt{e93c83347629} & 07:22:41 & {\footnotesize L02 paired clause feedback and guarded gauge feedback-evidence.json}\\
+\texttt{a10734a72266} & 07:22:39 & {\footnotesize L02 paired clause feedback and guarded gauge feedback.js}\\
+\texttt{5a5b4f02d285} & 07:21:41 & {\footnotesize L02 root odd parity cycle certificate}\\
+\texttt{1fb197a35f69} & 07:21:27 & {\footnotesize T3: repair auxiliary witness reconstruction and test degree4 escapes}\\
+\texttt{857811f7cf8b} & 07:21:25 & {\footnotesize L02 exact gauge seed closure audit gauge-audit-evidence.json}\\
+\texttt{399897be98db} & 07:21:22 & {\footnotesize L02 exact gauge seed closure audit gauge-audit.js}\\
+\texttt{add4fa3dc900} & 07:20:45 & {\footnotesize T3: independent full closure replay and RUP gauge escape}\\
+\texttt{5a8fb90bda80} & 07:20:43 & {\footnotesize T3: independent full closure replay and RUP gauge escape}\\
+\texttt{3c748e3c8ea8} & 07:20:41 & {\footnotesize T3: independent full closure replay and RUP gauge escape}\\
+\texttt{3cdca88d4aec} & 07:20:08 & {\footnotesize L02 publish exact root relative-port seed certificate}\\
+\texttt{a33a4aa9fcd4} & 07:19:38 & {\footnotesize L02: relative-port seed and gauge replay evidence.json}\\
+\texttt{bc8821933e3d} & 07:19:36 & {\footnotesize L02: relative-port seed and gauge replay run.js}\\
+\texttt{325a780a16eb} & 07:18:44 & {\footnotesize T3: paid PC closure, dual witnesses, gauge and triple-packing controls}\\
+\texttt{d9b1ef2fc1e1} & 07:18:41 & {\footnotesize T3: paid PC closure, dual witnesses, gauge and triple-packing controls}\\
+\texttt{1bdcd5fe4cbe} & 07:18:39 & {\footnotesize T3: paid PC closure, dual witnesses, gauge and triple-packing controls}\\
+\texttt{efb011f59e05} & 07:18:37 & {\footnotesize T3: paid PC closure, dual witnesses, gauge and triple-packing controls}\\
+\texttt{5a2100fec493} & 07:18:35 & {\footnotesize T3: paid PC closure, dual witnesses, gauge and triple-packing controls}\\
+\texttt{07f752795077} & 07:14:23 & {\footnotesize Grok 4.7 hourly work 2026-11-28 16:03 KST: review 98e4372..da27100 (UCAC round 5: T2 intersecti}\\
+\texttt{adacb3a295a5} & 07:13:22 & {\footnotesize T2: prove exact directional linear-kernel quotient and record gauge controls}\\
+\texttt{f7901aba0ccc} & 07:12:27 & {\footnotesize T2: register exact native mixed YES witness and complement validation}\\
+\texttt{86c81dd67711} & 07:12:14 & {\footnotesize T1 report: fractional regional cut certificates and native witness controls}\\
+\texttt{9ad520c94e45} & 07:11:33 & {\footnotesize Independent regional cut and native YES witness replay; peer gauge lift verification}\\
+\texttt{760405fc0ec7} & 07:11:31 & {\footnotesize Independent regional cut and native YES witness replay; peer gauge lift verification}\\
+\texttt{6e2cfeefe07a} & 07:10:43 & {\footnotesize Fixed K5 fractional regional coverage escapes integral packing stall}\\
+\texttt{90c5ff82bfca} & 07:10:40 & {\footnotesize Fixed K5 fractional regional coverage escapes integral packing stall}\\
+\texttt{55263a519303} & 07:10:16 & {\footnotesize T1 exact regional signed clique cut experiment and authenticated controls}\\
+\texttt{59b74ec7eddb} & 07:10:14 & {\footnotesize T1 exact regional signed clique cut experiment and authenticated controls}\\
+\texttt{0b96279d3b18} & 07:01:13 & {\footnotesize C04-35: paired feedback control replay artifact, not new root theorem}\\
+\texttt{07ec52892d11} & 07:01:11 & {\footnotesize C04-35: paired feedback control replay artifact, not new root theorem}\\
+\texttt{392a32d5f596} & 07:01:05 & {\footnotesize UCAC 23:00 checked gauge transport and next obligations}\\
+\texttt{e9bf157a3b0b} & 07:00:56 & {\footnotesize 23:00 UCAC coordination review and guard transport assignments}\\
+\texttt{dbff7631d5f3} & 07:00:10 & {\footnotesize C04-35: scoped nonlinear transport quotient, peer marginal refusal and costed regressions}\\
+\texttt{9cf5d34eed63} & 06:59:37 & {\footnotesize Document scoped nonlinear degree transport theorem and benchmark replay}\\
+\texttt{e8d3be60a13f} & 06:59:15 & {\footnotesize C04-35: add independently generated coupled-cycle instance manifest}\\
+\texttt{a4e3efaac5a8} & 06:58:44 & {\footnotesize T3 exact nonlinear guarded-delta transport kernel}\\
+\texttt{0af9ec4fcc11} & 06:58:41 & {\footnotesize T3 exact nonlinear guarded-delta transport kernel}\\
+\texttt{025cb53925e5} & 06:58:39 & {\footnotesize T3 exact nonlinear guarded-delta transport kernel}\\
+\texttt{9f238fee27b6} & 06:58:36 & {\footnotesize T3 exact nonlinear guarded-delta transport kernel}\\
+\texttt{41766bd24988} & 06:58:12 & {\footnotesize T4 check complement-gauge RUP proof transport}\\
+\texttt{4a42c99a37a2} & 06:58:09 & {\footnotesize T4 check complement-gauge RUP proof transport}\\
+\texttt{98d96bec8ba2} & 06:56:57 & {\footnotesize C04-35: independently checked FP60 five-root marginal-extension refusal}\\
+\texttt{b55560e3b539} & 06:56:54 & {\footnotesize C04-35: independently checked FP60 five-root marginal-extension refusal}\\
+\texttt{b9dd9077364c} & 06:55:47 & {\footnotesize C04-35: native adapter checker with exact coupled-cycle parent verification}\\
+\texttt{427b8551e632} & 06:55:40 & {\footnotesize C04-35: add coupled-cycle scoped obstruction and exact verifier}\\
+\texttt{c51c0b8071c9} & 06:55:38 & {\footnotesize C04-35: add coupled-cycle scoped obstruction and exact verifier}\\
+\texttt{615e654626f6} & 06:55:36 & {\footnotesize C04-35: add coupled-cycle scoped obstruction and exact verifier}\\
+\texttt{ebc1de9f2b0b} & 06:53:08 & {\footnotesize X01-40 report: fixed-root guard delta rank and operational activation}\\
+\texttt{98c177116de2} & 06:52:52 & {\footnotesize Prove scoped degree-locality obstruction and polynomial width-two cooperative escape}\\
+\texttt{397eb0944b93} & 06:52:00 & {\footnotesize Record independent T3 cubic proof replay on four exact CNFs}\\
+\texttt{2886a5e80d7a} & 06:51:58 & {\footnotesize Independently replay partner cubic certificate with direct source membership and Boolean monomi}\\
+\texttt{5bf6df3f41e2} & 06:51:53 & {\footnotesize X01-40 fixed-coordinate guard delta rank certificate}\\
+\texttt{17686ad561ab} & 06:51:23 & {\footnotesize Record verified width-two RUP certificates and exact proof digests}\\
+\texttt{4926829abff7} & 06:51:15 & {\footnotesize Add blind width-two RUP bypass with ordered unit reason checker}\\
+\texttt{9776c38df24d} & 06:50:52 & {\footnotesize X01-40 source-only guard rank contradiction certificate (scoped)}\\
+\texttt{f7ce03a6c6bf} & 06:50:39 & {\footnotesize Register and verify paired coupled AND seam CNF controls additively}\\
+\texttt{dbf9b1265a45} & 06:50:37 & {\footnotesize Register exact coupled seam AND-SEAM-95-8-YES@f8f7678d02fe}\\
+\texttt{5fbc4709976d} & 06:50:32 & {\footnotesize FP60: exact owner-energy replay and certified nonaffine overlap plateau}\\
+\texttt{d55951ecdded} & 06:50:15 & {\footnotesize Register exact coupled seam AND-SEAM-95-8-NO@fca3d394926e}\\
+\texttt{f377ec5cac6f} & 06:50:12 & {\footnotesize Register exact coupled seam AND-SEAM-47-5-YES@a8941edc0c8b}\\
+\texttt{b388ba965683} & 06:50:09 & {\footnotesize Register exact coupled seam AND-SEAM-47-5-NO@0000fb00dabd}\\
+\texttt{455a6d61aa0d} & 06:50:07 & {\footnotesize Register exact coupled seam AND-SEAM-23-4-YES@3003b014cdbe}\\
+\texttt{87af2ceff615} & 06:50:04 & {\footnotesize Register exact coupled seam AND-SEAM-23-4-NO@62287cf93529}\\
+\texttt{87bd80afdfff} & 06:50:02 & {\footnotesize Register exact coupled seam AND-SEAM-11-3-YES@a9a62ce97cad}\\
+\texttt{20539daae9a0} & 06:50:00 & {\footnotesize Register exact coupled seam AND-SEAM-11-3-NO@106f8e5cda61}\\
+\texttt{3bc2e7b3730c} & 06:49:58 & {\footnotesize Register exact coupled seam AND-SEAM-5-3-YES@2e7136d8f36f}\\
+\texttt{cc2b5d19ec54} & 06:49:56 & {\footnotesize Register exact coupled seam AND-SEAM-5-3-NO@b2f305a7e275}\\
+\texttt{1ed655d6eebc} & 06:49:53 & {\footnotesize Add coupled AND seam source generator and independent structural checker}\\
+\texttt{bbf7828bca70} & 06:49:44 & {\footnotesize FP60 exhaustive local uniform overlap mass test}\\
+\texttt{8dd7aaa1b59c} & 06:49:34 & {\footnotesize Replay common native and companion six-lane regression before degree-locality controls}\\
+\texttt{7fd9ceed055a} & 06:49:24 & {\footnotesize FP60 verify exact zero-cost pairwise consistent parity distributions}\\
+\texttt{28c7aef226f1} & 06:49:22 & {\footnotesize FP60 rational pseudomarginal certificate of arbitrary pair cost-shift plateau}\\
+\texttt{468c665d54b6} & 06:49:02 & {\footnotesize FP60 independent overlap projection refusal checker}\\
+\texttt{7f7d33946ac4} & 06:48:59 & {\footnotesize FP60 verified projection plateau and peer witness replay RANDOM-3CNF-40}\\
+\texttt{322f80fb3e31} & 06:48:52 & {\footnotesize FP60 verified projection plateau and peer witness replay JOINT-24}\\
+\texttt{4a3e4db42a01} & 06:48:08 & {\footnotesize FP60 owner-separable transport DP and independent scalar replay}\\
+\texttt{f5bfd16a9a65} & 06:48:06 & {\footnotesize FP60 verified owner-disjoint min-sum transport and indexed shifts RANDOM-3CNF-40}\\
+\texttt{3e0dcf32dbd5} & 06:47:58 & {\footnotesize FP60 verified owner-disjoint min-sum transport and indexed shifts JOINT-24}\\
+\bottomrule
+\end{longtable}
+
+\end{document}
