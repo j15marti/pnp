@@ -1,0 +1,3 @@
+// Finite check of the SET COVER reduction arithmetic on all 3-set systems over 3 elements.
+function checkRecognition(){let trials=0,cover=0,noCover=0,maskChecks=0;for(let a=0;a<8;a++)for(let b=0;b<8;b++)for(let c=0;c<8;c++)for(let k of [1,2]){let S=[a,b,c],m=3,L=m+1,delta=k*L+m-1,hasCover=false,exact=true;for(let w=0;w<8;w++){let count=0,U=0;for(let j=0;j<3;j++)if(w&(1<<j)){count++;U|=S[j]}if(count===k&&U===7)hasCover=true;let size=count*L+U.toString(2).replace(/0/g,"").length;maskChecks++;if((size<=delta)!==(count<=k))exact=false}if(exact===hasCover)throw Error("reduction mismatch");trials++;if(hasCover)cover++;else noCover++}return {trials,cover,noCover,maskChecks}}
+console.log(JSON.stringify(checkRecognition()));
