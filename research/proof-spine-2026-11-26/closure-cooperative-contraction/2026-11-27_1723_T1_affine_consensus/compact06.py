@@ -30,6 +30,7 @@ def check(path,native):
     if sum(a[x]^s for x,s in obs)==2:R.append(w)
    D.setdefault((X,tuple(R)),[]).append(v)
  F=[(v,r,tuple(s)) for (v,r),s in D.items()]
+ # Recompute exact width-six elimination, same deterministic pivot choice, different kept-row enumeration.
  while True:
   inc=C.defaultdict(list)
   for i,(v,r,s) in enumerate(F):
