@@ -1,0 +1,360 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\newcommand{\lab}[1]{\textbf{[#1]}}
+\newcommand{\F}{\mathbb{F}}
+\title{Grok 4.7 hourly work log --- 2026-11-28 1358 KST\\
+\large Review of \texttt{f14cb00..fb3d554} (UCAC round 3: T1-08, T2 basis acquisition, T3-09,
+Multisign Walsh); gap: a ``hostile family without an exposed odd XOR core''
+(T2 \S3) and NONAFFINE-TARGETED-CORRECTION (T3-09 \S6), answered for gadget-hidden Tseitin}
+\author{Grok 4.7 (automated reviewer) for j15marti/pnp}
+\date{2026-11-28 1358 KST (2026-11-27 20:58 PST)}
+\begin{document}
+\sloppy
+\maketitle
+
+\section*{Executive assessment}
+\textbf{P vs NP remains OPEN.} Nothing reviewed in this window, and nothing in this log,
+establishes P$\neq$NP, P$=$NP, a Clay-level result, or an unrestricted lower bound. The
+window is the third UCAC round. It contains T1-08 (persistent width-two RUP, signed NAE
+pair-cover escape), T2 (packet-basis acquisition, simple-cubic parity stall, RUP-to-polynomial
+bridge, bounded-degree PC hostile controls), T3-09 (coupled-prism correction rank and sketch
+refusal), TETRA Multisign (affine Walsh transport), T4 dictionary and progressive refinement,
+L02 hub motifs, and several certificate bundles. As before, the results are correct scoped
+lemmas plus finite checked refutations. I spot-checked five of them (\S\ref{sec:spot}) and
+found no mathematical error.
+
+\textbf{This hour's gap.} T2 (\texttt{2989fb7}, \S3) ends with ``Next: construct a hostile
+family without an exposed odd XOR core''. T3-09 (\texttt{00e8e92}, \S6) names the lemma
+NONAFFINE-TARGETED-CORRECTION-OR-PAID-REFUSAL and asks for ``nonaffine hub states that survive
+grouped GE''. The natural candidate is Tseitin composed with a nonaffine gadget $g$. The
+repository already defines this family (LSPV-3 GADGET-LOCAL-PROJECTION356, 2026-11-03), but
+studies it with extension variables. I test it against the \emph{current} lanes:
+\begin{itemize}
+\item Theorem~\ref{thm:anf} \lab{PROVED/EXACT}: take any graph, odd total charge, any gadget
+$g:\{0,1\}^k\to\{0,1\}$, and any CNF that encodes each vertex constraint with clauses over that
+vertex's own variables. In $\F_2[x]/(x_i^2+x_i)$ the formula has a Nullstellensatz refutation
+of degree $\le k\Delta$ with vertex-local multipliers. For the canonical encoding the
+certificate is just $\sum_{C}p_C=1$: the sum of \emph{all} clause falsity indicators is the
+constant~$1$. No extension variables are needed, and verification costs
+$O(|V|\,k\Delta\,2^{k\Delta})$.
+\item Proposition~\ref{prop:stall}: on the same family, (i) width-two RUP is at its initial
+fixed point for every size \lab{PROVED/EXACT}; (ii) grouped affine-hull extraction yields zero
+equations for $g=\mathrm{AND}_2$ \lab{PROVED/EXACT}; (iii) for every nonconstant $g$ and every
+fixed $w$, width-$w$ RUP saturation fails on cubic expander families \lab{PROVED, from KNOWN
+THEOREMS}: a restriction to Tseitin, plus Urquhart and Ben-Sasson--Wigderson.
+\item Consequence. Gadget-hidden Tseitin is \emph{not} a hostile family for the portfolio. It
+defeats width-two RUP, binary implication and the grouped-affine bypass. It does not defeat
+T3-09's clause-indicator span (canonical encoding) or T2's bounded-degree packet/PC saturation
+(any local encoding). As a candidate hostile family for the full portfolio it is
+\lab{FALSIFIED/RETIRED}. On this family, NONAFFINE-TARGETED-CORRECTION holds
+\lab{PROVED/EXACT, family-restricted}: the correction is the exact group ANF
+$\sigma_v+\sum_{a\ni v}g(y_a)$. In general it stays \lab{OPEN}.
+\item \lab{COMPUTATIONAL}: 11 composed instances (prisms and random cubic graphs; $\mathrm{AND}_2$,
+$\mathrm{MAJ}_3$, a 3-bit index gadget, and the identity control) confirm every claim. In
+addition: a merged, non-disjoint encoding defeats the \emph{constant-coefficient} span (3/3
+instances), yet the degree-$\le k\Delta$ certificate still holds; a random 3-CNF control
+($n=40$, $m=184$) has $1$ outside both spans; and the T3-09 rank $m-1$ and the T2 width-two
+fixed point replay exactly (\S\ref{sec:comp}).
+\end{itemize}
+Root \texttt{main.tex} was \emph{not} edited.
+
+\section{Review log}
+\subsection{Prior Grok work survived}
+\path{comments/grok-4.7/2026-11-28/} on \texttt{main} still holds the 0259, 0404, 0455, 0600,
+0700, 0758, 0901, 0953, 1105, 1159 and 1305 work logs and the \path{code/} folder. The last
+log is \texttt{5a045cf} (1305 KST), committed 04:07:18Z, which is 2026-11-27 20:07 PST. No
+Grok file was overwritten.
+
+\subsection{Commits seen (main)}
+The window runs from \texttt{f14cb00} (03:51:47Z = 19:51 PST), the first commit after
+\texttt{0ea8d71}, to \texttt{fb3d554} (04:56:08Z = 20:56 PST). It holds 141 commits by the
+user account, plus Grok's own \texttt{5a045cf}. I paged the listing in seven calls and removed
+duplicates. The full SHA list is in Appendix~\ref{app:shas}. Report-bearing commits I read in
+full:
+\begin{itemize}
+\item \texttt{e5caf05}: T1-08,
+\path{research/proof-spine-2026-11-26/closure-cooperative-contraction/2026-11-27_2040_T1_persistent_rup/report.md}
+(persistent failed-probe RUP cost theorem; signed Steiner NAE pair-cover stall and quadratic
+escape). Code and data: \texttt{4f92cf9}, \texttt{c7dda3e}, \texttt{a751d07},
+\texttt{9ed6046}, certificates \texttt{188a01c}, \texttt{f969e94}, \texttt{42583b8},
+\texttt{3ac18c0}, \texttt{4cbccee}; guards and handoff \texttt{e0865cd}, \texttt{770f1b6}.
+\item \texttt{2989fb7}: T2,
+\path{research/proof-spine-2026-11-26/affine-bijunctive-sat/2026-11-27_2027_T2_basis_acquisition/report.md}
+(closure-key triangular basis, packet rank, simple-cubic parity width-two stall, Gaussian
+bypass).
+\item \texttt{00e8e92}: T3-09,
+\path{research/proof-spine-2026-11-26/closure-exceptional-syndrome/2026-11-27_2031_T3_rup_correction/report.md}
+(coupled prisms: width-two refusal, correction rank $m-1$, sketch refusal, targeted affine
+bypass). The connector cut this file at about 20\,KB, so I did not see its last 3.5\,KB
+(literature audit, \S7).
+\item \texttt{ee970e2}: TETRA Multisign,
+\path{research/hcl201/multisign/2026-11-27_2027_T2_Walsh_refinement/report.md} (affine Walsh
+bound transport, nested-refinement monotonicity, cycle hostile family).
+\item \texttt{2692fdf}: T2 \path{hostile.js} (bounded-degree PC saturation on the Steiner NAE
+family). I read the code: degree-$d$ multiply-and-reduce saturation over $\F_2$. It is
+\emph{not} the gadget family studied below.
+\end{itemize}
+Read by commit message and file list only, this hour: T4 dictionary and BLOCK review
+(\texttt{cb51816}, \texttt{e667de9}, \texttt{c5ff7d5}, \texttt{cda6456}, \texttt{6d8ca79},
+\texttt{bca0771}, \texttt{3911021}, \texttt{1a2ce19}); T4 progressive refinement
+(\texttt{aeece9c}..\texttt{9addced}); UCAC coordination (\texttt{27ed615}, \texttt{e363684});
+T3 grammar (\texttt{4c84398}..\texttt{7a3fa89}); L02 hub motifs (\texttt{8359faf}..\texttt{53ffdd9});
+T3-09 data (\texttt{3a8321a}..\texttt{617eaa1}, \texttt{530bb87}); T2 RUP-polynomial bridge and
+feedback (\texttt{e87ac85}..\texttt{b956332}); a root-level
+\texttt{DYNAMIC-COMPATIBILITY-}\allowbreak\texttt{OBLIGATION1-}\allowbreak\texttt{POST-CROSSING-}\allowbreak\ldots\ file
+(\texttt{f51f639}); toroidal Tseitin stalls and SCC hybrid (\texttt{6b63315},
+\texttt{b1c7f9d}, \texttt{c3b4c58}, \texttt{fb3d554}). AGENTS.md (blob \texttt{244d1e8}) was
+re-read up to the connector's 20\,KB cut. It was not modified in this window.
+\textbf{Landed while this log was being written, not reviewed:} commits after
+\texttt{fb3d554}, starting at 04:59:54Z (20:59 PST). They include FP59 energy-threshold
+controls (\texttt{9cabf60}, \texttt{1f984ce}, \texttt{fdf90e9}) and a coordinator causal
+proof-cone audit (\texttt{44c66c5}, \texttt{7c47183}, HEAD at push time). The next run should
+review from just after \texttt{fb3d554}.
+
+\subsection{Standing issues: did they change?}
+\begin{itemize}
+\item \textbf{Root \texttt{main.tex} is still a placeholder.} The connector returns the
+one-line text \texttt{PLACEHOLDER\_TOO\_LARGE\_USE\_LOCAL\_APPEND} (blob \texttt{22e5354}).
+The last commit to touch it is still \texttt{0094f2c} (2026-11-17 08:37 PST, $+1/-28182$
+lines). The last full version is at \texttt{66c56b4}. I did not edit it. Restoring it needs
+an owner decision (first flagged in the 0758 KST log).
+\item \textbf{Reports are \texttt{.md}: unchanged.} All four reports above are
+\texttt{report.md}, and so is the new root-level DYNAMIC file. AGENTS.md requires
+\texttt{.tex}.
+\item \textbf{Nonstandard labels: unchanged.} T2 and T3-09 use ``PROVED WITH SCOPE''. T1-08
+uses ``scoped theorem, verified finite certificates''. Multisign is headed ``Status OPEN'' but
+contains a ``Theorem (proved)''. The AGENTS.md forms would be PROVED/EXACT (restricted) for the
+theorems, COMPUTATIONAL for the authenticated runs, and OPEN for UCAC and the ``first OPEN
+arrows''.
+\item \textbf{Unfetchable evidence (self-reported).} T2 records that its pretty
+\path{evidence.json} (\texttt{8b36f03}) returns an empty body and uses split files instead.
+That is correctly disclosed.
+\end{itemize}
+
+\subsection{Spot-checks of the key mathematics}\label{sec:spot}
+\begin{enumerate}
+\item \textbf{T3-09 correction rank (\texttt{00e8e92} \S3): replayed.} For coupled prisms with
+$n=4$ ($r=23$, $m=64$), the $\F_2$ rank of the 64 clause-indicator ANF vectors is exactly
+$63=m-1$. The constant $1$ lies in their span. Width-two RUP has 0 admissions
+(\S\ref{sec:comp}). The argument (a nonlinear monomial lives in one scope, then the selections
+are constant on each block) is correct.
+\item \textbf{T2 simple-cubic stall (\texttt{2989fb7} \S3): correct and replayed.} With
+$\le2$ pins in a simple cubic graph, at most one vertex has two fixed edges, and its forced
+third edge reaches three distinct other vertices. The Möbius ladder $k=8$ gives 0 width-two
+admissions.
+\item \textbf{T2 closure-key basis (\S1): correct.} $e_{C_j}(C_i)=[C_j\subseteq C_i]$. Ordering
+by cardinality gives a unitriangular matrix. The report itself notes that rank progress is not
+strict feasibility progress ($h=xyz$ vs.\ $g=xy$).
+\item \textbf{T1-08 pair cover: correct.} Each pair lies in one triple, and each triple
+contributes $-1$, so $(\sum y)^2=n-2m=n(4-n)/3$. This gives $-7,-55,-279$ for $n=7,15,31$, as
+reported. Note that the 1159 KST Grok log already studied NAE on Steiner triple systems.
+\item \textbf{Multisign cycle obstruction: correct.} The $n$ edge frequencies have a single
+dependency (their sum). So a rank-$k$ span with $k\le n-2$ contains at most $k$ of them, and
+those are independent. This matches ``separated at $n=5,9$, not at $13,17$'' under cap $8$.
+\end{enumerate}
+
+\section{Work: gadget-hidden Tseitin versus the current lanes}\label{sec:work}
+\begin{definition}[Composed Tseitin, local encodings]
+Let $G=(V,E)$ be a finite graph with maximum degree $\Delta$, and $\sigma:V\to\F_2$ with
+$\sum_v\sigma_v=1$. Let $g:\{0,1\}^k\to\{0,1\}$. Each edge $a$ carries a private block
+$y_a\in\{0,1\}^k$, and $X_v=\bigcup_{a\ni v}y_a$. A \emph{local encoding} is a CNF
+$F=\bigsqcup_vF_v$ with $\mathrm{vars}(F_v)\subseteq X_v$ and
+$F_v(x)=1\iff\bigoplus_{a\ni v}g(y_a)=\sigma_v$. It is \emph{canonical} if $F_v$ has one
+blocking clause per violating word of $X_v$. (This is LSPV-3's $F_{G,g,\sigma}$.) Work in
+$R=\F_2[x]/(x_i^2+x_i)$. For a clause $C$ let $p_C=\prod_{\ell\in C}\bar\ell$, with
+$\bar\ell=1+x$ for $\ell=x$ and $\bar\ell=x$ for $\ell=\neg x$. So $p_C(x)=1$ iff $C$ is
+falsified.
+\end{definition}
+
+\begin{theorem}[Low-degree $\F_2$ certificate]\label{thm:anf}
+\lab{PROVED/EXACT} For every local encoding, in $R$:
+\begin{align}
+\textstyle\sum_{v\in V}\Bigl(1+\prod_{C\in F_v}(1+p_C)\Bigr)&=1, \label{eq:gen}\\
+\textstyle\sum_{v}\sum_{j}p_{C_{v,j}}\prod_{i<j}(1+p_{C_{v,i}})&=1, \label{eq:ns}
+\end{align}
+where $C_{v,1},C_{v,2},\dots$ lists $F_v$. Thus $F$ has an $\F_2$ Nullstellensatz refutation
+whose multipliers are multilinear in $X_v$, with degree $\le k\Delta$. If the clauses of each
+$F_v$ have pairwise disjoint falsifying sets (for example, canonical), then
+$\sum_{C\in F}p_C=1$.
+\end{theorem}
+\begin{proof}
+$R$ is isomorphic to the ring of functions $\{0,1\}^n\to\F_2$, because multilinear
+representations are unique. So it suffices to check identities pointwise.
+$\prod_{C\in F_v}(1+p_C)(x)=1$ iff every clause of $F_v$ is satisfied, iff $F_v(x)=1$. Hence
+$1+\prod_{C\in F_v}(1+p_C)$ is the violation indicator of $v$. That indicator equals
+$\sigma_v+\sum_{a\ni v}g(y_a)\pmod 2$, where $g(y_a)$ denotes the function. Summing over $v$
+counts each edge term twice, so the left side of \eqref{eq:gen} is $\sum_v\sigma_v=1$.
+\eqref{eq:ns} follows from the telescoping identity
+$1+\prod_{j=1}^t(1+u_j)=\sum_{j=1}^tu_j\prod_{i<j}(1+u_i)$, proved by induction on $t$. Every
+factor uses only variables of $X_v$, and $|X_v|\le k\Delta$. With disjoint falsifying sets,
+$p_Cp_{C'}=0$ as functions for $C\neq C'$ in $F_v$. So
+$\prod_{C\in F_v}(1+p_C)=1+\sum_{C\in F_v}p_C$, and \eqref{eq:gen} becomes
+$\sum_Cp_C=1$.
+\end{proof}
+
+\begin{remark}[Cost and what it says about the lanes]
+Computing each group ANF by Möbius transform costs $O(k\Delta\,2^{k\Delta})$, so the whole
+check costs $O(|V|k\Delta2^{k\Delta})$. This is polynomial in $N$ whenever
+$k\Delta=O(\log N)$ (for instance, constant $k$ on bounded-degree graphs, as in every
+instance below). For a balanced $g$, the canonical CNF already has $|V|2^{k\Delta-1}$
+clauses, so the check is then polynomial in $N$. For heavily biased gadgets that is not
+automatic. No extension variable, oracle or search is used. T3-09's
+indicator span (``all clause indicators XOR to $1$'') therefore covers \emph{every} gadget,
+not only parity. T2's degree-$d$ saturation (\texttt{2692fdf}) covers every local encoding,
+once $d\ge k\Delta$. This does not show that a bounded-degree lane is complete. The degree is
+the family's local width.
+\end{remark}
+
+\begin{proposition}[What the composition does hide]\label{prop:stall}
+Let $F$ be canonical, with $G$ cubic, $\sigma$ odd and $g$ nonconstant.
+\begin{enumerate}
+\item[(i)] \lab{PROVED/EXACT} If $3k\ge4$ (any $k\ge2$), no clause of width $\le2$ is RUP
+with respect to $F$. There are no unit or binary clauses. Hence width-two RUP saturation and
+binary-implication/SCC closure are at their initial fixed point, for every $|V|$.
+\item[(ii)] \lab{PROVED/EXACT} For $g=\mathrm{AND}_2$ and every vertex of degree $d\ge2$, the
+affine hull of the satisfying set of $F_v$ is all of $\F_2^{2d}$. So grouped equal-scope
+affine extraction (T3-09's targeted bypass) yields no equation, and GE sees nothing.
+\item[(iii)] \lab{PROVED, from KNOWN THEOREMS} For cubic expander families and every fixed
+$w$, width-$w$ RUP saturation fails to refute $F$ once $|V|$ is large.
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+(i) Every clause has width $3k\ge4$. With $\le2$ literals pinned and nothing yet propagated,
+a clause becomes unit only if $\ge3k-1\ge3$ of its literals are false. That is impossible, so
+unit propagation never fires and never conflicts.
+
+(ii) Write each block as $(y_i,z_i)$. If $\sigma_v=0$, the satisfying set contains $0$ and
+every unit vector (one bit set leaves all ANDs $0$), so the hull is everything. If
+$\sigma_v=1$, take $p$ with $y_1=z_1=1$ and all else $0$. Then $p+e_j$ is satisfying for each
+of the $2d-2$ coordinates $j$ outside block 1. The points
+$r_1=p+e_{z_1}+e_{y_2}+e_{z_2}$ (that is, $y_1=1,z_1=0,y_2=z_2=1$) and $r_2$ (the same with
+$y_1$ and $z_1$ swapped) are satisfying, because exactly one AND is $1$. Together with the
+directions $e_{y_2},e_{z_2}$, they give $e_{z_1}$ and $e_{y_1}$. The directions span
+$\F_2^{2d}$.
+
+(iii) $g$ is nonconstant, so it has a sensitive input: some $b\in\{0,1\}^k$ and coordinate
+$i$ with $g(b)\ne g(b\oplus e_i)$. In every block, fix all bits except coordinate $i$ to $b$.
+Then $g(y_a)=x_a\oplus\beta_a$, where $x_a$ is the free bit. Vertex $v$ now demands
+$\bigoplus_{a\ni v}x_a=\sigma'_v:=\sigma_v\oplus\bigoplus_{a\ni v}\beta_a$, and
+$\sum\sigma'_v=\sum\sigma_v=1$ because each $\beta_a$ appears twice. Restricting a canonical
+CNF gives the canonical CNF of the restricted function. Clauses of violating words that are
+inconsistent with the restriction are satisfied, and the rest shrink to blocking clauses. So
+$F|_\rho$ is the standard Tseitin CNF $T(G,\sigma')$. Restriction does not increase
+resolution size (KNOWN). For cubic expanders, $T(G,\sigma')$ needs resolution size
+$2^{\Omega(|V|)}$ (Urquhart 1987; also width $\Omega(|V|)$ via Ben-Sasson--Wigderson 2001)
+(KNOWN THEOREM). Now suppose width-$w$ RUP saturation succeeded. Each admitted clause has an
+input-resolution derivation of length $\le n+1$ from the current set. There are at most
+$\sum_{i\le w}2^i\binom ni$ admissions. So we would get a resolution refutation of size
+$\mathrm{poly}(n^w)\cdot|F|$, which is polynomial for fixed $w$ and $k$. That contradicts the
+exponential bound once $|V|$ is large.
+\end{proof}
+
+\begin{corollary}[Answer to the two named gaps]\label{cor:ans}
+(a) Gadget-hidden Tseitin hides the odd XOR core from width-two RUP, binary implication and
+grouped affine GE. It does not hide it from the $\F_2$ indicator span or from degree-$k\Delta$
+packet/PC saturation. As a hostile family for the six-lane portfolio it is
+\lab{FALSIFIED/RETIRED}. (b) On this family NONAFFINE-TARGETED-CORRECTION holds
+\lab{PROVED/EXACT, family-restricted}. The paid correction is the exact group ANF
+$\sigma_v+\sum_{a\ni v}g(y_a)$, obtained by Möbius transform per vertex group, and summing
+the groups gives the terminal $1$. (c) The general NONAFFINE-TARGETED-CORRECTION lemma and the
+UCAC load-bearing target remain \lab{OPEN}.
+\end{corollary}
+
+\begin{remark}[Where hostile families must come from; limits]
+A family hostile to the $\F_2$ algebraic lanes needs large $\F_2$ polynomial-calculus degree.
+KNOWN THEOREMS supply such families: random 3-CNF of suitable constant density
+(Ben-Sasson--Impagliazzo, \emph{Comput.\ Complexity} 2010; Alekhnovich--Razborov 2001/03),
+Tseitin mod $q$ for odd prime $q$ on expanders over $\F_2$ (Buss--Grigoriev--Impagliazzo--Pitassi,
+JCSS 2001), and PHP (Razborov 1998). Each of them is easy for, or not yet tested against,
+some other lane (for example, $\F_q$ elimination for mod-$q$ Tseitin). A family hostile to
+\emph{every} polynomial-time lane would itself be a lower-bound statement, which is open. The
+theorem says nothing about Walsh/Fourier lanes on this family, which I did not test, or about
+non-local encodings where one clause mixes blocks of non-adjacent vertices. The merged
+encoding (\S\ref{sec:comp}) shows that the constant-coefficient span alone is
+encoding-fragile. Only the product form \eqref{eq:ns} is encoding-robust.
+\end{remark}
+
+\section{Computation}\label{sec:comp}
+\lab{COMPUTATIONAL}. Code: \path{comments/grok-4.7/2026-11-28/code/2026-11-28_1358_hidden_xor_anf.py}
+(Python 3, \texttt{networkx}, \texttt{python-sat}/CaDiCaL only as an independent UNSAT check).
+Outputs: \path{..._1358_hidden_xor_anf.out.json}, \path{..._1358_hidden_xor_anf_merged.out.json},
+\path{..._1358_hidden_xor_anf_output.txt}. Seeds are fixed. Charge $1$ sits on the minimum
+vertex. ``Thm1'' means \eqref{eq:gen} evaluated from the clauses' own truth tables. ``$\sum p_C$''
+is the constant-coefficient certificate. ``aff'' counts affine equations extracted by
+grouped hulls. ``odd'' means that 2000 random assignments each violated an odd number of
+vertex constraints. ``w2'' counts width-$\le2$ RUP admissions.
+\begin{center}\small
+\begin{tabular}{llrrrccrcr}
+\toprule
+graph & $g$/enc & vars & clauses & width & Thm1 & $\sum p_C=1$ & aff & w2 & CaDiCaL confl.\\
+\midrule
+prism $n{=}4$ & AND2/can & 24 & 232 & 6 & yes & yes & 0 & 0 & 1399\\
+prism $n{=}4$ & AND2/merged & 24 & 319 & 5--6 & yes & \textbf{no} & 0 & 0 & 1272\\
+prism $n{=}8$ & AND2/can & 48 & 456 & 6 & yes & yes & 0 & -- & 6056\\
+prism $n{=}16$ & AND2/can & 96 & 904 & 6 & yes & yes & 0 & -- & 13522\\
+rcubic 10 & AND2/can & 30 & 288 & 6 & yes & yes & 0 & 0 & 1119\\
+rcubic 20 & AND2/can & 60 & 568 & 6 & yes & yes & 0 & -- & 4499\\
+rcubic 20 & AND2/merged & 60 & 763 & 5--6 & yes & \textbf{no} & 0 & -- & 4602\\
+rcubic 30 & AND2/can & 90 & 848 & 6 & yes & yes & 0 & -- & 56537\\
+rcubic 10 & MAJ3/can & 45 & 2560 & 9 & yes & yes & 0 & -- & 50964\\
+rcubic 10 & IND3/can & 45 & 2560 & 9 & yes & yes & 0 & -- & 22671\\
+rcubic 10 & ID1/can (plain) & 15 & 40 & 3 & yes & yes & 10 & 0 & 30\\
+\bottomrule
+\end{tabular}
+\end{center}
+All instances are UNSAT by CaDiCaL, and ``odd'' held in every case. The plain-Tseitin control
+(ID1) is the only case where grouped affine extraction finds equations, as expected. The
+merged encoding replaces adjacent violating words by width-5 clauses, which have overlapping
+falsifying sets. For it, $1$ is \emph{not} in the constant-coefficient span of individual
+clause indicators at all: the ranks are 207/257/507 on prism4/rcubic10/rcubic20, and $1$ is
+outside in 3/3. Yet \eqref{eq:gen} holds exactly. The CaDiCaL conflict counts on random cubic
+graphs grow ($1119\to4499\to56537$ for $|V|=10,20,30$). That is consistent with
+Proposition~\ref{prop:stall}(iii), but it is an illustration only, not evidence of an
+asymptotic rate.
+
+Controls. \textbf{Random 3-CNF} ($n=40$, $m=184$, seed 20261128, UNSAT by CaDiCaL): 183
+distinct scopes; the group-ANF rank is 183 and the clause-ANF rank is 184; $1$ lies in
+neither span; affine extraction gives 0; there are 29 width-$\le2$ RUP clauses at the root.
+So this control behaves oppositely to gadget-Tseitin: width-two RUP helps, while the static
+span does not. \textbf{T3-09 coupled prism $n=4$}: rank $63=m-1$, $1$ in span, 0 width-two
+admissions. \textbf{T2 Möbius parity $k=8$}: 12 variables, 32 clauses, 0 width-two
+admissions.
+
+\section{Recommendations}
+\begin{enumerate}
+\item Register composed Tseitin (AND2, canonical \emph{and} merged) as a hidden-XOR control.
+It separates the lanes cleanly. Width-two RUP and grouped affine GE stall on both encodings.
+The constant-coefficient indicator span succeeds only on the canonical encoding. Degree-$6$
+saturation succeeds on both. Falsifiers: an instance where \eqref{eq:gen} fails, or a merged
+instance with $1$ in the constant span. Neither occurred.
+\item Credit accounting for T3-09/T2: the group-ANF correction on this family is a paid
+$O(2^{k\Delta})$ local computation per vertex and is not a restored source row. Charge it as
+such.
+\item For T2's ``hostile family'' request, use the known high-PC-degree families listed in
+the remark above. Test each one against \emph{all} lanes, not only against the lane that it
+provably defeats.
+\item Standing: restore root \texttt{main.tex} or confirm that the placeholder is intended;
+convert the reports to \texttt{.tex}; use the AGENTS.md labels.
+\end{enumerate}
+
+\appendix
+\section{Full SHA list of the reviewed window (oldest to newest)}\label{app:shas}
+{\footnotesize\raggedright
+\texttt{f14cb00}, \texttt{03cf0dc}, \texttt{e370f67}, \texttt{119444b}, \texttt{8be4927}, \texttt{fa4b78b}, \texttt{b1f8cce}, \texttt{5430caa}, \texttt{8359faf}, \texttt{773b4d7}, \texttt{da4d345}, \texttt{edaaca3}, \texttt{3fcce9a}, \texttt{98bfa89}, \texttt{91c327b}, \texttt{4bfb9f0}, \texttt{3638429}, \texttt{8174806}, \texttt{53ffdd9}, \texttt{f475975}, \texttt{52c10ac}, \texttt{55bad6e}, \texttt{7f0d1a2}, \texttt{eba13eb}, \texttt{40d9824}, \texttt{e667de9}, \texttt{cb51816}, \texttt{c5ff7d5}, \texttt{cda6456}, \texttt{6d8ca79}, \texttt{bca0771}, \texttt{27ed615}, \texttt{e363684}, \texttt{4c84398}, \texttt{967a78d}, \texttt{c8a10fb}, \texttt{2adcce0}, \texttt{43f8b90}, \texttt{218010f}, \texttt{ce47189}, \texttt{9ceb5c7}, \texttt{8210b96}, \texttt{590b871}, \texttt{2d3294d}, \texttt{002c140}, \texttt{5a045cf}, \texttt{4c6ae1f}, \texttt{df7e3cd}, \texttt{7a3fa89}, \texttt{7ac13c4}, \texttt{64def68}, \texttt{4fe69a5}, \texttt{1ac75bb}, \texttt{ae47799}, \texttt{5c7cd62}, \texttt{0d9b60f}, \texttt{269e206}, \texttt{5788427}, \texttt{24914ce}, \texttt{f51f639}, \texttt{aeece9c}, \texttt{ab82af4}, \texttt{477e44d}, \texttt{0920ef1}, \texttt{c61fdf8}, \texttt{da2f42f}, \texttt{9addced}, \texttt{1a2ce19}, \texttt{3911021}, \texttt{3ee09ff}, \texttt{792f1db}, \texttt{4a45d35}, \texttt{8b36f03}, \texttt{a35f772}, \texttt{a98c801}, \texttt{c86d1b8}, \texttt{96f8ccd}, \texttt{ddda402}, \texttt{55e03d2}, \texttt{55382da}, \texttt{9aa4ae4}, \texttt{9a96156}, \texttt{dc62d79}, \texttt{ee970e2}, \texttt{003879d}, \texttt{42ed9cc}, \texttt{b34a6de}, \texttt{d74356f}, \texttt{3a8321a}, \texttt{088e1a7}, \texttt{9c06a1c}, \texttt{4b4db72}, \texttt{9149b96}, \texttt{7566316}, \texttt{224fbaf}, \texttt{dfe10c2}, \texttt{2989fb7}, \texttt{efba592}, \texttt{75f5654}, \texttt{5c72fc6}, \texttt{8f68479}, \texttt{47feef2}, \texttt{64060c3}, \texttt{617eaa1}, \texttt{00e8e92}, \texttt{530bb87}, \texttt{4f92cf9}, \texttt{c7dda3e}, \texttt{a751d07}, \texttt{9ed6046}, \texttt{188a01c}, \texttt{f969e94}, \texttt{42583b8}, \texttt{3ac18c0}, \texttt{4cbccee}, \texttt{e5caf05}, \texttt{e0865cd}, \texttt{770f1b6}, \texttt{e87ac85}, \texttt{340a6b4}, \texttt{911575f}, \texttt{32583cb}, \texttt{8dd9565}, \texttt{27deb0d}, \texttt{b6b0df5}, \texttt{098c64b}, \texttt{cce5276}, \texttt{3c6096d}, \texttt{2cb1728}, \texttt{d307ddb}, \texttt{db57857}, \texttt{f23072f}, \texttt{2692fdf}, \texttt{b55ced3}, \texttt{fbaa7b6}, \texttt{b7b551f}, \texttt{63e0b81}, \texttt{b956332}, \texttt{6b63315}, \texttt{b1c7f9d}, \texttt{c3b4c58}, \texttt{fb3d554}.
+\par}
+
+\end{document}
