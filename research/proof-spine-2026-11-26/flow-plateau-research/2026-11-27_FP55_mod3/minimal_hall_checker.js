@@ -1,0 +1,17 @@
+function independentCheck(c,h,j,x){
+ const orig=x.dimacs.trimEnd().split("\n").slice(1).map(l=>l.split(/\s+/).map(Number).slice(0,-1)),C=j.chart.clauses.map(r=>r.slice()),key=r=>r.slice().sort((a,b)=>a-b).join(","),m=new Map(c.adapter.map(([u,v,s])=>[u,[v,s]])),rev=new Map(c.adapter.map(([u,v,s])=>[v,[u,s]])),lookup=new Set(orig.map(key)),chartSet=new Set(C.map(key)),mapLiteral=l=>{let [u,s]=rev.get(Math.abs(l));return (l>0?1:-1)*(s?-1:1)*u},mappedSet=new Set(C.map(r=>key(r.map(mapLiteral))));
+ if(mappedSet.size!==lookup.size||[...mappedSet].some(k=>!lookup.has(k)))throw Error("mapping");
+ let A=new Map(),work={hallRows:0,hallClauseChecks:0,hallCoeff:0,parityRows:0,parityClauseChecks:0,parityTerms:0,upLiteralChecks:0},selected=[];
+ for(let u of c.final.units){let [l]=c.sourceToUnit.find(([_,v])=>v===u),p=h.certs.find(q=>q.unit===l),coeff=new Map(),zero=new Set(),rhs=0;
+  if(!p||p.guard.length!==1||p.guard[0][1]!==1||l!==-p.guard[0][0])throw Error("Hall guard");
+  for(let [sign,rows] of [[1,p.rowsPlus],[-1,p.rowsMinus]])for(let row of rows){work.hallRows++;rhs+=sign;work.hallClauseChecks++;if(!lookup.has(key(row.v)))throw Error("missing ALO");for(let i=0;i<row.v.length;i++){let v=row.v[i];coeff.set(v,(coeff.get(v)||0)+sign);work.hallCoeff++;for(let z=i+1;z<row.v.length;z++){work.hallClauseChecks++;if(!lookup.has(key([-v,-row.v[z]])))throw Error("missing AMO")}}}
+  for(let [v,i] of p.zeroReasons){work.hallClauseChecks++;if(typeof i!=="number"||key(orig[i-1])!==key([-p.guard[0][0],-v]))throw Error("zero reason");zero.add(v)}if(rhs<=0||[...coeff].some(([v,a])=>a>0&&!zero.has(v)))throw Error("Hall contradiction");
+  let [v,s]=m.get(Math.abs(l));if(u!==v*(l>0?1:-1)*(s?-1:1))throw Error("unit mapping");C.push([u]);selected.push({source:l,native:u,rowsPlus:p.rowsPlus.map(r=>r.v),rowsMinus:p.rowsMinus.map(r=>r.v),guard:p.guard,rhs});
+ }
+ const trace=c.final.trace,early=trace[0],groups=c.final.groups;
+ function replayUP(t){for(let [lit,id] of t.trace){let row=C[id-1],open=[];if(!row)throw Error("clause id");for(let l of row){work.upLiteralChecks++;if(!A.has(Math.abs(l)))open.push(l);else if(A.get(Math.abs(l))===+(l>0))throw Error("reason satisfied")}if(open.length!==1||open[0]!==lit)throw Error("not unit");A.set(Math.abs(lit),+(lit>0))}if(t.conflict){let row=C[t.conflict-1];for(let l of row){work.upLiteralChecks++;if(!A.has(Math.abs(l))||A.get(Math.abs(l))===+(l>0))throw Error("not conflict")}}}
+ replayUP(early.up);let pins=[...A],f=early.ge.facts.find(q=>q.v===42&&q.b===1),rows=[],S=new Set(),rhs=0;
+ for(let id of f.ids){let vs,b;if(id<groups.length){let q=groups[id];vs=q.v;b=1;work.parityRows++;work.parityClauseChecks++;if(!chartSet.has(key(vs)))throw Error("parity ALO");for(let i=0;i<vs.length;i++)for(let t=i+1;t<vs.length;t++){work.parityClauseChecks++;if(!chartSet.has(key([-vs[i],-vs[t]])))throw Error("parity AMO")}}else{let p=pins[id-groups.length];if(!p)throw Error("bad pin");vs=[p[0]];b=p[1]}rows.push({vs,b,original:vs.map(v=>mapLiteral(v))});rhs^=b;for(let v of vs){work.parityTerms++;if(S.has(v))S.delete(v);else S.add(v)}}
+ if(S.size!==1||!S.has(42)||rhs!==1)throw Error("syzygy");A.set(42,1);replayUP(trace[1].up);if(!trace[1].up.conflict)throw Error("no conflict");return {selected,rows,forcedNative:[42,1],forcedOriginal:mapLiteral(42),conflictClause:trace[1].up.conflict,conflictOriginal:C[trace[1].up.conflict-1].map(mapLiteral),work,pins:[...A]};
+}
+if(typeof module!=="undefined")module.exports={independentCheck};
